@@ -11,9 +11,11 @@
 #import "ImojiCollectionView.h"
 #import <Masonry/View+MASAdditions.h>
 #import <UIKit/UIKit.h>
+#import "ImojiTextUtil.h"
+#import "PMCustomKeyboard.h"
+
 
 #define CUR_WIDTH [[UIScreen mainScreen] applicationFrame ].size.width
-NSUInteger const keyboardHeight = 216;
 
 @interface KeyboardViewController ()
 
@@ -27,6 +29,11 @@ NSUInteger const keyboardHeight = 216;
 @property (nonatomic, strong) IMImojiSession *session;
 @property (nonatomic, strong) ImojiCollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *navButtonsArray;
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, weak) UIButton *closeButton;
+
+// progress bar
+@property (nonatomic, strong) UIProgressView *progressView;
 
 // menu buttons
 @property (nonatomic, strong) UIButton *nextKeyboardButton;
@@ -37,6 +44,10 @@ NSUInteger const keyboardHeight = 216;
 @property (nonatomic, strong) UIButton *collectionButton;
 @property (nonatomic, strong) UIButton *deleteButton;
 
+// search
+@property (nonatomic, strong) UITextField *searchField;
+
+
 @end
 
 @implementation KeyboardViewController
@@ -45,8 +56,8 @@ NSUInteger const keyboardHeight = 216;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Perform custom initialization work here
-        self.portraitHeight = 256;
-        self.landscapeHeight = 203;
+        self.portraitHeight = 258;
+        self.landscapeHeight = 205;
     }
     return self;
 }
@@ -83,11 +94,10 @@ NSUInteger const keyboardHeight = 216;
     [super viewDidLoad];
     [[ImojiSDK sharedInstance] setClientId:[[NSUUID alloc] initWithUUIDString:@"a5908b99-c9b6-4661-9dfb-5c9ff4860c80"] apiToken:@"U2FsdGVkX1+FJ8PuT09YF1Ypf/yMWuFFGW885/rhgj8="];
     
-    // setup view
+    // basic properties
     self.view.backgroundColor = [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1];
 
     self.heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0.0 constant:self.portraitHeight];
-    
     self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
     
     self.session = [IMImojiSession imojiSession];
@@ -95,44 +105,117 @@ NSUInteger const keyboardHeight = 216;
     
     // set up views
     
+    // menu view
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
+    self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"REACTIONS"
+                                                        withFontSize:14.0f
+                                                           textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]
+                                                       textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    
+    [self.view addSubview:self.titleLabel];
+    
+    // custom progress bar
+    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.progressView.progressTintColor = [UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.0f];
+    self.progressView.trackTintColor = [UIColor colorWithRed:151/255.f green:185/255.f blue:207/255.f alpha:1.0f];
+    [self.progressView setProgress:0.0f animated:NO];
+    [self.view addSubview:self.progressView];
+    [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.width.equalTo(@(2));
+    }];
+    
+    // close button
+    self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.closeButton.frame = CGRectMake(0, 0, 36, 40);
+    [self.closeButton  setImage:[UIImage imageNamed:@"keyboard_search_clear"] forState:UIControlStateNormal];
+    [self.closeButton addTarget:self action:@selector(closeCategory) forControlEvents:UIControlEventTouchUpInside];
+    self.closeButton.hidden = YES;
+    [self.view addSubview:self.closeButton];
+    [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(-5);
+        make.width.height.equalTo(@(36));
+    }];
+    
+    
+    // collection view
     self.collectionView = [ImojiCollectionView imojiCollectionViewWithSession:self.session];
     self.collectionView.clipsToBounds = YES;
+    [self.collectionView setShowsHorizontalScrollIndicator:NO];
+    
+    __unsafe_unretained typeof(self) weakSelf = self;
+    self.collectionView.categoryShowCallback = ^(NSString *title) {
+        weakSelf.closeButton.hidden = NO;
+        weakSelf.titleLabel.attributedText = [ImojiTextUtil attributedString:[title uppercaseString]
+                                                            withFontSize:14.0f
+                                                               textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+        weakSelf.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    };
+    self.collectionView.setProgressCallback = ^(float progress) {
+        if (progress != INFINITY) {
+            [weakSelf.progressView setProgress:progress animated:YES];
+        }
+    };
     
     [self.view addSubview:self.collectionView];
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top);
+        make.top.equalTo(self.view.mas_top).with.offset(30);
         make.centerX.equalTo(self.view);
-        make.width.equalTo(@(CUR_WIDTH));
-        make.height.equalTo(@(keyboardHeight - 28));
+        make.right.equalTo(self.view.mas_right);
+        make.left.equalTo(self.view.mas_left);
     }];
     
     [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
     
-    [self setupViews];
+    // menu view
+    [self setupMenuView];
     
-    // update custom height
-    // Perform custom UI setup here
     /*
-    self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    // search
+    self.searchField = [[UITextField alloc] init];
+    [self.view addSubview:self.searchField];
+    [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.height.equalTo(@(40));
+    }];
+    PMCustomKeyboard *customKeyboard = [[PMCustomKeyboard alloc] init];
+    [customKeyboard setTextView:self.searchField];
+    customKeyboard.backgroundColor = [UIColor redColor];
+    UIView *searchView = [[UIView alloc] init];
+    [self.view addSubview:searchView];
+    [searchView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.searchField.mas_bottom).with.offset(0);
+        //make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.bottom.equalTo(self.view.mas_bottom);
+    }];
+    [searchView addSubview:customKeyboard];
     
-    [self.nextKeyboardButton setTitle:NSLocalizedString(@"Next Keyboard", @"Title for 'Next Keyboard' button") forState:UIControlStateNormal];
-    [self.nextKeyboardButton sizeToFit];
-    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.nextKeyboardButton];
-    
-    NSLayoutConstraint *nextKeyboardButtonLeftSideConstraint = [NSLayoutConstraint constraintWithItem:self.nextKeyboardButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0.0];
-    NSLayoutConstraint *nextKeyboardButtonBottomConstraint = [NSLayoutConstraint constraintWithItem:self.nextKeyboardButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-    [self.view addConstraints:@[nextKeyboardButtonLeftSideConstraint, nextKeyboardButtonBottomConstraint]];
-     */
-    //self.heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0.0 constant:self.portraitHeight];
-    //self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
-
+    NSLog(@"customKeyboard width: %f", customKeyboard.frame.size.width);
+    NSLog(@"customKeyboard height: %f", customKeyboard.frame.size.height);
+    NSLog(@"customKeyboard x: %f", customKeyboard.frame.origin.x);
+    NSLog(@"customKeyboard y: %f", customKeyboard.frame.origin.y);
+    NSLog(@"screen width: %f", self.view.frame.size.width);
+    */
+    /*
+    [customKeyboard mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(searchView.mas_top).with.offset(0);
+        make.left.equalTo(searchView.mas_left).with.offset(0);
+        make.right.equalTo(searchView.mas_right).with.offset(0);
+        make.centerX.equalTo(searchView.mas_centerX);
+        make.height.equalTo(@(216));
+    }];*/
+     
 }
 
-- (void)setupViews {
+- (void)setupMenuView {
     int navHeight = 40;
     UIView *bottomNavView = [[UIView alloc] init];
     bottomNavView.backgroundColor = [UIColor clearColor];
@@ -142,7 +225,9 @@ NSUInteger const keyboardHeight = 216;
         make.bottom.equalTo(self.view.mas_bottom);
         make.centerX.width.equalTo(self.view);
         make.height.equalTo(@(navHeight));
+        make.top.equalTo(self.collectionView.mas_bottom);
     }];
+    
     
     self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextKeyboardButton.tag = 0;
@@ -211,7 +296,7 @@ NSUInteger const keyboardHeight = 216;
     float buttonWidth = nextKeyboardImageNormal.size.width;
     float padding = (navWidth - 7*buttonWidth - 20)/6.f;
     
-    NSLog(@"ahhh: %f %f %f",navWidth,buttonWidth,padding);
+    //NSLog(@"ahhh: %f %f %f",navWidth,buttonWidth,padding);
     // left
     [self.nextKeyboardButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(bottomNavView);
@@ -235,7 +320,6 @@ NSUInteger const keyboardHeight = 216;
         //make.right.equalTo(self.recentsButton.mas_left).offset(padding);
         make.left.equalTo(self.nextKeyboardButton.mas_right).offset(padding);
     }];
-    
 
     [self.recentsButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(bottomNavView);
@@ -287,22 +371,66 @@ NSUInteger const keyboardHeight = 216;
     }
     
     // run action
+    self.closeButton.hidden = YES;
     switch (sender.tag) {
         case 1:
+            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"SEARCH"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            [self.progressView setProgress:0.f animated:YES];
             break;
         case 2:
+            [self.collectionView loadRecentImojis];
+            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"RECENTS"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
             break;
         case 3:
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"REACTIONS"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
             break;
         case 4:
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"TRENDING"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
             break;
         case 5:
+            [self.collectionView loadFavoriteImojis];
+            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"FAVORITES"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
             break;
         default:
             break;
     }
+}
+
+- (void)closeCategory {
+    self.closeButton.hidden = YES;
+    [self.collectionView loadImojiCategories:self.collectionView.currentCategoryClassification];
+    if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
+        self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"REACTIONS"
+                                                            withFontSize:14.0f
+                                                               textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+        self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    } else {
+        self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"TRENDING"
+                                                            withFontSize:14.0f
+                                                               textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
+        self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    }
+}
+
+- (void)setTitle:(NSString*)text {
+    
 }
 
 - (IBAction)deletePressed:(id)sender {

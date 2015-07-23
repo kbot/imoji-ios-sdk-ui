@@ -14,8 +14,18 @@
 
 @interface ImojiCollectionView : UICollectionView
 
+@property(nonatomic, strong) void(^categoryShowCallback) (NSString *title);
+@property(nonatomic, strong) void(^setProgressCallback) (float progress);
+@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
+@property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
+
+
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
+
+- (void)loadRecentImojis;
+
+- (void)loadFavoriteImojis;
 
 @end

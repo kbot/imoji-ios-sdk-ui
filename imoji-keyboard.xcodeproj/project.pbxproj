@@ -10,6 +10,14 @@
 		1F03A1721B15A7950061848E /* ImojiSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F03A1711B15A7950061848E /* ImojiSDK.framework */; };
 		1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F161F871B24B286006BF36F /* ImojiCollectionView.m */; };
 		1F161F8D1B24CF81006BF36F /* Masonry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F161F8C1B24CF81006BF36F /* Masonry.framework */; };
+		1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
+		1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
+		1F205CF81B43C86400AB5007 /* keyboard_search_clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF51B43C86400AB5007 /* keyboard_search_clear.png */; };
+		1F205CF91B43C86400AB5007 /* keyboard_search_clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF51B43C86400AB5007 /* keyboard_search_clear.png */; };
+		1F205CFA1B43C86400AB5007 /* keyboard_search_clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF61B43C86400AB5007 /* keyboard_search_clear@2x.png */; };
+		1F205CFB1B43C86400AB5007 /* keyboard_search_clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF61B43C86400AB5007 /* keyboard_search_clear@2x.png */; };
+		1F205CFC1B43C86400AB5007 /* keyboard_search_clear@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF71B43C86400AB5007 /* keyboard_search_clear@3x.png */; };
+		1F205CFD1B43C86400AB5007 /* keyboard_search_clear@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF71B43C86400AB5007 /* keyboard_search_clear@3x.png */; };
 		1F20FDF41B1594CD002C4896 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF31B1594CD002C4896 /* main.m */; };
 		1F20FDF71B1594CD002C4896 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF61B1594CD002C4896 /* AppDelegate.m */; };
 		1F20FDFA1B1594CD002C4896 /* imoji_keyboard.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF81B1594CD002C4896 /* imoji_keyboard.xcdatamodeld */; };
@@ -20,6 +28,19 @@
 		1F20FE111B1594CD002C4896 /* imoji_keyboardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FE101B1594CD002C4896 /* imoji_keyboardTests.m */; };
 		1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FE231B159C91002C4896 /* KeyboardViewController.m */; };
 		1F20FE271B159C91002C4896 /* keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1F20FE1E1B159C91002C4896 /* keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1F7C65221B5F782F001A6F41 /* PMCustomKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7C651F1B5F782F001A6F41 /* PMCustomKeyboard.m */; };
+		1F7C65231B5F782F001A6F41 /* PMCustomKeyboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65201B5F782F001A6F41 /* PMCustomKeyboard.xib */; };
+		1F7C65311B5F7D71001A6F41 /* delete_iOS7.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65261B5F7D71001A6F41 /* delete_iOS7.png */; };
+		1F7C65321B5F7D71001A6F41 /* delete_iOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65271B5F7D71001A6F41 /* delete_iOS7@2x.png */; };
+		1F7C65331B5F7D71001A6F41 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65281B5F7D71001A6F41 /* delete.png */; };
+		1F7C65341B5F7D71001A6F41 /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65291B5F7D71001A6F41 /* delete@2x.png */; };
+		1F7C65351B5F7D71001A6F41 /* glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652A1B5F7D71001A6F41 /* glow.png */; };
+		1F7C65361B5F7D71001A6F41 /* iOS_Keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652B1B5F7D71001A6F41 /* iOS_Keyboard.png */; };
+		1F7C65371B5F7D71001A6F41 /* iOS_Keyboard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652C1B5F7D71001A6F41 /* iOS_Keyboard@2x.png */; };
+		1F7C65381B5F7D71001A6F41 /* iOS7_Keyboard.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652D1B5F7D71001A6F41 /* iOS7_Keyboard.png */; };
+		1F7C65391B5F7D71001A6F41 /* iOS7_Keyboard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652E1B5F7D71001A6F41 /* iOS7_Keyboard@2x.png */; };
+		1F7C653A1B5F7D71001A6F41 /* return.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C652F1B5F7D71001A6F41 /* return.png */; };
+		1F7C653B1B5F7D71001A6F41 /* return@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F7C65301B5F7D71001A6F41 /* return@2x.png */; };
 		1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F83D32D1B24D0800052975D /* ImojiTextUtil.m */; };
 		1FABD69F1B2820250024F683 /* keyboard_collection_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6781B2820250024F683 /* keyboard_collection_active.png */; };
 		1FABD6A01B2820250024F683 /* keyboard_collection_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6791B2820250024F683 /* keyboard_collection_active@2x.png */; };
@@ -101,6 +122,10 @@
 		1F161F861B24B286006BF36F /* ImojiCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiCollectionView.h; sourceTree = "<group>"; };
 		1F161F871B24B286006BF36F /* ImojiCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiCollectionView.m; sourceTree = "<group>"; };
 		1F161F8C1B24CF81006BF36F /* Masonry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Masonry.framework; path = "Pods/../build/Debug-iphoneos/Pods/Masonry.framework"; sourceTree = "<group>"; };
+		1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Imoji_Regular.otf; path = Assets/Fonts/Imoji_Regular.otf; sourceTree = "<group>"; };
+		1F205CF51B43C86400AB5007 /* keyboard_search_clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keyboard_search_clear.png; sourceTree = "<group>"; };
+		1F205CF61B43C86400AB5007 /* keyboard_search_clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_search_clear@2x.png"; sourceTree = "<group>"; };
+		1F205CF71B43C86400AB5007 /* keyboard_search_clear@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_search_clear@3x.png"; sourceTree = "<group>"; };
 		1F20FDEE1B1594CD002C4896 /* imoji-keyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "imoji-keyboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F20FDF21B1594CD002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F20FDF31B1594CD002C4896 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -119,6 +144,20 @@
 		1F20FE211B159C91002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F20FE221B159C91002C4896 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardViewController.h; sourceTree = "<group>"; };
 		1F20FE231B159C91002C4896 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardViewController.m; sourceTree = "<group>"; };
+		1F7C651E1B5F782F001A6F41 /* PMCustomKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMCustomKeyboard.h; sourceTree = "<group>"; };
+		1F7C651F1B5F782F001A6F41 /* PMCustomKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PMCustomKeyboard.m; sourceTree = "<group>"; };
+		1F7C65201B5F782F001A6F41 /* PMCustomKeyboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PMCustomKeyboard.xib; sourceTree = "<group>"; };
+		1F7C65261B5F7D71001A6F41 /* delete_iOS7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delete_iOS7.png; path = "Assets/Text Keyboard/delete_iOS7.png"; sourceTree = "<group>"; };
+		1F7C65271B5F7D71001A6F41 /* delete_iOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "delete_iOS7@2x.png"; path = "Assets/Text Keyboard/delete_iOS7@2x.png"; sourceTree = "<group>"; };
+		1F7C65281B5F7D71001A6F41 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delete.png; path = "Assets/Text Keyboard/delete.png"; sourceTree = "<group>"; };
+		1F7C65291B5F7D71001A6F41 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "delete@2x.png"; path = "Assets/Text Keyboard/delete@2x.png"; sourceTree = "<group>"; };
+		1F7C652A1B5F7D71001A6F41 /* glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = glow.png; path = "Assets/Text Keyboard/glow.png"; sourceTree = "<group>"; };
+		1F7C652B1B5F7D71001A6F41 /* iOS_Keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iOS_Keyboard.png; path = "Assets/Text Keyboard/iOS_Keyboard.png"; sourceTree = "<group>"; };
+		1F7C652C1B5F7D71001A6F41 /* iOS_Keyboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iOS_Keyboard@2x.png"; path = "Assets/Text Keyboard/iOS_Keyboard@2x.png"; sourceTree = "<group>"; };
+		1F7C652D1B5F7D71001A6F41 /* iOS7_Keyboard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = iOS7_Keyboard.png; path = "Assets/Text Keyboard/iOS7_Keyboard.png"; sourceTree = "<group>"; };
+		1F7C652E1B5F7D71001A6F41 /* iOS7_Keyboard@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iOS7_Keyboard@2x.png"; path = "Assets/Text Keyboard/iOS7_Keyboard@2x.png"; sourceTree = "<group>"; };
+		1F7C652F1B5F7D71001A6F41 /* return.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = return.png; path = "Assets/Text Keyboard/return.png"; sourceTree = "<group>"; };
+		1F7C65301B5F7D71001A6F41 /* return@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "return@2x.png"; path = "Assets/Text Keyboard/return@2x.png"; sourceTree = "<group>"; };
 		1F83D32C1B24D0800052975D /* ImojiTextUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImojiTextUtil.h; path = Util/ImojiTextUtil.h; sourceTree = "<group>"; };
 		1F83D32D1B24D0800052975D /* ImojiTextUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImojiTextUtil.m; path = Util/ImojiTextUtil.m; sourceTree = "<group>"; };
 		1FABD6781B2820250024F683 /* keyboard_collection_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_collection_active.png; path = Assets/Icons/keyboard_collection_active.png; sourceTree = "<group>"; };
@@ -195,6 +234,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F205CE81B43C33A00AB5007 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
 		1F20FDE51B1594CD002C4896 = {
 			isa = PBXGroup;
 			children = (
@@ -282,9 +329,30 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		1F7C65251B5F7D68001A6F41 /* Text Keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				1F7C65261B5F7D71001A6F41 /* delete_iOS7.png */,
+				1F7C65271B5F7D71001A6F41 /* delete_iOS7@2x.png */,
+				1F7C65281B5F7D71001A6F41 /* delete.png */,
+				1F7C65291B5F7D71001A6F41 /* delete@2x.png */,
+				1F7C652A1B5F7D71001A6F41 /* glow.png */,
+				1F7C652B1B5F7D71001A6F41 /* iOS_Keyboard.png */,
+				1F7C652C1B5F7D71001A6F41 /* iOS_Keyboard@2x.png */,
+				1F7C652D1B5F7D71001A6F41 /* iOS7_Keyboard.png */,
+				1F7C652E1B5F7D71001A6F41 /* iOS7_Keyboard@2x.png */,
+				1F7C652F1B5F7D71001A6F41 /* return.png */,
+				1F7C65301B5F7D71001A6F41 /* return@2x.png */,
+			);
+			name = "Text Keyboard";
+			sourceTree = "<group>";
+		};
 		1F83D3281B24D0560052975D /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				1F7C651E1B5F782F001A6F41 /* PMCustomKeyboard.h */,
+				1F7C651F1B5F782F001A6F41 /* PMCustomKeyboard.m */,
+				1F7C65201B5F782F001A6F41 /* PMCustomKeyboard.xib */,
 				1F83D32C1B24D0800052975D /* ImojiTextUtil.h */,
 				1F83D32D1B24D0800052975D /* ImojiTextUtil.m */,
 			);
@@ -294,6 +362,8 @@
 		1FABD6741B281F9B0024F683 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				1F7C65251B5F7D68001A6F41 /* Text Keyboard */,
+				1F205CE81B43C33A00AB5007 /* Fonts */,
 				1FABD6771B2820180024F683 /* Icons */,
 			);
 			name = Assets;
@@ -302,6 +372,9 @@
 		1FABD6771B2820180024F683 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				1F205CF51B43C86400AB5007 /* keyboard_search_clear.png */,
+				1F205CF61B43C86400AB5007 /* keyboard_search_clear@2x.png */,
+				1F205CF71B43C86400AB5007 /* keyboard_search_clear@3x.png */,
 				1FABD6781B2820250024F683 /* keyboard_collection_active.png */,
 				1FABD6791B2820250024F683 /* keyboard_collection_active@2x.png */,
 				1FABD67A1B2820250024F683 /* keyboard_collection_active@3x.png */,
@@ -483,8 +556,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F20FE001B1594CD002C4896 /* Main.storyboard in Resources */,
+				1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */,
 				1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */,
 				1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */,
+				1F205CF81B43C86400AB5007 /* keyboard_search_clear.png in Resources */,
+				1F205CFA1B43C86400AB5007 /* keyboard_search_clear@2x.png in Resources */,
+				1F205CFC1B43C86400AB5007 /* keyboard_search_clear@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,38 +582,54 @@
 				1FABD6A91B2820250024F683 /* keyboard_globe@2x.png in Resources */,
 				1FABD6BC1B2820250024F683 /* keyboard_search_clear@3x.png in Resources */,
 				1FABD6A81B2820250024F683 /* keyboard_globe.png in Resources */,
+				1F205CFD1B43C86400AB5007 /* keyboard_search_clear@3x.png in Resources */,
 				1FABD6A11B2820250024F683 /* keyboard_collection_active@3x.png in Resources */,
 				1FABD69F1B2820250024F683 /* keyboard_collection_active.png in Resources */,
+				1F7C653B1B5F7D71001A6F41 /* return@2x.png in Resources */,
+				1F7C65321B5F7D71001A6F41 /* delete_iOS7@2x.png in Resources */,
 				1FABD6A31B2820250024F683 /* keyboard_collection@2x.png in Resources */,
 				1FABD6A21B2820250024F683 /* keyboard_collection.png in Resources */,
 				1FABD6B81B2820250024F683 /* keyboard_search_active@2x.png in Resources */,
+				1F7C65341B5F7D71001A6F41 /* delete@2x.png in Resources */,
+				1F7C65351B5F7D71001A6F41 /* glow.png in Resources */,
 				1FABD6C21B2820250024F683 /* keyboard_trending_active@3x.png in Resources */,
 				1FABD6BD1B2820250024F683 /* keyboard_search.png in Resources */,
+				1F7C653A1B5F7D71001A6F41 /* return.png in Resources */,
 				1FABD6B61B2820250024F683 /* keyboard_recents@3x.png in Resources */,
+				1F7C65381B5F7D71001A6F41 /* iOS7_Keyboard.png in Resources */,
+				1F205CF91B43C86400AB5007 /* keyboard_search_clear.png in Resources */,
 				1FABD6AD1B2820250024F683 /* keyboard_reactions_active@3x.png in Resources */,
 				1FABD6A41B2820250024F683 /* keyboard_collection@3x.png in Resources */,
+				1F205CFB1B43C86400AB5007 /* keyboard_search_clear@2x.png in Resources */,
 				1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */,
+				1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */,
 				1FABD6B31B2820250024F683 /* keyboard_recents_active@3x.png in Resources */,
 				1FABD6B11B2820250024F683 /* keyboard_recents_active.png in Resources */,
 				1FABD6A51B2820250024F683 /* keyboard_delete.png in Resources */,
 				1FABD6B51B2820250024F683 /* keyboard_recents@2x.png in Resources */,
 				1FABD6B91B2820250024F683 /* keyboard_search_active@3x.png in Resources */,
+				1F7C65311B5F7D71001A6F41 /* delete_iOS7.png in Resources */,
 				1FABD6AA1B2820250024F683 /* keyboard_globe@3x.png in Resources */,
 				1FABD6C41B2820250024F683 /* keyboard_trending@2x.png in Resources */,
 				1FABD6B01B2820250024F683 /* keyboard_reactions@3x.png in Resources */,
 				1FABD6C31B2820250024F683 /* keyboard_trending.png in Resources */,
 				1FABD6AC1B2820250024F683 /* keyboard_reactions_active@2x.png in Resources */,
 				1FABD6C01B2820250024F683 /* keyboard_trending_active.png in Resources */,
+				1F7C65371B5F7D71001A6F41 /* iOS_Keyboard@2x.png in Resources */,
 				1FABD6B41B2820250024F683 /* keyboard_recents.png in Resources */,
 				1FABD6A71B2820250024F683 /* keyboard_delete@3x.png in Resources */,
+				1F7C65231B5F782F001A6F41 /* PMCustomKeyboard.xib in Resources */,
 				1FABD6BE1B2820250024F683 /* keyboard_search@2x.png in Resources */,
 				1FABD6BF1B2820250024F683 /* keyboard_search@3x.png in Resources */,
 				1FABD6A61B2820250024F683 /* keyboard_delete@2x.png in Resources */,
+				1F7C65361B5F7D71001A6F41 /* iOS_Keyboard.png in Resources */,
+				1F7C65331B5F7D71001A6F41 /* delete.png in Resources */,
 				1FABD6BA1B2820250024F683 /* keyboard_search_clear.png in Resources */,
 				1FABD6BB1B2820250024F683 /* keyboard_search_clear@2x.png in Resources */,
 				1FABD6B21B2820250024F683 /* keyboard_recents_active@2x.png in Resources */,
 				1FABD6C11B2820250024F683 /* keyboard_trending_active@2x.png in Resources */,
 				1FABD6B71B2820250024F683 /* keyboard_search_active.png in Resources */,
+				1F7C65391B5F7D71001A6F41 /* iOS7_Keyboard@2x.png in Resources */,
 				1FABD6A01B2820250024F683 /* keyboard_collection_active@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -647,6 +740,7 @@
 			files = (
 				1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */,
 				1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */,
+				1F7C65221B5F782F001A6F41 /* PMCustomKeyboard.m in Sources */,
 				1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

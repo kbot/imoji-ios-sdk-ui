@@ -58,6 +58,28 @@ IF YOU ARE NOT AUTHORIZED TO ENTER INTO THIS AGREEMENT, OR IF YOU DO NOT AGREE T
 10. MISCELLANEOUS.   You hereby consent to inclusion of Your name in customer listings that may be published as part of Builds's marketing efforts.  If any provision of this Agreement is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that this Agreement shall otherwise remain in full force and effect and enforceable.  This Agreement is not assignable, transferable or sub-licensable by either Party except with the other Party’s prior written consent; provided that either Party may assign this Agreement in whole to a successor in interest in connection with a merger acquisition or sale of all or substantially all its assets to which this Agreement relates.  Both Parties agree that this Agreement is the complete and exclusive statement of the mutual understanding of the Parties and supersedes and cancels all previous written and oral agreements, communications and other understandings relating to the subject matter of this Agreement, and that all waivers and modifications must be in a writing signed by both Parties, except as otherwise provided herein.  No agency, partnership, joint venture, or employment is created as a result of this Agreement.  In any action or proceeding to enforce rights under this Agreement, the prevailing Party shall be entitled to recover costs and attorneys’ fees.  All notices under this Agreement shall be in writing and shall be deemed to have been duly given when received, if personally delivered; when receipt is electronically confirmed, if transmitted by facsimile or e-mail; and upon receipt, if sent by certified or registered mail (return receipt requested), postage prepaid.  Neither Party shall be liable for any loss resulting from a cause beyond its reasonable control.  This Agreement shall be governed by the laws of the State of California, U.S.A. without regard to its conflict of laws provisions.  The federal and state courts sitting in San Francisco County, California, U.S.A. shall have proper and exclusive jurisdiction and venue with respect to any disputes arising from or related to the subject matter of this Agreement.  
 11.  Acknowledgment.  You acknowledge and agree that (a) You have read and understand this Agreement, (b) You have had an opportunity to have legal counsel review this Agreement, (c) this Agreement has the same force and effect as a signed agreement, (d) Builds requires You to identify Yourself before issuing this license and (e) issuance of this license does not constitute general publication of the SDK.
 
+## MBProgressHUD
+
+Copyright (c) 2009-2015 Matej Bukovinski
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
 ## Masonry
 
 Copyright (c) 2011-2012 Masonry Team - https://github.com/Masonry

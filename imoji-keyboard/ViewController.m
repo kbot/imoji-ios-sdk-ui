@@ -27,6 +27,8 @@
                                                  NSLog(@"got categories: %@", imojiCategories);
                                               }];
     NSLog(@"view did load");
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

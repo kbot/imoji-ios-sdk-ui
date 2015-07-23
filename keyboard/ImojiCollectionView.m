@@ -9,6 +9,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import "ImojiCollectionView.h"
 #import "ImojiTextUtil.h"
+#import "MBProgressHUD.h"
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
@@ -16,16 +17,29 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 };
 
 
-NSUInteger const ImojiCollectionViewNumberOfItemsToLoad = 60;
+NSUInteger const ImojiCollectionViewNumberOfItemsToLoad = 30;
 NSString *const ImojiCategoryCollectionViewCellReuseId = @"ImojiCategoryCollectionViewCellResuseId";
+NSString *const ImojiCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
+NSUInteger const headerHeight = 44;
 
 @interface ImojiCategoryCollectionViewCell : UICollectionViewCell
 
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage;
+- (void)highlight;
 
 @property(nonatomic, strong) UIImageView *imojiView;
 @property(nonatomic, strong) UILabel *titleView;
+
+@end
+
+
+@interface ImojiCollectionViewCell : UICollectionViewCell
+
+- (void)loadImojiImage:(UIImage *)imojiImage;
+- (void)performAnimation;
+
+@property(nonatomic, strong) UIImageView *imojiView;
 
 @end
 
@@ -35,6 +49,7 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
 @property(nonatomic, strong) IMImojiSession *session;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic) ImojiCollectionViewContentType contentType;
+@property(nonatomic, strong) UIActivityIndicatorView *activityView;
 
 @end
 
@@ -55,7 +70,21 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
         
         self.content = [NSMutableArray arrayWithCapacity:ImojiCollectionViewNumberOfItemsToLoad];
         
+        self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self addSubview:self.activityView];
+        [self.activityView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.centerY.equalTo(self);
+        }];
+        
+        self.doubleTapFolderGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processDoubleTap:)];
+        self.doubleTapFolderGesture.delaysTouchesBegan = YES;
+        [self.doubleTapFolderGesture setNumberOfTapsRequired:2];
+        [self.doubleTapFolderGesture setNumberOfTouchesRequired:1];
+        //[self addGestureRecognizer:self.doubleTapFolderGesture];
+        
         [self registerClass:[ImojiCategoryCollectionViewCell class] forCellWithReuseIdentifier:ImojiCategoryCollectionViewCellReuseId];
+        [self registerClass:[ImojiCollectionViewCell class] forCellWithReuseIdentifier:ImojiCollectionViewCellReuseId];
+        //[self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
     }
     
     return self;
@@ -68,7 +97,8 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     id cellContent = self.content[(NSUInteger) indexPath.row];
 
-    //if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+        self.doubleTapFolderGesture.enabled = NO;
         IMImojiCategoryObject *categoryObject = cellContent;
         ImojiCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:ImojiCategoryCollectionViewCellReuseId forIndexPath:indexPath];
         
@@ -83,30 +113,114 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
                              }
                          }];
         return cell;
-    //}
+    } else {
+        self.doubleTapFolderGesture.enabled = YES;
+        ImojiCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:ImojiCollectionViewCellReuseId forIndexPath:indexPath];
+        [cell loadImojiImage:nil];
+        if ([cellContent isKindOfClass:[IMImojiObject class]]) {
+            [self.session renderImoji:cellContent
+                              options:self.renderingOptions
+                             callback:^(UIImage *image, NSError *error) {
+                                 if (!error) {
+                                     [cell loadImojiImage:image];
+                                 } else {
+                                     [cell loadImojiImage:nil];
+                                 }
+                             }];
+        } else {
+            [cell loadImojiImage:nil];
+        }
+        
+        return cell;
+    }
 }
+
+- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+
+        cell.imojiView.highlighted = YES;
+    } else {
+        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        cell.imojiView.highlighted = YES;
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        cell.imojiView.highlighted = NO;
+    } else {
+        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        cell.imojiView.highlighted = NO;
+    }
+}
+
+
+
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     id cellContent = self.content[(NSUInteger) indexPath.row];
     
+    // take approriate action on the cell
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         
-        /*
-        NSMutableArray* identifierArray = [NSMutableArray arrayWithCapacity:1];
-        [identifierArray addObject:categoryObject.identifier];
-        [self.session fetchImojisByIdentifiers:identifierArray
-                       fetchedResponseCallback:^(IMImojiObject *imoji) {
-                           if (!error) {
-                               
-                           }
-                       }];
-         */
+        [self loadImojisFromSearch:categoryObject.title offset:nil];
+    } else {
+        IMImojiObject *imojiObject = cellContent;
+        
+        // show copied feedback
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.superview animated:NO];
+        
+        // Configure for text only and offset down
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"Copied to Clipboard";
+        hud.margin = 20.f;
+        hud.removeFromSuperViewOnHide = YES;
+        
+        [hud hide:YES afterDelay:0.9f];
+        
+        // save to recents
+        [self saveToRecents:imojiObject];
     }
     
+    // unhighlight
+    UICollectionViewCell *cell;
+    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        cell.imojiView.highlighted = NO;
+    } else {
+        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        cell.imojiView.highlighted = NO;
+        [cell performAnimation];
+    }
+    
+
     return;
 }
 
+/*
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+    UILabel *title = [[UILabel alloc] init];
+    title.text = [[NSString alloc]initWithFormat:@"Imoji"];
+    [title sizeToFit];
+    [headerView addSubview:title];
+    
+    return headerView;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(self.frame.size.width, headerHeight);
+}
+ */
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -122,21 +236,238 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
 }
 
 
+- (void)loadRecentImojis {
+    self.contentType = ImojiCollectionViewContentTypeImojis;
+    //[self.content addObject:self.loadingIndicatorObject];
+    [self.content removeAllObjects];
+    [self reloadData];
+    
+    NSUserDefaults *shared = [[NSUserDefaults alloc]initWithSuiteName:@"group.com.imoji.keyboard"];
+    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
+    //NSLog(@"%@", savedArrayOfRecents);
+
+    for (NSUInteger i = 0; i < savedArrayOfRecents.count; ++i) {
+        [self.content addObject:[NSNull null]];
+    }
+    
+    [self.session fetchImojisByIdentifiers:savedArrayOfRecents
+                   fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                       if (!error) {
+                           NSUInteger offsetValue = 0;
+                           
+                           self.content[offsetValue + index] = imoji;
+                           
+                           [self reloadItemsAtIndexPaths:@[
+                                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
+                                                           ]];
+                           self.setProgressCallback((self.contentOffset.x + self.frame.size.width)/self.collectionViewLayout.collectionViewContentSize.width);
+                           
+                           // append the loading indicator to the content to fetch the next set of results
+                           if (index + 1 == ImojiCollectionViewNumberOfItemsToLoad) {
+                               //[self.content addObject:self.loadingIndicatorObject];
+                               
+                               [self reloadData];
+                               
+                           }
+                       }
+                   }];
+}
+
+- (void)loadFavoriteImojis {
+    self.contentType = ImojiCollectionViewContentTypeImojis;
+    //[self.content addObject:self.loadingIndicatorObject];
+    [self.content removeAllObjects];
+    [self reloadData];
+    
+    NSUserDefaults *shared = [[NSUserDefaults alloc]initWithSuiteName:@"group.com.imoji.keyboard"];
+    NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
+    
+    for (NSUInteger i = 0; i < savedArrayOfFavorites.count; ++i) {
+        [self.content addObject:[NSNull null]];
+    }
+    
+    [self.session fetchImojisByIdentifiers:savedArrayOfFavorites
+                   fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                       if (!error) {
+                           NSUInteger offsetValue = 0;
+                           
+                           self.content[offsetValue + index] = imoji;
+                           
+                           [self reloadItemsAtIndexPaths:@[
+                                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
+                                                           ]];
+                           self.setProgressCallback((self.contentOffset.x + self.frame.size.width)/self.collectionViewLayout.collectionViewContentSize.width);
+                           
+                           // append the loading indicator to the content to fetch the next set of results
+                           if (index + 1 == ImojiCollectionViewNumberOfItemsToLoad) {
+                               //[self.content addObject:self.loadingIndicatorObject];
+                               
+                               [self reloadData];
+                               
+                           }
+                       }
+                   }];
+}
+
+
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification) classification {
     self.contentType = ImojiCollectionViewContentTypeImojiCategories;
-    //[self.content addObject:self.loadingIndicatorObject];
+    [self.activityView startAnimating];
     [self.content removeAllObjects];
     [self reloadData];
     
     [self.session getImojiCategoriesWithClassification:classification
                                               callback:^(NSArray *imojiCategories, NSError *error) {
                                                   [self.content addObjectsFromArray:imojiCategories];
-                                                  NSLog(@"loading categories: %@", self.content);
+                                                  //NSLog(@"loading categories: %@", self.content);
+                                                  [self.activityView stopAnimating];
                                                   [self reloadData];
+                                                  self.currentCategoryClassification = classification;
+                                                  self.setProgressCallback((self.contentOffset.x + self.frame.size.width)/self.collectionViewLayout.collectionViewContentSize.width);
                                               }];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView {
+    self.setProgressCallback((scrollView.contentOffset.x + scrollView.frame.size.width)/scrollView.contentSize.width);
+    
+}
 
+- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
+    self.contentType = ImojiCollectionViewContentTypeImojis;
+    [self.activityView startAnimating];
+    [self.content removeAllObjects];
+    [self reloadData];
+    
+    [self.session searchImojisWithTerm:searchTerm
+                                offset:offset
+                       numberOfResults:@(ImojiCollectionViewNumberOfItemsToLoad)
+             resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                 [self.activityView stopAnimating];
+                 
+                 if (!error) {
+                     [self.content removeAllObjects];
+                     
+                     NSUInteger count = resultCount.unsignedIntegerValue;
+                     if (count > 0) {
+                         for (NSUInteger i = 0; i < count; ++i) {
+                             [self.content addObject:[NSNull null]];
+                         }
+                     } else if (self.content.count == 0) {
+                         //[self.content addObject:self.noResultsIndicatorObject];
+                     }
+                     
+                     [self reloadData];
+                     
+                     self.categoryShowCallback(searchTerm);
+                     self.setProgressCallback((self.contentOffset.x + self.frame.size.width)/self.collectionViewLayout.collectionViewContentSize.width);
+                 }
+             }
+                 imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                     if (!error) {
+                         NSUInteger offsetValue = 0;
+                         if (offset) {
+                             offsetValue = offset.unsignedIntegerValue - 1;
+                         }
+                         
+                         self.content[offsetValue + index] = imoji;
+                         
+                         [self reloadItemsAtIndexPaths:@[
+                                                         [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
+                                                         ]];
+                         
+                         // append the loading indicator to the content to fetch the next set of results
+                         if (index + 1 == ImojiCollectionViewNumberOfItemsToLoad) {
+                             //[self.content addObject:self.loadingIndicatorObject];
+                             
+                             [self reloadData];
+                         }
+                     }
+                 }];
+}
+
+- (void) saveToRecents:(IMImojiObject *) imojiObject {
+    int arrayCapacity = 20;
+    NSUserDefaults *shared = [[NSUserDefaults alloc]initWithSuiteName:@"group.com.imoji.keyboard"];
+    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
+    NSMutableArray *arrayOfRecents = [NSMutableArray arrayWithCapacity:arrayCapacity];
+
+    if (!savedArrayOfRecents || savedArrayOfRecents.count == 0) {
+        [arrayOfRecents addObject:imojiObject.identifier];
+    } else {
+        [arrayOfRecents addObjectsFromArray:savedArrayOfRecents];
+        
+        if ([arrayOfRecents containsObject:imojiObject.identifier]) {
+            [arrayOfRecents removeObject:imojiObject.identifier];
+        }
+        [arrayOfRecents insertObject:imojiObject.identifier atIndex:0];
+        
+        while (arrayOfRecents.count > arrayCapacity) {
+            [arrayOfRecents removeLastObject];
+        }
+    }
+    
+    [shared setObject:arrayOfRecents forKey:@"recentImojis"];
+    [shared synchronize];
+}
+
+- (void) saveToFavorites:(IMImojiObject *) imojiObject {
+    int arrayCapacity = 20;
+    NSUserDefaults *shared = [[NSUserDefaults alloc]initWithSuiteName:@"group.com.imoji.keyboard"];
+    NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
+    NSMutableArray *arrayOfFavorites = [NSMutableArray arrayWithCapacity:arrayCapacity];
+    
+    if (!savedArrayOfFavorites || savedArrayOfFavorites.count == 0) {
+        [arrayOfFavorites addObject:imojiObject.identifier];
+    } else {
+        [arrayOfFavorites addObjectsFromArray:savedArrayOfFavorites];
+        
+        if ([arrayOfFavorites containsObject:imojiObject.identifier]) {
+            [arrayOfFavorites removeObject:imojiObject.identifier];
+        }
+        [arrayOfFavorites insertObject:imojiObject.identifier atIndex:0];
+        
+        while (arrayOfFavorites.count > arrayCapacity) {
+            [arrayOfFavorites removeLastObject];
+        }
+    }
+    
+    [shared setObject:arrayOfFavorites forKey:@"favoriteImojis"];
+    [shared synchronize];
+}
+
+- (void) processDoubleTap:(UITapGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        CGPoint point = [sender locationInView:self];
+        NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];
+        if (indexPath)
+        {
+            id cellContent = self.content[(NSUInteger) indexPath.row];
+            if (self.contentType == ImojiCollectionViewContentTypeImojis) {
+                IMImojiObject *imojiObject = cellContent;
+                
+                // show copied feedback
+                MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.superview animated:NO];
+                
+                // Configure for text only and offset down
+                hud.mode = MBProgressHUDModeText;
+                hud.labelText = @"Saved to Favorites";
+                hud.margin = 20.f;
+                hud.removeFromSuperViewOnHide = YES;
+                
+                [hud hide:YES afterDelay:0.9f];
+                
+                // save to recents
+                [self saveToFavorites:imojiObject];
+            }
+        }
+        else
+        {
+           NSLog(@"Nothing double tapped");
+        }
+    }
+}
 
 - (IMImojiObjectRenderingOptions *)renderingOptions {
     return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
@@ -156,7 +487,7 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius, radius), NO, 0.f);
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:.3f].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:132/255.0f green:173/255.0f blue:199/255.0f alpha:1.0f].CGColor);
     CGContextSetBlendMode(context, kCGBlendModeNormal);
     CGContextSetLineWidth(context, 0);
     CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
@@ -180,7 +511,6 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
     
     if (!self.imojiView) {
         self.imojiView = [UIImageView new];
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
         
         float padding = (self.frame.size.height - (imageHeightRatio*self.frame.size.height) - (textHeightRatio*self.frame.size.height) - inBetweenPadding)/2.f;
         
@@ -204,16 +534,80 @@ CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
     }
     
     if (imojiImage) {
+        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
         self.imojiView.image = imojiImage;
+        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
     } else {
-        self.imojiView.image = [ImojiCollectionView placeholderImageWithRadius:50];
+        self.imojiView.contentMode = UIViewContentModeCenter;
+        self.imojiView.image = [ImojiCollectionView placeholderImageWithRadius:20];
     }
     
     self.titleView.attributedText = [ImojiTextUtil attributedString:categoryTitle
-                                                       withFontSize:15.0f
-                                                          textColor:[UIColor blackColor]
+                                                       withFontSize:14.0f
+                                                          textColor:[UIColor colorWithRed:60/255.f green:60/255.f blue:60/255.f alpha:1.f]
                                                       textAlignment:NSTextAlignmentCenter];
 }
 
+- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    [image drawInRect:drawRect];
+    [tintColor set];
+    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return tintedImage;
+}
+
 @end
+
+
+@implementation ImojiCollectionViewCell
+
+- (void)loadImojiImage:(UIImage *)imojiImage {
+    if (!self.imojiView) {
+        self.imojiView = [UIImageView new];
+        
+        [self addSubview:self.imojiView];
+        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(self).multipliedBy(.8f);
+        }];
+    }
+    
+    if (imojiImage) {
+        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imojiView.image = imojiImage;
+        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
+    } else {
+        self.imojiView.contentMode = UIViewContentModeCenter;
+        self.imojiView.image = [ImojiCollectionView placeholderImageWithRadius:20];
+    }
+}
+
+- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    [image drawInRect:drawRect];
+    [tintColor set];
+    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return tintedImage;
+}
+
+- (void)performAnimation {
+    // grow image
+    [UIView animateWithDuration:0.15 animations:^{
+        self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
+    }
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:0.15 animations:^{
+                             self.imojiView.transform = CGAffineTransformMakeScale(1, 1);
+                         }];
+                     }];
+}
+
+@end
+
 

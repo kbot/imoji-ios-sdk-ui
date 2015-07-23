@@ -5,7 +5,7 @@
 
 #import "ImojiTextUtil.h"
 
-NSString *const DEFAULT_FONT = @"HelveticaNeue";
+NSString *const DEFAULT_FONT = @"HelveticaNeue-Medium";
 
 @implementation ImojiTextUtil {
 
