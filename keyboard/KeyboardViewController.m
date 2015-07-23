@@ -128,7 +128,7 @@
         make.top.equalTo(self.view.mas_top).with.offset(0);
         make.left.equalTo(self.view.mas_left).with.offset(0);
         make.right.equalTo(self.view.mas_right).with.offset(0);
-        make.width.equalTo(@(2));
+//        make.width.equalTo(@(2));
     }];
     
     // close button
@@ -141,7 +141,7 @@
     [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(0);
         make.right.equalTo(self.view.mas_right).with.offset(-5);
-        make.width.height.equalTo(@(36));
+        make.height.equalTo(@(36));
     }];
     
     
