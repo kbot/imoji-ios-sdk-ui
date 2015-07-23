@@ -226,7 +226,8 @@
     [self.view addSubview:self.bottomNavView];
     [self.bottomNavView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view.mas_bottom);
-        make.centerX.width.equalTo(self.view);
+        make.left.equalTo(self.view.mas_left).offset(10);
+        make.right.equalTo(self.view.mas_right).offset(-10);
         make.height.equalTo(@(navHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
@@ -298,21 +299,12 @@
     [self positionMenuButtons];
 }
 
--(void) positionMenuButtons {
-    UIImage *nextKeyboardImageNormal = [UIImage imageNamed:@"keyboard_globe"];
-    float navWidth = CUR_WIDTH;
-    float buttonWidth = (CUR_WIDTH - 20) / 7;
-    //float buttonWidth = nextKeyboardImageNormal.size.width;
-    float padding = 0;//(navWidth - 7*buttonWidth - 20)/6.f;
-    
-    NSLog(@"ahhh: %f %f %f",navWidth,buttonWidth,padding);
+-(void) positionMenuButtons {    
     // left
     [self.nextKeyboardButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
-//        make.width.equalTo(@(buttonWidth));
-        make.width.equalTo(self.view).dividedBy(7);
+        make.width.equalTo(self.bottomNavView).dividedBy(7);
         make.left.equalTo(self.bottomNavView.mas_left);
-        //make.right.equalTo(self.searchButton.mas_left).offset(padding);
     }];
     
     // right
@@ -320,22 +312,19 @@
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
         make.right.equalTo(self.bottomNavView.mas_right);
-        //make.left.equalTo(self.collectionButton.mas_right).offset(padding);
     }];
     
     // left center
     [self.searchButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
-        //make.right.equalTo(self.recentsButton.mas_left).offset(padding);
-        make.left.equalTo(self.nextKeyboardButton.mas_right).offset(padding);
+        make.left.equalTo(self.nextKeyboardButton.mas_right);
     }];
 
     [self.recentsButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
-        //make.right.equalTo(self.generalCatButton.mas_left).offset(padding);
-        make.left.equalTo(self.searchButton.mas_right).offset(padding);
+        make.left.equalTo(self.searchButton.mas_right);
     }];
     
     // center
@@ -343,23 +332,19 @@
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
         make.centerX.equalTo(self.bottomNavView);
-        //make.right.equalTo(self.trendingCatButton.mas_left).offset(padding);
-        //make.left.equalTo(self.recentsButton.mas_right).offset(padding);
     }];
     
     // right center
     [self.trendingCatButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
-        make.left.equalTo(self.generalCatButton.mas_right).offset(padding);
-        //make.right.equalTo(self.collectionButton.mas_left).offset(padding);
+        make.left.equalTo(self.generalCatButton.mas_right);
     }];
     
     [self.collectionButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
         make.width.equalTo(self.nextKeyboardButton);
-        //make.right.equalTo(self.deleteButton.mas_left).offset(padding);
-        make.left.equalTo(self.trendingCatButton.mas_right).offset(padding);
+        make.left.equalTo(self.trendingCatButton.mas_right);
     }];
     
     
