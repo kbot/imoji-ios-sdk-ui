@@ -491,12 +491,7 @@ NSUInteger const headerHeight = 44;
 }
 
 - (IMImojiObjectRenderingOptions *)renderingOptions {
-    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
-                                                    borderColor:[UIColor whiteColor]
-            //                                          borderWidthPercentage:@(.07f)
-            //                                                    shadowColor:[UIColor colorWithRed:.25 green:.25 blue:.25f alpha:0.3f]
-            //                                           shadowBlurPercentage:@(0.05f)
-            ];
+    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
 }
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {
