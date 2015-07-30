@@ -1,1 +1,0 @@
-../../../ImojiSDK/ImojiSDK.framework/Versions/A/Headers/IMImojiApplicationUtility.h

@@ -1,6 +1,0 @@
-framework module libwebp {
-  umbrella header "Pods-libwebp-umbrella.h"
-
-  export *
-  module * { export * }
-}
