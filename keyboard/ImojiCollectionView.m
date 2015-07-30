@@ -169,7 +169,7 @@ NSUInteger const headerHeight = 44;
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         
-        [self loadImojisFromSearch:categoryObject.title offset:nil];
+        [self loadImojisFromSearch:categoryObject.identifier offset:nil];
     } else {
         IMImojiObject *imojiObject = cellContent;
         
