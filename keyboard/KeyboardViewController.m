@@ -12,7 +12,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import <UIKit/UIKit.h>
 #import "ImojiTextUtil.h"
-#import "PMCustomKeyboard.h"
+#import "QwertyViewController.h"
 
 
 #define CUR_WIDTH [[UIScreen mainScreen] applicationFrame ].size.width
@@ -30,7 +30,7 @@
 @property (nonatomic, strong) ImojiCollectionView *collectionView;
 @property (nonatomic, strong) NSMutableArray *navButtonsArray;
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, weak) UIButton *closeButton;
+@property (nonatomic, strong) UIButton *closeButton;
 
 // progress bar
 @property (nonatomic, strong) UIProgressView *progressView;
@@ -46,12 +46,15 @@
 @property (nonatomic, strong) UIButton *deleteButton;
 
 // search
+@property (nonatomic, strong) UIView *searchView;
 @property (nonatomic, strong) UITextField *searchField;
 
 
 @end
 
-@implementation KeyboardViewController
+@implementation KeyboardViewController {
+    int _previousButtonTag;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -77,7 +80,7 @@
     BOOL isLandscape =  !(self.view.frame.size.width ==
                           (screenW*(screenW<screenH))+(screenH*(screenW>screenH)));
     NSLog(isLandscape ? @"Screen: Landscape" : @"Screen: Potriaint");
-    NSLog(@"%f",CUR_WIDTH);
+    
     self.isLandscape = isLandscape;
     if (isLandscape) {
         self.heightConstraint.constant = self.landscapeHeight;
@@ -86,6 +89,8 @@
         self.heightConstraint.constant = self.portraitHeight;
         [self.inputView addConstraint:self.heightConstraint];
     }
+    
+    [self.collectionView performBatchUpdates:nil completion:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -107,6 +112,19 @@
     
     // set up views
     
+    // custom progress bar
+    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.progressView.progressTintColor = [UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.0f];
+    self.progressView.trackTintColor = [UIColor colorWithRed:151/255.f green:185/255.f blue:207/255.f alpha:1.0f];
+    [self.progressView setProgress:0.0f animated:NO];
+    [self.view addSubview:self.progressView];
+    [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.height.equalTo(@(1));
+    }];
+    
     // menu view
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
     self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"REACTIONS"
@@ -118,28 +136,14 @@
     [self.view addSubview:self.titleLabel];
     
     
-    // custom progress bar
-    self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.progressTintColor = [UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.0f];
-    self.progressView.trackTintColor = [UIColor colorWithRed:151/255.f green:185/255.f blue:207/255.f alpha:1.0f];
-    [self.progressView setProgress:0.0f animated:NO];
-    [self.view addSubview:self.progressView];
-    [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top).with.offset(0);
-        make.left.equalTo(self.view.mas_left).with.offset(0);
-        make.right.equalTo(self.view.mas_right).with.offset(0);
-        make.width.equalTo(@(2));
-    }];
-    
     // close button
     self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.closeButton.frame = CGRectMake(0, 0, 36, 40);
     [self.closeButton  setImage:[UIImage imageNamed:@"keyboard_search_clear"] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeCategory) forControlEvents:UIControlEventTouchUpInside];
     self.closeButton.hidden = YES;
     [self.view addSubview:self.closeButton];
     [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view.mas_top).with.offset(0);
+        make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
         make.right.equalTo(self.view.mas_right).with.offset(-5);
         make.width.height.equalTo(@(36));
     }];
@@ -172,50 +176,88 @@
         make.left.equalTo(self.view.mas_left);
     }];
     
-    [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-    
     // menu view
     [self setupMenuView];
+    [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+    self.generalCatButton.selected = YES;
     
-    /*
     // search
-    self.searchField = [[UITextField alloc] init];
-    [self.view addSubview:self.searchField];
-    [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
-        make.left.equalTo(self.view.mas_left).with.offset(0);
-        make.right.equalTo(self.view.mas_right).with.offset(0);
-        make.height.equalTo(@(40));
-    }];
-    PMCustomKeyboard *customKeyboard = [[PMCustomKeyboard alloc] init];
-    [customKeyboard setTextView:self.searchField];
-    customKeyboard.backgroundColor = [UIColor redColor];
-    UIView *searchView = [[UIView alloc] init];
-    [self.view addSubview:searchView];
-    [searchView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.searchField.mas_bottom).with.offset(0);
-        //make.top.equalTo(self.view.mas_top).with.offset(0);
+    self.searchView = [[UIView alloc] init];
+    self.searchView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:self.searchView];
+    [self.searchView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.progressView.mas_bottom).with.offset(1);
         make.left.equalTo(self.view.mas_left).with.offset(0);
         make.right.equalTo(self.view.mas_right).with.offset(0);
         make.bottom.equalTo(self.view.mas_bottom);
     }];
-    [searchView addSubview:customKeyboard];
     
-    NSLog(@"customKeyboard width: %f", customKeyboard.frame.size.width);
-    NSLog(@"customKeyboard height: %f", customKeyboard.frame.size.height);
-    NSLog(@"customKeyboard x: %f", customKeyboard.frame.origin.x);
-    NSLog(@"customKeyboard y: %f", customKeyboard.frame.origin.y);
-    NSLog(@"screen width: %f", self.view.frame.size.width);
-    */
-    /*
-    [customKeyboard mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(searchView.mas_top).with.offset(0);
-        make.left.equalTo(searchView.mas_left).with.offset(0);
-        make.right.equalTo(searchView.mas_right).with.offset(0);
-        make.centerX.equalTo(searchView.mas_centerX);
-        make.height.equalTo(@(216));
-    }];*/
-     
+    UIView *searchBar = [[UIView alloc] init];
+    searchBar.backgroundColor = [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1];
+    [self.searchView addSubview: searchBar];
+    [searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.searchView.mas_top).with.offset(0);
+        make.left.equalTo(self.searchView.mas_left).with.offset(0);
+        make.right.equalTo(self.searchView.mas_right).with.offset(0);
+        make.height.equalTo(@(40));
+    }];
+    
+    
+    UIButton *searchCancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [searchCancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+    searchCancelButton.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    [searchCancelButton addTarget:self action:@selector(cancelSearch) forControlEvents: UIControlEventTouchUpInside];
+    [searchCancelButton setTitleColor: [UIColor colorWithRed:193/255.0 green:193/255.0 blue:199/255.0 alpha:1] forState:UIControlStateNormal];
+    [searchBar addSubview: searchCancelButton];
+    [searchCancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(searchBar.mas_top).with.offset(0);
+        make.right.equalTo(self.searchView.mas_right).with.offset(-12);
+        make.height.equalTo(@(40));
+        make.width.equalTo(@(70));
+    }];
+    
+    
+    self.searchField = [[UITextField alloc] init];
+    self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    self.searchField.placeholder = @"SEARCH";
+    [searchBar addSubview:self.searchField];
+    [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(searchBar.mas_top).with.offset(0);
+        make.left.equalTo(searchBar.mas_left).with.offset(12);
+        make.right.equalTo(searchCancelButton.mas_left).with.offset(0);
+        make.height.equalTo(@(40));
+    }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Qwerty" bundle:[NSBundle mainBundle]];
+    QwertyViewController *vc = [storyboard instantiateInitialViewController];
+    [self addChildViewController:vc];
+    [self.searchView addSubview:vc.view];
+    [vc didMoveToParentViewController:self];
+    [vc.view mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.searchField.mas_bottom).with.offset(0);
+        make.left.equalTo(self.view.mas_left).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(0);
+        make.bottom.equalTo(self.view.mas_bottom);
+    }];
+    vc.setSearchCallback = ^() {
+        NSLog(@"search callback");
+        self.searchView.hidden = YES;
+        [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
+    };
+    
+    self.searchView.hidden = YES;
+}
+
+- (void) cancelSearch {
+    [self.searchField resignFirstResponder];
+    [self.searchField endEditing:YES];
+    self.searchView.hidden = YES;
+    for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
+        ((UIButton *)[self.view viewWithTag:i]).selected = NO;
+    }
+    if (_previousButtonTag) {
+        [self navPressed:(UIButton *)[self.view viewWithTag:_previousButtonTag]];
+    }
 }
 
 - (void)setupMenuView {
@@ -299,7 +341,7 @@
     [self positionMenuButtons];
 }
 
--(void) positionMenuButtons {    
+-(void) positionMenuButtons {
     // left
     [self.nextKeyboardButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.height.equalTo(self.bottomNavView);
@@ -353,15 +395,20 @@
 - (IBAction)navPressed:(UIButton*)sender {
     BOOL sameButtonPressed = NO;
     // set selected state
-    for (int i = 1; i < 6; i++) {
-        UIButton *tmpButton = (UIButton *)[self.view viewWithTag:i];
-        if (tmpButton.selected == YES && i == sender.tag) {
-            sameButtonPressed = YES;
+    //if (sender.tag != 1) { // ignore search
+        for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
+            UIButton *tmpButton = (UIButton *)[self.view viewWithTag:i];
+            if (tmpButton.selected == YES && i == sender.tag) {
+                sameButtonPressed = YES; // check if it's the same button being pressed
+            } else if(tmpButton.selected == YES) {
+                _previousButtonTag = i;
+            }
+            tmpButton.selected = NO;
         }
-        tmpButton.selected = NO;
-    }
-    sender.selected = YES;
-    if (sameButtonPressed) {
+        sender.selected = YES; // set button pressed to selected
+    //}
+
+    if (sameButtonPressed) { // don't do anything if same button
         return;
     }
     
@@ -369,11 +416,11 @@
     self.closeButton.hidden = YES;
     switch (sender.tag) {
         case 1:
-            self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"SEARCH"
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
-            self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            self.searchView.hidden = NO;
+            self.searchField.text = @"";
             [self.progressView setProgress:0.f animated:YES];
+            [self.searchField becomeFirstResponder];
+            //[[self.view window] makeFirstResponder:self.searchField];
             break;
         case 2:
             [self.collectionView loadRecentImojis];
@@ -410,7 +457,17 @@
 
 - (void)closeCategory {
     self.closeButton.hidden = YES;
+    
+    // check if keyboard is in search mode
+    UIButton *tmpButton = (UIButton *)[self.view viewWithTag:1];
+    if (tmpButton.selected == YES) {
+        self.searchView.hidden = NO;
+        return;
+    }
+    
+    // check which category keyboard displaying
     [self.collectionView loadImojiCategories:self.collectionView.currentCategoryClassification];
+    
     if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"REACTIONS"
                                                             withFontSize:14.0f

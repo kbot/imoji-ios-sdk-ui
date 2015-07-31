@@ -222,9 +222,26 @@ NSUInteger const headerHeight = 44;
 }
  */
 
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    return CGSizeMake(100.f, self.frame.size.height / 2.f);
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat screenH = screenSize.height;
+    CGFloat screenW = screenSize.width;
+    BOOL isLandscape =  !(self.frame.size.width == (screenW*(screenW<screenH))+(screenH*(screenW>screenH)));
+    
+    if (isLandscape) {
+        return CGSizeMake(100.f, self.frame.size.height / 1.3f);
+    } else {
+        return CGSizeMake(100.f, self.frame.size.height / 2.f);
+    }
+
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"rotate");
+    [self performBatchUpdates:nil completion:nil];
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
@@ -338,6 +355,8 @@ NSUInteger const headerHeight = 44;
     [self.content removeAllObjects];
     [self reloadData];
     
+    self.categoryShowCallback(searchTerm);
+    
     [self.session searchImojisWithTerm:searchTerm
                                 offset:offset
                        numberOfResults:@(ImojiCollectionViewNumberOfItemsToLoad)
@@ -358,7 +377,6 @@ NSUInteger const headerHeight = 44;
                      
                      [self reloadData];
                      
-                     self.categoryShowCallback(searchTerm);
                      self.setProgressCallback((self.contentOffset.x + self.frame.size.width)/self.collectionViewLayout.collectionViewContentSize.width);
                  }
              }

@@ -28,4 +28,6 @@
 
 - (void)loadFavoriteImojis;
 
+- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset;
+
 @end
