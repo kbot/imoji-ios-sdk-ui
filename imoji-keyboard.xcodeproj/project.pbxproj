@@ -71,6 +71,8 @@
 		1FABD6C41B2820250024F683 /* keyboard_trending@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */; };
 		1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */; };
 		6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4757674F0D133AC81EB726C /* libPods-keyboard.a */; };
+		61FCE2419DEE9CBF48C17943 /* IMKeyboardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE3C5F64D5B2BB57E72DD /* IMKeyboardCollectionViewCell.m */; };
+		61FCEC2B61F2D24E9A6A0F84 /* IMKeyboardCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE1DB4058F37BD590B30A /* IMKeyboardCategoryCollectionViewCell.m */; };
 		6BAB43760C56DF23B5ABB9CF /* libPods-imoji-keyboardTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */; };
 		80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */; };
 /* End PBXBuildFile section */
@@ -192,6 +194,10 @@
 		30B0EEF23BDD7861F5E0D0D2 /* Pods-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-keyboard/Pods-keyboard.release.xcconfig"; sourceTree = "<group>"; };
 		38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		61FCE1DB4058F37BD590B30A /* IMKeyboardCategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMKeyboardCategoryCollectionViewCell.m; sourceTree = "<group>"; };
+		61FCE3C5F64D5B2BB57E72DD /* IMKeyboardCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMKeyboardCollectionViewCell.m; path = keyboard/IMKeyboardCollectionViewCell.m; sourceTree = "<group>"; };
+		61FCEF3ED77BD73F1446B20C /* IMKeyboardCategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMKeyboardCategoryCollectionViewCell.h; sourceTree = "<group>"; };
+		61FCEFEFA410174BF89C34DD /* IMKeyboardCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMKeyboardCollectionViewCell.h; path = keyboard/IMKeyboardCollectionViewCell.h; sourceTree = "<group>"; };
 		62BDF692733348B606BA281A /* Pods-imoji-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
 		91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AABDCE63152234EBF0928125 /* Pods-imoji-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.release.xcconfig"; sourceTree = "<group>"; };
@@ -241,6 +247,7 @@
 		1A7766361B6B128F001C954C /* collection-view */ = {
 			isa = PBXGroup;
 			children = (
+				1A7766431B6B162B001C954C /* keyboard */,
 				1A7766371B6B128F001C954C /* IMCategoryCollectionViewCell.h */,
 				1A7766381B6B128F001C954C /* IMCategoryCollectionViewCell.m */,
 				1A7766391B6B128F001C954C /* IMCollectionView.h */,
@@ -251,6 +258,17 @@
 				1A77663E1B6B128F001C954C /* IMCollectionViewStatusCell.m */,
 			);
 			path = "collection-view";
+			sourceTree = "<group>";
+		};
+		1A7766431B6B162B001C954C /* keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				61FCE3C5F64D5B2BB57E72DD /* IMKeyboardCollectionViewCell.m */,
+				61FCEFEFA410174BF89C34DD /* IMKeyboardCollectionViewCell.h */,
+				61FCE1DB4058F37BD590B30A /* IMKeyboardCategoryCollectionViewCell.m */,
+				61FCEF3ED77BD73F1446B20C /* IMKeyboardCategoryCollectionViewCell.h */,
+			);
+			name = keyboard;
 			sourceTree = "<group>";
 		};
 		1F205CE81B43C33A00AB5007 /* Fonts */ = {
@@ -760,6 +778,8 @@
 				1A7766401B6B128F001C954C /* IMCollectionView.m in Sources */,
 				1A7766411B6B128F001C954C /* IMCollectionViewCell.m in Sources */,
 				1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */,
+				61FCE2419DEE9CBF48C17943 /* IMKeyboardCollectionViewCell.m in Sources */,
+				61FCEC2B61F2D24E9A6A0F84 /* IMKeyboardCategoryCollectionViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
