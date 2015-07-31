@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F03A1721B15A7950061848E /* ImojiSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F03A1711B15A7950061848E /* ImojiSDK.framework */; };
 		1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F161F871B24B286006BF36F /* ImojiCollectionView.m */; };
-		1F161F8D1B24CF81006BF36F /* Masonry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F161F8C1B24CF81006BF36F /* Masonry.framework */; };
 		1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
 		1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
 		1F205CF91B43C86400AB5007 /* keyboard_search_clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CF51B43C86400AB5007 /* keyboard_search_clear.png */; };
@@ -68,8 +66,9 @@
 		1FABD6C31B2820250024F683 /* keyboard_trending.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69C1B2820250024F683 /* keyboard_trending.png */; };
 		1FABD6C41B2820250024F683 /* keyboard_trending@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */; };
 		1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */; };
-		1FBF98F21B1AF19700426C0B /* libwebp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FBF98F11B1AF19700426C0B /* libwebp.framework */; };
-		C8DEDD36F65D7456E2E17808 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B731DB6185A7B4554446F619 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4757674F0D133AC81EB726C /* libPods-keyboard.a */; };
+		6BAB43760C56DF23B5ABB9CF /* libPods-imoji-keyboardTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */; };
+		80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,9 +176,18 @@
 		1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending@2x.png"; path = "Assets/Icons/keyboard_trending@2x.png"; sourceTree = "<group>"; };
 		1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending@3x.png"; path = "Assets/Icons/keyboard_trending@3x.png"; sourceTree = "<group>"; };
 		1FBF98F11B1AF19700426C0B /* libwebp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libwebp.framework; path = "Pods/../build/Debug-iphoneos/Pods/libwebp.framework"; sourceTree = "<group>"; };
+		2EEA0C92F65670E2FE075D07 /* Pods-imoji-keyboardTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboardTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboardTests/Pods-imoji-keyboardTests.debug.xcconfig"; sourceTree = "<group>"; };
+		30B0EEF23BDD7861F5E0D0D2 /* Pods-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-keyboard/Pods-keyboard.release.xcconfig"; sourceTree = "<group>"; };
 		38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		62BDF692733348B606BA281A /* Pods-imoji-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
+		91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABDCE63152234EBF0928125 /* Pods-imoji-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.release.xcconfig"; sourceTree = "<group>"; };
+		B4757674F0D133AC81EB726C /* libPods-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B731DB6185A7B4554446F619 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0B7423CE45D2942ED55E6D6 /* Pods-imoji-keyboardTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboardTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboardTests/Pods-imoji-keyboardTests.release.xcconfig"; sourceTree = "<group>"; };
+		E3A11A7365F3EAC51BAC69B1 /* Pods-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-keyboard/Pods-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
+		EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboardTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,7 +195,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8DEDD36F65D7456E2E17808 /* Pods.framework in Frameworks */,
+				80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +203,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BAB43760C56DF23B5ABB9CF /* libPods-imoji-keyboardTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,9 +211,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F161F8D1B24CF81006BF36F /* Masonry.framework in Frameworks */,
-				1FBF98F21B1AF19700426C0B /* libwebp.framework in Frameworks */,
-				1F03A1721B15A7950061848E /* ImojiSDK.framework in Frameworks */,
+				6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +391,9 @@
 				1FBF98F11B1AF19700426C0B /* libwebp.framework */,
 				1F03A1711B15A7950061848E /* ImojiSDK.framework */,
 				B731DB6185A7B4554446F619 /* Pods.framework */,
+				91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */,
+				B4757674F0D133AC81EB726C /* libPods-keyboard.a */,
+				EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -393,6 +403,12 @@
 			children = (
 				38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */,
 				5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */,
+				62BDF692733348B606BA281A /* Pods-imoji-keyboard.debug.xcconfig */,
+				AABDCE63152234EBF0928125 /* Pods-imoji-keyboard.release.xcconfig */,
+				E3A11A7365F3EAC51BAC69B1 /* Pods-keyboard.debug.xcconfig */,
+				30B0EEF23BDD7861F5E0D0D2 /* Pods-keyboard.release.xcconfig */,
+				2EEA0C92F65670E2FE075D07 /* Pods-imoji-keyboardTests.debug.xcconfig */,
+				D0B7423CE45D2942ED55E6D6 /* Pods-imoji-keyboardTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -410,7 +426,6 @@
 				1F20FDEC1B1594CD002C4896 /* Resources */,
 				1F20FE2B1B159C91002C4896 /* Embed App Extensions */,
 				05B6A58A4A81E3A10DBDF653 /* Copy Pods Resources */,
-				6FF64462A8CE7061DAB3299F /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -446,9 +461,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F20FE281B159C91002C4896 /* Build configuration list for PBXNativeTarget "keyboard" */;
 			buildPhases = (
+				A81D16F7BA4FC8E0C16C9727 /* Check Pods Manifest.lock */,
 				1F20FE1A1B159C91002C4896 /* Sources */,
 				1F20FE1B1B159C91002C4896 /* Frameworks */,
 				1F20FE1C1B159C91002C4896 /* Resources */,
+				EBD0756EDBA3C51C51E8D890 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -595,7 +612,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5BBB62FD2702520F7BCBFBCC /* Check Pods Manifest.lock */ = {
@@ -625,22 +642,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboardTests/Pods-imoji-keyboardTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6FF64462A8CE7061DAB3299F /* Embed Pods Frameworks */ = {
+		A81D16F7BA4FC8E0C16C9727 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C7204E7ABFAF1D4FBD8B8384 /* Check Pods Manifest.lock */ = {
@@ -656,6 +673,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		EBD0756EDBA3C51C51E8D890 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-keyboard/Pods-keyboard-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -808,7 +840,7 @@
 		};
 		1F20FE151B1594CE002C4896 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 62BDF692733348B606BA281A /* Pods-imoji-keyboard.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "imoji-keyboard/Info.plist";
@@ -823,7 +855,7 @@
 		};
 		1F20FE161B1594CE002C4896 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */;
+			baseConfigurationReference = AABDCE63152234EBF0928125 /* Pods-imoji-keyboard.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "imoji-keyboard/Info.plist";
@@ -838,7 +870,7 @@
 		};
 		1F20FE181B1594CE002C4896 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 2EEA0C92F65670E2FE075D07 /* Pods-imoji-keyboardTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -858,7 +890,7 @@
 		};
 		1F20FE191B1594CE002C4896 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */;
+			baseConfigurationReference = D0B7423CE45D2942ED55E6D6 /* Pods-imoji-keyboardTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -874,7 +906,7 @@
 		};
 		1F20FE291B159C91002C4896 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38B03615EC4B33EE19CBAEE0 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = E3A11A7365F3EAC51BAC69B1 /* Pods-keyboard.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = keyboard/keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -903,7 +935,7 @@
 		};
 		1F20FE2A1B159C91002C4896 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F09654734F9C8BBA94A24BF /* Pods.release.xcconfig */;
+			baseConfigurationReference = 30B0EEF23BDD7861F5E0D0D2 /* Pods-keyboard.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = keyboard/keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

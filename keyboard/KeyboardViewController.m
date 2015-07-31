@@ -145,7 +145,7 @@
     [self.closeButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
         make.right.equalTo(self.view.mas_right).with.offset(-5);
-        make.width.height.equalTo(@(36));
+        make.height.equalTo(@(36));
     }];
     
     

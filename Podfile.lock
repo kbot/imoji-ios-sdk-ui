@@ -1,13 +1,16 @@
 PODS:
-  - Bolts (1.1.5):
-    - Bolts/AppLinks (= 1.1.5)
-    - Bolts/Tasks (= 1.1.5)
-  - Bolts/AppLinks (1.1.5):
+  - Bolts/AppLinks (1.2.0):
     - Bolts/Tasks
-  - Bolts/Tasks (1.1.5)
-  - ImojiSDK (0.1.16):
-    - Bolts (~> 1.1)
+  - Bolts/Tasks (1.2.0)
+  - ImojiSDK (0.2.8):
+    - ImojiSDK/Core (= 0.2.8)
+    - ImojiSDK/Sync (= 0.2.8)
+  - ImojiSDK/Core (0.2.8):
+    - Bolts/Tasks (~> 1.2)
     - libwebp (~> 0.4.3)
+  - ImojiSDK/Sync (0.2.8):
+    - Bolts/AppLinks (~> 1.2)
+    - ImojiSDK/Core
   - libwebp (0.4.3):
     - libwebp/core (= 0.4.3)
     - libwebp/dec (= 0.4.3)
@@ -32,19 +35,20 @@ PODS:
   - libwebp/utils (0.4.3):
     - libwebp/core
   - libwebp/webp (0.4.3)
-  - Masonry (0.6.1)
+  - Masonry (0.6.2)
   - MBProgressHUD (0.9.1)
 
 DEPENDENCIES:
   - ImojiSDK
+  - ImojiSDK/Core
   - Masonry
   - MBProgressHUD (~> 0.9.1)
 
 SPEC CHECKSUMS:
-  Bolts: aac24961496d504aa56fc267cde95162a71bac39
-  ImojiSDK: 0646bacc957c7b3132c781cb766f5f3e101f8675
+  Bolts: d176cb1e0012175589e389a9db49b85e27787576
+  ImojiSDK: 6409c2a767ad4c81567515b4da17b87bd564b56f
   libwebp: 360ed8bc4ec8da413f07f84071e7f5a5c67a285d
-  Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
+  Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
 
 COCOAPODS: 0.37.2

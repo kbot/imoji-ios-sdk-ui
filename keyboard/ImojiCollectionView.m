@@ -7,9 +7,9 @@
 //
 
 #import <Masonry/View+MASAdditions.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import "ImojiCollectionView.h"
 #import "ImojiTextUtil.h"
-#import "MBProgressHUD.h"
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
@@ -169,20 +169,41 @@ NSUInteger const headerHeight = 44;
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         
-        [self loadImojisFromSearch:categoryObject.title offset:nil];
+        [self loadImojisFromSearch:categoryObject.identifier offset:nil];
     } else {
         IMImojiObject *imojiObject = cellContent;
         
         // show copied feedback
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.superview animated:NO];
-        
+
+
         // Configure for text only and offset down
         hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"Copied to Clipboard";
+        hud.labelText = @"Downloading…";
         hud.margin = 20.f;
         hud.removeFromSuperViewOnHide = YES;
+
+        IMImojiObjectRenderingOptions* renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+        renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(1000.0f, 1000.0f)];
         
-        [hud hide:YES afterDelay:0.9f];
+        [self.session renderImoji:imojiObject
+                          options:renderOptions
+                         callback:^(UIImage *image, NSError *error) {
+                             if (error) {
+                                 hud.labelText = @"Unable to download that imoji";
+                             } else {
+                                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                                 pasteboard.persistent = YES;
+                                 [pasteboard setImage:image];
+
+                                 hud.labelText = @"Copied to clipboard";
+                             }
+
+                             hud.margin = 20.f;
+                             hud.removeFromSuperViewOnHide = YES;
+                             [hud hide:YES afterDelay:0.9f];
+                         }];
         
         // save to recents
         [self saveToRecents:imojiObject];
@@ -488,12 +509,7 @@ NSUInteger const headerHeight = 44;
 }
 
 - (IMImojiObjectRenderingOptions *)renderingOptions {
-    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
-                                                    borderColor:[UIColor whiteColor]
-            //                                          borderWidthPercentage:@(.07f)
-            //                                                    shadowColor:[UIColor colorWithRed:.25 green:.25 blue:.25f alpha:0.3f]
-            //                                           shadowBlurPercentage:@(0.05f)
-            ];
+    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
 }
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {

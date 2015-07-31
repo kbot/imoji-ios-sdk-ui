@@ -1,6 +1,15 @@
 source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
 
-pod 'ImojiSDK'
-pod 'Masonry'
-pod 'MBProgressHUD', '~> 0.9.1'
+target "imoji-keyboard" do
+  pod 'ImojiSDK'
+end
+
+target "imoji-keyboardTests" do
+  pod 'ImojiSDK'
+end
+
+target "keyboard" do
+  pod 'Masonry'
+  pod 'MBProgressHUD', '~> 0.9.1'
+  pod 'ImojiSDK/Core'
+end
