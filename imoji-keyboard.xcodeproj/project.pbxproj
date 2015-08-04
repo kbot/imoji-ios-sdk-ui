@@ -24,7 +24,6 @@
 		1F20FE001B1594CD002C4896 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDFE1B1594CD002C4896 /* Main.storyboard */; };
 		1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE011B1594CD002C4896 /* Images.xcassets */; };
 		1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE031B1594CD002C4896 /* LaunchScreen.xib */; };
-		1F20FE111B1594CD002C4896 /* imoji_keyboardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FE101B1594CD002C4896 /* imoji_keyboardTests.m */; };
 		1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FE231B159C91002C4896 /* KeyboardViewController.m */; };
 		1F20FE271B159C91002C4896 /* keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1F20FE1E1B159C91002C4896 /* keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1F43A0D61B6635DE00E755C0 /* Qwerty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */; };
@@ -73,18 +72,10 @@
 		6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4757674F0D133AC81EB726C /* libPods-keyboard.a */; };
 		61FCE2419DEE9CBF48C17943 /* IMKeyboardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE3C5F64D5B2BB57E72DD /* IMKeyboardCollectionViewCell.m */; };
 		61FCEC2B61F2D24E9A6A0F84 /* IMKeyboardCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE1DB4058F37BD590B30A /* IMKeyboardCategoryCollectionViewCell.m */; };
-		6BAB43760C56DF23B5ABB9CF /* libPods-imoji-keyboardTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */; };
 		80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1F20FE0B1B1594CD002C4896 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1F20FDE61B1594CD002C4896 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1F20FDED1B1594CD002C4896;
-			remoteInfo = "imoji-keyboard";
-		};
 		1F20FE251B159C91002C4896 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1F20FDE61B1594CD002C4896 /* Project object */;
@@ -137,9 +128,6 @@
 		1F20FDFF1B1594CD002C4896 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1F20FE011B1594CD002C4896 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1F20FE041B1594CD002C4896 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		1F20FE0A1B1594CD002C4896 /* imoji-keyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "imoji-keyboardTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1F20FE0F1B1594CD002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1F20FE101B1594CD002C4896 /* imoji_keyboardTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = imoji_keyboardTests.m; sourceTree = "<group>"; };
 		1F20FE1E1B159C91002C4896 /* keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F20FE211B159C91002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F20FE221B159C91002C4896 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardViewController.h; sourceTree = "<group>"; };
@@ -217,14 +205,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1F20FE071B1594CD002C4896 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6BAB43760C56DF23B5ABB9CF /* libPods-imoji-keyboardTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1F20FE1B1B159C91002C4896 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -284,7 +264,6 @@
 			children = (
 				1A7766351B6B128F001C954C /* components */,
 				1F20FDF01B1594CD002C4896 /* imoji-keyboard */,
-				1F20FE0D1B1594CD002C4896 /* imoji-keyboardTests */,
 				1F20FE1F1B159C91002C4896 /* keyboard */,
 				1F20FDEF1B1594CD002C4896 /* Products */,
 				96CAE1876D134C185AFA736E /* Pods */,
@@ -296,7 +275,6 @@
 			isa = PBXGroup;
 			children = (
 				1F20FDEE1B1594CD002C4896 /* imoji-keyboard.app */,
-				1F20FE0A1B1594CD002C4896 /* imoji-keyboardTests.xctest */,
 				1F20FE1E1B159C91002C4896 /* keyboard.appex */,
 			);
 			name = Products;
@@ -323,23 +301,6 @@
 			children = (
 				1F20FDF21B1594CD002C4896 /* Info.plist */,
 				1F20FDF31B1594CD002C4896 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1F20FE0D1B1594CD002C4896 /* imoji-keyboardTests */ = {
-			isa = PBXGroup;
-			children = (
-				1F20FE101B1594CD002C4896 /* imoji_keyboardTests.m */,
-				1F20FE0E1B1594CD002C4896 /* Supporting Files */,
-			);
-			path = "imoji-keyboardTests";
-			sourceTree = "<group>";
-		};
-		1F20FE0E1B1594CD002C4896 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				1F20FE0F1B1594CD002C4896 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -491,26 +452,6 @@
 			productReference = 1F20FDEE1B1594CD002C4896 /* imoji-keyboard.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1F20FE091B1594CD002C4896 /* imoji-keyboardTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1F20FE171B1594CE002C4896 /* Build configuration list for PBXNativeTarget "imoji-keyboardTests" */;
-			buildPhases = (
-				C7204E7ABFAF1D4FBD8B8384 /* Check Pods Manifest.lock */,
-				1F20FE061B1594CD002C4896 /* Sources */,
-				1F20FE071B1594CD002C4896 /* Frameworks */,
-				1F20FE081B1594CD002C4896 /* Resources */,
-				6BAFAD184D607655F92738F8 /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1F20FE0C1B1594CD002C4896 /* PBXTargetDependency */,
-			);
-			name = "imoji-keyboardTests";
-			productName = "imoji-keyboardTests";
-			productReference = 1F20FE0A1B1594CD002C4896 /* imoji-keyboardTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		1F20FE1D1B159C91002C4896 /* keyboard */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F20FE281B159C91002C4896 /* Build configuration list for PBXNativeTarget "keyboard" */;
@@ -542,10 +483,6 @@
 					1F20FDED1B1594CD002C4896 = {
 						CreatedOnToolsVersion = 6.3.2;
 					};
-					1F20FE091B1594CD002C4896 = {
-						CreatedOnToolsVersion = 6.3.2;
-						TestTargetID = 1F20FDED1B1594CD002C4896;
-					};
 					1F20FE1D1B159C91002C4896 = {
 						CreatedOnToolsVersion = 6.3.2;
 						DevelopmentTeam = BQDFM499TU;
@@ -574,7 +511,6 @@
 			projectRoot = "";
 			targets = (
 				1F20FDED1B1594CD002C4896 /* imoji-keyboard */,
-				1F20FE091B1594CD002C4896 /* imoji-keyboardTests */,
 				1F20FE1D1B159C91002C4896 /* keyboard */,
 			);
 		};
@@ -589,13 +525,6 @@
 				1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */,
 				1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */,
 				1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1F20FE081B1594CD002C4896 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,37 +613,7 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		6BAFAD184D607655F92738F8 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboardTests/Pods-imoji-keyboardTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		A81D16F7BA4FC8E0C16C9727 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		C7204E7ABFAF1D4FBD8B8384 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -758,14 +657,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1F20FE061B1594CD002C4896 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1F20FE111B1594CD002C4896 /* imoji_keyboardTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1F20FE1A1B159C91002C4896 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -786,11 +677,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1F20FE0C1B1594CD002C4896 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1F20FDED1B1594CD002C4896 /* imoji-keyboard */;
-			targetProxy = 1F20FE0B1B1594CD002C4896 /* PBXContainerItemProxy */;
-		};
 		1F20FE261B159C91002C4896 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1F20FE1D1B159C91002C4896 /* keyboard */;
@@ -928,42 +814,6 @@
 			};
 			name = Release;
 		};
-		1F20FE181B1594CE002C4896 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2EEA0C92F65670E2FE075D07 /* Pods-imoji-keyboardTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "imoji-keyboardTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/imoji-keyboard.app/imoji-keyboard";
-			};
-			name = Debug;
-		};
-		1F20FE191B1594CE002C4896 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0B7423CE45D2942ED55E6D6 /* Pods-imoji-keyboardTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "imoji-keyboardTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/imoji-keyboard.app/imoji-keyboard";
-			};
-			name = Release;
-		};
 		1F20FE291B159C91002C4896 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E3A11A7365F3EAC51BAC69B1 /* Pods-keyboard.debug.xcconfig */;
@@ -1034,15 +884,6 @@
 			buildConfigurations = (
 				1F20FE151B1594CE002C4896 /* Debug */,
 				1F20FE161B1594CE002C4896 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1F20FE171B1594CE002C4896 /* Build configuration list for PBXNativeTarget "imoji-keyboardTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1F20FE181B1594CE002C4896 /* Debug */,
-				1F20FE191B1594CE002C4896 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
