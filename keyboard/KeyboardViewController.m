@@ -16,6 +16,8 @@
 
 
 #define CUR_WIDTH [[UIScreen mainScreen] applicationFrame ].size.width
+#define CUR_HEIGHT [[UIScreen mainScreen] applicationFrame ].size.height
+
 
 @interface KeyboardViewController ()
 
@@ -31,6 +33,8 @@
 @property (nonatomic, strong) NSMutableArray *navButtonsArray;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIButton *closeButton;
+@property (nonatomic, strong) UIImageView *heartImageView;
+@property (nonatomic, strong) UIImageView *copiedImageView;
 
 // progress bar
 @property (nonatomic, strong) UIProgressView *progressView;
@@ -53,7 +57,7 @@
 @end
 
 @implementation KeyboardViewController {
-    int _previousButtonTag;
+    ImojiTextUtil* _previousTitle;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -132,7 +136,6 @@
                                                            textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]
                                                        textAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
-    
     [self.view addSubview:self.titleLabel];
     
     
@@ -148,6 +151,25 @@
         make.height.equalTo(@(36));
     }];
     
+    // heart
+    self.heartImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_favorited"]];
+    [self.view addSubview:self.heartImageView];
+    self.heartImageView.hidden = YES;
+    [self.heartImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(-5);
+        make.height.width.equalTo(@(36));
+    }];
+    
+    // copied
+    self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied"]];
+    [self.view addSubview:self.copiedImageView];
+    self.copiedImageView.hidden = YES;
+    [self.copiedImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.progressView.mas_bottom).with.offset(0);
+        make.right.equalTo(self.view.mas_right).with.offset(-5);
+        make.height.width.equalTo(@(36));
+    }];
     
     // collection view
     self.collectionView = [ImojiCollectionView imojiCollectionViewWithSession:self.session];
@@ -167,7 +189,15 @@
             [weakSelf.progressView setProgress:progress animated:YES];
         }
     };
-    
+    self.collectionView.showDownloadingCallback = ^() {
+        [weakSelf showDownloading];
+    };
+    self.collectionView.showCopiedCallback = ^(NSString* message) {
+        [weakSelf showCopied:message];
+    };
+    self.collectionView.showFavoritedCallback = ^() {
+        [weakSelf showFavorited];
+    };
     [self.view addSubview:self.collectionView];
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(30);
@@ -175,6 +205,7 @@
         make.right.equalTo(self.view.mas_right);
         make.left.equalTo(self.view.mas_left);
     }];
+   
     
     // menu view
     [self setupMenuView];
@@ -201,8 +232,11 @@
         make.right.equalTo(self.searchView.mas_right).with.offset(0);
         make.height.equalTo(@(40));
     }];
-    
-    
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.frame = CGRectMake(0, 39.f, CUR_HEIGHT, 1.0f);
+    bottomBorder.backgroundColor = [UIColor colorWithRed:194/255.f green:194/255.f blue:194/255.f alpha:1].CGColor;
+    [searchBar.layer addSublayer:bottomBorder];
+
     UIButton *searchCancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [searchCancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
     searchCancelButton.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
@@ -211,15 +245,16 @@
     [searchBar addSubview: searchCancelButton];
     [searchCancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(searchBar.mas_top).with.offset(0);
-        make.right.equalTo(self.searchView.mas_right).with.offset(-12);
+        make.right.equalTo(self.searchView.mas_right);
         make.height.equalTo(@(40));
-        make.width.equalTo(@(70));
+        make.width.equalTo(@(80));
     }];
     
     
     self.searchField = [[UITextField alloc] init];
     self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
     self.searchField.placeholder = @"SEARCH";
+    [self.searchField setTintColor:[UIColor grayColor]];
     [searchBar addSubview:self.searchField];
     [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(searchBar.mas_top).with.offset(0);
@@ -240,9 +275,18 @@
         make.bottom.equalTo(self.view.mas_bottom);
     }];
     vc.setSearchCallback = ^() {
-        NSLog(@"search callback");
-        self.searchView.hidden = YES;
-        [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
+        if(self.searchField.text.length > 0) {
+            self.searchView.hidden = YES;
+            [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
+            for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
+                UIButton *tmpButton = (UIButton *)[self.view viewWithTag:i];
+                if (i == 1) {
+                    tmpButton.selected = YES;
+                } else {
+                    tmpButton.selected = NO;
+                }
+            }
+        }
     };
     
     self.searchView.hidden = YES;
@@ -251,13 +295,9 @@
 - (void) cancelSearch {
     [self.searchField resignFirstResponder];
     [self.searchField endEditing:YES];
+    //[self.searchField endEditing:YES];
     self.searchView.hidden = YES;
-    for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
-        ((UIButton *)[self.view viewWithTag:i]).selected = NO;
-    }
-    if (_previousButtonTag) {
-        [self navPressed:(UIButton *)[self.view viewWithTag:_previousButtonTag]];
-    }
+    //self.closeButton.hidden = NO;
 }
 
 - (void)setupMenuView {
@@ -395,25 +435,24 @@
 - (IBAction)navPressed:(UIButton*)sender {
     BOOL sameButtonPressed = NO;
     // set selected state
-    //if (sender.tag != 1) { // ignore search
+
+
+    if (sender.tag != 1) {
         for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
             UIButton *tmpButton = (UIButton *)[self.view viewWithTag:i];
             if (tmpButton.selected == YES && i == sender.tag) {
                 sameButtonPressed = YES; // check if it's the same button being pressed
-            } else if(tmpButton.selected == YES) {
-                _previousButtonTag = i;
             }
             tmpButton.selected = NO;
         }
         sender.selected = YES; // set button pressed to selected
-    //}
+    }
 
     if (sameButtonPressed) { // don't do anything if same button
         return;
     }
     
     // run action
-    self.closeButton.hidden = YES;
     switch (sender.tag) {
         case 1:
             self.searchView.hidden = NO;
@@ -428,6 +467,7 @@
                                                                 withFontSize:14.0f
                                                                    textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
             self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            self.closeButton.hidden = YES;
             break;
         case 3:
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
@@ -435,6 +475,7 @@
                                                                 withFontSize:14.0f
                                                                    textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
             self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            self.closeButton.hidden = YES;
             break;
         case 4:
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
@@ -442,6 +483,7 @@
                                                                 withFontSize:14.0f
                                                                    textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
             self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            self.closeButton.hidden = YES;
             break;
         case 5:
             [self.collectionView loadFavoriteImojis];
@@ -449,6 +491,7 @@
                                                                 withFontSize:14.0f
                                                                    textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
             self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+            self.closeButton.hidden = YES;
             break;
         default:
             break;
@@ -462,6 +505,7 @@
     UIButton *tmpButton = (UIButton *)[self.view viewWithTag:1];
     if (tmpButton.selected == YES) {
         self.searchView.hidden = NO;
+        self.searchField.text = @"";
         return;
     }
     
@@ -479,6 +523,53 @@
                                                                textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]];
         self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
     }
+}
+
+- (void)showDownloading {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
+        _previousTitle = (ImojiTextUtil*) self.titleLabel.attributedText;
+    }
+    
+    self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"DOWNLOADING ..."
+                                                        withFontSize:14.0f
+                                                           textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]
+                                                       textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    self.closeButton.hidden = YES;
+}
+
+- (void)showCopied:(NSString*) message {
+    self.titleLabel.attributedText = [ImojiTextUtil attributedString:[message uppercaseString]
+                                                        withFontSize:14.0f
+                                                           textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]
+                                                       textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    
+    self.copiedImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)showFavorited {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
+        _previousTitle = (ImojiTextUtil*) self.titleLabel.attributedText;
+    }
+    self.titleLabel.attributedText = [ImojiTextUtil attributedString:@"SAVED TO FAVORITES"
+                                                        withFontSize:14.0f
+                                                           textColor:[UIColor colorWithRed:55/255.f green:123/255.f blue:167/255.f alpha:1.f]
+                                                       textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    
+    self.closeButton.hidden = YES;
+    self.heartImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)showPreviousTitle {
+    self.titleLabel.attributedText = (NSAttributedString*) _previousTitle;
+    self.titleLabel.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    self.copiedImageView.hidden = YES;
+    self.heartImageView.hidden = YES;
+    self.closeButton.hidden = NO;
 }
 
 - (void)setTitle:(NSString*)text {

@@ -5,6 +5,9 @@
 
 
 #import "QwertyViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import <Masonry/View+MASAdditions.h>
+#import "UIView+RoundedCorners.h"
 
 @interface QwertyViewController () {
     
@@ -25,6 +28,13 @@
 @property (nonatomic, weak) IBOutlet UIButton *switchModeRow4Button;
 @property (nonatomic, weak) IBOutlet UIButton *shiftButton;
 @property (nonatomic, weak) IBOutlet UIButton *spaceButton;
+@property (nonatomic, weak) IBOutlet UIButton *searchButton;
+@property (nonatomic, weak) IBOutlet UIButton *backspaceButton1;
+@property (nonatomic, weak) IBOutlet UIButton *backspaceButton2;
+
+@property (nonatomic, strong) IBOutletCollection(UIButton) NSArray *numberButtonsArray;
+@property (nonatomic, strong) IBOutletCollection(UIButton) NSArray *symbolButtonsArray;
+@property (nonatomic, strong) IBOutletCollection(UIButton) NSArray *punctuationButtonsArray;
 
 @end
 
@@ -45,10 +55,10 @@
     
     for (UIView *subview in self.view.subviews)
     {
-        subview.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1];
+        subview.backgroundColor = [UIColor colorWithRed:228.0/255.0 green:228.0/255.0 blue:228.0/255.0 alpha:1];
         for (UIView *subsubview in subview.subviews)
         {
-            subsubview.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1];
+            subsubview.backgroundColor = [UIColor colorWithRed:228.0/255.0 green:228.0/255.0 blue:228.0/255.0 alpha:1];
         }
     }
 }
@@ -76,17 +86,25 @@
 #pragma mark - initialization method
 
 - (void) initializeKeyboard {
+    [self styleAllButtons];
     
     //start with shift on
     _shiftStatus = 1;
     
+    // shift all keys
+    // hack
+    [self shiftKeyDoubleTapped:nil];
+    self.shiftButton.hidden = YES;
+    
     //initialize space key double tap
+    /*
     UITapGestureRecognizer *spaceDoubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(spaceKeyDoubleTapped:)];
     
     spaceDoubleTap.numberOfTapsRequired = 2;
     [spaceDoubleTap setDelaysTouchesEnded:NO];
     
     [self.spaceButton addGestureRecognizer:spaceDoubleTap];
+    */
     
     //initialize shift key double and triple tap
     UITapGestureRecognizer *shiftDoubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shiftKeyDoubleTapped:)];
@@ -151,9 +169,6 @@
 
 
 -(IBAction) returnKeyPressed: (UIButton*) sender {
-    
-    //[self.textDocumentProxy insertText:@"\n"];
-    // self.view.hidden = YES;
     self.setSearchCallback();
 }
 
@@ -201,6 +216,77 @@
     
 }
 
+-(void)styleAllButtons {
+    for (UIButton* letterButton in self.letterButtonsArray) {
+        [self styleButton:letterButton];
+    }
+    for (UIButton* numberButton in self.numberButtonsArray) {
+        [self styleButton:numberButton];
+    }
+    for (UIButton* symbolButton in self.symbolButtonsArray) {
+        [self styleButton:symbolButton];
+    }
+    for (UIButton* punctuationButton in self.punctuationButtonsArray) {
+        [self styleButton:punctuationButton];
+    }
+    
+    [self styleButton:self.spaceButton];
+    [self styleButton:self.switchModeRow3Button];
+    [self styleButton:self.switchModeRow4Button];
+    [self styleButton:self.searchButton];
+    [self styleButton:self.backspaceButton1];
+    [self styleButton:self.backspaceButton2];
+}
+
+-(void)styleButton:(UIButton*) button {
+    UIView *v = [[UIView alloc] init];
+    v.frame = CGRectMake(0,0,24,24);
+    v.backgroundColor = [UIColor colorWithRed:252/255.f green:252/255.f blue:252/255.f alpha:1];
+    v.layer.cornerRadius = 5.f;
+    v.layer.masksToBounds = YES;
+    v.userInteractionEnabled = NO;
+    v.layer.borderColor = [UIColor colorWithRed:194/255.f green:194/255.f blue:194/255.f alpha:1].CGColor;
+    v.layer.borderWidth = 1.0f;
+    v.tag = 0;
+    
+    v.layer.masksToBounds = NO;
+    v.layer.shadowColor = [UIColor blackColor].CGColor;
+    v.layer.shadowOffset = CGSizeMake(0.0f, 0.6f);
+    v.layer.shadowRadius = 0.5f;
+    v.layer.shadowOpacity = 0.26f;
+    
+    [button insertSubview:v atIndex:0];
+    [button bringSubviewToFront:button.imageView];
+    [button addTarget:self action:@selector(highlight:) forControlEvents:UIControlEventTouchDown];
+    [button addTarget:self action:@selector(unhighlight:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(unhighlight:) forControlEvents:UIControlEventTouchUpOutside];
+    [v mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(button.mas_left).offset(2);
+        make.top.equalTo(button.mas_top).offset(5);
+        make.right.equalTo(button.mas_right).offset(-2);
+        make.bottom.equalTo(button.mas_bottom).offset(-5);
+    }];
+    
+    [button setTitleColor:[UIColor colorWithRed:42/255.f green:42/255.f blue:42/255.f alpha:1.0] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+}
+
+-(void)highlight:(UIButton*)sender {
+    for (UIView *v in sender.subviews){
+        if(v.tag == 0){
+            v.backgroundColor = [UIColor lightGrayColor];
+        }
+    }
+}
+
+-(void)unhighlight:(UIButton*)sender {
+    for (UIView *v in sender.subviews){
+        if(v.tag == 0){
+            v.backgroundColor = [UIColor colorWithRed:252/255.f green:252/255.f blue:252/255.f alpha:1];
+        }
+    }
+}
+
 
 - (IBAction) switchKeyboardMode:(UIButton*)sender {
     
@@ -222,11 +308,9 @@
             self.numbersSymbolsRow3View.hidden = NO;
             
             //change row 3 switch button image to #+= and row 4 switch button to ABC
-            [self.switchModeRow3Button setImage:[UIImage imageNamed:@"symbols.png"] forState:UIControlStateNormal];
-            [self.switchModeRow3Button setImage:[UIImage imageNamed:@"symbolsHL.png"] forState:UIControlStateHighlighted];
+            [self.switchModeRow3Button setTitle:@"#+=" forState:UIControlStateNormal];
             self.switchModeRow3Button.tag = 2;
-            [self.switchModeRow4Button setImage:[UIImage imageNamed:@"abc.png"] forState:UIControlStateNormal];
-            [self.switchModeRow4Button setImage:[UIImage imageNamed:@"abcHL.png"] forState:UIControlStateHighlighted];
+            [self.switchModeRow4Button setTitle:@"ABC" forState:UIControlStateNormal];
             self.switchModeRow4Button.tag = 0;
         }
             break;
@@ -237,16 +321,14 @@
             self.numbersSymbolsRow3View.hidden = NO;
             
             //change row 3 switch button image to 123
-            [self.switchModeRow3Button setImage:[UIImage imageNamed:@"numbers.png"] forState:UIControlStateNormal];
-            [self.switchModeRow3Button setImage:[UIImage imageNamed:@"numbersHL.png"] forState:UIControlStateHighlighted];
+            [self.switchModeRow3Button setTitle:@"123" forState:UIControlStateNormal];
             self.switchModeRow3Button.tag = 1;
         }
             break;
         
         default:
             //change the row 4 switch button image to 123
-            [self.switchModeRow4Button setImage:[UIImage imageNamed:@"numbers.png"] forState:UIControlStateNormal];
-            [self.switchModeRow4Button setImage:[UIImage imageNamed:@"numbersHL.png"] forState:UIControlStateHighlighted];
+            [self.switchModeRow4Button setTitle:@"123" forState:UIControlStateNormal];
             self.switchModeRow4Button.tag = 1;
             break;
     }

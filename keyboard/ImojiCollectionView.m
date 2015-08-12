@@ -10,6 +10,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "ImojiCollectionView.h"
 #import "ImojiTextUtil.h"
+#import <QuartzCore/QuartzCore.h>
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
@@ -26,7 +27,6 @@ NSUInteger const headerHeight = 44;
 @interface ImojiCategoryCollectionViewCell : UICollectionViewCell
 
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage;
-- (void)highlight;
 
 @property(nonatomic, strong) UIImageView *imojiView;
 @property(nonatomic, strong) UILabel *titleView;
@@ -37,7 +37,8 @@ NSUInteger const headerHeight = 44;
 @interface ImojiCollectionViewCell : UICollectionViewCell
 
 - (void)loadImojiImage:(UIImage *)imojiImage;
-- (void)performAnimation;
+- (void)performGrowAnimation;
+- (void)performTranslucentAnimation;
 
 @property(nonatomic, strong) UIImageView *imojiView;
 
@@ -80,7 +81,7 @@ NSUInteger const headerHeight = 44;
         self.doubleTapFolderGesture.delaysTouchesBegan = YES;
         [self.doubleTapFolderGesture setNumberOfTapsRequired:2];
         [self.doubleTapFolderGesture setNumberOfTouchesRequired:1];
-        //[self addGestureRecognizer:self.doubleTapFolderGesture];
+        [self addGestureRecognizer:self.doubleTapFolderGesture];
         
         [self registerClass:[ImojiCategoryCollectionViewCell class] forCellWithReuseIdentifier:ImojiCategoryCollectionViewCellReuseId];
         [self registerClass:[ImojiCollectionViewCell class] forCellWithReuseIdentifier:ImojiCollectionViewCellReuseId];
@@ -159,13 +160,10 @@ NSUInteger const headerHeight = 44;
     }
 }
 
-
-
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     id cellContent = self.content[(NSUInteger) indexPath.row];
     
-    // take approriate action on the cell
+    // take appropriate action on the cell
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         
@@ -173,15 +171,7 @@ NSUInteger const headerHeight = 44;
     } else {
         IMImojiObject *imojiObject = cellContent;
         
-        // show copied feedback
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.superview animated:NO];
-
-
-        // Configure for text only and offset down
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"Downloading…";
-        hud.margin = 20.f;
-        hud.removeFromSuperViewOnHide = YES;
+        self.showDownloadingCallback();
 
         IMImojiObjectRenderingOptions* renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
         renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
@@ -191,26 +181,22 @@ NSUInteger const headerHeight = 44;
                           options:renderOptions
                          callback:^(UIImage *image, NSError *error) {
                              if (error) {
-                                 hud.labelText = @"Unable to download that imoji";
+                                 NSLog(@"Error: %@", error);
+                                 self.showCopiedCallback(@"UNABLE TO DOWNLOAD IMOJI");
                              } else {
                                  UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                                  pasteboard.persistent = YES;
                                  [pasteboard setImage:image];
 
-                                 hud.labelText = @"Copied to clipboard";
+                                 self.showCopiedCallback(@"COPIED TO CLIPBOARD");
+                                 
                              }
-
-                             hud.margin = 20.f;
-                             hud.removeFromSuperViewOnHide = YES;
-                             [hud hide:YES afterDelay:0.9f];
                          }];
         
         // save to recents
         [self saveToRecents:imojiObject];
     }
     
-    // unhighlight
-    UICollectionViewCell *cell;
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
@@ -219,30 +205,12 @@ NSUInteger const headerHeight = 44;
         ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = NO;
-        [cell performAnimation];
+        [self processCellAnimations:indexPath];
     }
     
 
     return;
 }
-
-/*
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
-    UILabel *title = [[UILabel alloc] init];
-    title.text = [[NSString alloc]initWithFormat:@"Imoji"];
-    [title sizeToFit];
-    [headerView addSubview:title];
-    
-    return headerView;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(self.frame.size.width, headerHeight);
-}
- */
-
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -444,7 +412,7 @@ NSUInteger const headerHeight = 44;
             [arrayOfRecents removeLastObject];
         }
     }
-    
+    NSLog(@"%@",arrayOfRecents);
     [shared setObject:arrayOfRecents forKey:@"recentImojis"];
     [shared synchronize];
 }
@@ -474,6 +442,20 @@ NSUInteger const headerHeight = 44;
     [shared synchronize];
 }
 
+- (void) processCellAnimations:(NSIndexPath *)currentIndexPath {
+
+    for(UICollectionView *cell in self.visibleCells){
+        NSIndexPath *indexPath = [self indexPathForCell:(UICollectionViewCell*)cell];
+
+        if (currentIndexPath.row == indexPath.row) {
+            [(ImojiCollectionViewCell*)cell performGrowAnimation];
+        } else {
+            [(ImojiCollectionViewCell*)cell performTranslucentAnimation];
+        }
+        
+    }
+}
+
 - (void) processDoubleTap:(UITapGestureRecognizer *)sender
 {
     if (sender.state == UIGestureRecognizerStateEnded)
@@ -485,20 +467,11 @@ NSUInteger const headerHeight = 44;
             id cellContent = self.content[(NSUInteger) indexPath.row];
             if (self.contentType == ImojiCollectionViewContentTypeImojis) {
                 IMImojiObject *imojiObject = cellContent;
-                
-                // show copied feedback
-                MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.superview animated:NO];
-                
-                // Configure for text only and offset down
-                hud.mode = MBProgressHUDModeText;
-                hud.labelText = @"Saved to Favorites";
-                hud.margin = 20.f;
-                hud.removeFromSuperViewOnHide = YES;
-                
-                [hud hide:YES afterDelay:0.9f];
-                
-                // save to recents
+                // save to favorites
                 [self saveToFavorites:imojiObject];
+                
+                self.showFavoritedCallback();
+                [self processCellAnimations:indexPath];
             }
         }
         else
@@ -630,16 +603,45 @@ NSUInteger const headerHeight = 44;
     return tintedImage;
 }
 
-- (void)performAnimation {
+- (void)performGrowAnimation {
+    [CATransaction begin];
+    [self.imojiView.layer removeAllAnimations];
+    [CATransaction commit];
+    self.imojiView.alpha = 1.0;
+    
     // grow image
-    [UIView animateWithDuration:0.15 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
         self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
+        
     }
-                     completion:^(BOOL finished){
-                         [UIView animateWithDuration:0.15 animations:^{
+    completion:^(BOOL finished){
+        if (!finished) {
+            return;
+        }
+        [UIView animateWithDuration:0.1f
+                              delay:1.2f
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
                              self.imojiView.transform = CGAffineTransformMakeScale(1, 1);
-                         }];
-                     }];
+                         } completion:^(BOOL finished) {}];
+    }];
+}
+
+- (void)performTranslucentAnimation {
+    [UIView animateWithDuration:0.1 animations:^{
+        self.imojiView.alpha = 0.5;
+    }
+    completion:^(BOOL finished){
+        if (!finished) {
+            return;
+        }
+        [UIView animateWithDuration:0.1f
+                              delay:1.2f
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             self.imojiView.alpha = 1;
+                         } completion:^(BOOL finished) {}];
+    }];
 }
 
 @end

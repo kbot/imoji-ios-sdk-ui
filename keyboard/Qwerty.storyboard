@@ -4,6 +4,14 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Imoji_Regular.otf">
+            <string>Imoji-Regular</string>
+            <string>Imoji-Regular</string>
+            <string>Imoji-Regular</string>
+            <string>Imoji-Regular</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
         <!--QwertyViewController-->
         <scene sceneID="dWf-Gy-cYZ">
@@ -24,12 +32,9 @@
                                         <rect key="frame" x="0.0" y="0.0" width="60" height="150"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
                                         <state key="normal" title="Q">
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="highlighted">
-                                            <color key="titleColor" red="0.1799606787948306" green="0.42691390473636831" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="keyPressed:" destination="kiH-9x-JpX" eventType="touchUpInside" id="IeE-SX-a5o"/>
@@ -517,7 +522,7 @@
                                         </connections>
                                     </button>
                                     <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZL9-4A-A0k" userLabel="backspace">
-                                        <rect key="frame" x="510" y="0.0" width="90" height="150"/>
+                                        <rect key="frame" x="522" y="0.0" width="78" height="150"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal" image="backspace">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -545,7 +550,7 @@
                                     <constraint firstItem="gcs-cj-4WV" firstAttribute="height" secondItem="CqH-OE-oi8" secondAttribute="height" id="KRU-Ox-Ty7"/>
                                     <constraint firstItem="DMV-ff-qbA" firstAttribute="leading" secondItem="ZhC-dy-aRx" secondAttribute="trailing" id="Mvw-BB-MKN"/>
                                     <constraint firstItem="Jz9-3Z-TTg" firstAttribute="leading" secondItem="eOw-rs-Ksb" secondAttribute="leading" id="PyS-N5-vQS"/>
-                                    <constraint firstItem="ZL9-4A-A0k" firstAttribute="width" secondItem="eOw-rs-Ksb" secondAttribute="width" multiplier="0.15" id="Sjh-GW-Gr4"/>
+                                    <constraint firstItem="ZL9-4A-A0k" firstAttribute="width" secondItem="eOw-rs-Ksb" secondAttribute="width" multiplier="0.13" id="Sjh-GW-Gr4"/>
                                     <constraint firstItem="ZhC-dy-aRx" firstAttribute="height" secondItem="gcs-cj-4WV" secondAttribute="height" id="VM2-fm-Ugv"/>
                                     <constraint firstItem="CqH-OE-oi8" firstAttribute="height" secondItem="eOw-rs-Ksb" secondAttribute="height" id="VqG-ED-VB6"/>
                                     <constraint firstItem="ZL9-4A-A0k" firstAttribute="centerY" secondItem="eOw-rs-Ksb" secondAttribute="centerY" id="XPC-j1-EBv"/>
@@ -1368,12 +1373,13 @@
                                 <subviews>
                                     <button tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Lc-f4-pEq" userLabel="#+=">
                                         <rect key="frame" x="0.0" y="0.0" width="90" height="150"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" image="symbols">
+                                        <fontDescription key="fontDescription" name="Imoji-Regular" family="Imoji" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="0.0" minY="4" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="#+=">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" image="symbolsHL">
+                                        <state key="highlighted">
                                             <color key="titleColor" red="0.1799606788" green="0.42691390470000001" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
@@ -1456,13 +1462,13 @@
                                         </connections>
                                     </button>
                                     <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vjn-98-9wi" userLabel="backspace">
-                                        <rect key="frame" x="510" y="0.0" width="90" height="150"/>
+                                        <rect key="frame" x="522" y="0.0" width="78" height="150"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <state key="normal" image="backspace">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" image="backspaceHL">
+                                        <state key="highlighted">
                                             <color key="titleColor" red="0.1799606788" green="0.42691390470000001" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
@@ -1497,7 +1503,7 @@
                                     <constraint firstItem="1Lc-f4-pEq" firstAttribute="centerY" secondItem="0jM-cx-iDx" secondAttribute="centerY" id="u6Q-bI-ri1"/>
                                     <constraint firstItem="Jjg-zF-lCS" firstAttribute="width" secondItem="Yxs-2c-dSe" secondAttribute="width" id="uGO-XU-gcf"/>
                                     <constraint firstItem="q7s-iA-zVQ" firstAttribute="width" secondItem="E4H-UD-oK4" secondAttribute="width" id="wEb-18-xsc"/>
-                                    <constraint firstItem="vjn-98-9wi" firstAttribute="width" secondItem="0jM-cx-iDx" secondAttribute="width" multiplier="0.15" id="x7F-Xi-Z8r"/>
+                                    <constraint firstItem="vjn-98-9wi" firstAttribute="width" secondItem="0jM-cx-iDx" secondAttribute="width" multiplier="0.13" id="x7F-Xi-Z8r"/>
                                     <constraint firstItem="q7s-iA-zVQ" firstAttribute="centerY" secondItem="E4H-UD-oK4" secondAttribute="centerY" id="xPi-5o-rJA"/>
                                     <constraint firstItem="Yxs-2c-dSe" firstAttribute="centerY" secondItem="E4H-UD-oK4" secondAttribute="centerY" id="xe1-yp-xJE"/>
                                 </constraints>
@@ -1505,22 +1511,8 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p75-G1-a5K" userLabel="Row 4">
                                 <rect key="frame" x="0.0" y="470" width="600" height="150"/>
                                 <subviews>
-                                    <button tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j8s-Id-M2K" userLabel="123">
-                                        <rect key="frame" x="0.0" y="0.0" width="90" height="150"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" image="numbers">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="highlighted" image="numbersHL">
-                                            <color key="titleColor" red="0.1799606788" green="0.42691390470000001" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="switchKeyboardMode:" destination="kiH-9x-JpX" eventType="touchUpInside" id="LMw-kB-ZtO"/>
-                                        </connections>
-                                    </button>
                                     <button hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iv0-Yi-mwz" userLabel="globe">
-                                        <rect key="frame" x="90" y="0.0" width="90" height="150"/>
+                                        <rect key="frame" x="150" y="0.0" width="150" height="150"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal" image="globe">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1534,10 +1526,11 @@
                                         </connections>
                                     </button>
                                     <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="keE-wz-XEs">
-                                        <rect key="frame" x="189" y="0.0" width="222" height="150"/>
+                                        <rect key="frame" x="150" y="0.0" width="300" height="150"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <state key="normal" title="space">
+                                        <fontDescription key="fontDescription" name="Imoji-Regular" family="Imoji" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="0.0" minY="4" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="SPACE">
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1549,17 +1542,29 @@
                                         </connections>
                                     </button>
                                     <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3EI-jG-m5R" userLabel="return">
-                                        <rect key="frame" x="510" y="0.0" width="90" height="150"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" image="return">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <rect key="frame" x="450" y="0.0" width="150" height="150"/>
+                                        <fontDescription key="fontDescription" name="Imoji-Regular" family="Imoji" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="0.0" minY="4" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="SEARCH">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <state key="highlighted" image="returnHL">
+                                        <state key="highlighted">
                                             <color key="titleColor" red="0.1799606788" green="0.42691390470000001" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="returnKeyPressed:" destination="kiH-9x-JpX" eventType="touchUpInside" id="lg6-RI-0hu"/>
+                                        </connections>
+                                    </button>
+                                    <button tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j8s-Id-M2K" userLabel="123">
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                        <fontDescription key="fontDescription" name="Imoji-Regular" family="Imoji" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="0.0" minY="4" maxX="0.0" maxY="0.0"/>
+                                        <state key="normal" title="123">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="switchKeyboardMode:" destination="kiH-9x-JpX" eventType="touchUpInside" id="LMw-kB-ZtO"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1569,16 +1574,16 @@
                                     <constraint firstItem="iv0-Yi-mwz" firstAttribute="leading" secondItem="j8s-Id-M2K" secondAttribute="trailing" id="Bre-Bb-IOd"/>
                                     <constraint firstItem="iv0-Yi-mwz" firstAttribute="height" secondItem="j8s-Id-M2K" secondAttribute="height" id="CZO-te-gTd"/>
                                     <constraint firstItem="j8s-Id-M2K" firstAttribute="leading" secondItem="p75-G1-a5K" secondAttribute="leading" id="MJP-1Z-de2"/>
-                                    <constraint firstItem="keE-wz-XEs" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.37" id="Ma9-MZ-A7X"/>
+                                    <constraint firstItem="keE-wz-XEs" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.5" id="Ma9-MZ-A7X"/>
                                     <constraint firstItem="keE-wz-XEs" firstAttribute="centerX" secondItem="p75-G1-a5K" secondAttribute="centerX" id="OUy-Sh-dUZ"/>
                                     <constraint firstItem="3EI-jG-m5R" firstAttribute="height" secondItem="p75-G1-a5K" secondAttribute="height" id="PJK-n1-so7"/>
-                                    <constraint firstItem="3EI-jG-m5R" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.15" id="VPK-ED-mcg"/>
+                                    <constraint firstItem="3EI-jG-m5R" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.25" id="VPK-ED-mcg"/>
                                     <constraint firstItem="j8s-Id-M2K" firstAttribute="centerY" secondItem="p75-G1-a5K" secondAttribute="centerY" id="Y8L-3M-86j"/>
                                     <constraint firstAttribute="trailing" secondItem="3EI-jG-m5R" secondAttribute="trailing" id="aeC-Zr-Xpc"/>
                                     <constraint firstItem="3EI-jG-m5R" firstAttribute="centerY" secondItem="p75-G1-a5K" secondAttribute="centerY" id="dqr-HA-NkC"/>
                                     <constraint firstItem="keE-wz-XEs" firstAttribute="centerY" secondItem="p75-G1-a5K" secondAttribute="centerY" id="rnx-Ve-VNf"/>
                                     <constraint firstItem="j8s-Id-M2K" firstAttribute="height" secondItem="p75-G1-a5K" secondAttribute="height" id="rqb-Ci-OmY"/>
-                                    <constraint firstItem="j8s-Id-M2K" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.15" id="sRR-12-7Nc"/>
+                                    <constraint firstItem="j8s-Id-M2K" firstAttribute="width" secondItem="p75-G1-a5K" secondAttribute="width" multiplier="0.25" id="sRR-12-7Nc"/>
                                     <constraint firstItem="keE-wz-XEs" firstAttribute="height" secondItem="p75-G1-a5K" secondAttribute="height" id="xS0-L0-gEt"/>
                                     <constraint firstItem="iv0-Yi-mwz" firstAttribute="centerY" secondItem="j8s-Id-M2K" secondAttribute="centerY" id="xde-mj-qCR"/>
                                 </constraints>
@@ -1630,9 +1635,12 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="backspaceButton1" destination="ZL9-4A-A0k" id="f7y-Qn-sD0"/>
+                        <outlet property="backspaceButton2" destination="vjn-98-9wi" id="1tF-fC-kZD"/>
                         <outlet property="numbersRow1View" destination="avP-wJ-fvD" id="5NL-wV-y9i"/>
                         <outlet property="numbersRow2View" destination="pHt-E2-hBe" id="FYF-3Y-xSa"/>
                         <outlet property="numbersSymbolsRow3View" destination="0jM-cx-iDx" id="USx-61-Kxp"/>
+                        <outlet property="searchButton" destination="3EI-jG-m5R" id="ohg-HX-rOS"/>
                         <outlet property="shiftButton" destination="Jz9-3Z-TTg" id="vqb-tu-dIM"/>
                         <outlet property="spaceButton" destination="keE-wz-XEs" id="tXu-EI-U0r"/>
                         <outlet property="switchModeRow3Button" destination="1Lc-f4-pEq" id="xBF-tv-aIZ"/>
@@ -1665,6 +1673,51 @@
                         <outletCollection property="letterButtonsArray" destination="gcs-cj-4WV" id="aIg-c9-wKQ"/>
                         <outletCollection property="letterButtonsArray" destination="ZhC-dy-aRx" id="1Zb-5a-5PD"/>
                         <outletCollection property="letterButtonsArray" destination="DMV-ff-qbA" id="7YB-cN-n6h"/>
+                        <outletCollection property="numberButtonsArray" destination="8Tf-12-3AQ" id="0H3-Ev-hr3"/>
+                        <outletCollection property="numberButtonsArray" destination="41V-Yb-CL5" id="Ntq-1t-k4b"/>
+                        <outletCollection property="numberButtonsArray" destination="oxV-gX-4sw" id="HSa-dX-o5V"/>
+                        <outletCollection property="numberButtonsArray" destination="d95-lQ-FtY" id="rr6-jo-j79"/>
+                        <outletCollection property="numberButtonsArray" destination="8VB-qc-62H" id="zuL-VE-1gg"/>
+                        <outletCollection property="numberButtonsArray" destination="x5z-7O-WKg" id="ux6-Lx-W13"/>
+                        <outletCollection property="numberButtonsArray" destination="2KT-Ln-cNU" id="N35-gC-2Ql"/>
+                        <outletCollection property="numberButtonsArray" destination="TfN-JF-lzB" id="jU9-he-4b6"/>
+                        <outletCollection property="numberButtonsArray" destination="LNm-Ck-x96" id="BYT-fL-hXx"/>
+                        <outletCollection property="numberButtonsArray" destination="ENx-iU-Zv2" id="0Ud-bB-cpA"/>
+                        <outletCollection property="numberButtonsArray" destination="1qP-4H-bKZ" id="VCl-Ro-lq2"/>
+                        <outletCollection property="numberButtonsArray" destination="fG5-QZ-HrY" id="4zK-Q0-gKd"/>
+                        <outletCollection property="numberButtonsArray" destination="dNI-lk-yVa" id="vvm-eO-qB2"/>
+                        <outletCollection property="numberButtonsArray" destination="cfp-Ra-Ihk" id="inO-fb-fka"/>
+                        <outletCollection property="numberButtonsArray" destination="hfq-Jt-6NZ" id="6NV-eu-gg8"/>
+                        <outletCollection property="numberButtonsArray" destination="WKD-A7-4Qg" id="c09-qd-pBz"/>
+                        <outletCollection property="numberButtonsArray" destination="bgn-Iq-WYf" id="sRE-63-nNT"/>
+                        <outletCollection property="numberButtonsArray" destination="XLG-j2-juU" id="pFF-QE-FXc"/>
+                        <outletCollection property="numberButtonsArray" destination="h9l-J0-y4P" id="1J1-k6-nk7"/>
+                        <outletCollection property="numberButtonsArray" destination="2ZW-ZN-NvT" id="Yej-er-oah"/>
+                        <outletCollection property="symbolButtonsArray" destination="U9s-wM-ePm" id="BWr-h1-vvk"/>
+                        <outletCollection property="symbolButtonsArray" destination="JTC-N3-Dvv" id="Yjr-sR-VGQ"/>
+                        <outletCollection property="symbolButtonsArray" destination="MGf-8B-kDk" id="l3W-ds-V9z"/>
+                        <outletCollection property="symbolButtonsArray" destination="IRc-Du-Ezy" id="Qf3-3W-KKO"/>
+                        <outletCollection property="symbolButtonsArray" destination="TO2-Hw-V60" id="DKH-JL-m18"/>
+                        <outletCollection property="symbolButtonsArray" destination="jQO-f6-yvK" id="IWa-1W-Tif"/>
+                        <outletCollection property="symbolButtonsArray" destination="CzT-0B-c3N" id="IUh-09-J6w"/>
+                        <outletCollection property="symbolButtonsArray" destination="JUd-Vs-47x" id="DgW-FM-msv"/>
+                        <outletCollection property="symbolButtonsArray" destination="xTd-Zf-Xd6" id="dkS-f6-z2k"/>
+                        <outletCollection property="symbolButtonsArray" destination="tQc-SY-7yp" id="HbR-c9-SwW"/>
+                        <outletCollection property="symbolButtonsArray" destination="jIc-B2-LJT" id="0Yj-dI-hCr"/>
+                        <outletCollection property="symbolButtonsArray" destination="cqA-yn-4U2" id="xQz-HH-4eL"/>
+                        <outletCollection property="symbolButtonsArray" destination="HAD-Bk-qjw" id="oTy-WD-X0n"/>
+                        <outletCollection property="symbolButtonsArray" destination="z9h-S0-WmM" id="4Ub-NG-iif"/>
+                        <outletCollection property="symbolButtonsArray" destination="2PV-2Q-SOW" id="c1E-Ac-nrw"/>
+                        <outletCollection property="symbolButtonsArray" destination="uQ6-tv-fPx" id="rYu-2u-reM"/>
+                        <outletCollection property="symbolButtonsArray" destination="Mk5-k6-SXS" id="lhR-rn-6az"/>
+                        <outletCollection property="symbolButtonsArray" destination="JRv-l8-4e3" id="WMn-Ls-75e"/>
+                        <outletCollection property="symbolButtonsArray" destination="0ZA-Gb-OXm" id="5ng-Vj-8CC"/>
+                        <outletCollection property="symbolButtonsArray" destination="Gfh-or-Rv1" id="4Eu-tu-zje"/>
+                        <outletCollection property="punctuationButtonsArray" destination="Jjg-zF-lCS" id="CeA-Pc-zFQ"/>
+                        <outletCollection property="punctuationButtonsArray" destination="Yxs-2c-dSe" id="OEk-xo-8tX"/>
+                        <outletCollection property="punctuationButtonsArray" destination="E4H-UD-oK4" id="4Fw-do-BxT"/>
+                        <outletCollection property="punctuationButtonsArray" destination="q7s-iA-zVQ" id="4nw-FT-LyT"/>
+                        <outletCollection property="punctuationButtonsArray" destination="U9c-1c-hNs" id="Nkc-La-Qvw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cEO-Au-RRl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1673,17 +1726,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="backspace" width="35" height="35"/>
-        <image name="backspaceHL" width="35" height="35"/>
+        <image name="backspace" width="28" height="28"/>
         <image name="globe" width="35" height="35"/>
         <image name="globeHL" width="35" height="35"/>
-        <image name="numbers" width="35" height="35"/>
-        <image name="numbersHL" width="35" height="35"/>
-        <image name="return" width="35" height="35"/>
-        <image name="returnHL" width="35" height="35"/>
         <image name="shift_0HL" width="35" height="35"/>
         <image name="shift_1" width="35" height="35"/>
-        <image name="symbols" width="35" height="35"/>
-        <image name="symbolsHL" width="35" height="35"/>
     </resources>
 </document>

@@ -16,6 +16,9 @@
 
 @property(nonatomic, strong) void(^categoryShowCallback) (NSString *title);
 @property(nonatomic, strong) void(^setProgressCallback) (float progress);
+@property(nonatomic, strong) void(^showDownloadingCallback) ();
+@property(nonatomic, strong) void(^showCopiedCallback) (NSString *message);
+@property(nonatomic, strong) void(^showFavoritedCallback) ();
 @property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
 @property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
 
