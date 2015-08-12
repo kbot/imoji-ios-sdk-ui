@@ -11,6 +11,8 @@
 #import "ImojiCollectionView.h"
 #import "ImojiTextUtil.h"
 #import <QuartzCore/QuartzCore.h>
+#import "IMKeyboardCategoryCollectionViewCell.h"
+#import "IMKeyboardCollectionViewCell.h"
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
@@ -19,31 +21,6 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 
 NSUInteger const ImojiCollectionViewNumberOfItemsToLoad = 30;
-NSString *const ImojiCategoryCollectionViewCellReuseId = @"ImojiCategoryCollectionViewCellResuseId";
-NSString *const ImojiCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
-CGFloat const ImojiCollectionViewImojiCategoryLeftRightInset = 10.0f;
-NSUInteger const headerHeight = 44;
-
-@interface ImojiCategoryCollectionViewCell : UICollectionViewCell
-
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage;
-
-@property(nonatomic, strong) UIImageView *imojiView;
-@property(nonatomic, strong) UILabel *titleView;
-
-@end
-
-
-@interface ImojiCollectionViewCell : UICollectionViewCell
-
-- (void)loadImojiImage:(UIImage *)imojiImage;
-- (void)performGrowAnimation;
-- (void)performTranslucentAnimation;
-
-@property(nonatomic, strong) UIImageView *imojiView;
-
-@end
-
 
 @interface ImojiCollectionView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -83,8 +60,8 @@ NSUInteger const headerHeight = 44;
         [self.doubleTapFolderGesture setNumberOfTouchesRequired:1];
         [self addGestureRecognizer:self.doubleTapFolderGesture];
         
-        [self registerClass:[ImojiCategoryCollectionViewCell class] forCellWithReuseIdentifier:ImojiCategoryCollectionViewCellReuseId];
-        [self registerClass:[ImojiCollectionViewCell class] forCellWithReuseIdentifier:ImojiCollectionViewCellReuseId];
+        [self registerClass:[IMKeyboardCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
+        [self registerClass:[IMKeyboardCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         //[self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
     }
     
@@ -101,7 +78,7 @@ NSUInteger const headerHeight = 44;
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         self.doubleTapFolderGesture.enabled = NO;
         IMImojiCategoryObject *categoryObject = cellContent;
-        ImojiCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:ImojiCategoryCollectionViewCellReuseId forIndexPath:indexPath];
+        IMKeyboardCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
         
         [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
         //NSLog(@"loading category: %@", categoryObject.title);
@@ -116,7 +93,7 @@ NSUInteger const headerHeight = 44;
         return cell;
     } else {
         self.doubleTapFolderGesture.enabled = YES;
-        ImojiCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:ImojiCollectionViewCellReuseId forIndexPath:indexPath];
+        IMKeyboardCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
         [cell loadImojiImage:nil];
         if ([cellContent isKindOfClass:[IMImojiObject class]]) {
             [self.session renderImoji:cellContent
@@ -138,11 +115,11 @@ NSUInteger const headerHeight = 44;
 
 - (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
-        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
 
         cell.imojiView.highlighted = YES;
     } else {
-        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = YES;
     }
@@ -150,11 +127,11 @@ NSUInteger const headerHeight = 44;
 
 - (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
-        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = NO;
     } else {
-        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = NO;
     }
@@ -198,11 +175,11 @@ NSUInteger const headerHeight = 44;
     }
     
     if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
-        ImojiCategoryCollectionViewCell *cell = (ImojiCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = NO;
     } else {
-        ImojiCollectionViewCell *cell = (ImojiCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell*)[collectionView cellForItemAtIndexPath:indexPath];
         
         cell.imojiView.highlighted = NO;
         [self processCellAnimations:indexPath];
@@ -489,161 +466,4 @@ NSUInteger const headerHeight = 44;
     return [[ImojiCollectionView alloc] initWithSession:session];
 }
 
-
-+ (UIImage *)placeholderImageWithRadius:(CGFloat)radius {
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius, radius), NO, 0.f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:132/255.0f green:173/255.0f blue:199/255.0f alpha:1.0f].CGColor);
-    CGContextSetBlendMode(context, kCGBlendModeNormal);
-    CGContextSetLineWidth(context, 0);
-    CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
-    
-    UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return layer;
-}
 @end
-
-
-
-@implementation ImojiCategoryCollectionViewCell
-
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
-    float imageHeightRatio = 0.66f;
-    float textHeightRatio = 0.18f;
-    int inBetweenPadding = 3;
-    
-    if (!self.imojiView) {
-        self.imojiView = [UIImageView new];
-        
-        float padding = (self.frame.size.height - (imageHeightRatio*self.frame.size.height) - (textHeightRatio*self.frame.size.height) - inBetweenPadding)/2.f;
-        
-        [self addSubview:self.imojiView];
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.height.width.equalTo(self.mas_height).multipliedBy(imageHeightRatio);
-            make.top.equalTo(self.mas_top).offset(padding);
-        }];
-    }
-    
-    if (!self.titleView) {
-        self.titleView = [UILabel new];
-        
-        [self addSubview:self.titleView];
-        [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.centerX.equalTo(self);
-            make.height.equalTo(self.mas_height).multipliedBy(textHeightRatio);
-            make.top.equalTo(self.imojiView.mas_bottom).offset(inBetweenPadding);
-        }];
-    }
-    
-    if (imojiImage) {
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imojiView.image = imojiImage;
-        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
-    } else {
-        self.imojiView.contentMode = UIViewContentModeCenter;
-        self.imojiView.image = [ImojiCollectionView placeholderImageWithRadius:20];
-    }
-    
-    self.titleView.attributedText = [ImojiTextUtil attributedString:categoryTitle
-                                                       withFontSize:14.0f
-                                                          textColor:[UIColor colorWithRed:60/255.f green:60/255.f blue:60/255.f alpha:1.f]
-                                                      textAlignment:NSTextAlignmentCenter];
-}
-
-- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
-    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
-    [image drawInRect:drawRect];
-    [tintColor set];
-    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
-    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return tintedImage;
-}
-
-@end
-
-
-@implementation ImojiCollectionViewCell
-
-- (void)loadImojiImage:(UIImage *)imojiImage {
-    if (!self.imojiView) {
-        self.imojiView = [UIImageView new];
-        
-        [self addSubview:self.imojiView];
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self);
-            make.width.and.height.equalTo(self).multipliedBy(.8f);
-        }];
-    }
-    
-    if (imojiImage) {
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imojiView.image = imojiImage;
-        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
-    } else {
-        self.imojiView.contentMode = UIViewContentModeCenter;
-        self.imojiView.image = [ImojiCollectionView placeholderImageWithRadius:20];
-    }
-}
-
-- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
-    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
-    [image drawInRect:drawRect];
-    [tintColor set];
-    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
-    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return tintedImage;
-}
-
-- (void)performGrowAnimation {
-    [CATransaction begin];
-    [self.imojiView.layer removeAllAnimations];
-    [CATransaction commit];
-    self.imojiView.alpha = 1.0;
-    
-    // grow image
-    [UIView animateWithDuration:0.1 animations:^{
-        self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-        
-    }
-    completion:^(BOOL finished){
-        if (!finished) {
-            return;
-        }
-        [UIView animateWithDuration:0.1f
-                              delay:1.2f
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^{
-                             self.imojiView.transform = CGAffineTransformMakeScale(1, 1);
-                         } completion:^(BOOL finished) {}];
-    }];
-}
-
-- (void)performTranslucentAnimation {
-    [UIView animateWithDuration:0.1 animations:^{
-        self.imojiView.alpha = 0.5;
-    }
-    completion:^(BOOL finished){
-        if (!finished) {
-            return;
-        }
-        [UIView animateWithDuration:0.1f
-                              delay:1.2f
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^{
-                             self.imojiView.alpha = 1;
-                         } completion:^(BOOL finished) {}];
-    }];
-}
-
-@end
-
-
