@@ -425,9 +425,9 @@ NSUInteger const ImojiCollectionViewNumberOfItemsToLoad = 30;
         NSIndexPath *indexPath = [self indexPathForCell:(UICollectionViewCell*)cell];
 
         if (currentIndexPath.row == indexPath.row) {
-            [(ImojiCollectionViewCell*)cell performGrowAnimation];
+            [(IMKeyboardCollectionViewCell*)cell performGrowAnimation];
         } else {
-            [(ImojiCollectionViewCell*)cell performTranslucentAnimation];
+            [(IMKeyboardCollectionViewCell*)cell performTranslucentAnimation];
         }
         
     }

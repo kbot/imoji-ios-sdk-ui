@@ -11,6 +11,8 @@ extern NSString *const IMCollectionViewCellReuseId;
 @interface IMCollectionViewCell : UICollectionViewCell
 
 - (void)loadImojiImage:(UIImage *)imojiImage;
+- (void)performGrowAnimation;
+- (void)performTranslucentAnimation;
 
 @property(nonatomic, strong) UIImageView *imojiView;
 @property(nonatomic, readonly) BOOL hasImojiImage;

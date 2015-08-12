@@ -39,6 +39,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 
     if (imojiImage) {
         self.imojiView.image = imojiImage;
+        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
     } else {
         self.imojiView.image = [IMCollectionView placeholderImageWithRadius:30];
@@ -48,6 +49,18 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     self.titleView.attributedText = [ImojiTextUtil attributedString:categoryTitle
                                                        withFontSize:20.0f
                                                           textColor:[UIColor blackColor]];
+}
+
+
+- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    [image drawInRect:drawRect];
+    [tintColor set];
+    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return tintedImage;
 }
 
 @end
