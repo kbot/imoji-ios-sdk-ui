@@ -13,6 +13,7 @@
 #import <UIKit/UIKit.h>
 #import "ImojiTextUtil.h"
 #import "QwertyViewController.h"
+#import "SearchTextField.h"
 
 
 #define CUR_WIDTH [[UIScreen mainScreen] applicationFrame ].size.width
@@ -51,7 +52,8 @@
 
 // search
 @property (nonatomic, strong) UIView *searchView;
-@property (nonatomic, strong) UITextField *searchField;
+//@property (nonatomic, strong) UITextField *searchField;
+@property (nonatomic, strong) SearchTextField *searchField;
 
 
 @end
@@ -250,7 +252,7 @@
         make.width.equalTo(@(80));
     }];
     
-    
+    /*
     self.searchField = [[UITextField alloc] init];
     self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
     self.searchField.placeholder = @"SEARCH";
@@ -262,9 +264,22 @@
         make.right.equalTo(searchCancelButton.mas_left).with.offset(0);
         make.height.equalTo(@(40));
     }];
+     */
+    
+    self.searchField = [[SearchTextField alloc] init];
+    self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
+    [searchBar addSubview: self.searchField];
+    [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(searchBar.mas_top).with.offset(0);
+        make.left.equalTo(searchBar.mas_left).with.offset(12);
+        make.right.equalTo(searchCancelButton.mas_left).with.offset(0);
+        make.height.equalTo(@(40));
+    }];
+    
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Qwerty" bundle:[NSBundle mainBundle]];
     QwertyViewController *vc = [storyboard instantiateInitialViewController];
+    vc.searchField = self.searchField;
     [self addChildViewController:vc];
     [self.searchView addSubview:vc.view];
     [vc didMoveToParentViewController:self];
@@ -456,7 +471,7 @@
     switch (sender.tag) {
         case 1:
             self.searchView.hidden = NO;
-            self.searchField.text = @"";
+            //self.searchField.text = @"";
             [self.progressView setProgress:0.f animated:YES];
             [self.searchField becomeFirstResponder];
             //[[self.view window] makeFirstResponder:self.searchField];

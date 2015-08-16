@@ -132,7 +132,8 @@
 - (IBAction) keyPressed:(UIButton*)sender {
     
     //inserts the pressed character into the text document
-    [self.textDocumentProxy insertText:sender.titleLabel.text];
+    //[self.textDocumentProxy insertText:sender.titleLabel.text];
+    self.searchField.text = [self.searchField.text stringByAppendingString:sender.titleLabel.text];
     
     //if shiftStatus is 1, reset it to 0 by pressing the shift key
     if (_shiftStatus == 1) {
@@ -143,15 +144,18 @@
 
 -(IBAction) backspaceKeyPressed: (UIButton*) sender {
     
-    [self.textDocumentProxy deleteBackward];
+    //[self.textDocumentProxy deleteBackward];
+    if (self.searchField.text.length > 0) {
+        self.searchField.text = [self.searchField.text substringToIndex:[self.searchField.text length]-1];
+    }
 }
 
 
 
 -(IBAction) spaceKeyPressed: (UIButton*) sender {
     
-    [self.textDocumentProxy insertText:@" "];
-    
+   // [self.textDocumentProxy insertText:@" "];
+    self.searchField.text = [self.searchField.text stringByAppendingString:@" "];
 }
 
 
