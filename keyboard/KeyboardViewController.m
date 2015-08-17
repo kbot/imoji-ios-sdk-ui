@@ -210,7 +210,11 @@
     
     // menu view
     [self setupMenuView];
-    [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+    dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async( dispatch_get_main_queue(), ^{
+            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+        });
+    });
     self.generalCatButton.selected = YES;
     
     // search

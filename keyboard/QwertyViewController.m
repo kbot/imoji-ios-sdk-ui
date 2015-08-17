@@ -7,7 +7,6 @@
 #import "QwertyViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Masonry/View+MASAdditions.h>
-#import "UIView+RoundedCorners.h"
 
 @interface QwertyViewController () {
     
@@ -49,9 +48,6 @@
     [super viewDidLoad];
     
     [self initializeKeyboard];
-    
-    NSLog(@"width: %f", self.view.frame.size.width);
-    NSLog(@"height: %f", self.view.frame.size.height);
     
     for (UIView *subview in self.view.subviews)
     {

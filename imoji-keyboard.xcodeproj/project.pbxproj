@@ -35,7 +35,6 @@
 		1F72B9091B78A835008E6E2F /* keyboard_favorited@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9061B78A835008E6E2F /* keyboard_favorited@2x.png */; };
 		1F72B90A1B78A835008E6E2F /* keyboard_favorited@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9071B78A835008E6E2F /* keyboard_favorited@3x.png */; };
 		1F72B90B1B78A835008E6E2F /* keyboard_favorited.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9081B78A835008E6E2F /* keyboard_favorited.png */; };
-		1F72B90E1B7B328F008E6E2F /* UIView+RoundedCorners.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F72B90D1B7B328F008E6E2F /* UIView+RoundedCorners.m */; };
 		1F72B9101B7B3428008E6E2F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F72B90F1B7B3428008E6E2F /* QuartzCore.framework */; };
 		1F72B9141B811DAE008E6E2F /* SearchTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F72B9131B811DAE008E6E2F /* SearchTextField.m */; };
 		1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F83D32D1B24D0800052975D /* ImojiTextUtil.m */; };
@@ -151,8 +150,6 @@
 		1F72B9061B78A835008E6E2F /* keyboard_favorited@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_favorited@2x.png"; sourceTree = "<group>"; };
 		1F72B9071B78A835008E6E2F /* keyboard_favorited@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "keyboard_favorited@3x.png"; sourceTree = "<group>"; };
 		1F72B9081B78A835008E6E2F /* keyboard_favorited.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = keyboard_favorited.png; sourceTree = "<group>"; };
-		1F72B90C1B7B325F008E6E2F /* UIView+RoundedCorners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+RoundedCorners.h"; sourceTree = "<group>"; };
-		1F72B90D1B7B328F008E6E2F /* UIView+RoundedCorners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RoundedCorners.m"; sourceTree = "<group>"; };
 		1F72B90F1B7B3428008E6E2F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1F72B9121B811DAE008E6E2F /* SearchTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchTextField.h; sourceTree = "<group>"; };
 		1F72B9131B811DAE008E6E2F /* SearchTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchTextField.m; sourceTree = "<group>"; };
@@ -357,8 +354,6 @@
 				1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */,
 				1F83D32C1B24D0800052975D /* ImojiTextUtil.h */,
 				1F83D32D1B24D0800052975D /* ImojiTextUtil.m */,
-				1F72B90C1B7B325F008E6E2F /* UIView+RoundedCorners.h */,
-				1F72B90D1B7B328F008E6E2F /* UIView+RoundedCorners.m */,
 				1F72B9121B811DAE008E6E2F /* SearchTextField.h */,
 				1F72B9131B811DAE008E6E2F /* SearchTextField.m */,
 			);
@@ -702,7 +697,6 @@
 				1A7766421B6B128F001C954C /* IMCollectionViewStatusCell.m in Sources */,
 				1A77663F1B6B128F001C954C /* IMCategoryCollectionViewCell.m in Sources */,
 				1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */,
-				1F72B90E1B7B328F008E6E2F /* UIView+RoundedCorners.m in Sources */,
 				1F43A0D71B6635DE00E755C0 /* QwertyViewController.m in Sources */,
 				1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */,
 				1A7766401B6B128F001C954C /* IMCollectionView.m in Sources */,
