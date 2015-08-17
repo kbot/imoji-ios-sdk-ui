@@ -10,4 +10,7 @@
 
 @interface SearchTextField : UILabel
 
+-(void) deleteBackward;
+-(void) insertText:(NSString*)string;
+
 @end

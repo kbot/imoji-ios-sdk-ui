@@ -52,7 +52,6 @@
 
 // search
 @property (nonatomic, strong) UIView *searchView;
-//@property (nonatomic, strong) UITextField *searchField;
 @property (nonatomic, strong) SearchTextField *searchField;
 
 
@@ -252,27 +251,13 @@
         make.width.equalTo(@(80));
     }];
     
-    /*
-    self.searchField = [[UITextField alloc] init];
-    self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
-    self.searchField.placeholder = @"SEARCH";
-    [self.searchField setTintColor:[UIColor grayColor]];
-    [searchBar addSubview:self.searchField];
-    [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(searchBar.mas_top).with.offset(0);
-        make.left.equalTo(searchBar.mas_left).with.offset(12);
-        make.right.equalTo(searchCancelButton.mas_left).with.offset(0);
-        make.height.equalTo(@(40));
-    }];
-     */
-    
     self.searchField = [[SearchTextField alloc] init];
     self.searchField.font = [UIFont fontWithName:@"Imoji-Regular" size:14.f];
     [searchBar addSubview: self.searchField];
     [self.searchField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(searchBar.mas_top).with.offset(0);
-        make.left.equalTo(searchBar.mas_left).with.offset(12);
-        make.right.equalTo(searchCancelButton.mas_left).with.offset(0);
+        make.left.equalTo(searchBar.mas_left).with.offset(15);
+        make.right.equalTo(searchCancelButton.mas_left).with.offset(10);
         make.height.equalTo(@(40));
     }];
     
@@ -308,11 +293,8 @@
 }
 
 - (void) cancelSearch {
-    [self.searchField resignFirstResponder];
-    [self.searchField endEditing:YES];
-    //[self.searchField endEditing:YES];
+    self.searchField.text = @"";
     self.searchView.hidden = YES;
-    //self.closeButton.hidden = NO;
 }
 
 - (void)setupMenuView {
@@ -471,10 +453,7 @@
     switch (sender.tag) {
         case 1:
             self.searchView.hidden = NO;
-            //self.searchField.text = @"";
             [self.progressView setProgress:0.f animated:YES];
-            [self.searchField becomeFirstResponder];
-            //[[self.view window] makeFirstResponder:self.searchField];
             break;
         case 2:
             [self.collectionView loadRecentImojis];

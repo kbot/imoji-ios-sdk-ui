@@ -133,7 +133,7 @@
     
     //inserts the pressed character into the text document
     //[self.textDocumentProxy insertText:sender.titleLabel.text];
-    self.searchField.text = [self.searchField.text stringByAppendingString:sender.titleLabel.text];
+    [self.searchField insertText:sender.titleLabel.text];
     
     //if shiftStatus is 1, reset it to 0 by pressing the shift key
     if (_shiftStatus == 1) {
@@ -145,9 +145,7 @@
 -(IBAction) backspaceKeyPressed: (UIButton*) sender {
     
     //[self.textDocumentProxy deleteBackward];
-    if (self.searchField.text.length > 0) {
-        self.searchField.text = [self.searchField.text substringToIndex:[self.searchField.text length]-1];
-    }
+    [self.searchField deleteBackward];
 }
 
 
@@ -155,7 +153,7 @@
 -(IBAction) spaceKeyPressed: (UIButton*) sender {
     
    // [self.textDocumentProxy insertText:@" "];
-    self.searchField.text = [self.searchField.text stringByAppendingString:@" "];
+    [self.searchField insertText:@" "];
 }
 
 
@@ -163,8 +161,10 @@
     
     //double tapping the space key automatically inserts a period and a space
     //if necessary, activate the shift button
-    [self.textDocumentProxy deleteBackward];
-    [self.textDocumentProxy insertText:@". "];
+    //[self.textDocumentProxy deleteBackward];
+    //[self.textDocumentProxy insertText:@". "];
+    [self.searchField deleteBackward];
+    [self.searchField insertText:@". "];
     
     if (_shiftStatus == 0) {
         [self shiftKeyPressed:self.shiftButton];
