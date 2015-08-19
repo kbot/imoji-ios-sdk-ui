@@ -102,8 +102,9 @@
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+
+-(void)viewDidAppear:(BOOL)animated  {
+    [super viewDidAppear:animated];
     [[ImojiSDK sharedInstance] setClientId:[[NSUUID alloc] initWithUUIDString:@"a5908b99-c9b6-4661-9dfb-5c9ff4860c80"] apiToken:@"U2FsdGVkX1+FJ8PuT09YF1Ypf/yMWuFFGW885/rhgj8="];
     
     // basic properties
@@ -140,6 +141,7 @@
     [self.view addSubview:self.titleLabel];
     
     
+   
     // close button
     self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.closeButton  setImage:[UIImage imageNamed:@"keyboard_search_clear"] forState:UIControlStateNormal];
@@ -162,6 +164,7 @@
         make.height.width.equalTo(@(36));
     }];
     
+   
     // copied
     self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied"]];
     [self.view addSubview:self.copiedImageView];
@@ -171,6 +174,7 @@
         make.right.equalTo(self.view.mas_right).with.offset(-5);
         make.height.width.equalTo(@(36));
     }];
+    
     
     // collection view
     self.collectionView = [ImojiCollectionView imojiCollectionViewWithSession:self.session];
@@ -216,6 +220,7 @@
         });
     });
     self.generalCatButton.selected = YES;
+    
     
     // search
     self.searchView = [[UIView alloc] init];
@@ -265,7 +270,6 @@
         make.height.equalTo(@(40));
     }];
     
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Qwerty" bundle:[NSBundle mainBundle]];
     QwertyViewController *vc = [storyboard instantiateInitialViewController];
     vc.searchField = self.searchField;
@@ -309,12 +313,11 @@
     [self.view addSubview:self.bottomNavView];
     [self.bottomNavView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view.mas_bottom);
-        make.left.equalTo(self.view.mas_left).offset(10);
-        make.right.equalTo(self.view.mas_right).offset(-10);
+        make.left.equalTo(self.view.mas_left).with.offset(10);
+        make.right.equalTo(self.view.mas_right).with.offset(-10);
         make.height.equalTo(@(navHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
-    
     
     self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextKeyboardButton.tag = 0;
