@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A032CD01B910DF300CC92A3 /* IMKeyboardCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCA1B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.m */; settings = {ASSET_TAGS = (); }; };
-		1A032CD11B910DF600CC92A3 /* IMKeyboardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */; settings = {ASSET_TAGS = (); }; };
-		1A032CD41B910EC900CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE211B159C91002C4896 /* Info.plist */; settings = {ASSET_TAGS = (); }; };
-		1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDF21B1594CD002C4896 /* Info.plist */; settings = {ASSET_TAGS = (); }; };
+		1A032CD01B910DF300CC92A3 /* IMKeyboardCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCA1B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.m */; };
+		1A032CD11B910DF600CC92A3 /* IMKeyboardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */; };
+		1A032CD41B910EC900CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE211B159C91002C4896 /* Info.plist */; };
+		1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDF21B1594CD002C4896 /* Info.plist */; };
 		1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F161F871B24B286006BF36F /* ImojiCollectionView.m */; };
 		1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
 		1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
@@ -72,7 +72,6 @@
 		1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */; };
 		6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4757674F0D133AC81EB726C /* libPods-keyboard.a */; };
 		80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */; };
-		BB03334CF090DB4FE2D92EFA /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD00230162EF0E785E98542B /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,7 +191,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */,
-				BB03334CF090DB4FE2D92EFA /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +217,17 @@
 				1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		1A032CD81B91129000CC92A3 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1F20FE221B159C91002C4896 /* KeyboardViewController.h */,
+				1F20FE231B159C91002C4896 /* KeyboardViewController.m */,
+				1F43A0D41B6635DE00E755C0 /* QwertyViewController.h */,
+				1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 		1F205CE81B43C33A00AB5007 /* Fonts */ = {
@@ -276,13 +285,12 @@
 		1F20FE1F1B159C91002C4896 /* keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				1A032CCF1B910DE000CC92A3 /* Views */,
 				1FABD6741B281F9B0024F683 /* Assets */,
-				1F83D3281B24D0560052975D /* Util */,
 				1F20FE201B159C91002C4896 /* Supporting Files */,
+				1F83D3281B24D0560052975D /* Util */,
+				1A032CCF1B910DE000CC92A3 /* Views */,
+				1A032CD81B91129000CC92A3 /* View Controllers */,
 				1F03A1751B15B4F30061848E /* keyboard.entitlements */,
-				1F20FE221B159C91002C4896 /* KeyboardViewController.h */,
-				1F20FE231B159C91002C4896 /* KeyboardViewController.m */,
 			);
 			path = keyboard;
 			sourceTree = "<group>";
@@ -298,9 +306,6 @@
 		1F83D3281B24D0560052975D /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */,
-				1F43A0D41B6635DE00E755C0 /* QwertyViewController.h */,
-				1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */,
 				1F83D32C1B24D0800052975D /* ImojiTextUtil.h */,
 				1F83D32D1B24D0800052975D /* ImojiTextUtil.m */,
 				1F72B9121B811DAE008E6E2F /* SearchTextField.h */,
@@ -312,6 +317,7 @@
 		1FABD6741B281F9B0024F683 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */,
 				1F43A0D81B66361200E755C0 /* KeyArt.xcassets */,
 				1F205CE81B43C33A00AB5007 /* Fonts */,
 				1FABD6771B2820180024F683 /* Icons */,
@@ -401,10 +407,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F20FE141B1594CE002C4896 /* Build configuration list for PBXNativeTarget "imoji-keyboard" */;
 			buildPhases = (
+				1A032CD71B91112000CC92A3 /* Check Pods Manifest.lock */,
 				1F20FDEA1B1594CD002C4896 /* Sources */,
 				1F20FDEB1B1594CD002C4896 /* Frameworks */,
 				1F20FDEC1B1594CD002C4896 /* Resources */,
 				1F20FE2B1B159C91002C4896 /* Embed App Extensions */,
+				1A5642391B91118C00C90891 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -549,6 +557,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1A032CD71B91112000CC92A3 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi";
+			showEnvVarsInLog = 0;
+		};
+		1A5642391B91118C00C90891 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		A81D16F7BA4FC8E0C16C9727 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -727,6 +765,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "imoji.imoji-keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -742,6 +781,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "imoji.imoji-keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -768,6 +808,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "imoji.imoji-keyboard.keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -793,6 +834,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "imoji.imoji-keyboard.keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
