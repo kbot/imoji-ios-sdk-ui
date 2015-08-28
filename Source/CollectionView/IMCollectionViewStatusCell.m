@@ -15,17 +15,13 @@ NSString *const IMCollectionViewStatusCellReuseId = @"IMCategoryCollectionViewCe
 - (void)showLoading {
     [self setupViews];
     [self.activityIndicatorView startAnimating];
-//    self.title.attributedText = [ImojiTextUtil attributedString:@"Loading"
-//                                                   withFontSize:20.0f
-//                                                      textColor:[UIColor blackColor]];
+    self.title.text = @"Loading";
     self.activityIndicatorView.hidden = NO;
 }
 
 - (void)showNoResults {
     [self setupViews];
-//    self.title.attributedText = [ImojiTextUtil attributedString:@"No results found"
-//                                                   withFontSize:20.0f
-//                                                      textColor:[UIColor blackColor]];
+    self.title.text = @"No results found";
     self.activityIndicatorView.hidden = YES;
 }
 

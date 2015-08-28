@@ -45,9 +45,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         self.imojiView.contentMode = UIViewContentModeCenter;
     }
 
-//    self.titleView.attributedText = [ImojiTextUtil attributedString:categoryTitle
-//                                                       withFontSize:20.0f
-//                                                          textColor:[UIColor blackColor]];
+    self.titleView.text = categoryTitle;
 }
 
 
