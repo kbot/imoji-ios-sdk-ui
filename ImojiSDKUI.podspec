@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'CollectionView' do |ss|
     ss.dependency "ImojiSDK/Core"
+    ss.dependency "Masonry"
 
     ss.ios.source_files = 'Source/CollectionView/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/CollectionView/*.h'
