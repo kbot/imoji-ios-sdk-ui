@@ -5,7 +5,6 @@
 
 #import <Masonry/View+MASAdditions.h>
 #import "IMCollectionViewStatusCell.h"
-#import "ImojiTextUtil.h"
 
 NSString *const IMCollectionViewStatusCellReuseId = @"IMCategoryCollectionViewCellReuseId";
 
@@ -16,17 +15,17 @@ NSString *const IMCollectionViewStatusCellReuseId = @"IMCategoryCollectionViewCe
 - (void)showLoading {
     [self setupViews];
     [self.activityIndicatorView startAnimating];
-    self.title.attributedText = [ImojiTextUtil attributedString:@"Loading"
-                                                   withFontSize:20.0f
-                                                      textColor:[UIColor blackColor]];
+//    self.title.attributedText = [ImojiTextUtil attributedString:@"Loading"
+//                                                   withFontSize:20.0f
+//                                                      textColor:[UIColor blackColor]];
     self.activityIndicatorView.hidden = NO;
 }
 
 - (void)showNoResults {
     [self setupViews];
-    self.title.attributedText = [ImojiTextUtil attributedString:@"No results found"
-                                                   withFontSize:20.0f
-                                                      textColor:[UIColor blackColor]];
+//    self.title.attributedText = [ImojiTextUtil attributedString:@"No results found"
+//                                                   withFontSize:20.0f
+//                                                      textColor:[UIColor blackColor]];
     self.activityIndicatorView.hidden = YES;
 }
 

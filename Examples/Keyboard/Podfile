@@ -1,11 +1,13 @@
 source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
 
 target "imoji-keyboard" do
-  pod 'ImojiSDK'
+  pod 'ImojiSDK/Core'
 end
 
 target "keyboard" do
   pod 'Masonry'
   pod 'MBProgressHUD', '~> 0.9.1'
   pod 'ImojiSDK/Core'
+  pod 'ImojiSDKUI', :path => '../..'
 end
