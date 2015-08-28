@@ -5,7 +5,6 @@
 
 #import "IMCategoryCollectionViewCell.h"
 #import <Masonry/View+MASAdditions.h>
-#import "ImojiTextUtil.h"
 #import "IMCollectionView.h"
 
 NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionViewCellReuseId";
@@ -46,9 +45,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         self.imojiView.contentMode = UIViewContentModeCenter;
     }
 
-    self.titleView.attributedText = [ImojiTextUtil attributedString:categoryTitle
-                                                       withFontSize:20.0f
-                                                          textColor:[UIColor blackColor]];
+    self.titleView.text = categoryTitle;
 }
 
 
