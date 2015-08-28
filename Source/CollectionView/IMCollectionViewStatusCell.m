@@ -6,7 +6,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import "IMCollectionViewStatusCell.h"
 
-NSString *const IMCollectionViewStatusCellReuseId = @"IMCategoryCollectionViewCellReuseId";
+NSString *const IMCollectionViewStatusCellReuseId = @"IMCollectionViewStatusCellReuseId";
 
 @implementation IMCollectionViewStatusCell {
 
