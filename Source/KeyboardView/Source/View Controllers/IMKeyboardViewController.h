@@ -28,5 +28,6 @@
 
 @interface IMKeyboardViewController : UIInputViewController <IMImojiSessionDelegate>
 
+@property (nonatomic, strong) NSBundle* imagesBundle;
 
 @end

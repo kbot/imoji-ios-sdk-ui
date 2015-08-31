@@ -84,6 +84,8 @@
         // Perform custom initialization work here
         self.portraitHeight = 258;
         self.landscapeHeight = 205;
+
+        _imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
     }
     return self;
 }
@@ -161,7 +163,7 @@
    
     // close button
     self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.closeButton  setImage:[UIImage imageNamed:@"keyboard_search_clear"] forState:UIControlStateNormal];
+    [self.closeButton  setImage:[UIImage imageNamed:@"keyboard_search_clear" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeCategory) forControlEvents:UIControlEventTouchUpInside];
     self.closeButton.hidden = YES;
     [self.view addSubview:self.closeButton];
@@ -172,7 +174,7 @@
     }];
     
     // heart
-    self.heartImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_favorited"]];
+    self.heartImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_favorited" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
     [self.view addSubview:self.heartImageView];
     self.heartImageView.hidden = YES;
     [self.heartImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -183,7 +185,7 @@
     
    
     // copied
-    self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied"]];
+    self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
     [self.view addSubview:self.copiedImageView];
     self.copiedImageView.hidden = YES;
     [self.copiedImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -339,7 +341,9 @@
     self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.nextKeyboardButton.tag = 0;
     self.nextKeyboardButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    UIImage *nextKeyboardImageNormal = [UIImage imageNamed:@"keyboard_globe"];
+    
+    UIImage *nextKeyboardImageNormal = [UIImage imageNamed:@"keyboard_globe" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
     [self.nextKeyboardButton  setImage:nextKeyboardImageNormal forState:UIControlStateNormal];
     [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.nextKeyboardButton];
@@ -347,47 +351,47 @@
     self.searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.searchButton.tag = 1;
     self.searchButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.searchButton  setImage:[UIImage imageNamed:@"keyboard_search"] forState:UIControlStateNormal];
-    [self.searchButton setImage:[UIImage imageNamed:@"keyboard_search_active"] forState:UIControlStateSelected];
+    [self.searchButton  setImage:[UIImage imageNamed:@"keyboard_search" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.searchButton setImage:[UIImage imageNamed:@"keyboard_search_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
     [self.searchButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.searchButton];
     
     self.recentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.recentsButton.tag = 2;
     self.recentsButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.recentsButton  setImage:[UIImage imageNamed:@"keyboard_recents"] forState:UIControlStateNormal];
-    [self.recentsButton  setImage:[UIImage imageNamed:@"keyboard_recents_active"] forState:UIControlStateSelected];
+    [self.recentsButton  setImage:[UIImage imageNamed:@"keyboard_recents" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.recentsButton  setImage:[UIImage imageNamed:@"keyboard_recents_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
     [self.recentsButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.recentsButton];
     
     self.generalCatButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.generalCatButton.tag = 3;
     self.generalCatButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.generalCatButton  setImage:[UIImage imageNamed:@"keyboard_reactions"] forState:UIControlStateNormal];
-    [self.generalCatButton  setImage:[UIImage imageNamed:@"keyboard_reactions_active"] forState:UIControlStateSelected];
+    [self.generalCatButton  setImage:[UIImage imageNamed:@"keyboard_reactions" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.generalCatButton  setImage:[UIImage imageNamed:@"keyboard_reactions_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
     [self.generalCatButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.generalCatButton];
     
     self.trendingCatButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.trendingCatButton.tag = 4;
     self.trendingCatButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.trendingCatButton  setImage:[UIImage imageNamed:@"keyboard_trending"] forState:UIControlStateNormal];
-    [self.trendingCatButton  setImage:[UIImage imageNamed:@"keyboard_trending_active"] forState:UIControlStateSelected];
+    [self.trendingCatButton  setImage:[UIImage imageNamed:@"keyboard_trending" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.trendingCatButton  setImage:[UIImage imageNamed:@"keyboard_trending_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
     [self.trendingCatButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.trendingCatButton];
     
     self.collectionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.collectionButton.tag = 5;
     self.collectionButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.collectionButton  setImage:[UIImage imageNamed:@"keyboard_collection"] forState:UIControlStateNormal];
-    [self.collectionButton  setImage:[UIImage imageNamed:@"keyboard_collection_active"] forState:UIControlStateSelected];
+    [self.collectionButton  setImage:[UIImage imageNamed:@"keyboard_collection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.collectionButton  setImage:[UIImage imageNamed:@"keyboard_collection_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
     [self.collectionButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.collectionButton];
     
     self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.deleteButton.tag = 6;
     self.deleteButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.deleteButton  setImage:[UIImage imageNamed:@"keyboard_delete"] forState:UIControlStateNormal];
+    [self.deleteButton  setImage:[UIImage imageNamed:@"keyboard_delete" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.navButtonsArray addObject:self.deleteButton];
     
