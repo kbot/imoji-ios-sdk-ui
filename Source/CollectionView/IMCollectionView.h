@@ -27,8 +27,6 @@
 
 - (void)loadFeaturedImojis;
 
-- (void)loadUserCollectionImojis;
-
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm;
