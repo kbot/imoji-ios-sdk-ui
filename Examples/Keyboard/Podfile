@@ -6,8 +6,6 @@ target "imoji-keyboard" do
 end
 
 target "keyboard" do
-  pod 'Masonry'
   pod 'MBProgressHUD', '~> 0.9.1'
-  pod 'ImojiSDK/Core'
-  pod 'ImojiSDKUI', :path => '../..'
+  pod 'ImojiSDKUI'
 end

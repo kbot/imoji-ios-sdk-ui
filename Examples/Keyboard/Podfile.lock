@@ -3,10 +3,11 @@ PODS:
   - ImojiSDK/Core (0.2.9):
     - Bolts/Tasks (~> 1.2)
     - libwebp (~> 0.4.3)
-  - ImojiSDKUI (0.1.0):
-    - ImojiSDKUI/CollectionView (= 0.1.0)
-  - ImojiSDKUI/CollectionView (0.1.0):
+  - ImojiSDKUI (0.1.1):
+    - ImojiSDKUI/CollectionView (= 0.1.1)
+  - ImojiSDKUI/CollectionView (0.1.1):
     - ImojiSDK/Core
+    - Masonry
   - libwebp (0.4.3):
     - libwebp/core (= 0.4.3)
     - libwebp/dec (= 0.4.3)
@@ -36,18 +37,13 @@ PODS:
 
 DEPENDENCIES:
   - ImojiSDK/Core
-  - ImojiSDKUI (from `../..`)
-  - Masonry
+  - ImojiSDKUI
   - MBProgressHUD (~> 0.9.1)
-
-EXTERNAL SOURCES:
-  ImojiSDKUI:
-    :path: "../.."
 
 SPEC CHECKSUMS:
   Bolts: 7686a5cb204d1ac54cee26f12d9b7622db3f80d1
   ImojiSDK: 4c488fde86f9f4b63d81734b325a217e7624f198
-  ImojiSDKUI: 246a0ab553dafd86249c3e0ffa244f08f626cc57
+  ImojiSDKUI: fa7ffaef5a7b6a9e93b91c13f8898b1badcf28c3
   libwebp: 360ed8bc4ec8da413f07f84071e7f5a5c67a285d
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad

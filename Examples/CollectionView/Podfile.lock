@@ -16,9 +16,9 @@ PODS:
   - ImojiSDK/Sync (0.2.9):
     - Bolts/AppLinks (~> 1.2)
     - ImojiSDK/Core
-  - ImojiSDKUI (0.1.0):
-    - ImojiSDKUI/CollectionView (= 0.1.0)
-  - ImojiSDKUI/CollectionView (0.1.0):
+  - ImojiSDKUI (0.1.1):
+    - ImojiSDKUI/CollectionView (= 0.1.1)
+  - ImojiSDKUI/CollectionView (0.1.1):
     - ImojiSDK/Core
     - Masonry
   - libwebp (0.4.3):
@@ -56,7 +56,7 @@ SPEC CHECKSUMS:
   Bolts: 7686a5cb204d1ac54cee26f12d9b7622db3f80d1
   CocoaLumberjack: 019d1361244274a6138c788c6cb80baabc13fb8f
   ImojiSDK: 4c488fde86f9f4b63d81734b325a217e7624f198
-  ImojiSDKUI: 88781f469bcb0ab702f770a8a78f6b69ec71c9c9
+  ImojiSDKUI: fa7ffaef5a7b6a9e93b91c13f8898b1badcf28c3
   libwebp: 360ed8bc4ec8da413f07f84071e7f5a5c67a285d
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
 
