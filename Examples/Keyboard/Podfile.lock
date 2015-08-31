@@ -3,11 +3,17 @@ PODS:
   - ImojiSDK/Core (0.2.9):
     - Bolts/Tasks (~> 1.2)
     - libwebp (~> 0.4.3)
-  - ImojiSDKUI (0.1.1):
-    - ImojiSDKUI/CollectionView (= 0.1.1)
-  - ImojiSDKUI/CollectionView (0.1.1):
+  - ImojiSDKUI (0.1.2):
+    - ImojiSDKUI/CollectionView (= 0.1.2)
+    - ImojiSDKUI/KeyboardView (= 0.1.2)
+  - ImojiSDKUI/CollectionView (0.1.2):
     - ImojiSDK/Core
     - Masonry
+  - ImojiSDKUI/KeyboardView (0.1.2):
+    - ImojiSDK/Core
+    - ImojiSDKUI/CollectionView
+    - Masonry
+    - MBProgressHUD (~> 0.9.1)
   - libwebp (0.4.3):
     - libwebp/core (= 0.4.3)
     - libwebp/dec (= 0.4.3)
@@ -36,14 +42,21 @@ PODS:
   - MBProgressHUD (0.9.1)
 
 DEPENDENCIES:
-  - ImojiSDK/Core
-  - ImojiSDKUI
-  - MBProgressHUD (~> 0.9.1)
+  - ImojiSDKUI (from `https://github.com/imojiengineering/imoji-ios-sdk-ui.git`)
+
+EXTERNAL SOURCES:
+  ImojiSDKUI:
+    :git: https://github.com/imojiengineering/imoji-ios-sdk-ui.git
+
+CHECKOUT OPTIONS:
+  ImojiSDKUI:
+    :commit: 84a16b6a6edf798c999d20934581b1fcf421bb9a
+    :git: https://github.com/imojiengineering/imoji-ios-sdk-ui.git
 
 SPEC CHECKSUMS:
   Bolts: 7686a5cb204d1ac54cee26f12d9b7622db3f80d1
   ImojiSDK: 4c488fde86f9f4b63d81734b325a217e7624f198
-  ImojiSDKUI: fa7ffaef5a7b6a9e93b91c13f8898b1badcf28c3
+  ImojiSDKUI: 8cc94ff0b26869e5c48c141074c6685126aad0bc
   libwebp: 360ed8bc4ec8da413f07f84071e7f5a5c67a285d
   Masonry: 362e8a1cc0beada4a4c4832d5e863da2a51533be
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad

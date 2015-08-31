@@ -7,71 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A032CD01B910DF300CC92A3 /* IMKeyboardCategoryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCA1B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.m */; };
-		1A032CD11B910DF600CC92A3 /* IMKeyboardCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */; };
-		1A032CD41B910EC900CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE211B159C91002C4896 /* Info.plist */; };
 		1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDF21B1594CD002C4896 /* Info.plist */; };
-		1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F161F871B24B286006BF36F /* ImojiCollectionView.m */; };
-		1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
-		1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */; };
+		1A2ED8EB1B9508DB008D7555 /* IMSampleKeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2ED8EA1B9508DB008D7555 /* IMSampleKeyboardViewController.m */; };
 		1F20FDF41B1594CD002C4896 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF31B1594CD002C4896 /* main.m */; };
 		1F20FDF71B1594CD002C4896 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF61B1594CD002C4896 /* AppDelegate.m */; };
 		1F20FDFD1B1594CD002C4896 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDFC1B1594CD002C4896 /* ViewController.m */; };
 		1F20FE001B1594CD002C4896 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDFE1B1594CD002C4896 /* Main.storyboard */; };
 		1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE011B1594CD002C4896 /* Images.xcassets */; };
 		1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FE031B1594CD002C4896 /* LaunchScreen.xib */; };
-		1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FE231B159C91002C4896 /* KeyboardViewController.m */; };
 		1F20FE271B159C91002C4896 /* keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1F20FE1E1B159C91002C4896 /* keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1F43A0D61B6635DE00E755C0 /* Qwerty.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */; };
-		1F43A0D71B6635DE00E755C0 /* QwertyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */; };
-		1F43A0D91B66361200E755C0 /* KeyArt.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F43A0D81B66361200E755C0 /* KeyArt.xcassets */; };
-		1F72B9031B78A17C008E6E2F /* keyboard_copied.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9001B78A17C008E6E2F /* keyboard_copied.png */; };
-		1F72B9041B78A17C008E6E2F /* keyboard_copied@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9011B78A17C008E6E2F /* keyboard_copied@2x.png */; };
-		1F72B9051B78A17C008E6E2F /* keyboard_copied@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F72B9021B78A17C008E6E2F /* keyboard_copied@3x.png */; };
 		1F72B9101B7B3428008E6E2F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F72B90F1B7B3428008E6E2F /* QuartzCore.framework */; };
-		1F72B9141B811DAE008E6E2F /* SearchTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F72B9131B811DAE008E6E2F /* SearchTextField.m */; };
-		1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F83D32D1B24D0800052975D /* ImojiTextUtil.m */; };
-		1FABD69F1B2820250024F683 /* keyboard_collection_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6781B2820250024F683 /* keyboard_collection_active.png */; };
-		1FABD6A01B2820250024F683 /* keyboard_collection_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6791B2820250024F683 /* keyboard_collection_active@2x.png */; };
-		1FABD6A11B2820250024F683 /* keyboard_collection_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67A1B2820250024F683 /* keyboard_collection_active@3x.png */; };
-		1FABD6A21B2820250024F683 /* keyboard_collection.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67B1B2820250024F683 /* keyboard_collection.png */; };
-		1FABD6A31B2820250024F683 /* keyboard_collection@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67C1B2820250024F683 /* keyboard_collection@2x.png */; };
-		1FABD6A41B2820250024F683 /* keyboard_collection@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67D1B2820250024F683 /* keyboard_collection@3x.png */; };
-		1FABD6A51B2820250024F683 /* keyboard_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67E1B2820250024F683 /* keyboard_delete.png */; };
-		1FABD6A61B2820250024F683 /* keyboard_delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD67F1B2820250024F683 /* keyboard_delete@2x.png */; };
-		1FABD6A71B2820250024F683 /* keyboard_delete@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6801B2820250024F683 /* keyboard_delete@3x.png */; };
-		1FABD6A81B2820250024F683 /* keyboard_globe.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6811B2820250024F683 /* keyboard_globe.png */; };
-		1FABD6A91B2820250024F683 /* keyboard_globe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6821B2820250024F683 /* keyboard_globe@2x.png */; };
-		1FABD6AA1B2820250024F683 /* keyboard_globe@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6831B2820250024F683 /* keyboard_globe@3x.png */; };
-		1FABD6AB1B2820250024F683 /* keyboard_reactions_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6841B2820250024F683 /* keyboard_reactions_active.png */; };
-		1FABD6AC1B2820250024F683 /* keyboard_reactions_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6851B2820250024F683 /* keyboard_reactions_active@2x.png */; };
-		1FABD6AD1B2820250024F683 /* keyboard_reactions_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6861B2820250024F683 /* keyboard_reactions_active@3x.png */; };
-		1FABD6AE1B2820250024F683 /* keyboard_reactions.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6871B2820250024F683 /* keyboard_reactions.png */; };
-		1FABD6AF1B2820250024F683 /* keyboard_reactions@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6881B2820250024F683 /* keyboard_reactions@2x.png */; };
-		1FABD6B01B2820250024F683 /* keyboard_reactions@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6891B2820250024F683 /* keyboard_reactions@3x.png */; };
-		1FABD6B11B2820250024F683 /* keyboard_recents_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68A1B2820250024F683 /* keyboard_recents_active.png */; };
-		1FABD6B21B2820250024F683 /* keyboard_recents_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68B1B2820250024F683 /* keyboard_recents_active@2x.png */; };
-		1FABD6B31B2820250024F683 /* keyboard_recents_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68C1B2820250024F683 /* keyboard_recents_active@3x.png */; };
-		1FABD6B41B2820250024F683 /* keyboard_recents.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68D1B2820250024F683 /* keyboard_recents.png */; };
-		1FABD6B51B2820250024F683 /* keyboard_recents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68E1B2820250024F683 /* keyboard_recents@2x.png */; };
-		1FABD6B61B2820250024F683 /* keyboard_recents@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD68F1B2820250024F683 /* keyboard_recents@3x.png */; };
-		1FABD6B71B2820250024F683 /* keyboard_search_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6901B2820250024F683 /* keyboard_search_active.png */; };
-		1FABD6B81B2820250024F683 /* keyboard_search_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6911B2820250024F683 /* keyboard_search_active@2x.png */; };
-		1FABD6B91B2820250024F683 /* keyboard_search_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6921B2820250024F683 /* keyboard_search_active@3x.png */; };
-		1FABD6BA1B2820250024F683 /* keyboard_search_clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6931B2820250024F683 /* keyboard_search_clear.png */; };
-		1FABD6BB1B2820250024F683 /* keyboard_search_clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6941B2820250024F683 /* keyboard_search_clear@2x.png */; };
-		1FABD6BC1B2820250024F683 /* keyboard_search_clear@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6951B2820250024F683 /* keyboard_search_clear@3x.png */; };
-		1FABD6BD1B2820250024F683 /* keyboard_search.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6961B2820250024F683 /* keyboard_search.png */; };
-		1FABD6BE1B2820250024F683 /* keyboard_search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6971B2820250024F683 /* keyboard_search@2x.png */; };
-		1FABD6BF1B2820250024F683 /* keyboard_search@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6981B2820250024F683 /* keyboard_search@3x.png */; };
-		1FABD6C01B2820250024F683 /* keyboard_trending_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD6991B2820250024F683 /* keyboard_trending_active.png */; };
-		1FABD6C11B2820250024F683 /* keyboard_trending_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69A1B2820250024F683 /* keyboard_trending_active@2x.png */; };
-		1FABD6C21B2820250024F683 /* keyboard_trending_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69B1B2820250024F683 /* keyboard_trending_active@3x.png */; };
-		1FABD6C31B2820250024F683 /* keyboard_trending.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69C1B2820250024F683 /* keyboard_trending.png */; };
-		1FABD6C41B2820250024F683 /* keyboard_trending@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */; };
-		1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */; };
-		6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4757674F0D133AC81EB726C /* libPods-keyboard.a */; };
-		80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */; };
+		70E3C7B784B88731BF78F36E /* libPods-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 652185DA6FEC75736603745D /* libPods-keyboard.a */; };
+		C903E1AB07553D947DE7BCA9 /* libPods-imoji-keyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4692E802D16156C3ED9E0E24 /* libPods-imoji-keyboard.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,16 +46,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A032CC91B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMKeyboardCategoryCollectionViewCell.h; path = Source/Views/IMKeyboardCategoryCollectionViewCell.h; sourceTree = SOURCE_ROOT; };
-		1A032CCA1B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMKeyboardCategoryCollectionViewCell.m; path = Source/Views/IMKeyboardCategoryCollectionViewCell.m; sourceTree = SOURCE_ROOT; };
-		1A032CCB1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMKeyboardCollectionViewCell.h; path = Source/Views/IMKeyboardCollectionViewCell.h; sourceTree = SOURCE_ROOT; };
-		1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMKeyboardCollectionViewCell.m; path = Source/Views/IMKeyboardCollectionViewCell.m; sourceTree = SOURCE_ROOT; };
-		1F03A1711B15A7950061848E /* ImojiSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImojiSDK.framework; path = Pods/ImojiSDK/ImojiSDK.framework; sourceTree = "<group>"; };
+		1A2ED8E91B9508DB008D7555 /* IMSampleKeyboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMSampleKeyboardViewController.h; path = "Source/View Controllers/IMSampleKeyboardViewController.h"; sourceTree = SOURCE_ROOT; };
+		1A2ED8EA1B9508DB008D7555 /* IMSampleKeyboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMSampleKeyboardViewController.m; path = "Source/View Controllers/IMSampleKeyboardViewController.m"; sourceTree = SOURCE_ROOT; };
 		1F03A1751B15B4F30061848E /* keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = keyboard.entitlements; sourceTree = SOURCE_ROOT; };
-		1F161F861B24B286006BF36F /* ImojiCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImojiCollectionView.h; path = Source/Views/ImojiCollectionView.h; sourceTree = SOURCE_ROOT; };
-		1F161F871B24B286006BF36F /* ImojiCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImojiCollectionView.m; path = Source/Views/ImojiCollectionView.m; sourceTree = SOURCE_ROOT; };
-		1F161F8C1B24CF81006BF36F /* Masonry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Masonry.framework; path = "Pods/../build/Debug-iphoneos/Pods/Masonry.framework"; sourceTree = "<group>"; };
-		1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Imoji_Regular.otf; path = Assets/Fonts/Imoji_Regular.otf; sourceTree = SOURCE_ROOT; };
 		1F20FDEE1B1594CD002C4896 /* imoji-keyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "imoji-keyboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F20FDF21B1594CD002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		1F20FDF31B1594CD002C4896 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Source/main.m; sourceTree = SOURCE_ROOT; };
@@ -121,67 +61,12 @@
 		1F20FE041B1594CD002C4896 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		1F20FE1E1B159C91002C4896 /* keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F20FE211B159C91002C4896 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
-		1F20FE221B159C91002C4896 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyboardViewController.h; path = "Source/View Controllers/KeyboardViewController.h"; sourceTree = SOURCE_ROOT; };
-		1F20FE231B159C91002C4896 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyboardViewController.m; path = "Source/View Controllers/KeyboardViewController.m"; sourceTree = SOURCE_ROOT; };
-		1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Qwerty.storyboard; sourceTree = SOURCE_ROOT; };
-		1F43A0D41B6635DE00E755C0 /* QwertyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwertyViewController.h; path = "Source/View Controllers/QwertyViewController.h"; sourceTree = SOURCE_ROOT; };
-		1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QwertyViewController.m; path = "Source/View Controllers/QwertyViewController.m"; sourceTree = SOURCE_ROOT; };
-		1F43A0D81B66361200E755C0 /* KeyArt.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = KeyArt.xcassets; path = Assets/KeyArt.xcassets; sourceTree = SOURCE_ROOT; };
-		1F72B9001B78A17C008E6E2F /* keyboard_copied.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_copied.png; path = Assets/Icons/keyboard_copied.png; sourceTree = SOURCE_ROOT; };
-		1F72B9011B78A17C008E6E2F /* keyboard_copied@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_copied@2x.png"; path = "Assets/Icons/keyboard_copied@2x.png"; sourceTree = SOURCE_ROOT; };
-		1F72B9021B78A17C008E6E2F /* keyboard_copied@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_copied@3x.png"; path = "Assets/Icons/keyboard_copied@3x.png"; sourceTree = SOURCE_ROOT; };
 		1F72B90F1B7B3428008E6E2F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		1F72B9121B811DAE008E6E2F /* SearchTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchTextField.h; path = Source/Views/SearchTextField.h; sourceTree = SOURCE_ROOT; };
-		1F72B9131B811DAE008E6E2F /* SearchTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchTextField.m; path = Source/Views/SearchTextField.m; sourceTree = SOURCE_ROOT; };
-		1F83D32C1B24D0800052975D /* ImojiTextUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImojiTextUtil.h; path = Source/Util/ImojiTextUtil.h; sourceTree = SOURCE_ROOT; };
-		1F83D32D1B24D0800052975D /* ImojiTextUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImojiTextUtil.m; path = Source/Util/ImojiTextUtil.m; sourceTree = SOURCE_ROOT; };
-		1FABD6781B2820250024F683 /* keyboard_collection_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_collection_active.png; path = Assets/Icons/keyboard_collection_active.png; sourceTree = SOURCE_ROOT; };
-		1FABD6791B2820250024F683 /* keyboard_collection_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_collection_active@2x.png"; path = "Assets/Icons/keyboard_collection_active@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD67A1B2820250024F683 /* keyboard_collection_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_collection_active@3x.png"; path = "Assets/Icons/keyboard_collection_active@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD67B1B2820250024F683 /* keyboard_collection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_collection.png; path = Assets/Icons/keyboard_collection.png; sourceTree = SOURCE_ROOT; };
-		1FABD67C1B2820250024F683 /* keyboard_collection@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_collection@2x.png"; path = "Assets/Icons/keyboard_collection@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD67D1B2820250024F683 /* keyboard_collection@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_collection@3x.png"; path = "Assets/Icons/keyboard_collection@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD67E1B2820250024F683 /* keyboard_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_delete.png; path = Assets/Icons/keyboard_delete.png; sourceTree = SOURCE_ROOT; };
-		1FABD67F1B2820250024F683 /* keyboard_delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_delete@2x.png"; path = "Assets/Icons/keyboard_delete@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6801B2820250024F683 /* keyboard_delete@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_delete@3x.png"; path = "Assets/Icons/keyboard_delete@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6811B2820250024F683 /* keyboard_globe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_globe.png; path = Assets/Icons/keyboard_globe.png; sourceTree = SOURCE_ROOT; };
-		1FABD6821B2820250024F683 /* keyboard_globe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_globe@2x.png"; path = "Assets/Icons/keyboard_globe@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6831B2820250024F683 /* keyboard_globe@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_globe@3x.png"; path = "Assets/Icons/keyboard_globe@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6841B2820250024F683 /* keyboard_reactions_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_reactions_active.png; path = Assets/Icons/keyboard_reactions_active.png; sourceTree = SOURCE_ROOT; };
-		1FABD6851B2820250024F683 /* keyboard_reactions_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_reactions_active@2x.png"; path = "Assets/Icons/keyboard_reactions_active@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6861B2820250024F683 /* keyboard_reactions_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_reactions_active@3x.png"; path = "Assets/Icons/keyboard_reactions_active@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6871B2820250024F683 /* keyboard_reactions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_reactions.png; path = Assets/Icons/keyboard_reactions.png; sourceTree = SOURCE_ROOT; };
-		1FABD6881B2820250024F683 /* keyboard_reactions@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_reactions@2x.png"; path = "Assets/Icons/keyboard_reactions@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6891B2820250024F683 /* keyboard_reactions@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_reactions@3x.png"; path = "Assets/Icons/keyboard_reactions@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD68A1B2820250024F683 /* keyboard_recents_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_recents_active.png; path = Assets/Icons/keyboard_recents_active.png; sourceTree = SOURCE_ROOT; };
-		1FABD68B1B2820250024F683 /* keyboard_recents_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_recents_active@2x.png"; path = "Assets/Icons/keyboard_recents_active@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD68C1B2820250024F683 /* keyboard_recents_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_recents_active@3x.png"; path = "Assets/Icons/keyboard_recents_active@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD68D1B2820250024F683 /* keyboard_recents.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_recents.png; path = Assets/Icons/keyboard_recents.png; sourceTree = SOURCE_ROOT; };
-		1FABD68E1B2820250024F683 /* keyboard_recents@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_recents@2x.png"; path = "Assets/Icons/keyboard_recents@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD68F1B2820250024F683 /* keyboard_recents@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_recents@3x.png"; path = "Assets/Icons/keyboard_recents@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6901B2820250024F683 /* keyboard_search_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_search_active.png; path = Assets/Icons/keyboard_search_active.png; sourceTree = SOURCE_ROOT; };
-		1FABD6911B2820250024F683 /* keyboard_search_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search_active@2x.png"; path = "Assets/Icons/keyboard_search_active@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6921B2820250024F683 /* keyboard_search_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search_active@3x.png"; path = "Assets/Icons/keyboard_search_active@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6931B2820250024F683 /* keyboard_search_clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_search_clear.png; path = Assets/Icons/keyboard_search_clear.png; sourceTree = SOURCE_ROOT; };
-		1FABD6941B2820250024F683 /* keyboard_search_clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search_clear@2x.png"; path = "Assets/Icons/keyboard_search_clear@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6951B2820250024F683 /* keyboard_search_clear@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search_clear@3x.png"; path = "Assets/Icons/keyboard_search_clear@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6961B2820250024F683 /* keyboard_search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_search.png; path = Assets/Icons/keyboard_search.png; sourceTree = SOURCE_ROOT; };
-		1FABD6971B2820250024F683 /* keyboard_search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search@2x.png"; path = "Assets/Icons/keyboard_search@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6981B2820250024F683 /* keyboard_search@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_search@3x.png"; path = "Assets/Icons/keyboard_search@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD6991B2820250024F683 /* keyboard_trending_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_trending_active.png; path = Assets/Icons/keyboard_trending_active.png; sourceTree = SOURCE_ROOT; };
-		1FABD69A1B2820250024F683 /* keyboard_trending_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending_active@2x.png"; path = "Assets/Icons/keyboard_trending_active@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD69B1B2820250024F683 /* keyboard_trending_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending_active@3x.png"; path = "Assets/Icons/keyboard_trending_active@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD69C1B2820250024F683 /* keyboard_trending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = keyboard_trending.png; path = Assets/Icons/keyboard_trending.png; sourceTree = SOURCE_ROOT; };
-		1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending@2x.png"; path = "Assets/Icons/keyboard_trending@2x.png"; sourceTree = SOURCE_ROOT; };
-		1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "keyboard_trending@3x.png"; path = "Assets/Icons/keyboard_trending@3x.png"; sourceTree = SOURCE_ROOT; };
-		1FBF98F11B1AF19700426C0B /* libwebp.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libwebp.framework; path = "Pods/../build/Debug-iphoneos/Pods/libwebp.framework"; sourceTree = "<group>"; };
+		4692E802D16156C3ED9E0E24 /* libPods-imoji-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		513035AE9604C9E0A66D2C5E /* Pods-imoji-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.release.xcconfig"; sourceTree = "<group>"; };
-		91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B4757674F0D133AC81EB726C /* libPods-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		652185DA6FEC75736603745D /* libPods-keyboard.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-keyboard.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFFFDC21F080A7D92B14772 /* Pods-imoji-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
-		CD00230162EF0E785E98542B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2AEFFFAF0A8B5061DA8157C /* Pods-keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-keyboard/Pods-keyboard.debug.xcconfig"; sourceTree = "<group>"; };
-		EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-keyboardTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8E63EF280581B30CA3846EA /* Pods-keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-keyboard/Pods-keyboard.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -190,7 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80BA2A80DC2ED1591B7748D8 /* libPods-imoji-keyboard.a in Frameworks */,
+				C903E1AB07553D947DE7BCA9 /* libPods-imoji-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,45 +84,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F72B9101B7B3428008E6E2F /* QuartzCore.framework in Frameworks */,
-				6075AAF8E9BCE54E85745678 /* libPods-keyboard.a in Frameworks */,
+				70E3C7B784B88731BF78F36E /* libPods-keyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A032CCF1B910DE000CC92A3 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				1F161F861B24B286006BF36F /* ImojiCollectionView.h */,
-				1F161F871B24B286006BF36F /* ImojiCollectionView.m */,
-				1A032CC91B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.h */,
-				1A032CCA1B910DD900CC92A3 /* IMKeyboardCategoryCollectionViewCell.m */,
-				1A032CCB1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.h */,
-				1A032CCC1B910DD900CC92A3 /* IMKeyboardCollectionViewCell.m */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
-		1A032CD81B91129000CC92A3 /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				1F20FE221B159C91002C4896 /* KeyboardViewController.h */,
-				1F20FE231B159C91002C4896 /* KeyboardViewController.m */,
-				1F43A0D41B6635DE00E755C0 /* QwertyViewController.h */,
-				1F43A0D51B6635DE00E755C0 /* QwertyViewController.m */,
-			);
-			name = "View Controllers";
-			sourceTree = "<group>";
-		};
-		1F205CE81B43C33A00AB5007 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				1F205CE91B43C35F00AB5007 /* Imoji_Regular.otf */,
-			);
-			name = Fonts;
-			sourceTree = "<group>";
-		};
 		1F20FDE51B1594CD002C4896 = {
 			isa = PBXGroup;
 			children = (
@@ -285,12 +138,10 @@
 		1F20FE1F1B159C91002C4896 /* keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				1FABD6741B281F9B0024F683 /* Assets */,
 				1F20FE201B159C91002C4896 /* Supporting Files */,
-				1F83D3281B24D0560052975D /* Util */,
-				1A032CCF1B910DE000CC92A3 /* Views */,
-				1A032CD81B91129000CC92A3 /* View Controllers */,
 				1F03A1751B15B4F30061848E /* keyboard.entitlements */,
+				1A2ED8E91B9508DB008D7555 /* IMSampleKeyboardViewController.h */,
+				1A2ED8EA1B9508DB008D7555 /* IMSampleKeyboardViewController.m */,
 			);
 			path = keyboard;
 			sourceTree = "<group>";
@@ -303,88 +154,12 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		1F83D3281B24D0560052975D /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				1F83D32C1B24D0800052975D /* ImojiTextUtil.h */,
-				1F83D32D1B24D0800052975D /* ImojiTextUtil.m */,
-				1F72B9121B811DAE008E6E2F /* SearchTextField.h */,
-				1F72B9131B811DAE008E6E2F /* SearchTextField.m */,
-			);
-			name = Util;
-			sourceTree = "<group>";
-		};
-		1FABD6741B281F9B0024F683 /* Assets */ = {
-			isa = PBXGroup;
-			children = (
-				1F43A0D31B6635DE00E755C0 /* Qwerty.storyboard */,
-				1F43A0D81B66361200E755C0 /* KeyArt.xcassets */,
-				1F205CE81B43C33A00AB5007 /* Fonts */,
-				1FABD6771B2820180024F683 /* Icons */,
-			);
-			name = Assets;
-			sourceTree = "<group>";
-		};
-		1FABD6771B2820180024F683 /* Icons */ = {
-			isa = PBXGroup;
-			children = (
-				1FABD6781B2820250024F683 /* keyboard_collection_active.png */,
-				1FABD6791B2820250024F683 /* keyboard_collection_active@2x.png */,
-				1FABD67A1B2820250024F683 /* keyboard_collection_active@3x.png */,
-				1FABD67B1B2820250024F683 /* keyboard_collection.png */,
-				1FABD67C1B2820250024F683 /* keyboard_collection@2x.png */,
-				1FABD67D1B2820250024F683 /* keyboard_collection@3x.png */,
-				1F72B9001B78A17C008E6E2F /* keyboard_copied.png */,
-				1F72B9011B78A17C008E6E2F /* keyboard_copied@2x.png */,
-				1F72B9021B78A17C008E6E2F /* keyboard_copied@3x.png */,
-				1FABD67E1B2820250024F683 /* keyboard_delete.png */,
-				1FABD67F1B2820250024F683 /* keyboard_delete@2x.png */,
-				1FABD6801B2820250024F683 /* keyboard_delete@3x.png */,
-				1FABD6811B2820250024F683 /* keyboard_globe.png */,
-				1FABD6821B2820250024F683 /* keyboard_globe@2x.png */,
-				1FABD6831B2820250024F683 /* keyboard_globe@3x.png */,
-				1FABD6841B2820250024F683 /* keyboard_reactions_active.png */,
-				1FABD6851B2820250024F683 /* keyboard_reactions_active@2x.png */,
-				1FABD6861B2820250024F683 /* keyboard_reactions_active@3x.png */,
-				1FABD6871B2820250024F683 /* keyboard_reactions.png */,
-				1FABD6881B2820250024F683 /* keyboard_reactions@2x.png */,
-				1FABD6891B2820250024F683 /* keyboard_reactions@3x.png */,
-				1FABD68A1B2820250024F683 /* keyboard_recents_active.png */,
-				1FABD68B1B2820250024F683 /* keyboard_recents_active@2x.png */,
-				1FABD68C1B2820250024F683 /* keyboard_recents_active@3x.png */,
-				1FABD68D1B2820250024F683 /* keyboard_recents.png */,
-				1FABD68E1B2820250024F683 /* keyboard_recents@2x.png */,
-				1FABD68F1B2820250024F683 /* keyboard_recents@3x.png */,
-				1FABD6901B2820250024F683 /* keyboard_search_active.png */,
-				1FABD6911B2820250024F683 /* keyboard_search_active@2x.png */,
-				1FABD6921B2820250024F683 /* keyboard_search_active@3x.png */,
-				1FABD6931B2820250024F683 /* keyboard_search_clear.png */,
-				1FABD6941B2820250024F683 /* keyboard_search_clear@2x.png */,
-				1FABD6951B2820250024F683 /* keyboard_search_clear@3x.png */,
-				1FABD6961B2820250024F683 /* keyboard_search.png */,
-				1FABD6971B2820250024F683 /* keyboard_search@2x.png */,
-				1FABD6981B2820250024F683 /* keyboard_search@3x.png */,
-				1FABD6991B2820250024F683 /* keyboard_trending_active.png */,
-				1FABD69A1B2820250024F683 /* keyboard_trending_active@2x.png */,
-				1FABD69B1B2820250024F683 /* keyboard_trending_active@3x.png */,
-				1FABD69C1B2820250024F683 /* keyboard_trending.png */,
-				1FABD69D1B2820250024F683 /* keyboard_trending@2x.png */,
-				1FABD69E1B2820250024F683 /* keyboard_trending@3x.png */,
-			);
-			name = Icons;
-			sourceTree = "<group>";
-		};
 		3C9BA561060109C10A4902D1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				1F72B90F1B7B3428008E6E2F /* QuartzCore.framework */,
-				1F161F8C1B24CF81006BF36F /* Masonry.framework */,
-				1FBF98F11B1AF19700426C0B /* libwebp.framework */,
-				1F03A1711B15A7950061848E /* ImojiSDK.framework */,
-				91A602C945A3CF324BD18B1C /* libPods-imoji-keyboard.a */,
-				B4757674F0D133AC81EB726C /* libPods-keyboard.a */,
-				EBB7F5FBE2CF792E78899CCC /* libPods-imoji-keyboardTests.a */,
-				CD00230162EF0E785E98542B /* libPods.a */,
+				4692E802D16156C3ED9E0E24 /* libPods-imoji-keyboard.a */,
+				652185DA6FEC75736603745D /* libPods-keyboard.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -449,7 +224,7 @@
 		1F20FDE61B1594CD002C4896 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Jeff;
 				TargetAttributes = {
 					1F20FDED1B1594CD002C4896 = {
@@ -457,7 +232,7 @@
 					};
 					1F20FE1D1B159C91002C4896 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = BQDFM499TU;
+						DevelopmentTeam = H64VY3PFN6;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -494,7 +269,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F20FE001B1594CD002C4896 /* Main.storyboard in Resources */,
-				1F205CEA1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */,
 				1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */,
 				1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */,
 				1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */,
@@ -505,52 +279,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1FABD6AB1B2820250024F683 /* keyboard_reactions_active.png in Resources */,
-				1F43A0D91B66361200E755C0 /* KeyArt.xcassets in Resources */,
-				1FABD6AF1B2820250024F683 /* keyboard_reactions@2x.png in Resources */,
-				1FABD6AE1B2820250024F683 /* keyboard_reactions.png in Resources */,
-				1FABD6A91B2820250024F683 /* keyboard_globe@2x.png in Resources */,
-				1FABD6BC1B2820250024F683 /* keyboard_search_clear@3x.png in Resources */,
-				1FABD6A81B2820250024F683 /* keyboard_globe.png in Resources */,
-				1FABD6A11B2820250024F683 /* keyboard_collection_active@3x.png in Resources */,
-				1FABD69F1B2820250024F683 /* keyboard_collection_active.png in Resources */,
-				1FABD6A31B2820250024F683 /* keyboard_collection@2x.png in Resources */,
-				1A032CD41B910EC900CC92A3 /* Info.plist in Resources */,
-				1FABD6A21B2820250024F683 /* keyboard_collection.png in Resources */,
-				1FABD6B81B2820250024F683 /* keyboard_search_active@2x.png in Resources */,
-				1FABD6C21B2820250024F683 /* keyboard_trending_active@3x.png in Resources */,
-				1F72B9031B78A17C008E6E2F /* keyboard_copied.png in Resources */,
-				1F72B9041B78A17C008E6E2F /* keyboard_copied@2x.png in Resources */,
-				1FABD6BD1B2820250024F683 /* keyboard_search.png in Resources */,
-				1FABD6B61B2820250024F683 /* keyboard_recents@3x.png in Resources */,
-				1FABD6AD1B2820250024F683 /* keyboard_reactions_active@3x.png in Resources */,
-				1FABD6A41B2820250024F683 /* keyboard_collection@3x.png in Resources */,
-				1FABD6C51B2820250024F683 /* keyboard_trending@3x.png in Resources */,
-				1F205CEB1B43C35F00AB5007 /* Imoji_Regular.otf in Resources */,
-				1F72B9051B78A17C008E6E2F /* keyboard_copied@3x.png in Resources */,
-				1FABD6B31B2820250024F683 /* keyboard_recents_active@3x.png in Resources */,
-				1FABD6B11B2820250024F683 /* keyboard_recents_active.png in Resources */,
-				1FABD6A51B2820250024F683 /* keyboard_delete.png in Resources */,
-				1FABD6B51B2820250024F683 /* keyboard_recents@2x.png in Resources */,
-				1FABD6B91B2820250024F683 /* keyboard_search_active@3x.png in Resources */,
-				1FABD6AA1B2820250024F683 /* keyboard_globe@3x.png in Resources */,
-				1FABD6C41B2820250024F683 /* keyboard_trending@2x.png in Resources */,
-				1FABD6B01B2820250024F683 /* keyboard_reactions@3x.png in Resources */,
-				1FABD6C31B2820250024F683 /* keyboard_trending.png in Resources */,
-				1FABD6AC1B2820250024F683 /* keyboard_reactions_active@2x.png in Resources */,
-				1FABD6C01B2820250024F683 /* keyboard_trending_active.png in Resources */,
-				1FABD6B41B2820250024F683 /* keyboard_recents.png in Resources */,
-				1FABD6A71B2820250024F683 /* keyboard_delete@3x.png in Resources */,
-				1FABD6BE1B2820250024F683 /* keyboard_search@2x.png in Resources */,
-				1F43A0D61B6635DE00E755C0 /* Qwerty.storyboard in Resources */,
-				1FABD6BF1B2820250024F683 /* keyboard_search@3x.png in Resources */,
-				1FABD6A61B2820250024F683 /* keyboard_delete@2x.png in Resources */,
-				1FABD6BA1B2820250024F683 /* keyboard_search_clear.png in Resources */,
-				1FABD6BB1B2820250024F683 /* keyboard_search_clear@2x.png in Resources */,
-				1FABD6B21B2820250024F683 /* keyboard_recents_active@2x.png in Resources */,
-				1FABD6C11B2820250024F683 /* keyboard_trending_active@2x.png in Resources */,
-				1FABD6B71B2820250024F683 /* keyboard_search_active.png in Resources */,
-				1FABD6A01B2820250024F683 /* keyboard_collection_active@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,7 +297,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		1A5642391B91118C00C90891 /* Copy Pods Resources */ = {
@@ -634,13 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F20FE241B159C91002C4896 /* KeyboardViewController.m in Sources */,
-				1F43A0D71B6635DE00E755C0 /* QwertyViewController.m in Sources */,
-				1A032CD11B910DF600CC92A3 /* IMKeyboardCollectionViewCell.m in Sources */,
-				1F83D32E1B24D0800052975D /* ImojiTextUtil.m in Sources */,
-				1F72B9141B811DAE008E6E2F /* SearchTextField.m in Sources */,
-				1F161F881B24B286006BF36F /* ImojiCollectionView.m in Sources */,
-				1A032CD01B910DF300CC92A3 /* IMKeyboardCategoryCollectionViewCell.m in Sources */,
+				1A2ED8EB1B9508DB008D7555 /* IMSampleKeyboardViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,6 +417,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -790,7 +513,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E2AEFFFAF0A8B5061DA8157C /* Pods-keyboard.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = keyboard/keyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -820,7 +543,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F8E63EF280581B30CA3846EA /* Pods-keyboard.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = keyboard/keyboard.entitlements;
+				CODE_SIGN_ENTITLEMENTS = keyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
