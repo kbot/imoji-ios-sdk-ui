@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '0.1.1'
+  s.version  = '0.1.2'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration.'
   s.homepage = 'http://imoji.io/sdk'
@@ -18,6 +18,19 @@ Pod::Spec.new do |s|
 
     ss.ios.source_files = 'Source/CollectionView/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/CollectionView/*.h'
+  end
+
+  s.subspec 'KeyboardView' do |ss|
+    ss.dependency "Masonry"
+    ss.dependency "ImojiSDK/Core"
+    ss.dependency "ImojiSDKUI/CollectionView"
+    ss.dependency "MBProgressHUD", '~> 0.9.1'
+    
+    ss.ios.source_files = 'Source/KeyboardView/Source/**/*.{h,m}'
+    ss.ios.public_header_files = 'Source/KeyboardView/Source/**/*.h'
+    ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/Imoji_Regular.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
+    ss.ios.resource_bundles = {'ImojiKeyboardAssets' => ['Source/KeyboardView/Resources/Icons/*.png']}
+
   end
   
 end
