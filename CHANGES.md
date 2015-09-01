@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.3
+
+* Ensure that consumers of the keyboard view controller independently set the API credentials.
+* Remove unused pod dependencies
+
 ### Version 0.1.2
 
 * Adds Imoji Keyboard functionality as it's own Pod subspec
