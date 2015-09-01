@@ -24,7 +24,6 @@ Pod::Spec.new do |s|
     ss.dependency "Masonry"
     ss.dependency "ImojiSDK/Core"
     ss.dependency "ImojiSDKUI/CollectionView"
-    ss.dependency "MBProgressHUD", '~> 0.9.1'
     
     ss.ios.source_files = 'Source/KeyboardView/Source/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/KeyboardView/Source/**/*.h'

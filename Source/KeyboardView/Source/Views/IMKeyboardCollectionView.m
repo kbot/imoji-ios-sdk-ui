@@ -24,10 +24,9 @@
 //
 
 #import <Masonry/View+MASAdditions.h>
-#import <MBProgressHUD/MBProgressHUD.h>
+#import <QuartzCore/QuartzCore.h>
 #import "IMKeyboardCollectionView.h"
 #import "IMAttributeStringUtil.h"
-#import <QuartzCore/QuartzCore.h>
 #import "IMKeyboardCategoryCollectionViewCell.h"
 #import "IMKeyboardCollectionViewCell.h"
 
