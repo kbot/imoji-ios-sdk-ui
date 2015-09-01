@@ -7,28 +7,16 @@
 //
 
 #import "ViewController.h"
-#import <ImojiSDK/ImojiSDK.h>
-
-@interface ViewController ()
-
-@end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
     
-    IMImojiSession *session = [IMImojiSession imojiSession];
-    //self.session.delegate = self;
+    UILabel* label = [[UILabel alloc] init];
     
-    [session getImojiCategoriesWithClassification:IMImojiSessionCategoryClassificationGeneric
-                                              callback:^(NSArray *imojiCategories, NSError *error) {
-                                                 NSLog(@"got categories: %@", imojiCategories);
-                                              }];
-    NSLog(@"view did load");
-    
-    
+    label.text = @"Install the keyboard in Settings :D";
+    [self.view addSubview:label];
 }
 
 - (void)didReceiveMemoryWarning {

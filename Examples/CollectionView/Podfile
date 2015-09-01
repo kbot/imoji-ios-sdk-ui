@@ -3,7 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, "7.0"
 
 target "imoji-collection-view", :exclusive => true do
-  pod 'ImojiSDKUI'
+  pod 'ImojiSDKUI/CollectionView'
   pod 'ImojiSDK/Sync'
   pod 'CocoaLumberjack'
 end
