@@ -37,7 +37,7 @@
 #define CUR_HEIGHT [[UIScreen mainScreen] applicationFrame ].size.height
 
 
-@interface IMKeyboardViewController ()
+@interface IMKeyboardViewController () <IMImojiSessionDelegate>
 
 // keyboard size
 @property (nonatomic) CGFloat portraitHeight;
@@ -78,13 +78,14 @@
     IMAttributeStringUtil* _previousTitle;
 }
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+- (id)initWithImojiSession:(IMImojiSession*)session {
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {
         // Perform custom initialization work here
         self.portraitHeight = 258;
         self.landscapeHeight = 205;
-
+        
+        _session = session;
         _imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
     }
     return self;
@@ -103,7 +104,6 @@
     CGFloat screenW = screenSize.width;
     BOOL isLandscape =  !(self.view.frame.size.width ==
                           (screenW*(screenW<screenH))+(screenH*(screenW>screenH)));
-    NSLog(isLandscape ? @"Screen: Landscape" : @"Screen: Potriaint");
     
     self.isLandscape = isLandscape;
     if (isLandscape) {
@@ -124,7 +124,6 @@
 
 -(void)viewDidAppear:(BOOL)animated  {
     [super viewDidAppear:animated];
-    [[ImojiSDK sharedInstance] setClientId:[[NSUUID alloc] initWithUUIDString:@"a5908b99-c9b6-4661-9dfb-5c9ff4860c80"] apiToken:@"U2FsdGVkX1+FJ8PuT09YF1Ypf/yMWuFFGW885/rhgj8="];
     
     // basic properties
     self.view.backgroundColor = [UIColor colorWithRed:248.0/255.0 green:248.0/255.0 blue:248.0/255.0 alpha:1];

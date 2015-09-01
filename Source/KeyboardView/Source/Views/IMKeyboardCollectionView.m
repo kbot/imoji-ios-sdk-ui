@@ -97,7 +97,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
         IMKeyboardCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
         
         [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
-        //NSLog(@"loading category: %@", categoryObject.title);
     
         [self.session renderImoji:categoryObject.previewImoji
                           options:self.renderingOptions
@@ -222,7 +221,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    NSLog(@"rotate");
     [self performBatchUpdates:nil completion:nil];
 }
 
@@ -243,7 +241,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     
     NSUserDefaults *shared = [[NSUserDefaults alloc]initWithSuiteName:@"group.com.imoji.keyboard"];
     NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
-    //NSLog(@"%@", savedArrayOfRecents);
 
     for (NSUInteger i = 0; i < savedArrayOfRecents.count; ++i) {
         [self.content addObject:[NSNull null]];
@@ -318,7 +315,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     [self.session getImojiCategoriesWithClassification:classification
                                               callback:^(NSArray *imojiCategories, NSError *error) {
                                                   [self.content addObjectsFromArray:imojiCategories];
-                                                  //NSLog(@"loading categories: %@", self.content);
                                                   [self.activityView stopAnimating];
                                                   [self reloadData];
                                                   self.currentCategoryClassification = classification;
@@ -405,7 +401,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
             [arrayOfRecents removeLastObject];
         }
     }
-    NSLog(@"%@",arrayOfRecents);
+    
     [shared setObject:arrayOfRecents forKey:@"recentImojis"];
     [shared synchronize];
 }
@@ -466,10 +462,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
                 self.showFavoritedCallback();
                 [self processCellAnimations:indexPath];
             }
-        }
-        else
-        {
-           NSLog(@"Nothing double tapped");
         }
     }
 }

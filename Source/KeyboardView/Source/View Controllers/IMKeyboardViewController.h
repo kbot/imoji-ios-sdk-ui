@@ -26,8 +26,11 @@
 #import <UIKit/UIKit.h>
 #import <ImojiSDK/ImojiSDK.h>
 
-@interface IMKeyboardViewController : UIInputViewController <IMImojiSessionDelegate>
+@interface IMKeyboardViewController : UIInputViewController
 
 @property (nonatomic, strong) NSBundle* imagesBundle;
+@property (nonatomic, strong, readonly) IMImojiSession* session;
+
+- (id)initWithImojiSession:(IMImojiSession*)session;
 
 @end
