@@ -21,8 +21,6 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'KeyboardView' do |ss|
-    ss.dependency "Masonry"
-    ss.dependency "ImojiSDK/Core"
     ss.dependency "ImojiSDKUI/CollectionView"
     
     ss.ios.source_files = 'Source/KeyboardView/Source/**/*.{h,m}'
