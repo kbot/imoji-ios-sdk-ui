@@ -50,7 +50,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
 
 
-
         self.backgroundColor = [UIColor whiteColor];
 
         self.content = [NSMutableArray array];
@@ -288,6 +287,28 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                          }];
 }
 
+- (void)loadUserCollectionImojis {
+    __block NSOperation *operation;
+    self.imojiOperation = operation =
+            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                        if (!operation.isCancelled) {
+                            [self prepareViewForImojiResultSet:resultCount
+                                                        offset:nil
+                                                         error:error];
+                        }
+                    }
+                                                               imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                                                   if (!operation.isCancelled && !error) {
+                                                                       [self renderImojiResult:imoji
+                                                                                       content:imoji
+                                                                                       atIndex:index
+                                                                                        offset:nil
+                                                                                     operation:operation];
+                                                                   }
+                                                               }];
+}
+
+
 - (void)loadNextPageOfImojisFromSearch {
     // do not append the next set of imojis until the current set of them has completely rendered to avoid
     // mutating the data model while the collection view is reloading
@@ -395,7 +416,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     CGContextSetLineWidth(context, 0);
     CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
 
-    UIImage * layer = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
 
     UIGraphicsEndImageContext();
 

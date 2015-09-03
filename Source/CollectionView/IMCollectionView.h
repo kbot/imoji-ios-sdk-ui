@@ -31,4 +31,6 @@
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm;
 
+- (void)loadUserCollectionImojis;
+
 @end
