@@ -40,7 +40,7 @@
         [self addSubview:self.imojiView];
         [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self);
-            make.width.and.height.equalTo(self).multipliedBy(.8f);
+            make.width.and.height.equalTo(self).multipliedBy(.85f);
         }];
     }
 

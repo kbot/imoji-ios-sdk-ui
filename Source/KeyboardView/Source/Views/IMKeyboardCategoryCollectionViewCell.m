@@ -35,25 +35,24 @@
 
 
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
-    float imageHeightRatio = 0.66f;
+    float imageHeightRatio = 0.75f;
     float textHeightRatio = 0.18f;
     int inBetweenPadding = 3;
 
     if (!self.imojiView) {
         self.imojiView = [UIImageView new];
 
-        float padding = (self.frame.size.height - (imageHeightRatio*self.frame.size.height) - (textHeightRatio*self.frame.size.height) - inBetweenPadding)/2.f;
-
         [self addSubview:self.imojiView];
         [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self);
             make.height.width.equalTo(self.mas_height).multipliedBy(imageHeightRatio);
-            make.top.equalTo(self.mas_top).offset(padding);
+            make.top.equalTo(self.mas_top);
         }];
     }
 
     if (!self.titleView) {
         self.titleView = [UILabel new];
+        self.titleView.adjustsFontSizeToFitWidth = YES;
 
         [self addSubview:self.titleView];
         [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -73,7 +72,7 @@
     }
 
     self.titleView.attributedText = [IMAttributeStringUtil attributedString:categoryTitle
-                                                               withFontSize:14.0f
+                                                               withFontSize:12.0f
                                                                   textColor:[UIColor colorWithRed:60/255.f green:60/255.f blue:60/255.f alpha:1.f]
                                                               textAlignment:NSTextAlignmentCenter];
 }
