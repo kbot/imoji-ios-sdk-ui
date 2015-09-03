@@ -144,8 +144,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     // custom progress bar
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-    self.progressView.progressTintColor = [UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.0f];
-    self.progressView.trackTintColor = [UIColor colorWithRed:151 / 255.f green:185 / 255.f blue:207 / 255.f alpha:1.0f];
+    self.progressView.progressTintColor = [UIColor colorWithRed:102.0f / 255.0f green:102.0f / 255.0f blue:102.0f / 255.0f alpha:1];
+    self.progressView.trackTintColor = [UIColor colorWithRed:180.0f / 255.0f green:180.0f / 255.0f blue:180.0f / 255.0f alpha:1];
     [self.progressView setProgress:0.0f animated:NO];
     [self.view addSubview:self.progressView];
     [self.progressView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -159,7 +159,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                 withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                textAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     [self.view addSubview:self.titleLabel];
@@ -209,7 +209,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         weakSelf.closeButton.hidden = NO;
         weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[title uppercaseString]
                                                                         withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
     };
     self.collectionView.setProgressCallback = ^(float progress) {
@@ -254,7 +254,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }];
 
     UIView *searchBar = [[UIView alloc] init];
-    searchBar.backgroundColor = [UIColor colorWithRed:248.0f / 255.0f green:248.0f / 255.0f blue:248.0f / 255.0f alpha:1];
+    searchBar.backgroundColor = self.view.backgroundColor;
     [self.searchView addSubview:searchBar];
     [searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.searchView.mas_top).with.offset(0);
@@ -480,7 +480,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadRecentImojis];
             self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
                                                                         withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
             self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
             self.closeButton.hidden = YES;
             break;
@@ -488,7 +488,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
             self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                         withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
             self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
             self.closeButton.hidden = YES;
             break;
@@ -496,7 +496,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
             self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                         withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
             self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
             self.closeButton.hidden = YES;
             break;
@@ -512,7 +512,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
             self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
                                                                         withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
             self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
             self.closeButton.hidden = YES;
             break;
@@ -539,12 +539,12 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                     withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     } else {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                     withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]];
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
 }
@@ -556,7 +556,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
                                                                 withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                textAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     self.closeButton.hidden = YES;
@@ -565,7 +565,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 - (void)showCopied:(NSString *)message {
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
                                                                 withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                textAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
@@ -579,7 +579,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
                                                                 withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:55 / 255.f green:123 / 255.f blue:167 / 255.f alpha:1.f]
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                textAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
