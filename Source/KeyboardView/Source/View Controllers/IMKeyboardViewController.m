@@ -92,6 +92,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         _fontFamily = IMKeyboardViewControllerDefaultFontFamily;
 
         _session = session;
+        _session.delegate = self;
+
         _imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
 
         _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
@@ -137,9 +139,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     self.heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0.0 constant:self.portraitHeight];
     self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
-
-    self.session = [IMImojiSession imojiSession];
-    self.session.delegate = self;
 
     // set up views
 
