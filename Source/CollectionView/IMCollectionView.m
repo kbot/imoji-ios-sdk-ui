@@ -293,7 +293,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
             [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
                         if (!operation.isCancelled) {
                             [self prepareViewForImojiResultSet:resultCount
-                                                        offset:nil
+                                                        offset:0
                                                          error:error];
                         }
                     }
@@ -302,7 +302,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                        [self renderImojiResult:imoji
                                                                                        content:imoji
                                                                                        atIndex:index
-                                                                                        offset:nil
+                                                                                        offset:0
                                                                                      operation:operation];
                                                                    }
                                                                }];
