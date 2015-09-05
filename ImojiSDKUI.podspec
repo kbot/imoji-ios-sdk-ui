@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '0.1.5'
+  s.version  = '0.1.6'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration.'
   s.homepage = 'http://imoji.io/sdk'
@@ -18,6 +18,18 @@ Pod::Spec.new do |s|
 
     ss.ios.source_files = 'Source/CollectionView/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/CollectionView/*.h'
+  end
+
+  s.subspec 'Editor' do |ss|
+    ss.dependency "ImojiSDK/Core"
+    ss.dependency "Masonry"
+
+    ss.preserve_paths = 'Frameworks/ImojiGraphics.framework'
+    ss.public_header_files = 'Frameworks/ImojiGraphics.framework/Versions/A/Headers/*.h'
+    ss.vendored_frameworks = 'Frameworks/ImojiGraphics.framework'
+  
+    ss.ios.source_files = 'Source/Editor/**/*.{h,m}'
+    ss.ios.public_header_files = 'Source/Editor/*.h'
   end
 
   s.subspec 'KeyboardView' do |ss|
