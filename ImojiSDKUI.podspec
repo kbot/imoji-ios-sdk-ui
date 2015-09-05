@@ -30,6 +30,8 @@ Pod::Spec.new do |s|
   
     ss.ios.source_files = 'Source/Editor/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/Editor/*.h'
+    ss.ios.frameworks = ["Accelerate"]
+    ss.libraries = 'c++'
   end
 
   s.subspec 'KeyboardView' do |ss|
