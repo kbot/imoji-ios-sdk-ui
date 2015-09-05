@@ -24,7 +24,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GLKit/GLKit.h>
 
-@interface IMEditorView : UIView
+@interface IMEditorView : GLKView
+
+- (void)undo;
+
+- (BOOL)isImojiReady;
+
+- (BOOL)canUndo;
+
+- (void)scrollTo:(CGPoint)point;
+
+- (void)zoomTo:(CGFloat)zoom;
+
+- (void)loadImage:(UIImage *)image;
+
+- (UIImage *)getOutputImage;
 
 @end
