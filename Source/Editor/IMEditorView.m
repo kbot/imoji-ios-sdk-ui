@@ -181,15 +181,15 @@
 }
 
 - (UIImage *)getOutputImage {
-    IGImage *outputImage = self.igEditor == nil ? nil : igEditorGetTrimmedOutputImage(self.igEditor);
+    IGImage *trimmedImage = self.igEditor == nil ? nil : igEditorGetTrimmedOutputImage(self.igEditor);
 
-    IGBorder* igBorder = igBorderCreatePreset(igImageGetWidth(outputImage), igImageGetHeight(outputImage), IG_BORDER_CLASSIC);
+    IGBorder* igBorder = igBorderCreatePreset(igImageGetWidth(trimmedImage), igImageGetHeight(trimmedImage), IG_BORDER_CLASSIC);
     IGint padding = igBorderGetPadding(igBorder);
-    IGImage* igOutputImage = igImageCreate(self.igContext, igImageGetWidth(outputImage) + padding * 2, igImageGetHeight(outputImage) + padding * 2);
+    IGImage* igOutputImage = igImageCreate(self.igContext, igImageGetWidth(trimmedImage) + padding * 2, igImageGetHeight(trimmedImage) + padding * 2);
 
-    igBorderRender(igBorder, igOutputImage, igOutputImage, padding, padding, 1, 1);
+    igBorderRender(igBorder, trimmedImage, igOutputImage, padding, padding, 1, 1);
     igBorderDestroy(igBorder, true);
-    igImageDestroy(outputImage);
+    igImageDestroy(trimmedImage);
 
     CGImageRef pImage = igImageToNative(igOutputImage);
 
