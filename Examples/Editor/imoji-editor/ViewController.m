@@ -17,7 +17,7 @@
 
 - (void)loadView {
     [super loadView];
-    self.view = [[ImojiEditorContainerView alloc] initWithFrame:CGRectZero];
+    self.view = [ImojiEditorContainerView new];
 }
 
 - (void)viewDidLoad {

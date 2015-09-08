@@ -7,7 +7,7 @@
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMEditorView.h>
 
-@interface ImojiEditorContainerView ()
+@interface ImojiEditorContainerView () <IMEditorViewDelegate>
 @property(nonatomic, strong) IMEditorView *imojiEditor;
 @property(nonatomic, strong) UIButton *undoButton;
 @property(nonatomic, strong) UIButton *doneButton;
@@ -29,11 +29,14 @@
         [self.undoButton setImage:[UIImage imageNamed:@"undo.png"] forState:UIControlStateNormal];
         [self.doneButton setImage:[UIImage imageNamed:@"done.png"] forState:UIControlStateNormal];
 
+        self.doneButton.enabled = self.undoButton.enabled = NO;
+
         [self addSubview:self.outputImage];
         [self addSubview:self.imojiEditor];
         [self addSubview:self.undoButton];
         [self addSubview:self.doneButton];
 
+        self.imojiEditor.editorDelegate = self;
         self.outputImage.contentMode = UIViewContentModeCenter;
         self.outputImage.hidden = YES;
 
@@ -74,12 +77,17 @@
     if (self.imojiEditor.hidden) {
         self.undoButton.hidden = NO;
         self.outputImage.hidden = YES;
-    } else if ([self.imojiEditor isImojiReady]) {
+    } else if ([self.imojiEditor hasOutputImage]) {
         self.outputImage.image = [self.imojiEditor getOutputImage];
         self.undoButton.hidden = YES;
         self.imojiEditor.hidden = YES;
         self.outputImage.hidden = NO;
     }
+}
+
+- (void)userDidUpdatePathInEditorView:(IMEditorView *)editorView {
+    self.undoButton.enabled = editorView.canUndo;
+    self.doneButton.enabled = editorView.hasOutputImage;
 }
 
 @end

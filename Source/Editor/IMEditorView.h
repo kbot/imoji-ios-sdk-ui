@@ -1,7 +1,7 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Nima Khoshini
+//  Created by Thor Harald Johansen
 //  Copyright (C) 2015 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,11 +26,13 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+@protocol IMEditorViewDelegate;
+
 @interface IMEditorView : GLKView
 
 - (void)undo;
 
-- (BOOL)isImojiReady;
+- (BOOL)hasOutputImage;
 
 - (BOOL)canUndo;
 
@@ -41,5 +43,15 @@
 - (void)loadImage:(UIImage *)image;
 
 - (UIImage *)getOutputImage;
+
+@property(nonatomic, assign) id<IMEditorViewDelegate> editorDelegate;
+
+@end
+
+@protocol IMEditorViewDelegate<NSObject>
+
+@optional
+
+- (void)userDidUpdatePathInEditorView:(IMEditorView *)editorView;
 
 @end

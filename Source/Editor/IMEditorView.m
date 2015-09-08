@@ -1,7 +1,7 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Nima Khoshini
+//  Created by Thor Harald Johansen, Nima Khoshini
 //  Copyright (C) 2015 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -71,7 +71,6 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-//    [super drawRect:rect];
     if (self.igInputImage != nil) {
         if (self.firstDrawRect) {
             self.firstDrawRect = NO;
@@ -99,7 +98,6 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//    [super touchesBegan:touches withEvent:event];
     if (self.igEditor != nil) {
         for (UITouch *touch in touches) {
             CGPoint location = [touch locationInView:self];
@@ -111,7 +109,6 @@
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-//    [super touchesEnded:touches withEvent:event];
     if (self.igEditor != nil) {
         for (UITouch *touch in touches) {
             CGPoint location = [touch locationInView:self];
@@ -121,7 +118,6 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    [super touchesMoved:touches withEvent:event];
     if (self.igEditor != nil) {
         self.displayLink.paused = YES;
 
@@ -131,6 +127,12 @@
         }
 
         [self setNeedsDisplay];
+
+        if (self.editorDelegate && [self.editorDelegate respondsToSelector:@selector(userDidUpdatePathInEditorView:)]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.editorDelegate userDidUpdatePathInEditorView:self];
+            });
+        }
     }
 }
 
@@ -149,15 +151,17 @@
     }
 
     self.igEditor = igEditorCreate(igInputImage);
+    self.firstDrawRect = YES;
+
     [self setNeedsDisplay];
 }
 
-- (BOOL)isImojiReady {
-    return self.igEditor == nil ? false : igEditorImojiIsReady(self.igEditor);
+- (BOOL)hasOutputImage {
+    return self.igEditor != nil && igEditorImojiIsReady(self.igEditor);
 }
 
 - (BOOL)canUndo {
-    return self.igEditor == nil ? false : igEditorCanUndo(self.igEditor);
+    return self.igEditor != nil && igEditorCanUndo(self.igEditor);
 }
 
 - (void)scrollTo:(CGPoint)point {
@@ -181,11 +185,19 @@
 }
 
 - (UIImage *)getOutputImage {
-    IGImage *trimmedImage = self.igEditor == nil ? nil : igEditorGetTrimmedOutputImage(self.igEditor);
+    if (!self.igEditor) {
+        return nil;
+    }
 
-    IGBorder* igBorder = igBorderCreatePreset(igImageGetWidth(trimmedImage), igImageGetHeight(trimmedImage), IG_BORDER_CLASSIC);
+    IGImage *trimmedImage = igEditorGetTrimmedOutputImage(self.igEditor);
+
+    IGBorder* igBorder = igBorderCreatePreset(trimmedImage->width, trimmedImage->height, IG_BORDER_CLASSIC);
     IGint padding = igBorderGetPadding(igBorder);
-    IGImage* igOutputImage = igImageCreate(self.igContext, igImageGetWidth(trimmedImage) + padding * 2, igImageGetHeight(trimmedImage) + padding * 2);
+    IGImage* igOutputImage = igImageCreate(
+            trimmedImage->igContext,
+            igImageGetWidth(trimmedImage) + padding * 2,
+            igImageGetHeight(trimmedImage) + padding * 2
+    );
 
     igBorderRender(igBorder, trimmedImage, igOutputImage, padding, padding, 1, 1);
     igBorderDestroy(igBorder, true);
