@@ -143,19 +143,6 @@
     }
 }
 
-- (void)setIgInputImage:(IGImage *)igInputImage {
-    _igInputImage = igInputImage;
-
-    if (self.igEditor != nil) {
-        igEditorDestroy(self.igEditor);
-    }
-
-    self.igEditor = igEditorCreate(igInputImage);
-    self.firstDrawRect = YES;
-
-    [self setNeedsDisplay];
-}
-
 - (BOOL)hasOutputImage {
     return self.igEditor != nil && igEditorImojiIsReady(self.igEditor);
 }
@@ -182,6 +169,23 @@
 
 - (void)loadImage:(UIImage *)image {
     self.igInputImage = igImageFromNative(self.igContext, image.CGImage, 1);
+
+    [self reset];
+}
+
+- (void)reset {
+    if (!self.igInputImage) {
+        return;
+    }
+
+    if (self.igEditor != nil) {
+       igEditorDestroy(self.igEditor);
+    }
+
+    self.igEditor = igEditorCreate(self.igInputImage);
+    self.firstDrawRect = YES;
+
+    [self setNeedsDisplay];
 }
 
 - (UIImage *)getOutputImage {

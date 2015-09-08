@@ -77,6 +77,10 @@
     if (self.imojiEditor.hidden) {
         self.undoButton.hidden = NO;
         self.outputImage.hidden = YES;
+        self.imojiEditor.hidden = NO;
+
+        [self.imojiEditor reset];
+
     } else if ([self.imojiEditor hasOutputImage]) {
         self.outputImage.image = [self.imojiEditor getOutputImage];
         self.undoButton.hidden = YES;
