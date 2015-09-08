@@ -70,6 +70,7 @@
 - (void)performUndo {
     if ([self.imojiEditor canUndo]) {
         [self.imojiEditor undo];
+        self.undoButton.enabled = self.imojiEditor.canUndo;
     }
 }
 
