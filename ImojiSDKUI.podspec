@@ -22,7 +22,6 @@ Pod::Spec.new do |s|
 
   s.subspec 'Editor' do |ss|
     ss.dependency "ImojiSDK/Core"
-    ss.dependency "Masonry"
 
     ss.preserve_paths = 'Frameworks/ImojiGraphics.framework'
     ss.public_header_files = 'Frameworks/ImojiGraphics.framework/Versions/A/Headers/*.h'
@@ -30,7 +29,7 @@ Pod::Spec.new do |s|
   
     ss.ios.source_files = 'Source/Editor/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/Editor/*.h'
-    ss.ios.frameworks = ["Accelerate"]
+    ss.ios.frameworks = ["Accelerate", "GLKit"]
     ss.libraries = 'c++'
   end
 
