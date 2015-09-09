@@ -85,14 +85,11 @@
             GLint viewportWidth = viewport[2] - viewport[0];
             GLint viewportHeight = viewport[3] - viewport[1];
 
-            // Calculate average viewport and image dimensions
-            IGfloat viewportDimension = 0.5f * (IGfloat) (viewportWidth + viewportHeight);
-            IGfloat imageDimension = 0.5f * (IGfloat) (igImageGetWidth(self.igInputImage) + igImageGetHeight(self.igInputImage));
-
-            // Set zoom to viewport:image ratio, clamped to 1 or above (zoom out only)
-            IGfloat zoom = MIN(1, viewportDimension / imageDimension);
-
-            igEditorZoomTo(self.igEditor, zoom);
+            if (igImageGetWidth(self.igInputImage) > viewportWidth) {
+                igEditorZoomTo(self.igEditor, (CGFloat) viewportWidth / (CGFloat) igImageGetWidth(self.igInputImage));
+            } else if (igImageGetHeight(self.igInputImage) > viewportHeight) {
+                igEditorZoomTo(self.igEditor, (CGFloat) viewportHeight / (CGFloat) igImageGetHeight(self.igInputImage));
+            }
         }
 
         igEditorDisplay(self.igEditor);
