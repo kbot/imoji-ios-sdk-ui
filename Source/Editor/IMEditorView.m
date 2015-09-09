@@ -101,7 +101,7 @@
     if (self.igEditor != nil) {
         for (UITouch *touch in touches) {
             CGPoint location = [touch locationInView:self];
-            igEditorTouchEvent(self.igEditor, IG_TOUCH_BEGAN, &touch, (IGfloat) location.x, (IGfloat) location.y);
+            igEditorTouchEvent(self.igEditor, IG_TOUCH_BEGAN, (__bridge void *) touch, (IGfloat) location.x, (IGfloat) location.y);
         }
 
         self.displayLink.paused = NO;
@@ -112,7 +112,7 @@
     if (self.igEditor != nil) {
         for (UITouch *touch in touches) {
             CGPoint location = [touch locationInView:self];
-            igEditorTouchEvent(self.igEditor, IG_TOUCH_MOVED, &touch, (IGfloat) location.x, (IGfloat) location.y);
+            igEditorTouchEvent(self.igEditor, IG_TOUCH_MOVED, (__bridge void *) touch, (IGfloat) location.x, (IGfloat) location.y);
         }
     }
 }
@@ -123,7 +123,7 @@
 
         for (UITouch *touch in touches) {
             CGPoint location = [touch locationInView:self];
-            igEditorTouchEvent(self.igEditor, IG_TOUCH_ENDED, &touch, (IGfloat) location.x, (IGfloat) location.y);
+            igEditorTouchEvent(self.igEditor, IG_TOUCH_ENDED, (__bridge void *) touch, (IGfloat) location.x, (IGfloat) location.y);
         }
 
         [self setNeedsDisplay];
@@ -179,7 +179,7 @@
     }
 
     if (self.igEditor != nil) {
-       igEditorDestroy(self.igEditor);
+        igEditorDestroy(self.igEditor);
     }
 
     self.igEditor = igEditorCreate(self.igInputImage);
@@ -195,9 +195,9 @@
 
     IGImage *trimmedImage = igEditorGetTrimmedOutputImage(self.igEditor);
 
-    IGBorder* igBorder = igBorderCreatePreset(trimmedImage->width, trimmedImage->height, IG_BORDER_CLASSIC);
+    IGBorder *igBorder = igBorderCreatePreset(trimmedImage->width, trimmedImage->height, IG_BORDER_CLASSIC);
     IGint padding = igBorderGetPadding(igBorder);
-    IGImage* igOutputImage = igImageCreate(
+    IGImage *igOutputImage = igImageCreate(
             trimmedImage->igContext,
             igImageGetWidth(trimmedImage) + padding * 2,
             igImageGetHeight(trimmedImage) + padding * 2
