@@ -38,6 +38,8 @@
 
 @implementation IMEditorView
 
+//@synthesize outputImage;
+
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -188,28 +190,14 @@
     [self setNeedsDisplay];
 }
 
-- (UIImage *)getOutputImage {
+- (UIImage *)outputImage {
     if (!self.igEditor) {
         return nil;
     }
 
     IGImage *trimmedImage = igEditorGetTrimmedOutputImage(self.igEditor);
-
-    IGBorder *igBorder = igBorderCreatePreset(trimmedImage->width, trimmedImage->height, IG_BORDER_CLASSIC);
-    IGint padding = igBorderGetPadding(igBorder);
-    IGImage *igOutputImage = igImageCreate(
-            trimmedImage->igContext,
-            igImageGetWidth(trimmedImage) + padding * 2,
-            igImageGetHeight(trimmedImage) + padding * 2
-    );
-
-    igBorderRender(igBorder, trimmedImage, igOutputImage, padding, padding, 1, 1);
-    igBorderDestroy(igBorder, true);
+    CGImageRef pImage = igImageToNative(trimmedImage);
     igImageDestroy(trimmedImage);
-
-    CGImageRef pImage = igImageToNative(igOutputImage);
-
-    igImageDestroy(igOutputImage);
 
     return [UIImage imageWithCGImage:pImage];
 }

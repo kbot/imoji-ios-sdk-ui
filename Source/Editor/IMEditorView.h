@@ -44,7 +44,7 @@
 
 - (void)reset;
 
-- (UIImage *)getOutputImage;
+@property(nonatomic, readonly) UIImage* outputImage;
 
 @property(nonatomic, assign) id<IMEditorViewDelegate> editorDelegate;
 
