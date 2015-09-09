@@ -188,7 +188,7 @@
 }
 
 - (UIImage *)outputImage {
-    if (!self.igEditor) {
+    if (!self.hasOutputImage) {
         return nil;
     }
 
@@ -197,6 +197,28 @@
     igImageDestroy(trimmedImage);
 
     return [UIImage imageWithCGImage:pImage];
+}
+
+- (UIImage *)borderedOutputImage {
+    UIImage* image = self.outputImage;
+    if (!image) {
+        return nil;
+    }
+
+    IGBorder* border = igBorderCreatePreset(image.size.width, image.size.height, IG_BORDER_CLASSIC);
+    IGImage *igPlainImage = igImageFromNative(self.igContext, image.CGImage, igBorderGetPadding(border));
+    IGint padding = igBorderGetPadding(border);
+    IGImage *outputImage = igImageCreate(self.igContext, igImageGetWidth(igPlainImage) + (padding * 2), igImageGetHeight(igPlainImage) + (padding * 2));
+
+    igBorderRender(border, igPlainImage, outputImage, (IGfloat) padding, (IGfloat) padding, 1, 1);
+
+    CGImageRef pImage = igImageToNative(outputImage);
+    UIImage *borderedImoji = [UIImage imageWithCGImage:pImage];
+
+    igImageDestroy(igPlainImage);
+    igImageDestroy(outputImage);
+    
+    return borderedImoji;
 }
 
 @end

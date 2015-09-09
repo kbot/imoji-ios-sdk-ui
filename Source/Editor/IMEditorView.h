@@ -1,7 +1,7 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Thor Harald Johansen
+//  Created by Thor Harald Johansen, Nima Khoshini
 //  Copyright (C) 2015 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,24 +28,59 @@
 
 @protocol IMEditorViewDelegate;
 
+/**
+* Base UIView class that performs imoji sticker creation
+*/
 @interface IMEditorView : GLKView
 
+/**
+* @abstract Reverts the last edit made by the user if any
+*/
 - (void)undo;
 
+/**
+* @abstract Whether or not the edit process is complete
+*/
 - (BOOL)hasOutputImage;
 
+/**
+* @abstract Whether or not the user made edits that can be undone
+*/
 - (BOOL)canUndo;
 
+/**
+* @abstract Scrolls the viewport to a given point
+*/
 - (void)scrollTo:(CGPoint)point;
 
+/**
+* @abstract Zooms the viewport by a multiple
+*/
 - (void)zoomTo:(CGFloat)zoom;
 
+/**
+* @abstract Reverts the last edit made by the user if any
+*/
 - (void)loadImage:(UIImage *)image;
 
+/**
+* @abstract Clears all edits and resets the viewport
+*/
 - (void)reset;
 
+/**
+* @abstract The finalized image without borders for export. If hasOutputImage is false, this will return nil.
+*/
 @property(nonatomic, readonly) UIImage* outputImage;
 
+/**
+* @abstract The finalized image with borders for export. If hasOutputImage is false, this will return nil.
+*/
+@property(nonatomic, readonly) UIImage* borderedOutputImage;
+
+/**
+* @abstract Optional delegate property to listen for changes to the editor
+*/
 @property(nonatomic, assign) id<IMEditorViewDelegate> editorDelegate;
 
 @end
