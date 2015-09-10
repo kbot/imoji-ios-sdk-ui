@@ -167,7 +167,10 @@
 }
 
 - (void)loadImage:(UIImage *)image {
-    self.igInputImage = igImageFromNative(self.igContext, image.CGImage, 1);
+    CGImageRef cgImage = [IMEditorView CGImageWithCorrectOrientation:image];
+    self.igInputImage = igImageFromNative(self.igContext, cgImage, 0);
+    
+    CGImageRelease(cgImage);
 
     [self reset];
 }
@@ -200,12 +203,12 @@
 }
 
 - (UIImage *)borderedOutputImage {
-    UIImage* image = self.outputImage;
+    UIImage *image = self.outputImage;
     if (!image) {
         return nil;
     }
 
-    IGBorder* border = igBorderCreatePreset(image.size.width, image.size.height, IG_BORDER_CLASSIC);
+    IGBorder *border = igBorderCreatePreset((IGint) image.size.width, (IGint) image.size.height, IG_BORDER_CLASSIC);
     IGImage *igPlainImage = igImageFromNative(self.igContext, image.CGImage, igBorderGetPadding(border));
     IGint padding = igBorderGetPadding(border);
     IGImage *outputImage = igImageCreate(self.igContext, igImageGetWidth(igPlainImage) + (padding * 2), igImageGetHeight(igPlainImage) + (padding * 2));
@@ -217,8 +220,26 @@
 
     igImageDestroy(igPlainImage);
     igImageDestroy(outputImage);
-    
+
     return borderedImoji;
 }
+
++ (CGImageRef)CGImageWithCorrectOrientation:(UIImage *)originalImage  {
+    UIGraphicsBeginImageContext(originalImage.size);
+
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    if (originalImage.imageOrientation == UIImageOrientationLeft) {
+        CGContextRotateCTM(context, -90 * M_PI / 180);
+    }
+
+    [originalImage drawAtPoint:CGPointZero];
+
+    CGImageRef cgImage = CGBitmapContextCreateImage(context);
+    UIGraphicsEndImageContext();
+
+    return cgImage;
+}
+
 
 @end
