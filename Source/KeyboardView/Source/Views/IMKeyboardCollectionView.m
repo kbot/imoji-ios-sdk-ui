@@ -313,72 +313,74 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     } else {
         NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
         NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
+        
+        if (!savedArrayOfFavorites) {
+            self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-collection"]];
+            
+            NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            paragraphStyle.alignment = NSTextAlignmentNatural;
+            
+            NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
+            [textAttributes setDictionary:@{
+                                            NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
+                                            NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
+                                            NSParagraphStyleAttributeName : paragraphStyle
+                                            }];
+            
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
+                                                                          attributes:textAttributes]];
+            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
+                                                                          attributes:textAttributes]];
+            
+            self.splashText = [[UILabel alloc] init];
+            self.splashText.attributedText = text;
+            self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+            self.splashText.numberOfLines = 2;
+            self.splashText.textAlignment = NSTextAlignmentCenter;
+            
+            [self addSubview:self.splashGraphic];
+            [self addSubview:self.splashText];
+            
+            [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.centerX.equalTo(self);
+                make.centerY.equalTo(self).offset(-30.0f);
+                
+            }];
+            
+            [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+                make.width.equalTo(@(self.frame.size.width * .60f));
+                make.centerX.equalTo(self);
+            }];
+        } else {
+            for (NSUInteger i = 0; i < savedArrayOfFavorites.count; ++i) {
+                [self.content addObject:[NSNull null]];
+            }
 
-        for (NSUInteger i = 0; i < savedArrayOfFavorites.count; ++i) {
-            [self.content addObject:[NSNull null]];
-        }
+            [self.session fetchImojisByIdentifiers:savedArrayOfFavorites
+                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                               if (!error) {
+                                   NSUInteger offsetValue = 0;
 
-        [self.session fetchImojisByIdentifiers:savedArrayOfFavorites
-                       fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                           if (!error) {
-                               NSUInteger offsetValue = 0;
+                                   self.content[offsetValue + index] = imoji;
 
-                               self.content[offsetValue + index] = imoji;
+                                   [self reloadItemsAtIndexPaths:@[
+                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
+                                   ]];
+                                   self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
 
-                               [self reloadItemsAtIndexPaths:@[
-                                       [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
-                               ]];
-                               self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
+                                   // append the loading indicator to the content to fetch the next set of results
+                                   if (index + 1 == IMKeyboardCollectionViewNumberOfItemsToLoad) {
+                                       //[self.content addObject:self.loadingIndicatorObject];
 
-                               // append the loading indicator to the content to fetch the next set of results
-                               if (index + 1 == IMKeyboardCollectionViewNumberOfItemsToLoad) {
-                                   //[self.content addObject:self.loadingIndicatorObject];
+                                       [self reloadData];
 
-                                   [self reloadData];
-
+                                   }
                                }
-                           } else {
-                               self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-collection"]];
-
-                               NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
-                               NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-                               paragraphStyle.alignment = NSTextAlignmentNatural;
-
-                               NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
-                               [textAttributes setDictionary:@{
-                                       NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
-                                       NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
-                                       NSParagraphStyleAttributeName : paragraphStyle
-                               }];
-
-                               [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
-                                                                                             attributes:textAttributes]];
-                               textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
-                               [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
-                                                                                             attributes:textAttributes]];
-
-                               self.splashText = [[UILabel alloc] init];
-                               self.splashText.attributedText = text;
-                               self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-                               self.splashText.numberOfLines = 2;
-                               self.splashText.textAlignment = NSTextAlignmentCenter;
-
-                               [self addSubview:self.splashGraphic];
-                               [self addSubview:self.splashText];
-
-                               [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-                                   make.centerX.equalTo(self);
-                                   make.centerY.equalTo(self).offset(-30.0f);
-
-                               }];
-
-                               [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-                                   make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-                                   make.width.equalTo(@(self.frame.size.width * .60f));
-                                   make.centerX.equalTo(self);
-                               }];
-                           }
-                       }];
+                           }];
+        }
     }
 }
 
