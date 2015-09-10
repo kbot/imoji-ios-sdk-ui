@@ -23,10 +23,10 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMEditorView.h"
+#import "IMCreateImojiView.h"
 #import <ImojiGraphics/ImojiGraphics.h>
 
-@interface IMEditorView ()
+@interface IMCreateImojiView ()
 
 @property(nonatomic) IGContext *igContext;
 @property(nonatomic, readwrite) IGImage *igInputImage;
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation IMEditorView
+@implementation IMCreateImojiView
 
 //@synthesize outputImage;
 
@@ -167,7 +167,7 @@
 }
 
 - (void)loadImage:(UIImage *)image {
-    CGImageRef cgImage = [IMEditorView CGImageWithCorrectOrientation:image];
+    CGImageRef cgImage = [IMCreateImojiView CGImageWithCorrectOrientation:image];
     self.igInputImage = igImageFromNative(self.igContext, cgImage, 0);
     
     CGImageRelease(cgImage);

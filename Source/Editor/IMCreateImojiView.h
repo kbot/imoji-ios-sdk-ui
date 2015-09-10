@@ -26,12 +26,12 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
-@protocol IMEditorViewDelegate;
+@protocol IMCreateImojiViewDelegate;
 
 /**
 * Base UIView class that performs imoji sticker creation
 */
-@interface IMEditorView : GLKView
+@interface IMCreateImojiView : GLKView
 
 /**
 * @abstract Reverts the last edit made by the user if any
@@ -81,14 +81,14 @@
 /**
 * @abstract Optional delegate property to listen for changes to the editor
 */
-@property(nonatomic, assign) id<IMEditorViewDelegate> editorDelegate;
+@property(nonatomic, assign) id<IMCreateImojiViewDelegate> editorDelegate;
 
 @end
 
-@protocol IMEditorViewDelegate<NSObject>
+@protocol IMCreateImojiViewDelegate <NSObject>
 
 @optional
 
-- (void)userDidUpdatePathInEditorView:(IMEditorView *)editorView;
+- (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView;
 
 @end

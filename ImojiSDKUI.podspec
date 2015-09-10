@@ -22,10 +22,13 @@ Pod::Spec.new do |s|
 
   s.subspec 'Editor' do |ss|
     ss.dependency "ImojiSDK/Core"
+    ss.dependency "Masonry"
 
     ss.preserve_paths = 'Frameworks/ImojiGraphics.framework'
     ss.public_header_files = 'Frameworks/ImojiGraphics.framework/Versions/A/Headers/*.h'
     ss.vendored_frameworks = 'Frameworks/ImojiGraphics.framework'
+
+    ss.ios.resource_bundles = {'ImojiEditorAssets' => ['Source/Editor/Resources/Icons/*.png']}
   
     ss.ios.source_files = 'Source/Editor/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/Editor/*.h'
