@@ -29,6 +29,8 @@
 
 @class IMImojiSession;
 
+@protocol IMKeyboardCollectionViewDelegate;
+
 @interface IMKeyboardCollectionView : UICollectionView
 
 @property(nonatomic, strong) void(^categoryShowCallback) (NSString *title);
@@ -49,6 +51,16 @@
 - (void)loadFavoriteImojis;
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset;
+
+@property(nonatomic, strong) id <IMKeyboardCollectionViewDelegate> keyboardDelegate;
+
+@end
+
+@protocol IMKeyboardCollectionViewDelegate <NSObject>
+
+@optional
+
+- (void)selectedNoResultsView;
 
 @end
 

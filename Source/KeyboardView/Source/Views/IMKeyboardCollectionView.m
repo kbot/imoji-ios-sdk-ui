@@ -41,6 +41,8 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic) IMKeyboardCollectionViewContentType contentType;
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;
+@property(nonatomic, strong) UILabel *splashText;
+@property(nonatomic, strong) UIImageView *splashGraphic;
 
 @end
 
@@ -226,6 +228,8 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 - (void)loadRecentImojis {
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
     //[self.content addObject:self.loadingIndicatorObject];
+    [self.splashGraphic removeFromSuperview];
+    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
@@ -255,12 +259,39 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
                                [self reloadData];
 
                            }
+                       } else {
+                           self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-recents"]];
+
+                           self.splashText = [[UILabel alloc] init];
+                           self.splashText.text = @"Stickers you send\nwill appear here";
+                           self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+                           self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+                           self.splashText.numberOfLines = 2;
+                           self.splashText.textAlignment = NSTextAlignmentCenter;
+                           self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
+
+                           [self addSubview:self.splashGraphic];
+                           [self addSubview:self.splashText];
+
+                           [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+                               make.centerX.equalTo(self);
+                               make.centerY.equalTo(self).offset(-30.0f);
+
+                           }];
+
+                           [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+                               make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+                               make.width.equalTo(@(self.frame.size.width * .60f));
+                               make.centerX.equalTo(self);
+                           }];
                        }
                    }];
 }
 
 - (void)loadFavoriteImojis {
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
+    [self.splashGraphic removeFromSuperview];
+    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
@@ -306,6 +337,46 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
                                    [self reloadData];
 
                                }
+                           } else {
+                               self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-collection"]];
+
+                               NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+                               NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+                               paragraphStyle.alignment = NSTextAlignmentNatural;
+
+                               NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
+                               [textAttributes setDictionary:@{
+                                       NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
+                                       NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
+                                       NSParagraphStyleAttributeName : paragraphStyle
+                               }];
+
+                               [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
+                                                                                             attributes:textAttributes]];
+                               textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
+                               [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
+                                                                                             attributes:textAttributes]];
+
+                               self.splashText = [[UILabel alloc] init];
+                               self.splashText.attributedText = text;
+                               self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+                               self.splashText.numberOfLines = 2;
+                               self.splashText.textAlignment = NSTextAlignmentCenter;
+
+                               [self addSubview:self.splashGraphic];
+                               [self addSubview:self.splashText];
+
+                               [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+                                   make.centerX.equalTo(self);
+                                   make.centerY.equalTo(self).offset(-30.0f);
+
+                               }];
+
+                               [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+                                   make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+                                   make.width.equalTo(@(self.frame.size.width * .60f));
+                                   make.centerX.equalTo(self);
+                               }];
                            }
                        }];
     }
@@ -315,6 +386,8 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
     self.contentType = IMKeyboardCollectionViewContentTypeImojiCategories;
     [self.activityView startAnimating];
+    [self.splashGraphic removeFromSuperview];
+    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
@@ -336,6 +409,8 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
     [self.activityView startAnimating];
+    [self.splashGraphic removeFromSuperview];
+    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
@@ -424,6 +499,48 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
             [self.content addObject:[NSNull null]];
         }
     } else if (self.content.count == 0) {
+        self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-no-results"]];
+
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentNatural;
+
+        NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
+        [textAttributes setDictionary:@{
+                NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Light" size:19.0f],
+                NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
+                NSParagraphStyleAttributeName : paragraphStyle
+        }];
+
+        [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"No Results\n"
+                                                                      attributes:textAttributes]];
+        textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:16.0f];
+        textAttributes[@"NSColor"] = [UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1];
+        [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Try Again"
+                                                                      attributes:textAttributes]];
+
+        self.splashText = [[UILabel alloc] init];
+        self.splashText.attributedText = text;
+        self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+        self.splashText.numberOfLines = 2;
+        self.splashText.textAlignment = NSTextAlignmentCenter;
+
+        [self addSubview:self.splashGraphic];
+        [self addSubview:self.splashText];
+
+        [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self);
+            make.centerY.equalTo(self).offset(-30.0f);
+        }];
+
+        [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+            make.width.equalTo(@(self.frame.size.width * .60f));
+            make.centerX.equalTo(self);
+        }];
+
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                           action:@selector(selectedNoResultsView)]];
         //[self.content addObject:self.noResultsIndicatorObject];
     }
 
@@ -483,6 +600,12 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
                 [self processCellAnimations:indexPath];
             }
         }
+    }
+}
+
+- (void)selectedNoResultsView {
+    if (self.delegate && [self.keyboardDelegate respondsToSelector:@selector(selectedNoResultsView)]) {
+        [self.keyboardDelegate selectedNoResultsView];
     }
 }
 

@@ -28,6 +28,9 @@
 #import "IMKeyboardCollectionView.h"
 #import "IMAttributeStringUtil.h"
 #import "IMQwertyViewController.h"
+#import <sys/socket.h>
+#import <netinet/in.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 
 typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
     IMKeyboardButtonSearch = 1,
@@ -41,7 +44,7 @@ typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
 NSString *const IMKeyboardViewControllerDefaultFontFamily = @"Imoji-Regular";
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMImojiSessionDelegate>
+@interface IMKeyboardViewController () <IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
@@ -98,6 +101,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
         _collectionView.appGroup = _appGroup;
+        _collectionView.keyboardDelegate = self;
     }
     return self;
 }
@@ -237,9 +241,71 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     // menu view
     [self setupMenuView];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-    });
+
+    if(!self.hasFullAccess) {
+        UIImageView *enableAccessSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-enable-access"]];
+
+        UILabel *enableAccessText = [[UILabel alloc] init];
+        enableAccessText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
+        enableAccessText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+        enableAccessText.lineBreakMode = NSLineBreakByWordWrapping;
+        enableAccessText.numberOfLines = 2;
+        enableAccessText.textAlignment = NSTextAlignmentCenter;
+        enableAccessText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+
+        [self.collectionView addSubview:enableAccessSplash];
+        [self.collectionView addSubview:enableAccessText];
+
+        [enableAccessSplash mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.collectionView);
+            make.centerY.equalTo(self.collectionView).offset(-30.0f);
+        }];
+
+        [enableAccessText mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(enableAccessSplash.mas_bottom).offset(13.0f);
+            make.width.equalTo(@(self.view.frame.size.width * .60f));
+            make.centerX.equalTo(self.collectionView);
+        }];
+
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
+                                                                    withFontSize:14.0f
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    } else if(self.hasConnectivity) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+        });
+    } else {
+        UIImageView *noConnectionSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-no-connection"]];
+
+        UILabel *enableConnectionText = [[UILabel alloc] init];
+        enableConnectionText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
+        enableConnectionText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+        enableConnectionText.lineBreakMode = NSLineBreakByWordWrapping;
+        enableConnectionText.numberOfLines = 2;
+        enableConnectionText.textAlignment = NSTextAlignmentCenter;
+        enableConnectionText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+
+        [self.collectionView addSubview:noConnectionSplash];
+        [self.collectionView addSubview:enableConnectionText];
+
+        [noConnectionSplash mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.collectionView);
+            make.centerY.equalTo(self.collectionView).offset(-30.0f);
+        }];
+
+        [enableConnectionText mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(noConnectionSplash.mas_bottom).offset(13.0f);
+            make.width.equalTo(@(self.view.frame.size.width * .60f));
+            make.centerX.equalTo(self.collectionView);
+        }];
+
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
+                                                                    withFontSize:14.0f
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    }
+
     self.generalCatButton.selected = YES;
 
     // search
@@ -398,6 +464,16 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.bottomNavView addSubview:self.trendingCatButton];
     [self.bottomNavView addSubview:self.collectionButton];
     [self.bottomNavView addSubview:self.deleteButton];
+
+    if(!self.hasConnectivity || !self.hasFullAccess) {
+        self.nextKeyboardButton.alpha = 0.5f;
+        [self.searchButton setEnabled:NO];
+        [self.recentsButton setEnabled:NO];
+        [self.generalCatButton setEnabled:NO];
+        [self.trendingCatButton setEnabled:NO];
+        [self.collectionButton setEnabled:NO];
+        [self.deleteButton setEnabled:NO];
+    }
 
     [self positionMenuButtons];
 }
@@ -603,6 +679,93 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 - (void)setAppGroup:(NSString *)appGroup {
     _appGroup = appGroup;
     self.collectionView.appGroup = appGroup;
+}
+
+- (void)selectedNoResultsView {
+    [self navPressed:self.searchButton];
+}
+
+- (BOOL)hasConnectivity {
+    struct sockaddr_in zeroAddress;
+    bzero(&zeroAddress, sizeof(zeroAddress));
+    zeroAddress.sin_len = sizeof(zeroAddress);
+    zeroAddress.sin_family = AF_INET;
+    BOOL isConnected = nil;
+
+    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr*)&zeroAddress);
+    if(reachability != NULL) {
+        //NetworkStatus retVal = NotReachable;
+        SCNetworkReachabilityFlags flags;
+        if (SCNetworkReachabilityGetFlags(reachability, &flags)) {
+            if ((flags & kSCNetworkReachabilityFlagsReachable) == 0)
+            {
+                // if target host is not reachable
+                isConnected = NO;
+            } else if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0) {
+                // if target host is reachable and no connection is required
+                //  then we'll assume (for now) that your on Wi-Fi
+                isConnected = YES;
+            } else if ((((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) ||
+                    (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0)) {
+                // ... and the connection is on-demand (or on-traffic) if the
+                //     calling application is using the CFSocketStream or higher APIs
+
+                if ((flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0)
+                {
+                    // ... and no [user] intervention is needed
+                    isConnected = YES;
+                }
+            } else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) == kSCNetworkReachabilityFlagsIsWWAN) {
+                // ... but WWAN connections are OK if the calling application
+                //     is using the CFNetwork (CFSocketStream?) APIs.
+                isConnected = YES;
+            }
+        }
+    }
+
+    CFRelease(reachability);
+
+    if(isConnected) {
+        return isConnected;
+    }
+
+    return NO;
+}
+
+- (BOOL)testFullAccess
+{
+    NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"yourAppGroupID"];  // Need to setup in Xcode and Developer Portal
+    NSString *testFilePath = [[containerURL path] stringByAppendingPathComponent:@"testFullAccess"];
+
+    NSError *fileError = nil;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:testFilePath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:testFilePath error:&fileError];
+    }
+
+    if (fileError == nil) {
+        NSString *testString = @"testing, testing, 1, 2, 3...";
+        BOOL success = [[NSFileManager defaultManager] createFileAtPath:testFilePath
+                                                               contents: [testString dataUsingEncoding:NSUTF8StringEncoding]
+                                                             attributes:nil];
+        return success;
+    } else {
+        return NO;
+    }
+}
+
+- (BOOL)isCustomKeyboardEnabled {
+    NSString *bundleID = @"com.company.app.customkeyboard"; // Replace this string with your custom keyboard's bundle ID
+    NSArray *keyboards = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation][@"AppleKeyboards"]; // Array of all active keyboards
+    for (NSString *keyboard in keyboards) {
+        if ([keyboard isEqualToString:bundleID])
+            return YES;
+    }
+
+    return NO;
+}
+
+- (BOOL)hasFullAccess{
+    return [UIPasteboard generalPasteboard];
 }
 
 @end

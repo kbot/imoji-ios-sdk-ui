@@ -43,6 +43,9 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Imoji_Regular.otf</string>
+		<string>SF-UI-Display-Light.otf</string>
+		<string>SF-UI-Display-Medium.otf</string>
+		<string>SF-UI-Display-Regular.otf</string>
 	</array>
 </dict>
 </plist>

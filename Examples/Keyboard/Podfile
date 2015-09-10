@@ -2,9 +2,9 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 
 target "imoji-keyboard" do
-  pod 'ImojiSDKUI'
+  pod 'ImojiSDKUI', :path => '../../'
 end
 
 target "keyboard" do
-  pod 'ImojiSDKUI'
+  pod 'ImojiSDKUI', :path => '../../'
 end

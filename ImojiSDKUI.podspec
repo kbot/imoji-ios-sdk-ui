@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
     
     ss.ios.source_files = 'Source/KeyboardView/Source/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/KeyboardView/Source/**/*.h'
-    ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/Imoji_Regular.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
+    ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/*.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
     ss.ios.resource_bundles = {'ImojiKeyboardAssets' => ['Source/KeyboardView/Resources/Icons/*.png']}
 
   end
