@@ -243,7 +243,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self setupMenuView];
 
     if(!self.hasFullAccess) {
-        UIImageView *enableAccessSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-enable-access"]];
+        UIImageView *enableAccessSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
 
         UILabel *enableAccessText = [[UILabel alloc] init];
         enableAccessText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
@@ -276,7 +276,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
         });
     } else {
-        UIImageView *noConnectionSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"splash-no-connection"]];
+        UIImageView *noConnectionSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
 
         UILabel *enableConnectionText = [[UILabel alloc] init];
         enableConnectionText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";

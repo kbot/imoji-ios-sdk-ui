@@ -40,6 +40,7 @@
 @property(nonatomic, strong) void(^showFavoritedCallback) ();
 @property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
 @property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
+@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
 @property(nonatomic, strong) NSString *appGroup;
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
