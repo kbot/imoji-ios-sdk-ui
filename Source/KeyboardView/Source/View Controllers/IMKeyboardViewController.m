@@ -77,6 +77,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 @property(nonatomic, strong) UIView *searchView;
 @property(nonatomic, strong) IMKeyboardSearchTextField *searchField;
 
+@property(nonatomic, strong) UIView *splashView;
 
 @end
 
@@ -238,7 +239,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self setupMenuView];
 
     if(!self.hasFullAccess) {
-        [self.collectionView showEnableFullAccessSplash];
+        [self showSplashViewWithType:IMKeyboardEnableFullAccessSplash];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -248,7 +249,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
         });
     } else {
-        [self.collectionView showNoConnectionSplash];
+        [self showSplashViewWithType:IMKeyboardNoConnectionSplash];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -319,6 +320,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }];
     vc.setSearchCallback = ^() {
         if (self.searchField.text.length > 0) {
+            [self.splashView removeFromSuperview];
             self.searchView.hidden = YES;
             [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
             for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
@@ -503,6 +505,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 [self.progressView setProgress:0.f animated:YES];
                 break;
             case IMKeyboardButtonRecents:
+                [self.splashView removeFromSuperview];
                 [self.collectionView loadRecentImojis];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
                                                                             withFontSize:14.0f
@@ -511,6 +514,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryReactions:
+                [self.splashView removeFromSuperview];
                 [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                             withFontSize:14.0f
@@ -519,6 +523,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryTrending:
+                [self.splashView removeFromSuperview];
                 [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                             withFontSize:14.0f
@@ -527,6 +532,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonFavorites: {
+                [self.splashView removeFromSuperview];
                 [self.collectionView loadFavoriteImojis];
                 NSString *title;
 
@@ -544,10 +550,11 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 break;
             }
             default:
+                [self.splashView removeFromSuperview];
                 break;
         }
     } else {
-        [self.collectionView showNoConnectionSplash];
+        [self showSplashViewWithType:IMKeyboardNoConnectionSplash];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -640,7 +647,107 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 }
 
 - (void)selectedNoResultsView {
-    [self navPressed:self.searchButton];
+    self.searchView.hidden = NO;
+    [self.progressView setProgress:0.f animated:YES];
+}
+
+- (void)showSplashViewWithType:(IMKeyboardSplashType)splashType {
+    if(self.splashView) {
+        [self.splashView removeFromSuperview];
+        self.splashView = nil;
+    }
+
+    self.splashView = [[UIView alloc] init];
+    UIImageView *splashGraphic = [[UIImageView alloc] init];
+    UILabel *splashText = [[UILabel alloc] init];
+
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment = NSTextAlignmentNatural;
+
+    NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
+
+    switch(splashType) {
+        case IMKeyboardNoConnectionSplash:
+            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
+            splashText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
+            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+            break;
+        case IMKeyboardEnableFullAccessSplash:
+            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
+            splashText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
+            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+            break;
+        case IMKeyboardNoResultsSplash:
+            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_noresults" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
+            [textAttributes setDictionary:@{
+                    NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Light" size:19.0f],
+                    NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
+                    NSParagraphStyleAttributeName : paragraphStyle
+            }];
+
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"No Results\n"
+                                                                          attributes:textAttributes]];
+            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:16.0f];
+            textAttributes[@"NSColor"] = [UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1];
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Try Again"
+                                                                          attributes:textAttributes]];
+            splashText.attributedText = text;
+            break;
+        case IMKeyboardCollectionSplash:
+            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_collection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
+            [textAttributes setDictionary:@{
+                    NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
+                    NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
+                    NSParagraphStyleAttributeName : paragraphStyle
+            }];
+
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
+                                                                          attributes:textAttributes]];
+            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
+            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
+                                                                          attributes:textAttributes]];
+
+            splashText.attributedText = text;
+            break;
+        case IMKeyboardRecentsSplash:
+            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_recents" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
+
+            splashText = [[UILabel alloc] init];
+            splashText.text = @"Stickers you send\nwill appear here";
+            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+
+            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
+            break;
+        default:
+            break;
+    }
+
+    splashText.lineBreakMode = NSLineBreakByWordWrapping;
+    splashText.numberOfLines = 2;
+    splashText.textAlignment = NSTextAlignmentCenter;
+
+    [self.view insertSubview:self.splashView aboveSubview:self.collectionView];
+
+    [self.splashView addSubview:splashGraphic];
+    [self.splashView addSubview:splashText];
+
+    [splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view);
+        make.centerY.equalTo(self.view).offset(-30.0f);
+    }];
+
+    [splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(splashGraphic.mas_bottom).offset(13.0f);
+        make.width.equalTo(self.view).multipliedBy(.60f);
+        make.centerX.equalTo(self.view);
+    }];
 }
 
 - (BOOL)hasConnectivity {

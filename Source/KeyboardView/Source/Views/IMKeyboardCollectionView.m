@@ -41,9 +41,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic) IMKeyboardCollectionViewContentType contentType;
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;
-@property(nonatomic, strong) UILabel *splashText;
-@property(nonatomic, strong) UIImageView *splashGraphic;
-@property(nonatomic, strong) NSBundle *imagesBundle;
 
 @end
 
@@ -59,7 +56,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
         self.session = session;
         self.dataSource = self;
         self.delegate = self;
-        self.imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
 
         self.backgroundColor = [UIColor clearColor];
 
@@ -236,77 +232,64 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
     //[self.content addObject:self.loadingIndicatorObject];
     self.noResultsTapGesture.enabled = NO;
-    [self.splashGraphic removeFromSuperview];
-    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
-    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
-
-    for (NSUInteger i = 0; i < savedArrayOfRecents.count; ++i) {
-        [self.content addObject:[NSNull null]];
-    }
-
-    if(!savedArrayOfRecents) {
-        self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_recents" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-        self.splashText = [[UILabel alloc] init];
-        self.splashText.text = @"Stickers you send\nwill appear here";
-        self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-        self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-        self.splashText.numberOfLines = 2;
-        self.splashText.textAlignment = NSTextAlignmentCenter;
-        self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
-
-        [self addSubview:self.splashGraphic];
-        [self addSubview:self.splashText];
-
-        [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.centerY.equalTo(self).offset(-30.0f);
-
-        }];
-
-        [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-            make.width.equalTo(self).multipliedBy(.60f);
-            make.centerX.equalTo(self);
-        }];
+    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+       && ![self.keyboardDelegate hasConnectivity]) {
+        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        }
     } else {
-        [self.session fetchImojisByIdentifiers:savedArrayOfRecents
-                       fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                           if (!error) {
-                               NSUInteger offsetValue = 0;
+        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+        NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
 
-                               self.content[offsetValue + index] = imoji;
+        for (NSUInteger i = 0; i < savedArrayOfRecents.count; ++i) {
+            [self.content addObject:[NSNull null]];
+        }
 
-                               [self reloadItemsAtIndexPaths:@[
-                                       [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
-                               ]];
-                               self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
+        if(!savedArrayOfRecents) {
+            if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+                [self.keyboardDelegate showSplashViewWithType:IMKeyboardRecentsSplash];
+            }
+        } else {
+            [self.session fetchImojisByIdentifiers:savedArrayOfRecents
+                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                               if (!error) {
+                                   NSUInteger offsetValue = 0;
 
-                               // append the loading indicator to the content to fetch the next set of results
-                               if (index + 1 == IMKeyboardCollectionViewNumberOfItemsToLoad) {
-                                   //[self.content addObject:self.loadingIndicatorObject];
+                                   self.content[offsetValue + index] = imoji;
 
-                                   [self reloadData];
+                                   [self reloadItemsAtIndexPaths:@[
+                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
+                                   ]];
+                                   self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
 
+                                   // append the loading indicator to the content to fetch the next set of results
+                                   if (index + 1 == IMKeyboardCollectionViewNumberOfItemsToLoad) {
+                                       //[self.content addObject:self.loadingIndicatorObject];
+
+                                       [self reloadData];
+
+                                   }
                                }
-                           }
-                       }];
+                           }];
+        }
     }
 }
 
 - (void)loadFavoriteImojis {
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
     self.noResultsTapGesture.enabled = NO;
-    [self.splashGraphic removeFromSuperview];
-    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
-    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
+    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+       && ![self.keyboardDelegate hasConnectivity]) {
+        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        }
+    } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
         [self.activityView startAnimating];
 
         [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
@@ -326,45 +309,9 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
         NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
 
         if (!savedArrayOfFavorites) {
-            self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_collection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-            NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
-            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-            paragraphStyle.alignment = NSTextAlignmentNatural;
-
-            NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
-            [textAttributes setDictionary:@{
-                    NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
-                    NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
-                    NSParagraphStyleAttributeName : paragraphStyle
-            }];
-
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
-                                                                          attributes:textAttributes]];
-            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
-                                                                          attributes:textAttributes]];
-
-            self.splashText = [[UILabel alloc] init];
-            self.splashText.attributedText = text;
-            self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-            self.splashText.numberOfLines = 2;
-            self.splashText.textAlignment = NSTextAlignmentCenter;
-
-            [self addSubview:self.splashGraphic];
-            [self addSubview:self.splashText];
-
-            [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.centerX.equalTo(self);
-                make.centerY.equalTo(self).offset(-30.0f);
-
-            }];
-
-            [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-                make.width.equalTo(self).multipliedBy(.60f);
-                make.centerX.equalTo(self);
-            }];
+            if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+                [self.keyboardDelegate showSplashViewWithType:IMKeyboardCollectionSplash];
+            }
         } else {
             for (NSUInteger i = 0; i < savedArrayOfFavorites.count; ++i) {
                 [self.content addObject:[NSNull null]];
@@ -400,19 +347,24 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     self.contentType = IMKeyboardCollectionViewContentTypeImojiCategories;
     self.noResultsTapGesture.enabled = NO;
     [self.activityView startAnimating];
-    [self.splashGraphic removeFromSuperview];
-    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
-    [self.session getImojiCategoriesWithClassification:classification
-                                              callback:^(NSArray *imojiCategories, NSError *error) {
-                                                  [self.content addObjectsFromArray:imojiCategories];
-                                                  [self.activityView stopAnimating];
-                                                  [self reloadData];
-                                                  self.currentCategoryClassification = classification;
-                                                  self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
-                                              }];
+    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+       && ![self.keyboardDelegate hasConnectivity]) {
+        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        }
+    } else {
+        [self.session getImojiCategoriesWithClassification:classification
+                                                  callback:^(NSArray *imojiCategories, NSError *error) {
+                                                      [self.content addObjectsFromArray:imojiCategories];
+                                                      [self.activityView stopAnimating];
+                                                      [self reloadData];
+                                                      self.currentCategoryClassification = classification;
+                                                      self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
+                                                  }];
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -424,28 +376,33 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     self.contentType = IMKeyboardCollectionViewContentTypeImojis;
     self.noResultsTapGesture.enabled = NO;
     [self.activityView startAnimating];
-    [self.splashGraphic removeFromSuperview];
-    [self.splashText removeFromSuperview];
     [self.content removeAllObjects];
     [self reloadData];
 
     self.categoryShowCallback(searchTerm);
 
-    [self.session searchImojisWithTerm:searchTerm
-                                offset:offset
-                       numberOfResults:@(IMKeyboardCollectionViewNumberOfItemsToLoad)
-             resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
-                 [self.activityView stopAnimating];
+    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+       && ![self.keyboardDelegate hasConnectivity]) {
+        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        }
+    } else {
+        [self.session searchImojisWithTerm:searchTerm
+                                    offset:offset
+                           numberOfResults:@(IMKeyboardCollectionViewNumberOfItemsToLoad)
+                 resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                     [self.activityView stopAnimating];
 
-                 if (!error) {
-                     [self prepareResultsFromServerResponse:resultCount];
-                 }
-             }
-                 imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
                      if (!error) {
-                         [self displayResultFromServerResponse:imoji index:index offset:offset];
+                         [self prepareResultsFromServerResponse:resultCount];
                      }
-                 }];
+                 }
+                     imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                         if (!error) {
+                             [self displayResultFromServerResponse:imoji index:index offset:offset];
+                         }
+                     }];
+    }
 }
 
 - (void)saveToRecents:(IMImojiObject *)imojiObject {
@@ -514,46 +471,9 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
             [self.content addObject:[NSNull null]];
         }
     } else if (self.content.count == 0) {
-        self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_noresults" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.alignment = NSTextAlignmentNatural;
-
-        NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
-        [textAttributes setDictionary:@{
-                NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Light" size:19.0f],
-                NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
-                NSParagraphStyleAttributeName : paragraphStyle
-        }];
-
-        [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"No Results\n"
-                                                                      attributes:textAttributes]];
-        textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:16.0f];
-        textAttributes[@"NSColor"] = [UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1];
-        [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Try Again"
-                                                                      attributes:textAttributes]];
-
-        self.splashText = [[UILabel alloc] init];
-        self.splashText.attributedText = text;
-        self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-        self.splashText.numberOfLines = 2;
-        self.splashText.textAlignment = NSTextAlignmentCenter;
-
-        [self addSubview:self.splashGraphic];
-        [self addSubview:self.splashText];
-
-        [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.centerY.equalTo(self).offset(-30.0f);
-        }];
-
-        [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-            make.width.equalTo(self).multipliedBy(.60f);
-            make.centerX.equalTo(self);
-        }];
-
+        if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoResultsSplash];
+        }
         self.noResultsTapGesture.enabled = YES;
         //[self.content addObject:self.noResultsIndicatorObject];
     }
@@ -599,58 +519,6 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     }
 }
 
-- (void)showEnableFullAccessSplash {
-    self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-    self.splashText = [[UILabel alloc] init];
-    self.splashText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
-    self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-    self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-    self.splashText.numberOfLines = 2;
-    self.splashText.textAlignment = NSTextAlignmentCenter;
-    self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-
-    [self addSubview:self.splashGraphic];
-    [self addSubview:self.splashText];
-
-    [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self);
-        make.centerY.equalTo(self).offset(-30.0f);
-    }];
-
-    [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-        make.width.equalTo(self).multipliedBy(.60f);
-        make.centerX.equalTo(self);
-    }];
-}
-
-- (void)showNoConnectionSplash {
-    self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-    self.splashText = [[UILabel alloc] init];
-    self.splashText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
-    self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-    self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
-    self.splashText.numberOfLines = 2;
-    self.splashText.textAlignment = NSTextAlignmentCenter;
-    self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-
-    [self addSubview:self.splashGraphic];
-    [self addSubview:self.splashText];
-
-    [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self);
-        make.centerY.equalTo(self).offset(-30.0f);
-    }];
-
-    [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-        make.width.equalTo(self).multipliedBy(.60f);
-        make.centerX.equalTo(self);
-    }];
-}
-
 - (void)processDoubleTap:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         CGPoint point = [sender locationInView:self];
@@ -670,7 +538,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 }
 
 - (void)selectedNoResultsView {
-    if (self.delegate && [self.keyboardDelegate respondsToSelector:@selector(selectedNoResultsView)]) {
+    if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(selectedNoResultsView)]) {
         [self.keyboardDelegate selectedNoResultsView];
     }
 }

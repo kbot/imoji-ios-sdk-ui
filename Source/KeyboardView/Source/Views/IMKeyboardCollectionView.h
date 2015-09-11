@@ -27,6 +27,14 @@
 #import <Foundation/Foundation.h>
 #import <ImojiSDK/ImojiSDK.h>
 
+typedef NS_ENUM(NSUInteger, IMKeyboardSplashType) {
+    IMKeyboardNoConnectionSplash = 1,
+    IMKeyboardEnableFullAccessSplash,
+    IMKeyboardNoResultsSplash,
+    IMKeyboardRecentsSplash,
+    IMKeyboardCollectionSplash
+};
+
 @class IMImojiSession;
 
 @protocol IMKeyboardCollectionViewDelegate;
@@ -66,6 +74,10 @@
 @optional
 
 - (void)selectedNoResultsView;
+
+- (BOOL)hasConnectivity;
+
+- (void)showSplashViewWithType:(IMKeyboardSplashType)splashType;
 
 @end
 
