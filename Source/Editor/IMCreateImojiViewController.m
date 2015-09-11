@@ -25,6 +25,7 @@
 
 #import "IMCreateImojiViewController.h"
 #import "IMCreateImojiView.h"
+#import "IMTagCollectionView.h"
 #import <Masonry/Masonry.h>
 
 
@@ -38,11 +39,10 @@
 @property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
 
 @property(nonatomic, readonly) UIView *creationView;
-@property(nonatomic, readonly) UIView *tagView;
+@property(nonatomic, readonly) IMTagCollectionView *tagView;
 @property(nonatomic, readonly) UIToolbar *navigationButtonView;
 @property(nonatomic, readonly) UIToolbar *editorButtonView;
 
-@property(nonatomic, readonly) UIInputView *tagInputField;
 @property(nonatomic, readonly) UIImageView *imojiPreview;
 
 @end
@@ -66,7 +66,7 @@
     UIView *view = [UIView new];
 
     _creationView = [UIView new];
-    _tagView = [UIView new];
+    _tagView = [IMTagCollectionView new];
     _navigationButtonView = [UIToolbar new];
     _editorButtonView = [UIToolbar new];
 
@@ -89,7 +89,6 @@
                                     forState:UIControlStateNormal];
 
     _imojiPreview = [UIImageView new];
-    _tagInputField = [UIInputView new];
 
     _imojiEditor.editorDelegate = self;
 
@@ -99,12 +98,13 @@
 
     view.backgroundColor = [UIColor colorWithRed:48.0f / 255.0f green:48.0f / 255.0f blue:48.0f / 255.0f alpha:1];
 
+    [view addSubview:self.imojiPreview];
     [view addSubview:self.tagView];
     [view addSubview:self.creationView];
     [view addSubview:self.navigationButtonView];
     [view addSubview:self.editorButtonView];
 
-    self.tagView.hidden = YES;
+    self.tagView.hidden = self.imojiPreview.hidden = YES;
     self.imojiPreview.contentMode = UIViewContentModeScaleAspectFit;
 
     [self.creationView addSubview:self.imojiEditor];
@@ -125,25 +125,15 @@
     self.navigationButtonView.barStyle = UIBarStyleBlackTranslucent;
     self.navigationButtonView.tintColor = [UIColor whiteColor];
 
-    [self.tagView addSubview:self.imojiPreview];
-    [self.tagView addSubview:self.tagInputField];
-
     [self.imojiPreview mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.tagView).offset(10);
-        make.centerX.equalTo(self.tagView);
-        make.width.and.height.equalTo(self.tagView.mas_width).dividedBy(3);
-    }];
-
-    [self.tagInputField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.imojiPreview.mas_bottom).offset(10);
-        make.centerX.equalTo(self.tagView);
-        make.width.equalTo(self.tagView).offset(-20);
-        make.height.equalTo(@30);
+        make.top.equalTo(self.navigationButtonView.mas_bottom).offset(10);
+        make.centerX.equalTo(view);
+        make.width.and.height.equalTo(view.mas_width).dividedBy(3);
     }];
 
     [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.navigationButtonView.mas_bottom);
-        make.bottom.and.width.equalTo(view);
+        make.top.equalTo(self.imojiPreview.mas_bottom);
+        make.left.and.bottom.and.width.equalTo(view);
     }];
 
     [self.navigationButtonView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -178,7 +168,7 @@
 
 - (void)finishEditing {
     if (self.tagView.hidden) {
-        self.tagView.hidden = NO;
+        self.imojiPreview.hidden = self.tagView.hidden = NO;
         self.editorButtonView.hidden = YES;
         self.tagView.layer.opacity = 0.0f;
 
@@ -196,7 +186,7 @@
         ];
     } else {
         if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidEditImage:image:tags:)]) {
-            [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:@[]];
+            [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagView.tags.array];
         }
     }
 }
@@ -212,7 +202,7 @@
                              self.creationView.layer.opacity = 1.0f;
                          }
                          completion:^(BOOL finished) {
-                             self.tagView.hidden = YES;
+                             self.imojiPreview.hidden = self.tagView.hidden = YES;
                              [self.navigationTitle setTitle:@"Trim"];
                          }];
     } else {
