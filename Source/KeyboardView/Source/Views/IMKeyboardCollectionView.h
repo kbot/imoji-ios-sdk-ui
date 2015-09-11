@@ -53,6 +53,10 @@
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset;
 
+- (void)showEnableFullAccessSplash;
+
+- (void)showNoConnectionSplash;
+
 @property(nonatomic, strong) id <IMKeyboardCollectionViewDelegate> keyboardDelegate;
 
 @end
