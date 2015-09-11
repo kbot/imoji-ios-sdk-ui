@@ -16,7 +16,13 @@
 
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-    return [super initWithSourceImage:[UIImage imageNamed:@"big-big-dog.jpg"]];
+    self = [super initWithSourceImage:[UIImage imageNamed:@"big-big-dog.jpg"]];
+
+    if (self) {
+        // nothing really to do :(
+    }
+
+    return self;
 }
 
 @end
