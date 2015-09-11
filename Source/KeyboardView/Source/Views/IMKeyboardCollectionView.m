@@ -270,7 +270,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
         [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-            make.width.equalTo(@(self.frame.size.width * .60f));
+            make.width.equalTo(self).multipliedBy(.60f);
             make.centerX.equalTo(self);
         }];
     } else {
@@ -362,7 +362,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
             [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-                make.width.equalTo(@(self.frame.size.width * .60f));
+                make.width.equalTo(self).multipliedBy(.60f);
                 make.centerX.equalTo(self);
             }];
         } else {
@@ -550,7 +550,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
         [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-            make.width.equalTo(@(self.frame.size.width * .60f));
+            make.width.equalTo(self).multipliedBy(.60f);
             make.centerX.equalTo(self);
         }];
 
@@ -597,6 +597,58 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
         }
 
     }
+}
+
+- (void)showEnableFullAccessSplash {
+    self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
+
+    self.splashText = [[UILabel alloc] init];
+    self.splashText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
+    self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+    self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+    self.splashText.numberOfLines = 2;
+    self.splashText.textAlignment = NSTextAlignmentCenter;
+    self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+
+    [self addSubview:self.splashGraphic];
+    [self addSubview:self.splashText];
+
+    [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self);
+        make.centerY.equalTo(self).offset(-30.0f);
+    }];
+
+    [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+        make.width.equalTo(self).multipliedBy(.60f);
+        make.centerX.equalTo(self);
+    }];
+}
+
+- (void)showNoConnectionSplash {
+    self.splashGraphic = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
+
+    self.splashText = [[UILabel alloc] init];
+    self.splashText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
+    self.splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
+    self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
+    self.splashText.numberOfLines = 2;
+    self.splashText.textAlignment = NSTextAlignmentCenter;
+    self.splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
+
+    [self addSubview:self.splashGraphic];
+    [self addSubview:self.splashText];
+
+    [self.splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self);
+        make.centerY.equalTo(self).offset(-30.0f);
+    }];
+
+    [self.splashText mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
+        make.width.equalTo(self).multipliedBy(.60f);
+        make.centerX.equalTo(self);
+    }];
 }
 
 - (void)processDoubleTap:(UITapGestureRecognizer *)sender {

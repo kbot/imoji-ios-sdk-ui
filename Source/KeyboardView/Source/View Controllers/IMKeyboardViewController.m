@@ -168,8 +168,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     [self.view addSubview:self.titleLabel];
 
-
-
     // close button
     self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.closeButton setImage:[UIImage imageNamed:@"keyboard_search_clear" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
@@ -192,7 +190,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.height.width.equalTo(@(36));
     }];
 
-
     // copied
     self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
     [self.view addSubview:self.copiedImageView];
@@ -202,7 +199,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.right.equalTo(self.view.mas_right).with.offset(-5);
         make.height.width.equalTo(@(36));
     }];
-
 
     // collection view
     self.collectionView.clipsToBounds = YES;
@@ -238,35 +234,11 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.left.equalTo(self.view.mas_left);
     }];
 
-
     // menu view
     [self setupMenuView];
 
     if(!self.hasFullAccess) {
-        UIImageView *enableAccessSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-        UILabel *enableAccessText = [[UILabel alloc] init];
-        enableAccessText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
-        enableAccessText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-        enableAccessText.lineBreakMode = NSLineBreakByWordWrapping;
-        enableAccessText.numberOfLines = 2;
-        enableAccessText.textAlignment = NSTextAlignmentCenter;
-        enableAccessText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-
-        [self.collectionView addSubview:enableAccessSplash];
-        [self.collectionView addSubview:enableAccessText];
-
-        [enableAccessSplash mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self.collectionView);
-            make.centerY.equalTo(self.collectionView).offset(-30.0f);
-        }];
-
-        [enableAccessText mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(enableAccessSplash.mas_bottom).offset(13.0f);
-            make.width.equalTo(@(self.view.frame.size.width * .60f));
-            make.centerX.equalTo(self.collectionView);
-        }];
-
+        [self.collectionView showEnableFullAccessSplash];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -276,30 +248,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
         });
     } else {
-        UIImageView *noConnectionSplash = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil]];
-
-        UILabel *enableConnectionText = [[UILabel alloc] init];
-        enableConnectionText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
-        enableConnectionText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-        enableConnectionText.lineBreakMode = NSLineBreakByWordWrapping;
-        enableConnectionText.numberOfLines = 2;
-        enableConnectionText.textAlignment = NSTextAlignmentCenter;
-        enableConnectionText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-
-        [self.collectionView addSubview:noConnectionSplash];
-        [self.collectionView addSubview:enableConnectionText];
-
-        [noConnectionSplash mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self.collectionView);
-            make.centerY.equalTo(self.collectionView).offset(-30.0f);
-        }];
-
-        [enableConnectionText mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(noConnectionSplash.mas_bottom).offset(13.0f);
-            make.width.equalTo(@(self.view.frame.size.width * .60f));
-            make.centerX.equalTo(self.collectionView);
-        }];
-
+        [self.collectionView showNoConnectionSplash];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -465,7 +414,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.bottomNavView addSubview:self.collectionButton];
     [self.bottomNavView addSubview:self.deleteButton];
 
-    if(!self.hasConnectivity || !self.hasFullAccess) {
+    if(!self.hasFullAccess) {
         self.nextKeyboardButton.alpha = 0.5f;
         [self.searchButton setEnabled:NO];
         [self.recentsButton setEnabled:NO];
@@ -547,55 +496,64 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // run action
-    switch (sender.tag) {
-        case IMKeyboardButtonSearch:
-            self.searchView.hidden = NO;
-            [self.progressView setProgress:0.f animated:YES];
-            break;
-        case IMKeyboardButtonRecents:
-            [self.collectionView loadRecentImojis];
-            self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-            self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-            self.closeButton.hidden = YES;
-            break;
-        case IMKeyboardButtonCategoryReactions:
-            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-            self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-            self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-            self.closeButton.hidden = YES;
-            break;
-        case IMKeyboardButtonCategoryTrending:
-            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
-            self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-            self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-            self.closeButton.hidden = YES;
-            break;
-        case IMKeyboardButtonFavorites: {
-            [self.collectionView loadFavoriteImojis];
-            NSString *title;
+    if(self.hasConnectivity) {
+        switch (sender.tag) {
+            case IMKeyboardButtonSearch:
+                self.searchView.hidden = NO;
+                [self.progressView setProgress:0.f animated:YES];
+                break;
+            case IMKeyboardButtonRecents:
+                [self.collectionView loadRecentImojis];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
+                                                                            withFontSize:14.0f
+                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardButtonCategoryReactions:
+                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
+                                                                            withFontSize:14.0f
+                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardButtonCategoryTrending:
+                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
+                                                                            withFontSize:14.0f
+                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardButtonFavorites: {
+                [self.collectionView loadFavoriteImojis];
+                NSString *title;
 
-            if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-                title = @"COLLECTION";
-            } else {
-                title = @"FAVORITES";
+                if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
+                    title = @"COLLECTION";
+                } else {
+                    title = @"FAVORITES";
+                }
+
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
+                                                                            withFontSize:14.0f
+                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
             }
-
-            self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-            self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-            self.closeButton.hidden = YES;
-            break;
+            default:
+                break;
         }
-        default:
-            break;
+    } else {
+        [self.collectionView showNoConnectionSplash];
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
+                                                                    withFontSize:14.0f
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
+
 }
 
 - (void)closeCategory {
@@ -727,38 +685,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     if(isConnected) {
         return isConnected;
-    }
-
-    return NO;
-}
-
-- (BOOL)testFullAccess
-{
-    NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:@"yourAppGroupID"];  // Need to setup in Xcode and Developer Portal
-    NSString *testFilePath = [[containerURL path] stringByAppendingPathComponent:@"testFullAccess"];
-
-    NSError *fileError = nil;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:testFilePath]) {
-        [[NSFileManager defaultManager] removeItemAtPath:testFilePath error:&fileError];
-    }
-
-    if (fileError == nil) {
-        NSString *testString = @"testing, testing, 1, 2, 3...";
-        BOOL success = [[NSFileManager defaultManager] createFileAtPath:testFilePath
-                                                               contents: [testString dataUsingEncoding:NSUTF8StringEncoding]
-                                                             attributes:nil];
-        return success;
-    } else {
-        return NO;
-    }
-}
-
-- (BOOL)isCustomKeyboardEnabled {
-    NSString *bundleID = @"com.company.app.customkeyboard"; // Replace this string with your custom keyboard's bundle ID
-    NSArray *keyboards = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation][@"AppleKeyboards"]; // Array of all active keyboards
-    for (NSString *keyboard in keyboards) {
-        if ([keyboard isEqualToString:bundleID])
-            return YES;
     }
 
     return NO;
