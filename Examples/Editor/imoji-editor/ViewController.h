@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <ImojiSDKUI/IMCreateImojiViewController.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : IMCreateImojiViewController
 
 
 @end

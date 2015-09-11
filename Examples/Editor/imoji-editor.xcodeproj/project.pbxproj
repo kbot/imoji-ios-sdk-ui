@@ -15,9 +15,6 @@
 		1A17678C1B9A690B000F6907 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A17678A1B9A690B000F6907 /* LaunchScreen.xib */; };
 		1A3B03E81B9A7386004084E1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B03E71B9A7386004084E1 /* libPods.a */; };
 		1A3B03EA1B9A7D6F004084E1 /* big-big-dog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */; };
-		1A3B03ED1B9A823F004084E1 /* done.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3B03EB1B9A823F004084E1 /* done.png */; };
-		1A3B03EE1B9A823F004084E1 /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3B03EC1B9A823F004084E1 /* undo.png */; };
-		61FCE83E7C050C9D362271FE /* ImojiEditorContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEE48D7A5D0429BD5365A /* ImojiEditorContainerView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,11 +34,7 @@
 		1A3B03E51B9A71D8004084E1 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1A3B03E71B9A7386004084E1 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "big-big-dog.jpg"; sourceTree = SOURCE_ROOT; };
-		1A3B03EB1B9A823F004084E1 /* done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = done.png; sourceTree = SOURCE_ROOT; };
-		1A3B03EC1B9A823F004084E1 /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo.png; sourceTree = SOURCE_ROOT; };
 		275954F21559937BC36429D0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		61FCE2F3999B82237C406B79 /* ImojiEditorContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiEditorContainerView.h; sourceTree = "<group>"; };
-		61FCEE48D7A5D0429BD5365A /* ImojiEditorContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiEditorContainerView.m; sourceTree = "<group>"; };
 		F10F17EA42D8FCF6B9319F0C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,8 +73,6 @@
 			children = (
 				1A17677F1B9A690B000F6907 /* AppDelegate.h */,
 				1A1767801B9A690B000F6907 /* AppDelegate.m */,
-				61FCE2F3999B82237C406B79 /* ImojiEditorContainerView.h */,
-				61FCEE48D7A5D0429BD5365A /* ImojiEditorContainerView.m */,
 				1A1767821B9A690B000F6907 /* ViewController.h */,
 				1A1767831B9A690B000F6907 /* ViewController.m */,
 				1A1767851B9A690B000F6907 /* Main.storyboard */,
@@ -89,8 +80,6 @@
 				1A17678A1B9A690B000F6907 /* LaunchScreen.xib */,
 				1A17677B1B9A690B000F6907 /* Supporting Files */,
 				1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */,
-				1A3B03EB1B9A823F004084E1 /* done.png */,
-				1A3B03EC1B9A823F004084E1 /* undo.png */,
 			);
 			path = "imoji-editor";
 			sourceTree = "<group>";
@@ -185,11 +174,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A1767871B9A690B000F6907 /* Main.storyboard in Resources */,
-				1A3B03ED1B9A823F004084E1 /* done.png in Resources */,
 				1A17678C1B9A690B000F6907 /* LaunchScreen.xib in Resources */,
 				1A3B03EA1B9A7D6F004084E1 /* big-big-dog.jpg in Resources */,
 				1A1767891B9A690B000F6907 /* Images.xcassets in Resources */,
-				1A3B03EE1B9A823F004084E1 /* undo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +223,6 @@
 				1A1767841B9A690B000F6907 /* ViewController.m in Sources */,
 				1A1767811B9A690B000F6907 /* AppDelegate.m in Sources */,
 				1A17677E1B9A690B000F6907 /* main.m in Sources */,
-				61FCE83E7C050C9D362271FE /* ImojiEditorContainerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

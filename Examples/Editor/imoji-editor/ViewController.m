@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "ImojiEditorContainerView.h"
 
 @interface ViewController ()
 
@@ -15,19 +14,9 @@
 
 @implementation ViewController
 
-- (void)loadView {
-    [super loadView];
-    self.view = [ImojiEditorContainerView new];
-}
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    return [super initWithSourceImage:[UIImage imageNamed:@"big-big-dog.jpg"]];
 }
 
 @end
