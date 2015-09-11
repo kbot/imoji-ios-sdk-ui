@@ -38,7 +38,7 @@
 
 @implementation IMCreateImojiView
 
-@synthesize outputImage=_outputImage, borderedOutputImage = _borderedOutputImage;
+@synthesize outputImage = _outputImage, borderedOutputImage = _borderedOutputImage;
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -132,7 +132,7 @@
                 [self.editorDelegate userDidUpdatePathInEditorView:self];
             });
         }
-        
+
         _borderedOutputImage = _outputImage = nil;
     }
 }
@@ -171,7 +171,7 @@
 - (void)loadImage:(UIImage *)image {
     CGImageRef cgImage = [IMCreateImojiView CGImageWithCorrectOrientation:image];
     self.igInputImage = igImageFromNative(self.igContext, cgImage, 0);
-    
+
     CGImageRelease(cgImage);
 
     [self reset];
@@ -196,7 +196,7 @@
     if (!self.hasOutputImage) {
         return nil;
     }
-    
+
     if (_outputImage) {
         return _outputImage;
     }
@@ -206,7 +206,7 @@
     igImageDestroy(trimmedImage);
 
     _outputImage = [UIImage imageWithCGImage:pImage];
-    
+
     return _outputImage;
 }
 
@@ -214,7 +214,7 @@
     if (_borderedOutputImage) {
         return _borderedOutputImage;
     }
-    
+
     UIImage *image = self.outputImage;
     if (!image) {
         return nil;
@@ -234,17 +234,17 @@
     igImageDestroy(outputImage);
 
     _borderedOutputImage = borderedImoji;
-    
+
     return _borderedOutputImage;
 }
 
-+ (CGImageRef)CGImageWithCorrectOrientation:(UIImage *)originalImage  {
++ (CGImageRef)CGImageWithCorrectOrientation:(UIImage *)originalImage {
     UIGraphicsBeginImageContext(originalImage.size);
 
     CGContextRef context = UIGraphicsGetCurrentContext();
 
     if (originalImage.imageOrientation == UIImageOrientationLeft) {
-        CGContextRotateCTM(context, -90 * M_PI / 180);
+        CGContextRotateCTM(context, (CGFloat) (-90 * M_PI / 180));
     }
 
     [originalImage drawAtPoint:CGPointZero];

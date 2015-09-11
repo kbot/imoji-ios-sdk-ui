@@ -25,8 +25,9 @@
 
 #import <Masonry/Masonry.h>
 #import "IMTagCollectionViewCell.h"
+#import "IMTagCollectionView.h"
 
-UIEdgeInsets const IMTagCollectionViewCellContentInsets = {5, 5, 5, 5};
+UIEdgeInsets const IMTagCollectionViewCellContentInsets = {7.5, 7.5, 7.5, 7.5};
 
 @interface IMTagCollectionViewCell ()
 
@@ -41,11 +42,13 @@ UIEdgeInsets const IMTagCollectionViewCellContentInsets = {5, 5, 5, 5};
         _textView = [UILabel new];
         _removeButton = [UIButton new];
 
-        [self.removeButton setImage:[IMTagCollectionViewCell removeIcon] forState:UIControlStateNormal];
+        [self.removeButton setImage:[IMTagCollectionView removeIcon] forState:UIControlStateNormal];
 
         self.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.backgroundColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.15f];
         self.layer.borderWidth = 1.0f;
-        self.layer.cornerRadius = 5.0f;
+        self.layer.cornerRadius = 7.5f;
+        self.layer.borderColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.5f].CGColor;
 
         [self addSubview:self.textView];
         [self addSubview:self.removeButton];
@@ -62,52 +65,8 @@ UIEdgeInsets const IMTagCollectionViewCellContentInsets = {5, 5, 5, 5};
         }];
     }
 
-    self.textView.text = tagContents;
-}
-
-+ (UIFont *)textFont {
-    static UIFont *_font;
-
-    @synchronized (self) {
-        if (_font == nil) {
-            _font = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
-        }
-    }
-
-    return _font;
-}
-
-+ (UIImage *)removeIcon {
-    static UIImage *_icon = nil;
-
-    @synchronized (self) {
-        if (_icon == nil) {
-            CGSize size = CGSizeMake(20.0f, 20.0f);
-            UIGraphicsBeginImageContextWithOptions(size, NO, 0.f);
-            CGContextRef context = UIGraphicsGetCurrentContext();
-
-            CGContextSetBlendMode(context, kCGBlendModeNormal);
-            CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
-
-            CGContextSetLineWidth(context, 1.5);
-
-            // draw X
-            CGFloat relativeFrameScaleFactor = 1.25;
-            CGContextMoveToPoint(context, size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
-            CGContextAddLineToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
-
-            CGContextMoveToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
-            CGContextAddLineToPoint(context, size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
-
-            CGContextStrokePath(context);
-
-            _icon = UIGraphicsGetImageFromCurrentImageContext();
-
-            UIGraphicsEndImageContext();
-        }
-    }
-
-    return _icon;
+    self.textView.attributedText = [[NSAttributedString alloc] initWithString:tagContents
+                                                                   attributes:@{NSFontAttributeName : [IMTagCollectionView textFont]}];
 }
 
 + (IMTagCollectionViewCell *)instance {
@@ -123,11 +82,11 @@ UIEdgeInsets const IMTagCollectionViewCellContentInsets = {5, 5, 5, 5};
 }
 
 + (CGSize)sizeThatFitsTag:(NSString *)tag andSize:(CGSize)size {
-    CGSize textSize = [tag sizeWithAttributes:@{NSFontAttributeName : [IMTagCollectionViewCell textFont]}];
-    CGSize removeIconSize = [IMTagCollectionViewCell removeIcon].size;
+    CGSize textSize = [tag sizeWithAttributes:@{NSFontAttributeName : [IMTagCollectionView textFont]}];
+    CGSize removeIconSize = [IMTagCollectionView removeIcon].size;
 
     return CGSizeMake(
-            MIN(textSize.width, size.width) + removeIconSize.width + IMTagCollectionViewCellContentInsets.left + IMTagCollectionViewCellContentInsets.right,
+            MIN(textSize.width, size.width) + removeIconSize.width + IMTagCollectionViewCellContentInsets.left + IMTagCollectionViewCellContentInsets.right + 5,
             MIN(MAX(textSize.height, removeIconSize.height), size.height) + IMTagCollectionViewCellContentInsets.top + IMTagCollectionViewCellContentInsets.bottom
     );
 }

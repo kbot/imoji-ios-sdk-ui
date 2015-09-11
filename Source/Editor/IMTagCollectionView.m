@@ -31,6 +31,7 @@
 
 @end
 
+UIEdgeInsets const IMTagCollectionViewTagFieldInsets = {10, 0, 10, 0};
 NSString *const IMTagCollectionViewHeaderReuseId = @"IMTagCollectionViewHeaderReuseId";
 NSString *const IMTagCollectionViewCellReuseId = @"IMTagCollectionViewCellReuseId";
 
@@ -50,8 +51,6 @@ NSString *const IMTagCollectionViewCellReuseId = @"IMTagCollectionViewCellReuseI
         [self registerClass:[UICollectionReusableView class]
  forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
         withReuseIdentifier:IMTagCollectionViewHeaderReuseId];
-
-        [self setContentInset:UIEdgeInsetsMake(0, 10, 0, 10)];
 
         _tags = [NSMutableOrderedSet orderedSet];
     }
@@ -84,7 +83,10 @@ NSString *const IMTagCollectionViewCellReuseId = @"IMTagCollectionViewCellReuseI
 
 - (CGSize)       collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(self.frame.size.width, 50.f);
+
+    CGFloat tagCollectionViewHeight = [IMTagCollectionViewCell sizeThatFitsTag:@"" andSize:self.frame.size].height;
+
+    return CGSizeMake(self.frame.size.width, IMTagCollectionViewTagFieldInsets.top + IMTagCollectionViewTagFieldInsets.bottom + tagCollectionViewHeight);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -98,16 +100,36 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             UITextField *textField = [UITextField new];
 
             textField.borderStyle = UITextBorderStyleRoundedRect;
-            textField.layer.borderColor = [UIColor whiteColor].CGColor;
+            textField.backgroundColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.3f];
+            textField.layer.borderWidth = 1.0f;
+            textField.layer.cornerRadius = 7.5f;
+            textField.layer.borderColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.5f].CGColor;
+
             textField.returnKeyType = UIReturnKeyDone;
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             textField.autocorrectionType = UITextAutocorrectionTypeNo;
 
             textField.delegate = self;
+            UIButton *clearButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0,
+                    [IMTagCollectionView removeIcon].size.width + 5.0f,
+                    [IMTagCollectionView removeIcon].size.height
+            )];
+
+
+            [clearButton setImage:[IMTagCollectionView removeIcon] forState:UIControlStateNormal];
+            [clearButton addTarget:self action:@selector(clearTextField:) forControlEvents:UIControlEventTouchUpInside];
+
+            textField.rightView = clearButton;
+            textField.rightViewMode = UITextFieldViewModeWhileEditing;
+
+            textField.defaultTextAttributes = @{
+                    NSFontAttributeName : [IMTagCollectionView textFont],
+                    NSForegroundColorAttributeName : [UIColor whiteColor]
+            };
 
             [view addSubview:textField];
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.edges.equalTo(view).insets(UIEdgeInsetsMake(10, 0, 10, 0));
+                make.edges.equalTo(view).insets(IMTagCollectionViewTagFieldInsets);
             }];
         }
 
@@ -149,9 +171,70 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return YES;
 }
 
+- (void)clearTextField:(id)target {
+    if ([target isKindOfClass:[UIView class]]) {
+        UIView *view = (UIView *)target;
+        if ([view.superview isKindOfClass:[UITextField class]]) {
+            ((UITextField *)view.superview).text = nil;
+        }
+    }
+}
+
 - (void)removeTag:(UIButton *)button {
     [(NSMutableOrderedSet *) self.tags removeObjectAtIndex:(NSUInteger) button.tag];
     [self reloadData];
+}
+
+
++ (UIFont *)textFont {
+    static UIFont *_font;
+
+    @synchronized (self) {
+        if (_font == nil) {
+            _font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
+        }
+    }
+
+    return _font;
+}
+
++ (UIImage *)removeIcon {
+    static UIImage *_icon = nil;
+
+    @synchronized (self) {
+        if (_icon == nil) {
+            CGSize size = CGSizeMake(30.0f, 30.0f);
+            UIGraphicsBeginImageContextWithOptions(size, NO, 0.f);
+            CGContextRef context = UIGraphicsGetCurrentContext();
+
+            CGContextSetBlendMode(context, kCGBlendModeNormal);
+            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.5f].CGColor);
+
+            // draw divider line
+            CGContextSetLineWidth(context, 1.0f);
+            CGContextMoveToPoint(context, 0, 0);
+            CGContextAddLineToPoint(context, 0, size.height);
+            CGContextStrokePath(context);
+
+            // draw X
+            CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
+            CGContextSetLineWidth(context, 2.25f);
+            CGFloat relativeFrameScaleFactor = 1.5;
+            CGContextMoveToPoint(context, size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
+            CGContextAddLineToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
+
+            CGContextMoveToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
+            CGContextAddLineToPoint(context, size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
+
+            CGContextStrokePath(context);
+
+            _icon = UIGraphicsGetImageFromCurrentImageContext();
+
+            UIGraphicsEndImageContext();
+        }
+    }
+
+    return _icon;
 }
 
 @end

@@ -33,6 +33,7 @@
 
 @property(nonatomic, readonly) UIBarButtonItem *undoButton;
 @property(nonatomic, readonly) UIBarButtonItem *doneButton;
+@property(nonatomic, readonly) UIBarButtonItem *forwardButton;
 @property(nonatomic, readonly) UIBarButtonItem *backButton;
 @property(nonatomic, readonly) UIBarButtonItem *navigationTitle;
 
@@ -45,6 +46,8 @@
 
 @property(nonatomic, readonly) UIImageView *imojiPreview;
 
+@property(nonatomic, strong) NSArray *editorViewButtons;
+@property(nonatomic, strong) NSArray *tagViewButtons;
 @end
 
 @implementation IMCreateImojiViewController {
@@ -75,7 +78,7 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(performUndo)];
-    _doneButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiForward.png"]
+    _doneButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiFinish.png"]
                                                    style:UIBarButtonItemStyleDone
                                                   target:self
                                                   action:@selector(finishEditing)];
@@ -83,6 +86,10 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(goBack)];
+    _forwardButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiForward.png"]
+                                                      style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(showTagScreen)];
 
     _navigationTitle = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain target:nil action:nil];
     [_navigationTitle setTitleTextAttributes:@{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:18.0f]}
@@ -115,13 +122,23 @@
     self.editorButtonView.barStyle = UIBarStyleBlackTranslucent;
     self.editorButtonView.tintColor = [UIColor whiteColor];
 
-    self.navigationButtonView.items = @[
+    self.editorViewButtons = @[
+            self.backButton,
+            [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+            self.navigationTitle,
+            [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+            self.forwardButton
+    ];
+
+    self.tagViewButtons = @[
             self.backButton,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.navigationTitle,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.doneButton
     ];
+
+    self.navigationButtonView.items = self.editorViewButtons;
     self.navigationButtonView.barStyle = UIBarStyleBlackTranslucent;
     self.navigationButtonView.tintColor = [UIColor whiteColor];
 
@@ -133,7 +150,8 @@
 
     [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.imojiPreview.mas_bottom);
-        make.left.and.bottom.and.width.equalTo(view);
+        make.width.equalTo(view).multipliedBy(.8f);
+        make.centerX.and.bottom.equalTo(view);
     }];
 
     [self.navigationButtonView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -167,36 +185,38 @@
 }
 
 - (void)finishEditing {
-    if (self.tagView.hidden) {
-        self.imojiPreview.hidden = self.tagView.hidden = NO;
-        self.editorButtonView.hidden = YES;
-        self.tagView.layer.opacity = 0.0f;
-
-        self.imojiPreview.image = self.imojiEditor.borderedOutputImage;
-
-        [UIView animateWithDuration:1.0f
-                         animations:^{
-                             self.tagView.layer.opacity = 1.0f;
-                             self.creationView.layer.opacity = 0.0f;
-                         }
-                         completion:^(BOOL finished) {
-                             self.creationView.hidden = YES;
-                             [self.navigationTitle setTitle:@"Tag"];
-                         }
-        ];
-    } else {
-        if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidEditImage:image:tags:)]) {
-            [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagView.tags.array];
-        }
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidEditImage:image:tags:)]) {
+        [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagView.tags.array];
     }
+}
+
+- (void)showTagScreen {
+    self.imojiPreview.hidden = self.tagView.hidden = NO;
+    self.editorButtonView.hidden = YES;
+    self.tagView.layer.opacity = 0.0f;
+
+    self.imojiPreview.image = self.imojiEditor.borderedOutputImage;
+
+    [UIView animateWithDuration:.7f
+                     animations:^{
+                         self.tagView.layer.opacity = 1.0f;
+                         self.creationView.layer.opacity = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         self.creationView.hidden = YES;
+                         [self.navigationTitle setTitle:@"Tag"];
+                         self.navigationButtonView.items = self.tagViewButtons;
+                     }
+    ];
 }
 
 - (void)goBack {
     if (self.creationView.hidden) {
         self.creationView.hidden = NO;
         self.editorButtonView.hidden = NO;
+        self.navigationButtonView.items = self.editorViewButtons;
 
-        [UIView animateWithDuration:1.0f
+        [UIView animateWithDuration:.7f
                          animations:^{
                              self.tagView.layer.opacity = 0.0f;
                              self.creationView.layer.opacity = 1.0f;

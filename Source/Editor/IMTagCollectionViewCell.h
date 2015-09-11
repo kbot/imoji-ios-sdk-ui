@@ -28,7 +28,6 @@
 @interface IMTagCollectionViewCell : UICollectionViewCell
 
 @property(nonatomic, strong) NSString *tagContents;
-
 @property(nonatomic, strong, readonly) UIButton *removeButton;
 @property(nonatomic, strong, readonly) UILabel *textView;
 

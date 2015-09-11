@@ -29,4 +29,8 @@
 
 @property(nonatomic, strong, readonly) NSOrderedSet *tags;
 
+// shared assets
++ (UIFont *)textFont;
++ (UIImage *)removeIcon;
+
 @end
