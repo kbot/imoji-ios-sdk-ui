@@ -221,17 +221,23 @@
     }
 
     IGBorder *border = igBorderCreatePreset((IGint) image.size.width, (IGint) image.size.height, IG_BORDER_CLASSIC);
-    IGImage *igPlainImage = igImageFromNative(self.igContext, image.CGImage, igBorderGetPadding(border));
-    IGint padding = igBorderGetPadding(border);
-    IGImage *outputImage = igImageCreate(self.igContext, igImageGetWidth(igPlainImage) + (padding * 2), igImageGetHeight(igPlainImage) + (padding * 2));
+    IGint borderPadding = igBorderGetPadding(border);
+    IGImage *igPlainImage = igImageFromNative(self.igContext, image.CGImage, borderPadding);
+    IGImage *outputImage = igImageCreate(
+            self.igContext, 
+            igImageGetWidth(igPlainImage) + (borderPadding * 2),
+            igImageGetHeight(igPlainImage) + (borderPadding * 2)
+    );
 
-    igBorderRender(border, igPlainImage, outputImage, (IGfloat) padding, (IGfloat) padding, 1, 1);
+    igBorderRender(border, igPlainImage, outputImage, (IGfloat) borderPadding, (IGfloat) borderPadding, 1, 1);
 
     CGImageRef pImage = igImageToNative(outputImage);
     UIImage *borderedImoji = [UIImage imageWithCGImage:pImage];
 
+    CGImageRelease(pImage);
     igImageDestroy(igPlainImage);
     igImageDestroy(outputImage);
+    igBorderDestroy(border, true);
 
     _borderedOutputImage = borderedImoji;
 

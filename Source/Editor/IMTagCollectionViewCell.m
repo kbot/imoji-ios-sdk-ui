@@ -27,7 +27,7 @@
 #import "IMTagCollectionViewCell.h"
 #import "IMTagCollectionView.h"
 
-UIEdgeInsets const IMTagCollectionViewCellContentInsets = {7.5, 7.5, 7.5, 7.5};
+UIEdgeInsets const IMTagCollectionViewCellContentInsets = {2.5, 7.5, 2.5, 7.5};
 
 @interface IMTagCollectionViewCell ()
 
