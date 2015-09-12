@@ -575,6 +575,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // check which category keyboard displaying
+    [self.splashView removeFromSuperview];
     [self.collectionView loadImojiCategories:self.collectionView.currentCategoryClassification];
 
     if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {

@@ -238,6 +238,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
        && ![self.keyboardDelegate hasConnectivity]) {
         if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.activityView stopAnimating];
             [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
         }
     } else {
@@ -287,6 +288,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
        && ![self.keyboardDelegate hasConnectivity]) {
         if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.activityView stopAnimating];
             [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
         }
     } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
@@ -353,6 +355,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
        && ![self.keyboardDelegate hasConnectivity]) {
         if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.activityView stopAnimating];
             [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
         }
     } else {
@@ -384,6 +387,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
        && ![self.keyboardDelegate hasConnectivity]) {
         if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+            [self.activityView stopAnimating];
             [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
         }
     } else {
