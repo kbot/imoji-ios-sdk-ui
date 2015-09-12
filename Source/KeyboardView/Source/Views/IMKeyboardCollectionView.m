@@ -28,19 +28,11 @@
 #import "IMKeyboardCategoryCollectionViewCell.h"
 #import "IMKeyboardCollectionViewCell.h"
 
-typedef NS_ENUM(NSUInteger, IMKeyboardCollectionViewContentType) {
-    IMKeyboardCollectionViewContentTypeImojis,
-    IMKeyboardCollectionViewContentTypeImojiCategories
-};
-
 NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
-@interface IMKeyboardCollectionView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
-
-@property(nonatomic, strong) IMImojiSession *session;
-@property(nonatomic, strong) NSMutableArray *content;
-@property(nonatomic) IMKeyboardCollectionViewContentType contentType;
+@interface IMKeyboardCollectionView () //<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property(nonatomic, strong) UIActivityIndicatorView *activityView;
+@property(nonatomic, strong) NSBundle *imagesBundle;
 
 @end
 
@@ -49,23 +41,26 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 }
 
 - (instancetype)initWithSession:(IMImojiSession *)session {
-    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self = [super initWithFrame:CGRectZero collectionViewLayout:layout];
+//    self = [super initWithFrame:CGRectZero collectionViewLayout:layout];
+    self = [super initWithSession:session];
     if (self) {
-        self.session = session;
-        self.dataSource = self;
-        self.delegate = self;
+//        self.session = session;
+//        self.dataSource = self;
+//        self.delegate = self;
+        self.imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
 
+        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        self.collectionViewLayout = layout;
         self.backgroundColor = [UIColor clearColor];
 
-        self.content = [NSMutableArray arrayWithCapacity:IMKeyboardCollectionViewNumberOfItemsToLoad];
+//        self.content = [NSMutableArray arrayWithCapacity:IMKeyboardCollectionViewNumberOfItemsToLoad];
 
-        self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [self addSubview:self.activityView];
-        [self.activityView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.centerY.equalTo(self);
-        }];
+//        self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//        [self addSubview:self.activityView];
+//        [self.activityView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.centerX.centerY.equalTo(self);
+//        }];
 
         self.doubleTapFolderGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(processDoubleTap:)];
         self.doubleTapFolderGesture.delaysTouchesBegan = YES;
@@ -85,125 +80,125 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     return self;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.content.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    id cellContent = self.content[(NSUInteger) indexPath.row];
-
-    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
-        self.doubleTapFolderGesture.enabled = NO;
-        IMImojiCategoryObject *categoryObject = cellContent;
-        IMKeyboardCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
-
-        [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
-
-        [self.session renderImoji:categoryObject.previewImoji
-                          options:self.renderingOptions
-                         callback:^(UIImage *image, NSError *error) {
-                             if (!error) {
-                                 [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
-                             }
-                         }];
-        return cell;
-    } else {
-        self.doubleTapFolderGesture.enabled = YES;
-        IMKeyboardCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
-        [cell loadImojiImage:nil];
-        if ([cellContent isKindOfClass:[IMImojiObject class]]) {
-            [self.session renderImoji:cellContent
-                              options:self.renderingOptions
-                             callback:^(UIImage *image, NSError *error) {
-                                 if (!error) {
-                                     [cell loadImojiImage:image];
-                                 } else {
-                                     [cell loadImojiImage:nil];
-                                 }
-                             }];
-        } else {
-            [cell loadImojiImage:nil];
-        }
-
-        return cell;
-    }
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
-        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = YES;
-    } else {
-        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = YES;
-    }
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
-        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = NO;
-    } else {
-        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = NO;
-    }
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    id cellContent = self.content[(NSUInteger) indexPath.row];
-
-    // take appropriate action on the cell
-    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
-        IMImojiCategoryObject *categoryObject = cellContent;
-
-        [self loadImojisFromSearch:categoryObject.identifier offset:nil];
-    } else {
-        IMImojiObject *imojiObject = cellContent;
-
-        self.showDownloadingCallback();
-
-        IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
-        renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
-        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(1000.0f, 1000.0f)];
-
-        [self.session renderImoji:imojiObject
-                          options:renderOptions
-                         callback:^(UIImage *image, NSError *error) {
-                             if (error) {
-                                 NSLog(@"Error: %@", error);
-                                 self.showCopiedCallback(@"UNABLE TO DOWNLOAD IMOJI");
-                             } else {
-                                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                                 pasteboard.persistent = YES;
-                                 [pasteboard setImage:image];
-
-                                 self.showCopiedCallback(@"COPIED TO CLIPBOARD");
-
-                             }
-                         }];
-
-        // save to recents
-        [self saveToRecents:imojiObject];
-    }
-
-    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
-        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = NO;
-    } else {
-        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-
-        cell.imojiView.highlighted = NO;
-        [self processCellAnimations:indexPath];
-    }
-
-
-    return;
-}
+//- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+//    return self.content.count;
+//}
+//
+//- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+//    id cellContent = self.content[(NSUInteger) indexPath.row];
+//
+//    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+//        self.doubleTapFolderGesture.enabled = NO;
+//        IMImojiCategoryObject *categoryObject = cellContent;
+//        IMKeyboardCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
+//
+//        [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
+//
+//        [self.session renderImoji:categoryObject.previewImoji
+//                          options:self.renderingOptions
+//                         callback:^(UIImage *image, NSError *error) {
+//                             if (!error) {
+//                                 [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
+//                             }
+//                         }];
+//        return cell;
+//    } else {
+//        self.doubleTapFolderGesture.enabled = YES;
+//        IMKeyboardCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
+//        [cell loadImojiImage:nil];
+//        if ([cellContent isKindOfClass:[IMImojiObject class]]) {
+//            [self.session renderImoji:cellContent
+//                              options:self.renderingOptions
+//                             callback:^(UIImage *image, NSError *error) {
+//                                 if (!error) {
+//                                     [cell loadImojiImage:image];
+//                                 } else {
+//                                     [cell loadImojiImage:nil];
+//                                 }
+//                             }];
+//        } else {
+//            [cell loadImojiImage:nil];
+//        }
+//
+//        return cell;
+//    }
+//}
+//
+//- (void)collectionView:(UICollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+//    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+//        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = YES;
+//    } else {
+//        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = YES;
+//    }
+//}
+//
+//- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {
+//    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+//        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = NO;
+//    } else {
+//        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = NO;
+//    }
+//}
+//
+//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+//    id cellContent = self.content[(NSUInteger) indexPath.row];
+//
+//    // take appropriate action on the cell
+//    if (self.contentType == IMKeyboardCollectionViewContentTypeImojiCategories) {
+//        IMImojiCategoryObject *categoryObject = cellContent;
+//
+//        [self loadImojisFromSearch:categoryObject.identifier offset:nil];
+//    } else {
+//        IMImojiObject *imojiObject = cellContent;
+//
+//        self.showDownloadingCallback();
+//
+//        IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+//        renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+//        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(1000.0f, 1000.0f)];
+//
+//        [self.session renderImoji:imojiObject
+//                          options:renderOptions
+//                         callback:^(UIImage *image, NSError *error) {
+//                             if (error) {
+//                                 NSLog(@"Error: %@", error);
+//                                 self.showCopiedCallback(@"UNABLE TO DOWNLOAD IMOJI");
+//                             } else {
+//                                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+//                                 pasteboard.persistent = YES;
+//                                 [pasteboard setImage:image];
+//
+//                                 self.showCopiedCallback(@"COPIED TO CLIPBOARD");
+//
+//                             }
+//                         }];
+//
+//        // save to recents
+//        [self saveToRecents:imojiObject];
+//    }
+//
+//    if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+//        IMKeyboardCategoryCollectionViewCell *cell = (IMKeyboardCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = NO;
+//    } else {
+//        IMKeyboardCollectionViewCell *cell = (IMKeyboardCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+//
+//        cell.imojiView.highlighted = NO;
+//        [self processCellAnimations:indexPath];
+//    }
+//
+//
+//    return;
+//}
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -220,16 +215,16 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 0;
-}
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+//    return 0;
+//}
+//
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+//    return 0;
+//}
 
 - (void)loadRecentImojis {
-    self.contentType = IMKeyboardCollectionViewContentTypeImojis;
+    self.contentType = ImojiCollectionViewContentTypeImojis;
     //[self.content addObject:self.loadingIndicatorObject];
     self.noResultsTapGesture.enabled = NO;
     [self.content removeAllObjects];
@@ -280,7 +275,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 }
 
 - (void)loadFavoriteImojis {
-    self.contentType = IMKeyboardCollectionViewContentTypeImojis;
+    self.contentType = ImojiCollectionViewContentTypeImojis;
     self.noResultsTapGesture.enabled = NO;
     [self.content removeAllObjects];
     [self reloadData];
@@ -345,69 +340,68 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
 }
 
 
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
-    self.contentType = IMKeyboardCollectionViewContentTypeImojiCategories;
-    self.noResultsTapGesture.enabled = NO;
-    [self.activityView startAnimating];
-    [self.content removeAllObjects];
-    [self reloadData];
-
-    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
-       && ![self.keyboardDelegate hasConnectivity]) {
-        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
-            [self.activityView stopAnimating];
-            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
-        }
-    } else {
-        [self.session getImojiCategoriesWithClassification:classification
-                                                  callback:^(NSArray *imojiCategories, NSError *error) {
-                                                      [self.content addObjectsFromArray:imojiCategories];
-                                                      [self.activityView stopAnimating];
-                                                      [self reloadData];
-                                                      self.currentCategoryClassification = classification;
-                                                      self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
-                                                  }];
-    }
-}
+//- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
+//    self.contentType = ImojiCollectionViewContentTypeImojiCategories;
+//    self.noResultsTapGesture.enabled = NO;
+//    [self.activityView startAnimating];
+//    [self.content removeAllObjects];
+//    [self reloadData];
+//
+//    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+//       && ![self.keyboardDelegate hasConnectivity]) {
+//        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+//            [self.activityView stopAnimating];
+//            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+//        }
+//    } else {
+//        [self.session getImojiCategoriesWithClassification:classification
+//                                                  callback:^(NSArray *imojiCategories, NSError *error) {
+//                                                      [self.content addObjectsFromArray:imojiCategories];
+//                                                      [self.activityView stopAnimating];
+//                                                      [self reloadData];
+//                                                      self.currentCategoryClassification = classification;
+//                                                      self.setProgressCallback((self.contentOffset.x + self.frame.size.width) / self.collectionViewLayout.collectionViewContentSize.width);
+//                                                  }];
+//    }
+//}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     self.setProgressCallback((scrollView.contentOffset.x + scrollView.frame.size.width) / scrollView.contentSize.width);
-
 }
 
-- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
-    self.contentType = IMKeyboardCollectionViewContentTypeImojis;
-    self.noResultsTapGesture.enabled = NO;
-    [self.activityView startAnimating];
-    [self.content removeAllObjects];
-    [self reloadData];
-
-    self.categoryShowCallback(searchTerm);
-
-    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
-       && ![self.keyboardDelegate hasConnectivity]) {
-        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
-            [self.activityView stopAnimating];
-            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
-        }
-    } else {
-        [self.session searchImojisWithTerm:searchTerm
-                                    offset:offset
-                           numberOfResults:@(IMKeyboardCollectionViewNumberOfItemsToLoad)
-                 resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
-                     [self.activityView stopAnimating];
-
-                     if (!error) {
-                         [self prepareResultsFromServerResponse:resultCount];
-                     }
-                 }
-                     imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                         if (!error) {
-                             [self displayResultFromServerResponse:imoji index:index offset:offset];
-                         }
-                     }];
-    }
-}
+//- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
+//    self.contentType = ImojiCollectionViewContentTypeImojis;
+//    self.noResultsTapGesture.enabled = NO;
+//    [self.activityView startAnimating];
+//    [self.content removeAllObjects];
+//    [self reloadData];
+//
+//    self.categoryShowCallback(searchTerm);
+//
+//    if(self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(hasConnectivity)]
+//       && ![self.keyboardDelegate hasConnectivity]) {
+//        if([self.keyboardDelegate respondsToSelector:@selector(showSplashViewWithType:)]) {
+//            [self.activityView stopAnimating];
+//            [self.keyboardDelegate showSplashViewWithType:IMKeyboardNoConnectionSplash];
+//        }
+//    } else {
+//        [self.session searchImojisWithTerm:searchTerm
+//                                    offset:offset
+//                           numberOfResults:@(IMKeyboardCollectionViewNumberOfItemsToLoad)
+//                 resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+//                     [self.activityView stopAnimating];
+//
+//                     if (!error) {
+//                         [self prepareResultsFromServerResponse:resultCount];
+//                     }
+//                 }
+//                     imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+//                         if (!error) {
+//                             [self displayResultFromServerResponse:imoji index:index offset:offset];
+//                         }
+//                     }];
+//    }
+//}
 
 - (void)saveToRecents:(IMImojiObject *)imojiObject {
     NSUInteger arrayCapacity = 20;
@@ -529,7 +523,7 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
         NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];
         if (indexPath) {
             id cellContent = self.content[(NSUInteger) indexPath.row];
-            if (self.contentType == IMKeyboardCollectionViewContentTypeImojis) {
+            if (self.contentType == ImojiCollectionViewContentTypeImojis) {
                 IMImojiObject *imojiObject = cellContent;
                 // save to favorites
                 [self saveToFavorites:imojiObject];
@@ -547,9 +541,9 @@ NSUInteger const IMKeyboardCollectionViewNumberOfItemsToLoad = 30;
     }
 }
 
-- (IMImojiObjectRenderingOptions *)renderingOptions {
-    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
-}
+//- (IMImojiObjectRenderingOptions *)renderingOptions {
+//    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
+//}
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {
     return [[IMKeyboardCollectionView alloc] initWithSession:session];

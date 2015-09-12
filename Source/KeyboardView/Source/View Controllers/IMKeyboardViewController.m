@@ -206,6 +206,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.collectionView setShowsHorizontalScrollIndicator:NO];
 
     __unsafe_unretained typeof(self) weakSelf = self;
+    self.collectionView.categorySelectedCallback = ^(IMImojiCategoryObject *category) {
+        [weakSelf.collectionView loadImojisFromSearch:category.identifier];
+    };
     self.collectionView.categoryShowCallback = ^(NSString *title) {
         weakSelf.closeButton.hidden = NO;
         weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[title uppercaseString]

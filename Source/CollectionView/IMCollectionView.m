@@ -9,11 +9,6 @@
 #import "IMCategoryCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
 
-typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
-    ImojiCollectionViewContentTypeImojis,
-    ImojiCollectionViewContentTypeImojiCategories
-};
-
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
@@ -21,7 +16,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *reloadPaths;
-@property(nonatomic) ImojiCollectionViewContentType contentType;
 
 @property(nonatomic, strong) NSObject *loadingIndicatorObject;
 @property(nonatomic, strong) NSObject *noResultsIndicatorObject;

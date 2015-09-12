@@ -26,6 +26,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <ImojiSDK/ImojiSDK.h>
+#import "IMCollectionView.h"
 
 typedef NS_ENUM(NSUInteger, IMKeyboardSplashType) {
     IMKeyboardNoConnectionSplash = 1,
@@ -39,7 +40,7 @@ typedef NS_ENUM(NSUInteger, IMKeyboardSplashType) {
 
 @protocol IMKeyboardCollectionViewDelegate;
 
-@interface IMKeyboardCollectionView : UICollectionView
+@interface IMKeyboardCollectionView : IMCollectionView
 
 @property(nonatomic, strong) void(^categoryShowCallback) (NSString *title);
 @property(nonatomic, strong) void(^setProgressCallback) (float progress);

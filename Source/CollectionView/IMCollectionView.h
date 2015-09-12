@@ -7,6 +7,11 @@
 #import <UIKit/UIKit.h>
 #import <ImojiSDK/IMImojiSession.h>
 
+typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
+    ImojiCollectionViewContentTypeImojis,
+    ImojiCollectionViewContentTypeImojiCategories
+};
+
 @class IMImojiSession, IMImojiCategoryObject, IMImojiObject;
 
 @interface IMCollectionView : UICollectionView
@@ -15,6 +20,7 @@
 @property(nonatomic, strong) void(^imojiSelectedCallback)(IMImojiObject * imoji);
 @property(nonatomic, strong, readonly) IMImojiSession *session;
 @property(nonatomic, strong) NSMutableArray *content;
+@property(nonatomic) ImojiCollectionViewContentType contentType;
 
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
 @property(nonatomic) CGFloat sideInsets;
