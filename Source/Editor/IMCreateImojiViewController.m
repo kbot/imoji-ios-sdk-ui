@@ -40,7 +40,9 @@
 @property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
 
 @property(nonatomic, readonly) UIView *creationView;
-@property(nonatomic, readonly) IMTagCollectionView *tagView;
+@property(nonatomic, readonly) UIView *tagView;
+
+@property(nonatomic, readonly) IMTagCollectionView *tagCollectionView;
 @property(nonatomic, readonly) UIToolbar *navigationButtonView;
 @property(nonatomic, readonly) UIToolbar *editorButtonView;
 
@@ -69,7 +71,9 @@
     UIView *view = [UIView new];
 
     _creationView = [UIView new];
-    _tagView = [IMTagCollectionView new];
+    _tagView = [UIView new];
+
+    _tagCollectionView = [IMTagCollectionView new];
     _navigationButtonView = [UIToolbar new];
     _editorButtonView = [UIToolbar new];
 
@@ -105,16 +109,17 @@
 
     view.backgroundColor = [UIColor colorWithRed:48.0f / 255.0f green:48.0f / 255.0f blue:48.0f / 255.0f alpha:1];
 
-    [view addSubview:self.imojiPreview];
     [view addSubview:self.tagView];
     [view addSubview:self.creationView];
     [view addSubview:self.navigationButtonView];
     [view addSubview:self.editorButtonView];
 
-    self.tagView.hidden = self.imojiPreview.hidden = YES;
+    self.tagView.hidden = YES;
     self.imojiPreview.contentMode = UIViewContentModeScaleAspectFit;
 
     [self.creationView addSubview:self.imojiEditor];
+    [self.tagView addSubview:self.imojiPreview];
+    [self.tagView addSubview:self.tagCollectionView];
 
     self.editorButtonView.items = @[
             self.undoButton
@@ -142,16 +147,20 @@
     self.navigationButtonView.barStyle = UIBarStyleBlackTranslucent;
     self.navigationButtonView.tintColor = [UIColor whiteColor];
 
-    [self.imojiPreview mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.navigationButtonView.mas_bottom).offset(10);
-        make.centerX.equalTo(view);
-        make.width.and.height.equalTo(view.mas_width).dividedBy(3);
+        make.width.and.left.and.bottom.equalTo(view);
     }];
 
-    [self.tagView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.imojiPreview mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.and.centerX.equalTo(self.tagView);
+        make.width.and.height.equalTo(self.tagView.mas_width).dividedBy(3);
+    }];
+
+    [self.tagCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.imojiPreview.mas_bottom);
-        make.width.equalTo(view).multipliedBy(.8f);
-        make.centerX.and.bottom.equalTo(view);
+        make.width.equalTo(self.tagView).multipliedBy(.8f);
+        make.centerX.and.bottom.equalTo(self.tagView);
     }];
 
     [self.navigationButtonView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -186,12 +195,12 @@
 
 - (void)finishEditing {
     if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidEditImage:image:tags:)]) {
-        [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagView.tags.array];
+        [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagCollectionView.tags.array];
     }
 }
 
 - (void)showTagScreen {
-    self.imojiPreview.hidden = self.tagView.hidden = NO;
+    self.tagView.hidden = NO;
     self.editorButtonView.hidden = YES;
     self.tagView.layer.opacity = 0.0f;
 
@@ -206,6 +215,8 @@
                          self.creationView.hidden = YES;
                          [self.navigationTitle setTitle:@"Tag"];
                          self.navigationButtonView.items = self.tagViewButtons;
+
+                         self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
                      }
     ];
 }
@@ -215,6 +226,7 @@
         self.creationView.hidden = NO;
         self.editorButtonView.hidden = NO;
         self.navigationButtonView.items = self.editorViewButtons;
+        self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
 
         [UIView animateWithDuration:.7f
                          animations:^{
@@ -222,7 +234,7 @@
                              self.creationView.layer.opacity = 1.0f;
                          }
                          completion:^(BOOL finished) {
-                             self.imojiPreview.hidden = self.tagView.hidden = YES;
+                             self.tagView.hidden = YES;
                              [self.navigationTitle setTitle:@"Trim"];
                          }];
     } else {

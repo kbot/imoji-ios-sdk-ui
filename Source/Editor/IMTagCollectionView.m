@@ -131,12 +131,25 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
                 make.edges.equalTo(view).insets(IMTagCollectionViewTagFieldInsets);
             }];
+
+            if (self.tagInputFieldShouldBeFirstResponder) {
+                __weak typeof(textField) weakField = textField;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (weakField) {
+                        [weakField becomeFirstResponder];
+                    }
+                });
+            }
         }
 
         return view;
     }
 
     return nil;
+}
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [super layoutAttributesForItemAtIndexPath:indexPath];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView
@@ -159,30 +172,46 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSString *tag = textField.text;
-
-    [(NSMutableOrderedSet *) self.tags insertObject:tag atIndex:0];
-
     textField.text = @"";
 
-    [self reloadData];
+    if ([self.tags indexOfObject:tag] == NSNotFound) {
+        [(NSMutableOrderedSet *) self.tags insertObject:tag atIndex:0];
+        [self performBatchUpdates:^{
+                    [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+                    for (int i = 0; i < self.tags.count - 1; ++i) {
+                        [self moveItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]
+                                      toIndexPath:[NSIndexPath indexPathForItem:(i + 1) inSection:0]];
+                    }
+                }
+                       completion:nil
+        ];
+    }
 
-    [textField becomeFirstResponder];
-
-    return YES;
+    return NO;
 }
 
 - (void)clearTextField:(id)target {
     if ([target isKindOfClass:[UIView class]]) {
-        UIView *view = (UIView *)target;
+        UIView *view = (UIView *) target;
         if ([view.superview isKindOfClass:[UITextField class]]) {
-            ((UITextField *)view.superview).text = nil;
+            ((UITextField *) view.superview).text = nil;
         }
     }
 }
 
 - (void)removeTag:(UIButton *)button {
-    [(NSMutableOrderedSet *) self.tags removeObjectAtIndex:(NSUInteger) button.tag];
-    [self reloadData];
+    NSUInteger index = [self.tags indexOfObject:((IMTagCollectionViewCell *)button.superview).tagContents];
+    [(NSMutableOrderedSet *) self.tags removeObjectAtIndex:(NSUInteger) index];
+
+    [self performBatchUpdates:^{
+                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
+                for (int i = index + 1; i < self.tags.count + 1; ++i) {
+                    [self moveItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]
+                                  toIndexPath:[NSIndexPath indexPathForItem:i - 1 inSection:0]];
+                }
+            }
+                   completion:nil
+    ];
 }
 
 
@@ -235,6 +264,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     }
 
     return _icon;
+}
+
+- (void)setTagInputFieldShouldBeFirstResponder:(BOOL)tagInputFieldShouldBeFirstResponder {
+    _tagInputFieldShouldBeFirstResponder = tagInputFieldShouldBeFirstResponder;
+    [self reloadSections:[NSIndexSet indexSetWithIndex:0]];
 }
 
 @end

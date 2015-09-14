@@ -33,4 +33,6 @@
 + (UIFont *)textFont;
 + (UIImage *)removeIcon;
 
+@property(nonatomic) BOOL tagInputFieldShouldBeFirstResponder;
+
 @end
