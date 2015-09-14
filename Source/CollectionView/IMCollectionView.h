@@ -39,4 +39,12 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 - (void)loadUserCollectionImojis;
 
+- (void)loadNextPageOfImojisFromSearch;
+
+- (IMImojiObjectRenderingOptions *)renderingOptions;
+
+- (NSObject *)getNoResultsIndicatorObject;
+
+- (NSObject *)getLoadingIndicatorObject;
+
 @end

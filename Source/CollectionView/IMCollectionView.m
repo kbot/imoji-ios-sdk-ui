@@ -397,6 +397,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     }
 }
 
+- (NSObject *)getNoResultsIndicatorObject {
+    return _noResultsIndicatorObject;
+}
+
+- (NSObject *)getLoadingIndicatorObject {
+    return _loadingIndicatorObject;
+}
+
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {
     return [[IMCollectionView alloc] initWithSession:session];
 }
