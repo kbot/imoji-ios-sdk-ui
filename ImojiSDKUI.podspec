@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'CollectionView' do |ss|
     ss.dependency "ImojiSDK/Core"
+    ss.dependency "ImojiSDKUI/Common"
     ss.dependency "Masonry"
 
     ss.ios.source_files = 'Source/CollectionView/**/*.{h,m}'
@@ -22,6 +23,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'Editor' do |ss|
     ss.dependency "ImojiSDK/Core"
+    ss.dependency "ImojiSDKUI/Common"
     ss.dependency "Masonry"
 
     ss.preserve_paths = 'Frameworks/ImojiGraphics.framework'
@@ -44,6 +46,10 @@ Pod::Spec.new do |s|
     ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/*.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
     ss.ios.resource_bundles = {'ImojiKeyboardAssets' => ['Source/KeyboardView/Resources/Icons/*.png']}
 
+  end
+
+  s.subspec 'Common' do |ss|
+    ss.ios.resources = ["Source/Common/Resources/Fonts/*.otf"]
   end
   
 end
