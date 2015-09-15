@@ -358,6 +358,12 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     }
 }
 
+- (void)imojiSearchCompleted {
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+        [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+    }
+}
+
 - (void)renderImojiResult:(IMImojiObject *)imoji
                   content:(id)content
                   atIndex:(NSUInteger)index

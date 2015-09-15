@@ -70,11 +70,9 @@ typedef NS_ENUM(NSUInteger, IMKeyboardSplashType) {
 
 @optional
 
-- (void)selectedNoResultsView;
+- (void)didTapNoResultsView;
 
 - (BOOL)hasConnectivity;
-
-- (void)showSplashViewWithType:(IMKeyboardSplashType)splashType;
 
 @end
 

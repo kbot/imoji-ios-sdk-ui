@@ -9,10 +9,16 @@
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
-    ImojiCollectionViewContentTypeImojiCategories
+    ImojiCollectionViewContentTypeImojiCategories,
+    ImojiCollectionViewContentTypeRecentsSplash,
+    ImojiCollectionViewContentTypeCollectionSplash,
+    ImojiCollectionViewContentTypeNoConnectionSplash,
+    ImojiCollectionViewContentTypeEnableFullAccessSplash
 };
 
 @class IMImojiSession, IMImojiCategoryObject, IMImojiObject;
+
+@protocol IMCollectionViewDelegate;
 
 @interface IMCollectionView : UICollectionView
 
@@ -46,5 +52,17 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 - (NSObject *)getNoResultsIndicatorObject;
 
 - (NSObject *)getLoadingIndicatorObject;
+
+- (void)imojiSearchCompleted;
+
+@property(nonatomic, strong) id <IMCollectionViewDelegate> collectionViewDelegate;
+
+@end
+
+@protocol IMCollectionViewDelegate <NSObject>
+
+@optional
+
+- (void)collectionViewDidFinishSearchingImojis:(UICollectionView *)collectionView;
 
 @end
