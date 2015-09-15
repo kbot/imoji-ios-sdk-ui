@@ -171,10 +171,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSString *tag = textField.text;
+    NSString *tag = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     textField.text = @"";
 
-    if ([self.tags indexOfObject:tag] == NSNotFound) {
+    if (tag.length > 0 && [self.tags indexOfObject:tag] == NSNotFound) {
         [(NSMutableOrderedSet *) self.tags insertObject:tag atIndex:0];
         [self performBatchUpdates:^{
                     [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
