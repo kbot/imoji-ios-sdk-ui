@@ -63,6 +63,10 @@ extern "C" {
     IG_FUNCTION(IGPath *, PathConcatenate, IGPath * igPath1, IGPath * igPath2);
     
     IG_FUNCTION(void, PathMoveEnds, IGPath * igPath, IGFPoint firstTo, IGFPoint lastTo);
+    
+    IG_FUNCTION(FloatVector *, PathGetOdometry, IGPath * igPath, bool closed);
+    
+    IG_FUNCTION(float, PathOdometryGetLength, FloatVector * odometry);
 
 #ifdef __cplusplus
 }

@@ -28,7 +28,8 @@ extern "C" {
     enum IGTouchType {
         IG_TOUCH_BEGAN = 1,
         IG_TOUCH_MOVED,
-        IG_TOUCH_ENDED
+        IG_TOUCH_ENDED,
+        IG_TOUCH_CANCELED
     };
     
     enum IGEditorState {

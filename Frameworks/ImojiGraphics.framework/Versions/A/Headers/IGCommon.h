@@ -86,6 +86,7 @@ typedef jfloat IGfloat;
 typedef jdouble IGdouble;
 
 #define IG_USE_RGBA
+#define IG_USE_PLAIN_TEXTURES
 
 #define IG_FUNCTION(return_type, name, ...) return_type Java_com_imojiapp_imojigraphics_IG_ ## name(JNIEnv *env, jclass clazz, ##__VA_ARGS__)
 
