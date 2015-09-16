@@ -133,15 +133,15 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         IMCollectionViewCell *cell = (IMCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
         cell.imojiView.highlighted = NO;
-        
+
         [self processCellAnimations:indexPath];
-        
+
     } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]]) {
         if ([self.collectionViewDelegate respondsToSelector:@selector(userDidSelectCategory:fromCollectionView:)]) {
             [self.collectionViewDelegate userDidSelectCategory:cellContent
                                             fromCollectionView:self];
         }
-        
+
         IMCategoryCollectionViewCell *cell = (IMCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
         cell.imojiView.highlighted = NO;
     }
@@ -196,20 +196,25 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                           if (!operation.isCancelled) {
                                                               [self.content addObjectsFromArray:imojiCategories];
 
+                                                              NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
                                                               for (int i = 0; i < imojiCategories.count; ++i) {
                                                                   [self.images addObject:[NSNull null]];
+                                                                  [insertedPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                                                               }
 
-                                                              [self reloadData];
-
-                                                              for (IMImojiCategoryObject *category in imojiCategories) {
-                                                                  NSUInteger index = [imojiCategories indexOfObject:category];
-                                                                  [self renderImojiResult:category.previewImoji
-                                                                                  content:category
-                                                                                  atIndex:index
-                                                                                   offset:0
-                                                                                operation:operation];
-                                                              }
+                                                              [self performBatchUpdates:^{
+                                                                          [self insertItemsAtIndexPaths:insertedPaths];
+                                                                      }
+                                                                             completion:^(BOOL finished) {
+                                                                                 for (IMImojiCategoryObject *category in imojiCategories) {
+                                                                                     NSUInteger index = [imojiCategories indexOfObject:category];
+                                                                                     [self renderImojiResult:category.previewImoji
+                                                                                                     content:category
+                                                                                                     atIndex:index
+                                                                                                      offset:0
+                                                                                                   operation:operation];
+                                                                                 }
+                                                                             }];
 
                                                               if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
                                                                   [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
@@ -255,14 +260,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     self.imojiOperation = operation =
             [self.session fetchImojisByIdentifiers:imojiIdentifiers
                            fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                if (!operation.isCancelled && !error) {
-                    [self renderImojiResult:imoji
-                                    content:imoji
-                                    atIndex:index
-                                     offset:0
-                                  operation:operation];
-                }
-            }];
+                               if (!operation.isCancelled && !error) {
+                                   [self renderImojiResult:imoji
+                                                   content:imoji
+                                                   atIndex:index
+                                                    offset:0
+                                                 operation:operation];
+                               }
+                           }];
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
@@ -297,7 +302,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                              // append the loading indicator to the content to fetch the next set of results
                              if (index + 1 == self.numberOfImojisToLoad) {
                                  [self.content addObject:self.loadingIndicatorObject];
-                                 [self reloadData];
+
+                                 [self performBatchUpdates:^{
+                                             [self insertItemsAtIndexPaths:@[
+                                                     [NSIndexPath indexPathForItem:self.content.count - 1
+                                                                         inSection:0]
+                                             ]];
+                                         }
+                                                completion:nil];
                              }
                          }];
 }
@@ -329,7 +341,15 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     // mutating the data model while the collection view is reloading
     if (self.currentSearchTerm != nil && self.renderCount == 0) {
         [self.content removeObject:self.loadingIndicatorObject];
-        [self loadImojisFromSearch:self.currentSearchTerm offset:@(self.content.count + 1)];
+
+        [self performBatchUpdates:^{
+            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.content.count inSection:0]]];
+        }
+                       completion:^(BOOL finished) {
+                           [self loadImojisFromSearch:self.currentSearchTerm offset:@(self.content.count + 1)];
+                       }];
+
+
     }
 }
 
@@ -360,22 +380,42 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 }
 
 - (void)prepareViewForImojiResultSet:(NSNumber *)resultCount offset:(NSUInteger)offset error:(NSError *)error {
+    NSUInteger loadingOffset = [self.content indexOfObject:self.loadingIndicatorObject];
+
     if (offset == 0) {
         [self.content removeAllObjects];
         [self.images removeAllObjects];
     }
 
     if (!error) {
+        NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:MAX(resultCount.unsignedIntegerValue, 1)];
         if (resultCount.unsignedIntegerValue > 0) {
+            [self.content removeObject:self.loadingIndicatorObject];
+
             for (NSUInteger i = 0; i < resultCount.unsignedIntValue; ++i) {
                 [self.content addObject:[NSNull null]];
                 [self.images addObject:[NSNull null]];
+
+                [insertedPaths addObject:[NSIndexPath indexPathForRow:i + offset inSection:0]];
             }
-        } else {
+        } else if (offset == 0) {
             [self.content addObject:self.noResultsIndicatorObject];
+
+            [insertedPaths addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         }
 
-        [self reloadData];
+        if (insertedPaths.count > 0 || loadingOffset != NSNotFound) {
+            [self performBatchUpdates:^{
+                        if (loadingOffset != NSNotFound) {
+                            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
+                        }
+
+                        if (insertedPaths.count > 0) {
+                            [self insertItemsAtIndexPaths:insertedPaths];
+                        }
+                    }
+                           completion:nil];
+        }
 
         if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
             [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
