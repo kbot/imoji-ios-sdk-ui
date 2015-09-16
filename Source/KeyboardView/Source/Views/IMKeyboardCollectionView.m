@@ -27,7 +27,7 @@
 #import "IMKeyboardCategoryCollectionViewCell.h"
 #import "IMKeyboardCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
-#import "IMKeyboardCollectionViewSplashCell.h"
+#import "IMCollectionViewSplashCell.h"
 #import "IMConnectivityUtil.h"
 
 @interface IMKeyboardCollectionView ()
@@ -65,7 +65,7 @@
 
         [self registerClass:[IMKeyboardCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMKeyboardCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
-        [self registerClass:[IMKeyboardCollectionViewSplashCell class] forCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId];
+        [self registerClass:[IMCollectionViewSplashCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
     }
 
     return self;
@@ -80,30 +80,30 @@
         cell.title.text = @""; // hide 'loading' text for keyboard
         return cell;
     } else if (cellContent == self.noResultsIndicatorObject) {
-        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellNoResults andImageBundle:self.imagesBundle];
+        [splashCell showSplashCellType:IMCollectionViewSplashCellNoResults withImageBundle:self.imagesBundle];
         self.noResultsTapGesture.enabled = YES;
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
-        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
+    } else if(self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
+        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellCollection andImageBundle:self.imagesBundle];
+        [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
-        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
+    } else if(self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
+        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellRecents andImageBundle:self.imagesBundle];
+        [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
-        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
+    } else if(self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
+        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellNoConnection andImageBundle:self.imagesBundle];
+        [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
-        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
+    } else if(self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
+        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellEnableFullAccess andImageBundle:self.imagesBundle];
+        [splashCell showSplashCellType:IMCollectionViewSplashCellEnableFullAccess withImageBundle:self.imagesBundle];
         return splashCell;
     } else {
         self.doubleTapFolderGesture.enabled = self.contentType == ImojiCollectionViewContentTypeImojis;

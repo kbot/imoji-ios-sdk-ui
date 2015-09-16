@@ -72,12 +72,12 @@
     }
 
     self.titleView.attributedText = [IMAttributeStringUtil attributedString:categoryTitle
-                                                               withFontSize:12.0f
-                                                                  textColor:[UIColor colorWithRed:60/255.f green:60/255.f blue:60/255.f alpha:1.f]
-                                                              textAlignment:NSTextAlignmentCenter];
+                                                                   withFont:[IMAttributeStringUtil defaultFontWithSize:12.0f]
+                                                                      color:[UIColor colorWithRed:60 / 255.f green:60 / 255.f blue:60 / 255.f alpha:1.f]
+                                                               andAlignment:NSTextAlignmentCenter];
 }
 
-- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+- (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
     CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
     [image drawInRect:drawRect];

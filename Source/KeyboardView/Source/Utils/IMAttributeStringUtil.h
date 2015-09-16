@@ -30,8 +30,20 @@
 
 + (UIFont *)defaultFontWithSize:(CGFloat)size;
 
-+ (NSAttributedString *)attributedString:(NSString *)text withFontSize:(CGFloat)fontSize textColor:(UIColor *)textColor;
++ (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size;
 
-+ (NSAttributedString *)attributedString:(NSString *)text withFontSize:(CGFloat)fontSize textColor:(UIColor *)textColor textAlignment:(NSTextAlignment)alignment;
++ (UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size;
+
++ (UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size;
+
++ (NSAttributedString *)attributedString:(NSString *)text
+                                withFont:(UIFont *)font
+                                   color:(UIColor *)color
+                            andAlignment:(NSTextAlignment)alignment;
+
++ (NSAttributedString *)attributedString:(NSString *)text
+                                withFont:(UIFont *)font
+                                   color:(UIColor *)color
+                       andParagraphStyle:(NSParagraphStyle *)paragraphStyle;
 
 @end
