@@ -28,9 +28,7 @@
 #import "IMKeyboardCollectionView.h"
 #import "IMAttributeStringUtil.h"
 #import "IMQwertyViewController.h"
-#import <sys/socket.h>
-#import <netinet/in.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+#import "IMConnectivityUtil.h"
 
 typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
     IMKeyboardButtonSearch = 1,
@@ -44,7 +42,7 @@ typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
 NSString *const IMKeyboardViewControllerDefaultFontFamily = @"Imoji-Regular";
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
+@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
@@ -76,8 +74,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 // search
 @property(nonatomic, strong) UIView *searchView;
 @property(nonatomic, strong) IMKeyboardSearchTextField *searchField;
-
-@property(nonatomic, strong) UIView *splashView;
+@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
 
 @end
 
@@ -102,7 +99,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
         _collectionView.appGroup = _appGroup;
-        _collectionView.keyboardDelegate = self;
+        _collectionView.collectionViewDelegate = self;
     }
     return self;
 }
@@ -205,29 +202,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.collectionView.clipsToBounds = YES;
     [self.collectionView setShowsHorizontalScrollIndicator:NO];
 
-    __unsafe_unretained typeof(self) weakSelf = self;
-    self.collectionView.categoryShowCallback = ^(NSString *title) {
-        weakSelf.closeButton.hidden = NO;
-        weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[title uppercaseString]
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-        weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
-    };
-    self.collectionView.setProgressCallback = ^(float progress) {
-        if (progress != INFINITY) {
-            [weakSelf.progressView setProgress:progress animated:YES];
-        }
-    };
-    self.collectionView.showDownloadingCallback = ^() {
-        [weakSelf showDownloading];
-    };
-    self.collectionView.showCopiedCallback = ^(NSString *message) {
-        [weakSelf showCopied:message];
-    };
-    self.collectionView.showFavoritedCallback = ^() {
-        [weakSelf showFavorited];
-    };
     [self.view addSubview:self.collectionView];
+
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(30);
         make.centerX.equalTo(self.view);
@@ -239,17 +215,20 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self setupMenuView];
 
     if(!self.hasFullAccess) {
-        [self showSplashViewWithType:IMKeyboardEnableFullAccessSplash];
+        self.collectionView.contentType = ImojiCollectionViewContentTypeEnableFullAccessSplash;
+        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    } else if(self.hasConnectivity) {
+    } else if([IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            [self.collectionView loadImojiCategories:self.currentCategoryClassification];
         });
     } else {
-        [self showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
+        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -309,6 +288,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"IMQwerty" bundle:[NSBundle mainBundle]];
     IMQwertyViewController *vc = [storyboard instantiateInitialViewController];
     vc.searchField = self.searchField;
+    vc.delegate = self;
     [self addChildViewController:vc];
     [self.searchView addSubview:vc.view];
     [vc didMoveToParentViewController:self];
@@ -318,16 +298,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.right.equalTo(self.view.mas_right).with.offset(0);
         make.bottom.equalTo(self.view.mas_bottom);
     }];
-    vc.setSearchCallback = ^() {
-        if (self.searchField.text.length > 0) {
-            [self.splashView removeFromSuperview];
-            self.searchView.hidden = YES;
-            [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
-            for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
-                ((UIButton *) [self.view viewWithTag:i]).selected = i == 1;
-            }
-        }
-    };
 
     self.searchView.hidden = YES;
 }
@@ -498,14 +468,13 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // run action
-    if(self.hasConnectivity) {
+    if([IMConnectivityUtil sharedInstance].hasConnectivity) {
         switch (sender.tag) {
             case IMKeyboardButtonSearch:
                 self.searchView.hidden = NO;
                 [self.progressView setProgress:0.f animated:YES];
                 break;
             case IMKeyboardButtonRecents:
-                [self.splashView removeFromSuperview];
                 [self.collectionView loadRecentImojis];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
                                                                             withFontSize:14.0f
@@ -514,8 +483,10 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryReactions:
-                [self.splashView removeFromSuperview];
-                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                // Set classification for use in returning user to Reactions when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                             withFontSize:14.0f
                                                                                textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -523,8 +494,10 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryTrending:
-                [self.splashView removeFromSuperview];
-                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                // Set classification for use in returning user to Trending when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                             withFontSize:14.0f
                                                                                textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -532,15 +505,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonFavorites: {
-                [self.splashView removeFromSuperview];
                 [self.collectionView loadFavoriteImojis];
-                NSString *title;
-
-                if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-                    title = @"COLLECTION";
-                } else {
-                    title = @"FAVORITES";
-                }
+                NSString *title = @"COLLECTION";
 
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
                                                                             withFontSize:14.0f
@@ -550,11 +516,11 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 break;
             }
             default:
-                [self.splashView removeFromSuperview];
                 break;
         }
     } else {
-        [self showSplashViewWithType:IMKeyboardNoConnectionSplash];
+        self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
+        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -575,10 +541,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // check which category keyboard displaying
-    [self.splashView removeFromSuperview];
-    [self.collectionView loadImojiCategories:self.collectionView.currentCategoryClassification];
+    [self.collectionView loadImojiCategories:self.currentCategoryClassification];
 
-    if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
+    if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -589,45 +554,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
-}
-
-- (void)showDownloading {
-    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
-        _previousTitle = self.titleLabel.attributedText;
-    }
-
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    self.closeButton.hidden = YES;
-}
-
-- (void)showCopied:(NSString *)message {
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-
-    self.copiedImageView.hidden = NO;
-    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
-}
-
-- (void)showFavorited {
-    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
-        _previousTitle = self.titleLabel.attributedText;
-    }
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-
-    self.closeButton.hidden = YES;
-    self.heartImageView.hidden = NO;
-    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
 }
 
 - (void)showPreviousTitle {
@@ -647,159 +573,109 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.collectionView.appGroup = appGroup;
 }
 
-- (void)selectedNoResultsView {
+#pragma mark IMQwertyViewControllerDelegate
+- (void)userDidPressReturnKey {
+    if (self.searchField.text.length > 0) {
+        self.searchView.hidden = YES;
+
+        self.closeButton.hidden = NO;
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
+                                                                        withFontSize:14.0f
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+        [self.collectionView loadImojisFromSearch:self.searchField.text];
+        for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
+            ((UIButton *) [self.view viewWithTag:i]).selected = i == 1;
+        }
+    }
+}
+
+#pragma mark IMKeyboardCollectionViewDelegate
+
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category {
+    self.closeButton.hidden = NO;
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[category.title uppercaseString]
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    [self.collectionView loadImojisFromSearch:category.identifier];
+}
+
+- (void)userDidBeginDownloadingImoji {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
+        _previousTitle = self.titleLabel.attributedText;
+    }
+
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    self.closeButton.hidden = YES;
+}
+
+- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message {
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+    self.copiedImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)userDidAddImojiToCollection {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
+        _previousTitle = self.titleLabel.attributedText;
+    }
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+    self.closeButton.hidden = YES;
+    self.heartImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)userDidTapNoResultsView {
     self.searchView.hidden = NO;
     [self.progressView setProgress:0.f animated:YES];
 }
 
-- (void)showSplashViewWithType:(IMKeyboardSplashType)splashType {
-    if(self.splashView) {
-        [self.splashView removeFromSuperview];
-        self.splashView = nil;
+- (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView {
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
+    CGFloat progress;
+    if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        progress = (collectionView.contentOffset.x + collectionView.frame.size.width) /  collectionView.collectionViewLayout.collectionViewContentSize.width;
+    } else {
+        progress = (collectionView.contentOffset.y + collectionView.frame.size.height) / collectionView.collectionViewLayout.collectionViewContentSize.height;
     }
 
-    self.splashView = [[UIView alloc] init];
-    UIImageView *splashGraphic = [[UIImageView alloc] init];
-    UILabel *splashText = [[UILabel alloc] init];
-
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.alignment = NSTextAlignmentNatural;
-
-    NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] init];
-
-    switch(splashType) {
-        case IMKeyboardNoConnectionSplash:
-            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_noconnection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-            splashText.text = @"Enable wifi or cellular data\nto use imoji sticker keyboard";
-            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-            break;
-        case IMKeyboardEnableFullAccessSplash:
-            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_enableaccess" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-            splashText.text = @"Allow Full Access in Settings\nto use imoji sticker keyboard";
-            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:14.0f];
-            break;
-        case IMKeyboardNoResultsSplash:
-            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_noresults" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-            [textAttributes setDictionary:@{
-                    NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Light" size:19.0f],
-                    NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
-                    NSParagraphStyleAttributeName : paragraphStyle
-            }];
-
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"No Results\n"
-                                                                          attributes:textAttributes]];
-            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:16.0f];
-            textAttributes[@"NSColor"] = [UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1];
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Try Again"
-                                                                          attributes:textAttributes]];
-            splashText.attributedText = text;
-            break;
-        case IMKeyboardCollectionSplash:
-            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_collection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-            [textAttributes setDictionary:@{
-                    NSFontAttributeName : [UIFont fontWithName:@"SFUIDisplay-Medium" size:15.0f],
-                    NSForegroundColorAttributeName : [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1],
-                    NSParagraphStyleAttributeName : paragraphStyle
-            }];
-
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"Double tap "
-                                                                          attributes:textAttributes]];
-            textAttributes[@"NSFont"] = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
-            [text appendAttributedString: [[NSAttributedString alloc] initWithString:@"stickers to add them\nto your collection!"
-                                                                          attributes:textAttributes]];
-
-            splashText.attributedText = text;
-            break;
-        case IMKeyboardRecentsSplash:
-            splashGraphic.image = [UIImage imageNamed:@"keyboard_splash_recents" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-            splashText = [[UILabel alloc] init];
-            splashText.text = @"Stickers you send\nwill appear here";
-            splashText.textColor = [UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1];
-
-            splashText.font = [UIFont fontWithName:@"SFUIDisplay-Regular" size:15.0f];
-            break;
-        default:
-            break;
+    if (progress != INFINITY) {
+        [self.progressView setProgress:progress animated:YES];
     }
-
-    splashText.lineBreakMode = NSLineBreakByWordWrapping;
-    splashText.numberOfLines = 2;
-    splashText.textAlignment = NSTextAlignmentCenter;
-
-    [self.view insertSubview:self.splashView aboveSubview:self.collectionView];
-
-    [self.splashView addSubview:splashGraphic];
-    [self.splashView addSubview:splashText];
-
-    [splashGraphic mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view);
-        make.centerY.equalTo(self.view).offset(-30.0f);
-    }];
-
-    [splashText mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(splashGraphic.mas_bottom).offset(13.0f);
-        make.width.equalTo(self.view).multipliedBy(.60f);
-        make.centerX.equalTo(self.view);
-    }];
 }
 
-- (BOOL)hasConnectivity {
-    struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
-    BOOL isConnected = nil;
-
-    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr*)&zeroAddress);
-    if(reachability != NULL) {
-        //NetworkStatus retVal = NotReachable;
-        SCNetworkReachabilityFlags flags;
-        if (SCNetworkReachabilityGetFlags(reachability, &flags)) {
-            if ((flags & kSCNetworkReachabilityFlagsReachable) == 0)
-            {
-                // if target host is not reachable
-                isConnected = NO;
-            } else if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0) {
-                // if target host is reachable and no connection is required
-                //  then we'll assume (for now) that your on Wi-Fi
-                isConnected = YES;
-            } else if ((((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) ||
-                    (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0)) {
-                // ... and the connection is on-demand (or on-traffic) if the
-                //     calling application is using the CFSocketStream or higher APIs
-
-                if ((flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0)
-                {
-                    // ... and no [user] intervention is needed
-                    isConnected = YES;
-                }
-            } else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) == kSCNetworkReachabilityFlagsIsWWAN) {
-                // ... but WWAN connections are OK if the calling application
-                //     is using the CFNetwork (CFSocketStream?) APIs.
-                isConnected = YES;
-            }
-        }
+- (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView {
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
+    CGFloat progress;
+    if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        progress = (scrollView.contentOffset.x + scrollView.frame.size.width) / scrollView.contentSize.width;
+    } else {
+        progress = (scrollView.contentOffset.y + scrollView.frame.size.height) / scrollView.contentSize.height;
     }
 
-    CFRelease(reachability);
-
-    if(isConnected) {
-        return isConnected;
+    if (progress != INFINITY) {
+        [self.progressView setProgress:progress animated:YES];
     }
-
-    return NO;
 }
 
-- (BOOL)hasFullAccess{
-    return [UIPasteboard generalPasteboard];
+- (BOOL)hasFullAccess {
+    return [UIPasteboard generalPasteboard] != nil;
 }
 
 @end

@@ -1,7 +1,7 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Jeff Wang
+//  Created by Alex Hoang
 //  Copyright (C) 2015 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,43 +23,25 @@
 //  IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <ImojiSDK/ImojiSDK.h>
-#import "IMCollectionView.h"
+#import <UIKit/UIKit.h>
 
-@class IMImojiSession;
+typedef NS_ENUM(NSUInteger, IMKeyboardCollectionViewSplashCellType) {
+    IMKeyboardCollectionViewSplashCellNoConnection = 1,
+    IMKeyboardCollectionViewSplashCellEnableFullAccess,
+    IMKeyboardCollectionViewSplashCellNoResults,
+    IMKeyboardCollectionViewSplashCellRecents,
+    IMKeyboardCollectionViewSplashCellCollection
+};
 
-@protocol IMKeyboardCollectionViewDelegate;
+extern NSString *const IMKeyboardCollectionViewSplashCellReuseId;
 
-@interface IMKeyboardCollectionView : IMCollectionView
+@interface IMKeyboardCollectionViewSplashCell : UICollectionViewCell
 
-@property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
-@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
-@property(nonatomic, strong) NSString *appGroup;
-@property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
+@property(nonatomic, strong) UIImageView *splashGraphic;
+@property(nonatomic, strong) UILabel *splashText;
 
-+ (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
-
-- (void)loadRecentImojis;
-
-- (void)loadFavoriteImojis;
-
-@end
-
-@protocol IMKeyboardCollectionViewDelegate <IMCollectionViewDelegate>
-
-@optional
-
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category;
-
-- (void)userDidTapNoResultsView;
-
-- (void)userDidBeginDownloadingImoji;
-
-- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message;
-
-- (void)userDidAddImojiToCollection;
+- (void)setupSplashCellWithType:(IMKeyboardCollectionViewSplashCellType)type
+                 andImageBundle:(NSBundle *)imagesBundle;
 
 @end
-

@@ -189,7 +189,9 @@
 
 
 -(IBAction) returnKeyPressed: (UIButton*) sender {
-    self.setSearchCallback();
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKey)]) {
+        [self.delegate userDidPressReturnKey];
+    }
 }
 
 

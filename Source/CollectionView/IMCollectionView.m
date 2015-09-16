@@ -9,11 +9,6 @@
 #import "IMCategoryCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
 
-typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
-    ImojiCollectionViewContentTypeImojis,
-    ImojiCollectionViewContentTypeImojiCategories
-};
-
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
@@ -21,10 +16,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *reloadPaths;
-@property(nonatomic) ImojiCollectionViewContentType contentType;
 
-@property(nonatomic, strong) NSObject *loadingIndicatorObject;
-@property(nonatomic, strong) NSObject *noResultsIndicatorObject;
 @property(nonatomic, copy) NSString *currentSearchTerm;
 
 @property(nonatomic, strong) NSOperation *imojiOperation;
@@ -43,8 +35,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         self.dataSource = self;
         self.delegate = self;
-        self.noResultsIndicatorObject = [NSObject new];
-        self.loadingIndicatorObject = [NSObject new];
+        _noResultsIndicatorObject = [NSObject new];
+        _loadingIndicatorObject = [NSObject new];
 
         self.numberOfImojisToLoad = IMCollectionViewNumberOfItemsToLoad;
         self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
@@ -218,6 +210,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                                    offset:0
                                                                                 operation:operation];
                                                               }
+
+                                                              if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+                                                                  [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
+                                                              }
                                                           }
                                                       }];
 }
@@ -361,6 +357,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         }
 
         [self reloadData];
+
+        if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+            [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
+        }
     }
 }
 

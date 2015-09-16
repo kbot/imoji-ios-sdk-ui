@@ -1,7 +1,7 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Jeff Wang
+//  Created by Alex Hoang
 //  Copyright (C) 2015 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,43 +23,13 @@
 //  IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <ImojiSDK/ImojiSDK.h>
-#import "IMCollectionView.h"
 
-@class IMImojiSession;
 
-@protocol IMKeyboardCollectionViewDelegate;
+@interface IMConnectivityUtil : NSObject
 
-@interface IMKeyboardCollectionView : IMCollectionView
++ (IMConnectivityUtil *)sharedInstance;
 
-@property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
-@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
-@property(nonatomic, strong) NSString *appGroup;
-@property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
-
-+ (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
-
-- (void)loadRecentImojis;
-
-- (void)loadFavoriteImojis;
+- (BOOL)hasConnectivity;
 
 @end
-
-@protocol IMKeyboardCollectionViewDelegate <IMCollectionViewDelegate>
-
-@optional
-
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category;
-
-- (void)userDidTapNoResultsView;
-
-- (void)userDidBeginDownloadingImoji;
-
-- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message;
-
-- (void)userDidAddImojiToCollection;
-
-@end
-
