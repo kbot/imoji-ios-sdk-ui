@@ -98,7 +98,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         _imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
 
         _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
-        _collectionView.appGroup = _appGroup;
         _collectionView.collectionViewDelegate = self;
     }
     return self;
@@ -214,14 +213,14 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     // menu view
     [self setupMenuView];
 
-    if(!self.hasFullAccess) {
+    if (!self.hasFullAccess) {
         self.collectionView.contentType = ImojiCollectionViewContentTypeEnableFullAccessSplash;
         [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    } else if([IMConnectivityUtil sharedInstance].hasConnectivity) {
+    } else if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.collectionView loadImojiCategories:self.currentCategoryClassification];
@@ -386,7 +385,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.bottomNavView addSubview:self.collectionButton];
     [self.bottomNavView addSubview:self.deleteButton];
 
-    if(!self.hasFullAccess) {
+    if (!self.hasFullAccess) {
         self.nextKeyboardButton.alpha = 0.5f;
         [self.searchButton setEnabled:NO];
         [self.recentsButton setEnabled:NO];
@@ -468,14 +467,14 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // run action
-    if([IMConnectivityUtil sharedInstance].hasConnectivity) {
+    if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         switch (sender.tag) {
             case IMKeyboardButtonSearch:
                 self.searchView.hidden = NO;
                 [self.progressView setProgress:0.f animated:YES];
                 break;
             case IMKeyboardButtonRecents:
-                [self.collectionView loadRecentImojis];
+                [self.collectionView loadRecentImojis:self.recentImojis];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
                                                                             withFontSize:14.0f
                                                                                textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -505,7 +504,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonFavorites: {
-                [self.collectionView loadFavoriteImojis];
+                [self.collectionView loadFavoriteImojis:self.favoritedImojis];
                 NSString *title = @"COLLECTION";
 
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
@@ -570,18 +569,18 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (void)setAppGroup:(NSString *)appGroup {
     _appGroup = appGroup;
-    self.collectionView.appGroup = appGroup;
 }
 
 #pragma mark IMQwertyViewControllerDelegate
+
 - (void)userDidPressReturnKey {
     if (self.searchField.text.length > 0) {
         self.searchView.hidden = YES;
 
         self.closeButton.hidden = NO;
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                    withFontSize:14.0f
+                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
         [self.collectionView loadImojisFromSearch:self.searchField.text];
@@ -668,6 +667,10 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
 }
 
+- (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
+    [self saveToFavorites:imoji];
+}
+
 - (void)userDidTapNoResultsView {
     self.searchView.hidden = NO;
     [self.progressView setProgress:0.f animated:YES];
@@ -677,7 +680,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
     if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
-        progress = (collectionView.contentOffset.x + collectionView.frame.size.width) /  collectionView.collectionViewLayout.collectionViewContentSize.width;
+        progress = (collectionView.contentOffset.x + collectionView.frame.size.width) / collectionView.collectionViewLayout.collectionViewContentSize.width;
     } else {
         progress = (collectionView.contentOffset.y + collectionView.frame.size.height) / collectionView.collectionViewLayout.collectionViewContentSize.height;
     }
@@ -730,6 +733,48 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     [shared setObject:arrayOfRecents forKey:@"recentImojis"];
     [shared synchronize];
+}
+
+- (void)saveToFavorites:(IMImojiObject *)imojiObject {
+    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
+        [self.session addImojiToUserCollection:imojiObject
+                                      callback:^(BOOL successful, NSError *error) {
+
+                                      }];
+    } else {
+        NSUInteger arrayCapacity = 20;
+        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+        NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
+        NSMutableArray *arrayOfFavorites = [NSMutableArray arrayWithCapacity:arrayCapacity];
+
+        if (!savedArrayOfFavorites || savedArrayOfFavorites.count == 0) {
+            [arrayOfFavorites addObject:imojiObject.identifier];
+        } else {
+            [arrayOfFavorites addObjectsFromArray:savedArrayOfFavorites];
+
+            if ([arrayOfFavorites containsObject:imojiObject.identifier]) {
+                [arrayOfFavorites removeObject:imojiObject.identifier];
+            }
+            [arrayOfFavorites insertObject:imojiObject.identifier atIndex:0];
+
+            while (arrayOfFavorites.count > arrayCapacity) {
+                [arrayOfFavorites removeLastObject];
+            }
+        }
+
+        [shared setObject:arrayOfFavorites forKey:@"favoriteImojis"];
+        [shared synchronize];
+    }
+}
+
+- (NSArray *)recentImojis {
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+    return [shared objectForKey:@"recentImojis"];
+}
+
+- (NSArray *)favoritedImojis {
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+    return [shared objectForKey:@"favoriteImojis"];
 }
 
 @end

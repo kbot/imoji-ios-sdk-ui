@@ -34,16 +34,13 @@
 
 @interface IMKeyboardCollectionView : IMCollectionView
 
-@property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
-@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
-@property(nonatomic, strong) NSString *appGroup;
 @property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
 
-- (void)loadRecentImojis;
+- (void)loadRecentImojis:(NSArray *)recents;
 
-- (void)loadFavoriteImojis;
+- (void)loadFavoriteImojis:(NSArray *)favoritedImojis;
 
 @end
 
@@ -53,7 +50,7 @@
 
 - (void)userDidTapNoResultsView;
 
-- (void)userDidAddImojiToCollection;
+- (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
 
 @end
 

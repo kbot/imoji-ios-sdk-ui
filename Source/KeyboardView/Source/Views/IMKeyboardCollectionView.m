@@ -32,6 +32,8 @@
 
 @interface IMKeyboardCollectionView ()
 
+@property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
+@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
 @property(nonatomic, strong) NSBundle *imagesBundle;
 
 @end
@@ -174,7 +176,7 @@
     return UIEdgeInsetsZero;
 }
 
-- (void)loadRecentImojis {
+- (void)loadRecentImojis:(NSArray *)recents {
     self.contentType = ImojiCollectionViewContentTypeImojis;
     [self.content removeAllObjects];
     [self reloadData];
@@ -183,46 +185,16 @@
         self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
         [self.content addObject:[NSNull null]];
     } else {
-        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-        NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
-
-        if (!savedArrayOfRecents) {
+        if (!recents || recents.count == 0) {
             self.contentType = ImojiCollectionViewContentTypeRecentsSplash;
             [self.content addObject:[NSNull null]];
         } else {
-            for (NSUInteger i = 0; i < savedArrayOfRecents.count; ++i) {
-                [self.content addObject:[NSNull null]];
-            }
-
-            [self.session fetchImojisByIdentifiers:savedArrayOfRecents
-                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                               if (!error) {
-                                   NSUInteger offsetValue = 0;
-
-                                   self.content[offsetValue + index] = imoji;
-
-                                   [self reloadItemsAtIndexPaths:@[
-                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
-                                   ]];
-
-                                   if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
-                                       [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
-                                   }
-
-                                   // append the loading indicator to the content to fetch the next set of results
-                                   if (index + 1 == self.numberOfImojisToLoad) {
-                                       //[self.content addObject:self.loadingIndicatorObject];
-
-                                       [self reloadData];
-
-                                   }
-                               }
-                           }];
+            [self loadImojisFromIdentifiers:recents];
         }
     }
 }
 
-- (void)loadFavoriteImojis {
+- (void)loadFavoriteImojis:(NSArray *)favoritedImojis {
     self.contentType = ImojiCollectionViewContentTypeImojis;
     [self.content removeAllObjects];
     [self reloadData];
@@ -233,117 +205,13 @@
     } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
         [self loadUserCollectionImojis];
     } else {
-        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-        NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
-
-        if (!savedArrayOfFavorites) {
-            self.contentType = ImojiCollectionViewContentTypeCollectionSplash;
-            [self.content addObject:[NSNull null]];
-        } else {
-            for (NSUInteger i = 0; i < savedArrayOfFavorites.count; ++i) {
-                [self.content addObject:[NSNull null]];
-            }
-
-            [self.session fetchImojisByIdentifiers:savedArrayOfFavorites
-                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                               if (!error) {
-                                   NSUInteger offsetValue = 0;
-
-                                   self.content[offsetValue + index] = imoji;
-
-                                   [self reloadItemsAtIndexPaths:@[
-                                           [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
-                                   ]];
-
-                                   if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
-                                       [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
-                                   }
-
-                                   // append the loading indicator to the content to fetch the next set of results
-                                   if (index + 1 == self.numberOfImojisToLoad) {
-                                       //[self.content addObject:self.loadingIndicatorObject];
-
-                                       [self reloadData];
-
-                                   }
-                               }
-                           }];
-        }
+        [self loadImojisFromIdentifiers:favoritedImojis];
     }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView: userDidScroll:)]) {
         [self.collectionViewDelegate imojiCollectionView:self userDidScroll:scrollView];
-    }
-}
-
-- (void)saveToFavorites:(IMImojiObject *)imojiObject {
-    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-        [self.session addImojiToUserCollection:imojiObject
-                                      callback:^(BOOL successful, NSError *error) {
-
-                                      }];
-    } else {
-        NSUInteger arrayCapacity = 20;
-        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-        NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
-        NSMutableArray *arrayOfFavorites = [NSMutableArray arrayWithCapacity:arrayCapacity];
-
-        if (!savedArrayOfFavorites || savedArrayOfFavorites.count == 0) {
-            [arrayOfFavorites addObject:imojiObject.identifier];
-        } else {
-            [arrayOfFavorites addObjectsFromArray:savedArrayOfFavorites];
-
-            if ([arrayOfFavorites containsObject:imojiObject.identifier]) {
-                [arrayOfFavorites removeObject:imojiObject.identifier];
-            }
-            [arrayOfFavorites insertObject:imojiObject.identifier atIndex:0];
-
-            while (arrayOfFavorites.count > arrayCapacity) {
-                [arrayOfFavorites removeLastObject];
-            }
-        }
-
-        [shared setObject:arrayOfFavorites forKey:@"favoriteImojis"];
-        [shared synchronize];
-    }
-}
-
-- (void)prepareResultsFromServerResponse:(NSNumber *)resultCount {
-    [self.content removeAllObjects];
-
-    NSUInteger count = resultCount.unsignedIntegerValue;
-    for (NSUInteger i = 0; i < count; ++i) {
-        [self.content addObject:[NSNull null]];
-    }
-
-    [self reloadData];
-
-    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
-        [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
-    }
-}
-
-- (void)displayResultFromServerResponse:(IMImojiObject *)imoji
-                                  index:(NSUInteger)index
-                                 offset:(NSNumber *)offset {
-    NSUInteger offsetValue = 0;
-    if (offset) {
-        offsetValue = offset.unsignedIntegerValue - 1;
-    }
-
-    self.content[offsetValue + index] = imoji;
-
-    [self reloadItemsAtIndexPaths:@[
-            [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
-    ]];
-
-    // append the loading indicator to the content to fetch the next set of results
-    if (index + 1 == self.numberOfImojisToLoad) {
-        //[self.content addObject:self.loadingIndicatorObject];
-
-        [self reloadData];
     }
 }
 
@@ -354,20 +222,16 @@
         if (indexPath) {
             id cellContent = self.content[(NSUInteger) indexPath.row];
             if (self.contentType == ImojiCollectionViewContentTypeImojis) {
-                IMImojiObject *imojiObject = cellContent;
-                // save to favorites
-                [self saveToFavorites:imojiObject];
+                if (self.collectionViewDelegate &&
+                        [self.collectionViewDelegate respondsToSelector:@selector(userDidDoubleTapImoji:fromCollectionView:)]) {
 
-                [self userDidAddImojiToCollection];
+                    [self.collectionViewDelegate userDidDoubleTapImoji:cellContent
+                                                    fromCollectionView:self];
+                }
+
                 [self processCellAnimations:indexPath];
             }
         }
-    }
-}
-
-- (void)userDidAddImojiToCollection {
-    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidAddImojiToCollection)]) {
-        [self.collectionViewDelegate userDidAddImojiToCollection];
     }
 }
 

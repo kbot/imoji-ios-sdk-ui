@@ -261,6 +261,25 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
+- (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
+    [self prepareViewForImojiResultSet:@(imojiIdentifiers.count)
+                                offset:0
+                                 error:nil];
+
+    __block NSOperation *operation;
+    self.imojiOperation = operation =
+            [self.session fetchImojisByIdentifiers:imojiIdentifiers
+                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                if (!operation.isCancelled && !error) {
+                    [self renderImojiResult:imoji
+                                    content:imoji
+                                    atIndex:index
+                                     offset:0
+                                  operation:operation];
+                }
+            }];
+}
+
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
     NSUInteger offsetValue = offset ? offset.unsignedIntegerValue - 1 : 0;
 
