@@ -42,7 +42,7 @@ typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
 NSString *const IMKeyboardViewControllerDefaultFontFamily = @"Imoji-Regular";
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
+@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
@@ -288,6 +288,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"IMQwerty" bundle:[NSBundle mainBundle]];
     IMQwertyViewController *vc = [storyboard instantiateInitialViewController];
     vc.searchField = self.searchField;
+    vc.delegate = self;
     [self addChildViewController:vc];
     [self.searchView addSubview:vc.view];
     [vc didMoveToParentViewController:self];
@@ -297,24 +298,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.right.equalTo(self.view.mas_right).with.offset(0);
         make.bottom.equalTo(self.view.mas_bottom);
     }];
-
-    __unsafe_unretained typeof(self) weakSelf = self;
-    vc.setSearchCallback = ^() {
-        if (self.searchField.text.length > 0) {
-            self.searchView.hidden = YES;
-
-            weakSelf.closeButton.hidden = NO;
-            weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
-                                                                            withFontSize:14.0f
-                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-            weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
-
-            [self.collectionView loadImojisFromSearch:self.searchField.text];
-            for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
-                ((UIButton *) [self.view viewWithTag:i]).selected = i == 1;
-            }
-        }
-    };
 
     self.searchView.hidden = YES;
 }
@@ -588,6 +571,24 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 - (void)setAppGroup:(NSString *)appGroup {
     _appGroup = appGroup;
     self.collectionView.appGroup = appGroup;
+}
+
+#pragma mark IMQwertyViewControllerDelegate
+- (void)userDidPressReturnKey {
+    if (self.searchField.text.length > 0) {
+        self.searchView.hidden = YES;
+
+        self.closeButton.hidden = NO;
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
+                                                                        withFontSize:14.0f
+                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+        [self.collectionView loadImojisFromSearch:self.searchField.text];
+        for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
+            ((UIButton *) [self.view viewWithTag:i]).selected = i == 1;
+        }
+    }
 }
 
 #pragma mark IMKeyboardCollectionViewDelegate

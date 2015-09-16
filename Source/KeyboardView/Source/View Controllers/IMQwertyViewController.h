@@ -26,10 +26,17 @@
 #import <UIKit/UIKit.h>
 #import "IMKeyboardSearchTextField.h"
 
+@protocol IMQwertyViewControllerDelegate;
+
 @interface IMQwertyViewController : UIInputViewController
 
-//callback
-@property(nonatomic, strong) void(^setSearchCallback) ();
 @property(nonatomic, strong) IMKeyboardSearchTextField *searchField;
+@property(nonatomic, weak) id<IMQwertyViewControllerDelegate> delegate;
+
+@end
+
+@protocol IMQwertyViewControllerDelegate <NSObject>
+
+- (void)userDidPressReturnKey;
 
 @end
