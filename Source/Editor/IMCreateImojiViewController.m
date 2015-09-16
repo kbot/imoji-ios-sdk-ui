@@ -108,7 +108,8 @@
 
     [self.imojiEditor loadImage:self.sourceImage];
 
-    self.doneButton.enabled = self.undoButton.enabled = NO;
+    self.doneButton.enabled = YES;
+    self.forwardButton.enabled = self.undoButton.enabled = NO;
 
     view.backgroundColor = [UIColor colorWithRed:48.0f / 255.0f green:48.0f / 255.0f blue:48.0f / 255.0f alpha:1];
 
@@ -253,7 +254,7 @@
 
 - (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView {
     self.undoButton.enabled = editorView.canUndo;
-    self.doneButton.enabled = editorView.hasOutputImage;
+    self.forwardButton.enabled = editorView.hasOutputImage;
 }
 
 + (NSBundle *)stringsBundle {
