@@ -4,15 +4,15 @@
 //
 
 #import <ImojiSDK/ImojiSDK.h>
-#import <Masonry/View+MASAdditions.h>
-#import "IMCollectionView.h"
+#import <Masonry/Masonry.h>
+#import <ImojiSDKUI/IMCollectionView.h>
 
 #import "ImojiResultsView.h"
 #import "ImojiDetailsView.h"
 
 CGFloat ImojiResultsViewButtonWidth = 35.0f;
 
-@interface ImojiResultsView ()
+@interface ImojiResultsView () <IMCollectionViewDelegate>
 @property(nonatomic, strong) UIButton *closeButton;
 @property(nonatomic, strong) ImojiDetailsView *detailsView;
 @end
@@ -40,23 +40,7 @@ CGFloat ImojiResultsViewButtonWidth = 35.0f;
         [self.detailsView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                        action:@selector(closeButtonTapped)]];
 
-        __weak typeof(self) weakSelf = self;
-        self.collectionView.categorySelectedCallback = ^(IMImojiCategoryObject *category) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf.collectionView loadImojisFromSearch:category.identifier];
-        };
-
-        self.collectionView.imojiSelectedCallback = ^(IMImojiObject *imoji) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.detailsView.hidden = NO;
-            strongSelf.detailsView.layer.opacity = 0.0f;
-            strongSelf.detailsView.imoji = imoji;
-
-            [UIView animateWithDuration:.5f
-                             animations:^{
-                                 strongSelf.detailsView.layer.opacity = 1.0f;
-                             }];
-        };
+        self.collectionView.collectionViewDelegate = self;
 
         [self addSubview:self.collectionView];
         [self addSubview:self.detailsView];
@@ -99,6 +83,25 @@ CGFloat ImojiResultsViewButtonWidth = 35.0f;
         self.dismissedCallback();
     }
 }
+
+#pragma mark IMCollectionViewDelegate
+
+- (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
+    self.detailsView.hidden = NO;
+    self.detailsView.layer.opacity = 0.0f;
+    self.detailsView.imoji = imoji;
+
+    [UIView animateWithDuration:.5f
+                     animations:^{
+                         self.detailsView.layer.opacity = 1.0f;
+                     }];
+}
+
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    [self.collectionView loadImojisFromSearch:category.identifier];
+}
+
+#pragma mark Initialization
 
 + (instancetype)resultsViewWithSession:(IMImojiSession *)session {
     return [[ImojiResultsView alloc] initWithSession:session];
