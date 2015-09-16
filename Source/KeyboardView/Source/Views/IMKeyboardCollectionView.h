@@ -51,13 +51,7 @@
 
 @optional
 
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category;
-
 - (void)userDidTapNoResultsView;
-
-- (void)userDidBeginDownloadingImoji;
-
-- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message;
 
 - (void)userDidAddImojiToCollection;
 

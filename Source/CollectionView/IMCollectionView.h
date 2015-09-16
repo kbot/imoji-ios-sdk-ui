@@ -22,8 +22,6 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 @interface IMCollectionView : UICollectionView
 
-@property(nonatomic, strong) void(^categorySelectedCallback)(IMImojiCategoryObject * category);
-@property(nonatomic, strong) void(^imojiSelectedCallback)(IMImojiObject * imoji);
 @property(nonatomic, strong, readonly) IMImojiSession *session;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic) ImojiCollectionViewContentType contentType;
@@ -52,6 +50,8 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 - (IMImojiObjectRenderingOptions *)renderingOptions;
 
+- (void)processCellAnimations:(NSIndexPath *)currentIndexPath;
+
 @end
 
 @protocol IMCollectionViewDelegate <NSObject>
@@ -61,5 +61,9 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 - (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView;
 
 - (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
+
+- (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
+
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView;
 
 @end

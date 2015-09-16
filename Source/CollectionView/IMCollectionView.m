@@ -140,10 +140,25 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     id cellContent = self.content[(NSUInteger) indexPath.row];
 
-    if ([cellContent isKindOfClass:[IMImojiObject class]] && self.imojiSelectedCallback) {
-        self.imojiSelectedCallback(cellContent);
-    } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]] && self.categorySelectedCallback) {
-        self.categorySelectedCallback(cellContent);
+    if ([cellContent isKindOfClass:[IMImojiObject class]]) {
+        if ([self.collectionViewDelegate respondsToSelector:@selector(userDidSelectImoji:fromCollectionView:)]) {
+            [self.collectionViewDelegate userDidSelectImoji:cellContent
+                                         fromCollectionView:self];
+        }
+
+        IMCollectionViewCell *cell = (IMCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+        cell.imojiView.highlighted = NO;
+        
+        [self processCellAnimations:indexPath];
+        
+    } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]]) {
+        if ([self.collectionViewDelegate respondsToSelector:@selector(userDidSelectCategory:fromCollectionView:)]) {
+            [self.collectionViewDelegate userDidSelectCategory:cellContent
+                                            fromCollectionView:self];
+        }
+        
+        IMCategoryCollectionViewCell *cell = (IMCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
+        cell.imojiView.highlighted = NO;
     }
 }
 
@@ -211,7 +226,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                                 operation:operation];
                                                               }
 
-                                                              if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+                                                              if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
                                                                   [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
                                                               }
                                                           }
@@ -358,7 +373,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         [self reloadData];
 
-        if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+        if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
             [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
         }
     }
@@ -402,6 +417,22 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                        }];
     }
 }
+
+#pragma mark Animations
+
+- (void)processCellAnimations:(NSIndexPath *)currentIndexPath {
+    for (UICollectionViewCell *cell in self.visibleCells) {
+        NSIndexPath *indexPath = [self indexPathForCell:cell];
+
+        if (currentIndexPath.row == indexPath.row) {
+            [(IMCollectionViewCell *) cell performGrowAnimation];
+        } else {
+            [(IMCollectionViewCell *) cell performTranslucentAnimation];
+        }
+    }
+}
+
+#pragma mark Initialization
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {
     return [[IMCollectionView alloc] initWithSession:session];

@@ -593,7 +593,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 #pragma mark IMKeyboardCollectionViewDelegate
 
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category {
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
     self.closeButton.hidden = NO;
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[category.title uppercaseString]
                                                                 withFontSize:14.0f
@@ -602,7 +602,34 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.collectionView loadImojisFromSearch:category.identifier];
 }
 
-- (void)userDidBeginDownloadingImoji {
+- (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
+    [self showDownloadingImojiIndicator];
+
+    IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+    renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+    renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(1000.0f, 1000.0f)];
+
+    [self.session renderImoji:imoji
+                      options:renderOptions
+                     callback:^(UIImage *image, NSError *error) {
+                         if (error) {
+                             NSLog(@"Error: %@", error);
+                             [self showFinishedDownloadedWithMessage:@"UNABLE TO DOWNLOAD IMOJI"];
+                         } else {
+                             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                             pasteboard.persistent = YES;
+                             [pasteboard setImage:image];
+
+                             [self showFinishedDownloadedWithMessage:@"COPIED TO CLIPBOARD"];
+
+                         }
+                     }];
+
+    // save to recents
+    [self saveToRecents:imoji];
+}
+
+- (void)showDownloadingImojiIndicator {
     if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
         _previousTitle = self.titleLabel.attributedText;
     }
@@ -615,7 +642,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.closeButton.hidden = YES;
 }
 
-- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message {
+- (void)showFinishedDownloadedWithMessage:(NSString *)message {
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
                                                                 withFontSize:14.0f
                                                                    textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -676,6 +703,33 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (BOOL)hasFullAccess {
     return [UIPasteboard generalPasteboard] != nil;
+}
+
+#pragma mark Recents Logic
+
+- (void)saveToRecents:(IMImojiObject *)imojiObject {
+    NSUInteger arrayCapacity = 20;
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
+    NSMutableArray *arrayOfRecents = [NSMutableArray arrayWithCapacity:arrayCapacity];
+
+    if (!savedArrayOfRecents || savedArrayOfRecents.count == 0) {
+        [arrayOfRecents addObject:imojiObject.identifier];
+    } else {
+        [arrayOfRecents addObjectsFromArray:savedArrayOfRecents];
+
+        if ([arrayOfRecents containsObject:imojiObject.identifier]) {
+            [arrayOfRecents removeObject:imojiObject.identifier];
+        }
+        [arrayOfRecents insertObject:imojiObject.identifier atIndex:0];
+
+        while (arrayOfRecents.count > arrayCapacity) {
+            [arrayOfRecents removeLastObject];
+        }
+    }
+
+    [shared setObject:arrayOfRecents forKey:@"recentImojis"];
+    [shared synchronize];
 }
 
 @end

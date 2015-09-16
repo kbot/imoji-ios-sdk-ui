@@ -224,7 +224,7 @@
     IGint borderPadding = igBorderGetPadding(border);
     IGImage *igPlainImage = igImageFromNative(self.igContext, image.CGImage, borderPadding);
     IGImage *outputImage = igImageCreate(
-            self.igContext, 
+            self.igContext,
             igImageGetWidth(igPlainImage) + (borderPadding * 2),
             igImageGetHeight(igPlainImage) + (borderPadding * 2)
     );
