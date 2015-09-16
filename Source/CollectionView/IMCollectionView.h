@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
 @property(nonatomic) CGFloat sideInsets;
+@property(nonatomic, weak) id <IMCollectionViewDelegate> collectionViewDelegate;
 
 - (instancetype)initWithSession:(IMImojiSession *)session;
 
@@ -53,9 +54,7 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 - (NSObject *)getLoadingIndicatorObject;
 
-- (void)imojiSearchCompleted;
-
-@property(nonatomic, strong) id <IMCollectionViewDelegate> collectionViewDelegate;
+- (void)imojisDidFinishLoading;
 
 @end
 
@@ -64,5 +63,7 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 @optional
 
 - (void)collectionViewDidFinishSearchingImojis:(UICollectionView *)collectionView;
+
+- (void)collectionView:(UICollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
 
 @end

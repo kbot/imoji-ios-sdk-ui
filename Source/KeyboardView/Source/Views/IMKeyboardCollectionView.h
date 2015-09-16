@@ -28,49 +28,38 @@
 #import <ImojiSDK/ImojiSDK.h>
 #import "IMCollectionView.h"
 
-typedef NS_ENUM(NSUInteger, IMKeyboardSplashType) {
-    IMKeyboardNoConnectionSplash = 1,
-    IMKeyboardEnableFullAccessSplash,
-    IMKeyboardNoResultsSplash,
-    IMKeyboardRecentsSplash,
-    IMKeyboardCollectionSplash
-};
-
 @class IMImojiSession;
 
 @protocol IMKeyboardCollectionViewDelegate;
 
 @interface IMKeyboardCollectionView : IMCollectionView
 
-@property(nonatomic, strong) void(^categoryShowCallback) (NSString *title);
-@property(nonatomic, strong) void(^setProgressCallback) (float progress);
-@property(nonatomic, strong) void(^showDownloadingCallback) ();
-@property(nonatomic, strong) void(^showCopiedCallback) (NSString *message);
-@property(nonatomic, strong) void(^showFavoritedCallback) ();
-@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
 @property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
 @property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
 @property(nonatomic, strong) NSString *appGroup;
+@property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
-
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
 
 - (void)loadRecentImojis;
 
 - (void)loadFavoriteImojis;
 
-- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset;
-
-@property(nonatomic, strong) id <IMKeyboardCollectionViewDelegate> keyboardDelegate;
-
 @end
 
-@protocol IMKeyboardCollectionViewDelegate <NSObject>
+@protocol IMKeyboardCollectionViewDelegate <IMCollectionViewDelegate>
 
 @optional
 
-- (void)didTapNoResultsView;
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category;
+
+- (void)userDidTapNoResultsView;
+
+- (void)userDidBeginDownloadingImoji;
+
+- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message;
+
+- (void)userDidAddImojiToCollection;
 
 - (BOOL)hasConnectivity;
 

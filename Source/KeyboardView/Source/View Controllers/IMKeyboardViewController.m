@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
 NSString *const IMKeyboardViewControllerDefaultFontFamily = @"Imoji-Regular";
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate, IMCollectionViewDelegate>
+@interface IMKeyboardViewController () <IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
@@ -76,6 +76,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 // search
 @property(nonatomic, strong) UIView *searchView;
 @property(nonatomic, strong) IMKeyboardSearchTextField *searchField;
+@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
 
 @end
 
@@ -101,7 +102,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
         _collectionView.appGroup = _appGroup;
         _collectionView.collectionViewDelegate = self;
-        _collectionView.keyboardDelegate = self;
     }
     return self;
 }
@@ -204,37 +204,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.collectionView.clipsToBounds = YES;
     [self.collectionView setShowsHorizontalScrollIndicator:NO];
 
-    __unsafe_unretained typeof(self) weakSelf = self;
-    self.collectionView.categorySelectedCallback = ^(IMImojiCategoryObject *category) {
-        weakSelf.closeButton.hidden = NO;
-        weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[category.title uppercaseString]
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-        weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
-        [weakSelf.collectionView loadImojisFromSearch:category.identifier];
-    };
-    self.collectionView.categoryShowCallback = ^(NSString *title) {
-        weakSelf.closeButton.hidden = NO;
-        weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[title uppercaseString]
-                                                                        withFontSize:14.0f
-                                                                           textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
-        weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
-    };
-    self.collectionView.setProgressCallback = ^(float progress) {
-        if (progress != INFINITY) {
-            [weakSelf.progressView setProgress:progress animated:YES];
-        }
-    };
-    self.collectionView.showDownloadingCallback = ^() {
-        [weakSelf showDownloading];
-    };
-    self.collectionView.showCopiedCallback = ^(NSString *message) {
-        [weakSelf showCopied:message];
-    };
-    self.collectionView.showFavoritedCallback = ^() {
-        [weakSelf showFavorited];
-    };
     [self.view addSubview:self.collectionView];
+
     [self.collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).with.offset(30);
         make.centerX.equalTo(self.view);
@@ -253,8 +224,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     } else if(self.hasConnectivity) {
+        self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            [self.collectionView loadImojiCategories:self.currentCategoryClassification];
         });
     } else {
         self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
@@ -327,10 +299,19 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         make.right.equalTo(self.view.mas_right).with.offset(0);
         make.bottom.equalTo(self.view.mas_bottom);
     }];
+
+    __unsafe_unretained typeof(self) weakSelf = self;
     vc.setSearchCallback = ^() {
         if (self.searchField.text.length > 0) {
             self.searchView.hidden = YES;
-            [self.collectionView loadImojisFromSearch:self.searchField.text offset:nil];
+
+            weakSelf.closeButton.hidden = NO;
+            weakSelf.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
+                                                                            withFontSize:14.0f
+                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+            weakSelf.titleLabel.font = [UIFont fontWithName:weakSelf.fontFamily size:14.f];
+
+            [self.collectionView loadImojisFromSearch:self.searchField.text];
             for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
                 ((UIButton *) [self.view viewWithTag:i]).selected = i == 1;
             }
@@ -521,7 +502,10 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryReactions:
-                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                // Set classification for use in returning user to Reactions when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                             withFontSize:14.0f
                                                                                textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -529,7 +513,10 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonCategoryTrending:
-                [self.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                // Set classification for use in returning user to Trending when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                             withFontSize:14.0f
                                                                                textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -538,13 +525,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 break;
             case IMKeyboardButtonFavorites: {
                 [self.collectionView loadFavoriteImojis];
-                NSString *title;
-
-                if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-                    title = @"COLLECTION";
-                } else {
-                    title = @"FAVORITES";
-                }
+                NSString *title = @"COLLECTION";
 
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
                                                                             withFontSize:14.0f
@@ -579,9 +560,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // check which category keyboard displaying
-    [self.collectionView loadImojiCategories:self.collectionView.currentCategoryClassification];
+    [self.collectionView loadImojiCategories:self.currentCategoryClassification];
 
-    if (self.collectionView.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
+    if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
@@ -592,45 +573,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
-}
-
-- (void)showDownloading {
-    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
-        _previousTitle = self.titleLabel.attributedText;
-    }
-
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    self.closeButton.hidden = YES;
-}
-
-- (void)showCopied:(NSString *)message {
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-
-    self.copiedImageView.hidden = NO;
-    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
-}
-
-- (void)showFavorited {
-    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO FAVORITES"]) {
-        _previousTitle = self.titleLabel.attributedText;
-    }
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
-    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-
-    self.closeButton.hidden = YES;
-    self.heartImageView.hidden = NO;
-    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
 }
 
 - (void)showPreviousTitle {
@@ -650,6 +592,61 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.collectionView.appGroup = appGroup;
 }
 
+#pragma mark IMKeyboardCollectionViewDelegate
+
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category {
+    self.closeButton.hidden = NO;
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[category.title uppercaseString]
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    [self.collectionView loadImojisFromSearch:category.identifier];
+}
+
+- (void)userDidBeginDownloadingImoji {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
+        _previousTitle = self.titleLabel.attributedText;
+    }
+
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    self.closeButton.hidden = YES;
+}
+
+- (void)imojiDidFinishDownloadingWithMessage:(NSString *)message {
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+    self.copiedImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)userDidAddImojiToCollection {
+    if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
+        _previousTitle = self.titleLabel.attributedText;
+    }
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
+                                                                withFontSize:14.0f
+                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+
+    self.closeButton.hidden = YES;
+    self.heartImageView.hidden = NO;
+    [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
+}
+
+- (void)userDidTapNoResultsView {
+    self.searchView.hidden = NO;
+    [self.progressView setProgress:0.f animated:YES];
+}
+
 - (void)collectionViewDidFinishSearchingImojis:(UICollectionView *)collectionView {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
@@ -664,9 +661,18 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
-- (void)didTapNoResultsView {
-    self.searchView.hidden = NO;
-    [self.progressView setProgress:0.f animated:YES];
+- (void)collectionView:(UICollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView {
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
+    CGFloat progress;
+    if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        progress = (scrollView.contentOffset.x + scrollView.frame.size.width) / scrollView.contentSize.width;
+    } else {
+        progress = (scrollView.contentOffset.y + scrollView.frame.size.height) / scrollView.contentSize.height;
+    }
+
+    if (progress != INFINITY) {
+        [self.progressView setProgress:progress animated:YES];
+    }
 }
 
 - (BOOL)hasConnectivity {
@@ -716,8 +722,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     return NO;
 }
 
-- (BOOL)hasFullAccess{
-    return [UIPasteboard generalPasteboard];
+- (BOOL)hasFullAccess {
+    return [UIPasteboard generalPasteboard] != nil;
 }
 
 @end

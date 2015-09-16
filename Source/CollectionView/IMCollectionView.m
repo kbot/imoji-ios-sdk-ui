@@ -212,6 +212,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                                    offset:0
                                                                                 operation:operation];
                                                               }
+
+                                                              [self imojisDidFinishLoading];
                                                           }
                                                       }];
 }
@@ -355,10 +357,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         }
 
         [self reloadData];
+        [self imojisDidFinishLoading];
     }
 }
 
-- (void)imojiSearchCompleted {
+- (void)imojisDidFinishLoading {
     if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
         [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
     }
