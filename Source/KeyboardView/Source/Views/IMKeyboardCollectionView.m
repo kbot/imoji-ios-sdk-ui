@@ -28,6 +28,7 @@
 #import "IMKeyboardCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
 #import "IMKeyboardCollectionViewSplashCell.h"
+#import "IMConnectivityUtil.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -72,8 +73,8 @@
     self.noResultsTapGesture.enabled = NO;
     id cellContent = self.content[(NSUInteger) indexPath.row];
 
-    if (cellContent == self.getNoResultsIndicatorObject || cellContent == self.getLoadingIndicatorObject) {
-        if (cellContent == self.getLoadingIndicatorObject) {
+    if (cellContent == self.noResultsIndicatorObject || cellContent == self.loadingIndicatorObject) {
+        if (cellContent == self.loadingIndicatorObject) {
             IMCollectionViewStatusCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId forIndexPath:indexPath];
             [cell showLoading];
             cell.title.text = @"";
@@ -203,11 +204,11 @@
     id cellContent = self.content[(NSUInteger) indexPath.row];
 
     // Make splash pages and the first loading cell occupy the whole frame
-    if(cellContent == self.getNoResultsIndicatorObject || (cellContent == self.getLoadingIndicatorObject && indexPath.row == 0) ||
-       self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash  || self.contentType == ImojiCollectionViewContentTypeRecentsSplash ||
-       self.contentType == ImojiCollectionViewContentTypeCollectionSplash || self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
+    if(cellContent == self.noResultsIndicatorObject || (cellContent == self.loadingIndicatorObject && indexPath.row == 0) ||
+            self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash  || self.contentType == ImojiCollectionViewContentTypeRecentsSplash ||
+            self.contentType == ImojiCollectionViewContentTypeCollectionSplash || self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
         return self.frame.size;
-    } else if(cellContent == self.getLoadingIndicatorObject) {
+    } else if(cellContent == self.loadingIndicatorObject) {
         return CGSizeMake(100.f, self.frame.size.height);
     } else if (isLandscape) {
         return CGSizeMake(100.f, self.frame.size.height / 1.3f);
@@ -225,8 +226,7 @@
     [self.content removeAllObjects];
     [self reloadData];
 
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(hasConnectivity)]
-       && ![self.collectionViewDelegate hasConnectivity]) {
+    if(![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
         [self.content addObject:[NSNull null]];
     } else {
@@ -252,7 +252,9 @@
                                            [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
                                    ]];
 
-                                   [self imojisDidFinishLoading];
+                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+                                       [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                   }
 
                                    // append the loading indicator to the content to fetch the next set of results
                                    if (index + 1 == self.numberOfImojisToLoad) {
@@ -272,8 +274,7 @@
     [self.content removeAllObjects];
     [self reloadData];
 
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(hasConnectivity)]
-       && ![self.collectionViewDelegate hasConnectivity]) {
+    if(![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
         [self.content addObject:[NSNull null]];
     } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
@@ -314,7 +315,9 @@
                                            [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
                                    ]];
 
-                                   [self imojisDidFinishLoading];
+                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+                                       [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                   }
 
                                    // append the loading indicator to the content to fetch the next set of results
                                    if (index + 1 == self.numberOfImojisToLoad) {
@@ -405,7 +408,10 @@
     }
 
     [self reloadData];
-    [self imojisDidFinishLoading];
+
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+        [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+    }
 }
 
 - (void)displayResultFromServerResponse:(IMImojiObject *)imoji

@@ -61,7 +61,5 @@
 
 - (void)userDidAddImojiToCollection;
 
-- (BOOL)hasConnectivity;
-
 @end
 

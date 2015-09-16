@@ -17,8 +17,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *reloadPaths;
 
-@property(nonatomic, strong) NSObject *loadingIndicatorObject;
-@property(nonatomic, strong) NSObject *noResultsIndicatorObject;
 @property(nonatomic, copy) NSString *currentSearchTerm;
 
 @property(nonatomic, strong) NSOperation *imojiOperation;
@@ -37,8 +35,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         self.dataSource = self;
         self.delegate = self;
-        self.noResultsIndicatorObject = [NSObject new];
-        self.loadingIndicatorObject = [NSObject new];
+        _noResultsIndicatorObject = [NSObject new];
+        _loadingIndicatorObject = [NSObject new];
 
         self.numberOfImojisToLoad = IMCollectionViewNumberOfItemsToLoad;
         self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
@@ -213,7 +211,9 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                                 operation:operation];
                                                               }
 
-                                                              [self imojisDidFinishLoading];
+                                                              if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+                                                                  [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                                              }
                                                           }
                                                       }];
 }
@@ -357,13 +357,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         }
 
         [self reloadData];
-        [self imojisDidFinishLoading];
-    }
-}
 
-- (void)imojisDidFinishLoading {
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-        [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+        if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
+            [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+        }
     }
 }
 
@@ -404,14 +401,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                            [self runBatchUpdate];
                        }];
     }
-}
-
-- (NSObject *)getNoResultsIndicatorObject {
-    return _noResultsIndicatorObject;
-}
-
-- (NSObject *)getLoadingIndicatorObject {
-    return _loadingIndicatorObject;
 }
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {

@@ -28,9 +28,7 @@
 #import "IMKeyboardCollectionView.h"
 #import "IMAttributeStringUtil.h"
 #import "IMQwertyViewController.h"
-#import <sys/socket.h>
-#import <netinet/in.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+#import "IMConnectivityUtil.h"
 
 typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
     IMKeyboardButtonSearch = 1,
@@ -223,7 +221,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                                                                     withFontSize:14.0f
                                                                        textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    } else if(self.hasConnectivity) {
+    } else if([IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.collectionView loadImojiCategories:self.currentCategoryClassification];
@@ -487,7 +485,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     // run action
-    if(self.hasConnectivity) {
+    if([IMConnectivityUtil sharedInstance].hasConnectivity) {
         switch (sender.tag) {
             case IMKeyboardButtonSearch:
                 self.searchView.hidden = NO;
@@ -673,53 +671,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     if (progress != INFINITY) {
         [self.progressView setProgress:progress animated:YES];
     }
-}
-
-- (BOOL)hasConnectivity {
-    struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
-    BOOL isConnected = nil;
-
-    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(kCFAllocatorDefault, (const struct sockaddr*)&zeroAddress);
-    if(reachability != NULL) {
-        //NetworkStatus retVal = NotReachable;
-        SCNetworkReachabilityFlags flags;
-        if (SCNetworkReachabilityGetFlags(reachability, &flags)) {
-            if ((flags & kSCNetworkReachabilityFlagsReachable) == 0)
-            {
-                // if target host is not reachable
-                isConnected = NO;
-            } else if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0) {
-                // if target host is reachable and no connection is required
-                //  then we'll assume (for now) that your on Wi-Fi
-                isConnected = YES;
-            } else if ((((flags & kSCNetworkReachabilityFlagsConnectionOnDemand ) != 0) ||
-                    (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0)) {
-                // ... and the connection is on-demand (or on-traffic) if the
-                //     calling application is using the CFSocketStream or higher APIs
-
-                if ((flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0)
-                {
-                    // ... and no [user] intervention is needed
-                    isConnected = YES;
-                }
-            } else if ((flags & kSCNetworkReachabilityFlagsIsWWAN) == kSCNetworkReachabilityFlagsIsWWAN) {
-                // ... but WWAN connections are OK if the calling application
-                //     is using the CFNetwork (CFSocketStream?) APIs.
-                isConnected = YES;
-            }
-        }
-    }
-
-    CFRelease(reachability);
-
-    if(isConnected) {
-        return isConnected;
-    }
-
-    return NO;
 }
 
 - (BOOL)hasFullAccess {
