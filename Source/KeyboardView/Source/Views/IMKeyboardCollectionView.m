@@ -205,7 +205,12 @@
     } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
         [self loadUserCollectionImojis];
     } else {
-        [self loadImojisFromIdentifiers:favoritedImojis];
+        if (!favoritedImojis || favoritedImojis.count == 0) {
+            self.contentType = ImojiCollectionViewContentTypeCollectionSplash;
+            [self.content addObject:[NSNull null]];
+        } else {
+            [self loadImojisFromIdentifiers:favoritedImojis];
+        }
     }
 }
 
