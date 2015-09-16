@@ -58,8 +58,8 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 @optional
 
-- (void)collectionViewDidFinishSearchingImojis:(UICollectionView *)collectionView;
+- (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView;
 
-- (void)collectionView:(UICollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
+- (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
 
 @end

@@ -211,8 +211,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                                 operation:operation];
                                                               }
 
-                                                              if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-                                                                  [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                                              if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+                                                                  [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
                                                               }
                                                           }
                                                       }];
@@ -358,8 +358,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         [self reloadData];
 
-        if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-            [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+        if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+            [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
         }
     }
 }

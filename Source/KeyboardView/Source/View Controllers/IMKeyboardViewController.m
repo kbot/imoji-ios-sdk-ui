@@ -646,7 +646,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self.progressView setProgress:0.f animated:YES];
 }
 
-- (void)collectionViewDidFinishSearchingImojis:(UICollectionView *)collectionView {
+- (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
     if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
@@ -660,7 +660,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
-- (void)collectionView:(UICollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView {
+- (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
     if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {

@@ -252,8 +252,8 @@
                                            [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
                                    ]];
 
-                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-                                       [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+                                       [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
                                    }
 
                                    // append the loading indicator to the content to fetch the next set of results
@@ -315,8 +315,8 @@
                                            [NSIndexPath indexPathForItem:offsetValue + index inSection:0]
                                    ]];
 
-                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-                                       [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+                                   if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+                                       [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
                                    }
 
                                    // append the loading indicator to the content to fetch the next set of results
@@ -333,8 +333,8 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionView: userDidScroll:)]) {
-        [self.collectionViewDelegate collectionView:self userDidScroll:scrollView];
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView: userDidScroll:)]) {
+        [self.collectionViewDelegate imojiCollectionView:self userDidScroll:scrollView];
     }
 }
 
@@ -409,8 +409,8 @@
 
     [self reloadData];
 
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(collectionViewDidFinishSearchingImojis:)]) {
-        [self.collectionViewDelegate collectionViewDidFinishSearchingImojis:self];
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
+        [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
     }
 }
 
