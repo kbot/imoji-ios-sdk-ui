@@ -13,8 +13,11 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 
 }
 
-
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
+    [self loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:YES];
+}
+
+- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
     if (!self.imojiView) {
         self.imojiView = [UIImageView new];
 
@@ -36,16 +39,36 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         }];
     }
 
+    BOOL showAnimations = animated && imojiImage != nil && !self.imojiView.image;
+    
     if (imojiImage) {
         self.imojiView.image = imojiImage;
         self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+        
+        if (showAnimations) {
+            self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
+        }
     } else {
         self.imojiView.image = [IMCollectionView placeholderImageWithRadius:30];
         self.imojiView.contentMode = UIViewContentModeCenter;
     }
 
     self.titleView.text = categoryTitle;
+    
+    if (showAnimations) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:.5f
+                                  delay:0
+                 usingSpringWithDamping:1.0f
+                  initialSpringVelocity:1.0f
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 self.imojiView.transform = CGAffineTransformIdentity;
+                             }
+                             completion:nil];
+        });
+    }
 }
 
 

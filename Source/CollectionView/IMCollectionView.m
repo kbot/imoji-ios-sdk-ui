@@ -95,26 +95,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         return cell;
     } else {
         IMCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
-        BOOL hasImage = cell.hasImojiImage;
         [cell loadImojiImage:nil];
 
         id imojiImage = self.images[(NSUInteger) indexPath.row];
         if ([imojiImage isKindOfClass:[UIImage class]]) {
             [cell loadImojiImage:((UIImage *) imojiImage)];
-
-            // animate in the results
-            if (!hasImage) {
-                cell.imojiView.transform = CGAffineTransformMakeScale(.1f, .1f);
-                [UIView animateWithDuration:.5f
-                                      delay:0
-                     usingSpringWithDamping:1.0f
-                      initialSpringVelocity:1.0f
-                                    options:UIViewAnimationOptionCurveEaseIn
-                                 animations:^{
-                                     cell.imojiView.transform = CGAffineTransformIdentity;
-                                 }
-                                 completion:nil];
-            }
         }
 
         return cell;

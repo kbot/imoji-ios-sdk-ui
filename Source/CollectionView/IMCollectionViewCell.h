@@ -11,7 +11,11 @@ extern NSString *const IMCollectionViewCellReuseId;
 @interface IMCollectionViewCell : UICollectionViewCell
 
 - (void)loadImojiImage:(UIImage *)imojiImage;
+
+- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated;
+
 - (void)performGrowAnimation;
+
 - (void)performTranslucentAnimation;
 
 @property(nonatomic, strong) UIImageView *imojiView;
