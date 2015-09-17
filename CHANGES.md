@@ -1,5 +1,11 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.7
+
+* Improvements to collection views! 
+* Much of the common Imoji Keyboard Collection View functionality is now part of the base collection view
+* Removed callbacks from collection views in favor of delegates
+
 ### Version 0.1.6
 
 * Adds Imoji Editor to the SDK (Beta)!
