@@ -215,7 +215,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     if (!self.hasFullAccess) {
         self.collectionView.contentType = ImojiCollectionViewContentTypeEnableFullAccessSplash;
-        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -228,7 +227,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         });
     } else {
         self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
-        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -523,7 +521,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         }
     } else {
         self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
-        [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]

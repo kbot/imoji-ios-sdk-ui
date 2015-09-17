@@ -33,7 +33,8 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeRecentsSplash,
     ImojiCollectionViewContentTypeCollectionSplash,
     ImojiCollectionViewContentTypeNoConnectionSplash,
-    ImojiCollectionViewContentTypeEnableFullAccessSplash
+    ImojiCollectionViewContentTypeEnableFullAccessSplash,
+    ImojiCollectionViewContentTypeNoResultsSplash
 };
 
 @class IMImojiSession, IMImojiCategoryObject, IMImojiObject;
@@ -43,13 +44,13 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 @interface IMCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
 
 @property(nonatomic, strong, readonly) IMImojiSession *session;
-@property(nonatomic, strong) NSMutableArray *content;
-@property(nonatomic) ImojiCollectionViewContentType contentType;
 @property(nonatomic, strong, readonly) NSObject *loadingIndicatorObject;
-@property(nonatomic, strong, readonly) NSObject *noResultsIndicatorObject;
 
+@property(nonatomic) ImojiCollectionViewContentType contentType;
+@property(nonatomic, strong) NSBundle *imagesBundle;
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
 @property(nonatomic) CGFloat sideInsets;
+
 @property(nonatomic, weak) id <IMCollectionViewDelegate> collectionViewDelegate;
 
 - (instancetype)initWithSession:(IMImojiSession *)session;
@@ -69,6 +70,8 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 - (void)loadUserCollectionImojis;
 
 - (void)processCellAnimations:(NSIndexPath *)currentIndexPath;
+
+- (id)contentForIndexPath:(NSIndexPath *)path;
 
 @end
 

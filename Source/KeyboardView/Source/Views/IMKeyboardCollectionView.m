@@ -35,7 +35,6 @@
 
 @property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
 @property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
-@property(nonatomic, strong) NSBundle *imagesBundle;
 
 @end
 
@@ -46,8 +45,6 @@
 - (instancetype)initWithSession:(IMImojiSession *)session {
     self = [super initWithSession:session];
     if (self) {
-        self.imagesBundle = [IMResourceBundleUtil assetsBundle];
-
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         self.collectionViewLayout = layout;
@@ -73,35 +70,14 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.noResultsTapGesture.enabled = NO;
-    id cellContent = self.content[(NSUInteger) indexPath.row];
+    self.noResultsTapGesture.enabled = self.contentType == ImojiCollectionViewContentTypeNoResultsSplash;
+    id cellContent = [super contentForIndexPath:indexPath];
 
     if (cellContent == self.loadingIndicatorObject) {
         IMCollectionViewStatusCell *cell = (IMCollectionViewStatusCell *) [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
         cell.title.text = @""; // hide 'loading' text for keyboard
         return cell;
-    } else if (cellContent == self.noResultsIndicatorObject) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        [splashCell showSplashCellType:IMCollectionViewSplashCellNoResults withImageBundle:self.imagesBundle];
-        self.noResultsTapGesture.enabled = YES;
-        return splashCell;
-    } else if(self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
-        return splashCell;
-    } else if(self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
-        return splashCell;
-    } else if(self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
-        return splashCell;
-    } else if(self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
+    } else if (self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
         IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellEnableFullAccess withImageBundle:self.imagesBundle];
@@ -112,25 +88,34 @@
     }
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
     CGFloat screenH = screenSize.height;
     CGFloat screenW = screenSize.width;
     BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
 
-    id cellContent = self.content[(NSUInteger) indexPath.row];
+    id cellContent = [super contentForIndexPath:indexPath];
 
-    // Make splash pages and the first loading cell occupy the whole frame
-    if (cellContent == self.noResultsIndicatorObject || (cellContent == self.loadingIndicatorObject && indexPath.row == 0) ||
-            self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash || self.contentType == ImojiCollectionViewContentTypeRecentsSplash ||
-            self.contentType == ImojiCollectionViewContentTypeCollectionSplash || self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
-        return self.frame.size;
-    } else if (cellContent == self.loadingIndicatorObject) {
-        return CGSizeMake(100.f, self.frame.size.height);
-    } else if (isLandscape) {
-        return CGSizeMake(100.f, self.frame.size.height / 1.3f);
-    } else {
-        return CGSizeMake(100.f, self.frame.size.height / 2.f);
+    switch (self.contentType) {
+        case ImojiCollectionViewContentTypeImojis:
+        case ImojiCollectionViewContentTypeImojiCategories:
+            if (cellContent == self.loadingIndicatorObject) {
+                if (indexPath.row == 0) {
+                    return self.frame.size;
+                } else {
+                    return CGSizeMake(100.f, self.frame.size.height);
+                }
+            } else if (isLandscape) {
+                return CGSizeMake(100.f, self.frame.size.height / 1.3f);
+
+            } else {
+                return CGSizeMake(100.f, self.frame.size.height / 2.f);
+            }
+
+        default:
+            return self.frame.size;
     }
 }
 
@@ -142,16 +127,12 @@
 
 - (void)loadRecentImojis:(NSArray *)recents {
     self.contentType = ImojiCollectionViewContentTypeImojis;
-    [self.content removeAllObjects];
-    [self reloadData];
 
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
-        [self.content addObject:[NSNull null]];
     } else {
         if (!recents || recents.count == 0) {
             self.contentType = ImojiCollectionViewContentTypeRecentsSplash;
-            [self.content addObject:[NSNull null]];
         } else {
             [self loadImojisFromIdentifiers:recents];
         }
@@ -160,18 +141,14 @@
 
 - (void)loadFavoriteImojis:(NSArray *)favoritedImojis {
     self.contentType = ImojiCollectionViewContentTypeImojis;
-    [self.content removeAllObjects];
-    [self reloadData];
 
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
-        [self.content addObject:[NSNull null]];
     } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
         [self loadUserCollectionImojis];
     } else {
         if (!favoritedImojis || favoritedImojis.count == 0) {
             self.contentType = ImojiCollectionViewContentTypeCollectionSplash;
-            [self.content addObject:[NSNull null]];
         } else {
             [self loadImojisFromIdentifiers:favoritedImojis];
         }
@@ -180,7 +157,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [super scrollViewDidScroll:scrollView];
-    
+
     if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView: userDidScroll:)]) {
         [self.collectionViewDelegate imojiCollectionView:self userDidScroll:scrollView];
     }
@@ -190,18 +167,17 @@
     if (sender.state == UIGestureRecognizerStateEnded) {
         CGPoint point = [sender locationInView:self];
         NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];
-        if (indexPath) {
-            id cellContent = self.content[(NSUInteger) indexPath.row];
-            if (self.contentType == ImojiCollectionViewContentTypeImojis) {
-                if (self.collectionViewDelegate &&
-                        [self.collectionViewDelegate respondsToSelector:@selector(userDidDoubleTapImoji:fromCollectionView:)]) {
+        if (indexPath && self.contentType == ImojiCollectionViewContentTypeImojis) {
+            id cellContent = [super contentForIndexPath:indexPath];
 
-                    [self.collectionViewDelegate userDidDoubleTapImoji:cellContent
-                                                    fromCollectionView:self];
-                }
+            if (self.collectionViewDelegate &&
+                    [self.collectionViewDelegate respondsToSelector:@selector(userDidDoubleTapImoji:fromCollectionView:)]) {
 
-                [self processCellAnimations:indexPath];
+                [self.collectionViewDelegate userDidDoubleTapImoji:cellContent
+                                                fromCollectionView:self];
             }
+
+            [self processCellAnimations:indexPath];
         }
     }
 }
