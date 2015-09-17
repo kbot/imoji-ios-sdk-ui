@@ -488,7 +488,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                              self.renderCount--;
                          }
 
-                         if (operation && !operation.isCancelled) {
+                         if (!operation.isCancelled) {
                              self.images[index + offset] = image ? image : [NSNull null];
                              [self.reloadPaths addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
                              [self runBatchUpdate:operation];
@@ -498,22 +498,17 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 - (void)runBatchUpdate:(NSOperation *)operation {
     // queue up update to avoid iOS 7's restrictions
-    if (self.reloadPaths.count > 0 && !self.runningBatchUpdates && operation && !operation.isCancelled) {
+    if (self.reloadPaths.count > 0 && !self.runningBatchUpdates && !operation.isCancelled) {
         __block NSArray *paths = [NSArray arrayWithArray:self.reloadPaths];
         self.runningBatchUpdates = YES;
 
         [self performBatchUpdates:^{
-                    if (operation && !operation.isCancelled) {
-                        [self reloadItemsAtIndexPaths:paths];
-                    }
+                    [self reloadItemsAtIndexPaths:paths];
                 }
                        completion:^(BOOL finished) {
                            [self.reloadPaths removeObjectsInArray:paths];
                            self.runningBatchUpdates = NO;
-
-                           if (operation && !operation.isCancelled) {
-                               [self runBatchUpdate:operation];
-                           }
+                           [self runBatchUpdate:operation];
                        }];
     }
 }
