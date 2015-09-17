@@ -49,6 +49,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Common' do |ss|
+    ss.ios.source_files = 'Source/Common/Source/**/*.{h,m}'
     ss.ios.resources = ["Source/Common/Resources/Fonts/*.otf"]
     ss.ios.resource_bundles = {'ImojiUIStrings' => ['Source/Common/Resources/Localization/*.lproj'], 'ImojiUIAssets' => ['Source/Common/Resources/Images/*.*']}
 

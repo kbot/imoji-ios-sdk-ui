@@ -75,25 +75,16 @@
     self.noResultsTapGesture.enabled = NO;
     id cellContent = self.content[(NSUInteger) indexPath.row];
 
-    if (cellContent == self.noResultsIndicatorObject || cellContent == self.loadingIndicatorObject) {
-        if (cellContent == self.loadingIndicatorObject) {
-            IMCollectionViewStatusCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId forIndexPath:indexPath];
-            [cell showLoading];
-            cell.title.text = @"";
+    if (cellContent == self.loadingIndicatorObject) {
+        IMCollectionViewStatusCell *cell = (IMCollectionViewStatusCell *) [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+        cell.title.text = @""; // hide 'loading' text for keyboard
+        return cell;
+    } else if (cellContent == self.noResultsIndicatorObject) {
+        IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
-            // iOS 7 does not support collectionView:willDisplayCell:forItemAtIndexPath, fetch next page when displaying cell
-            if ([[[UIDevice currentDevice] systemVersion] compare:@"8.0.0" options:NSNumericSearch] == NSOrderedAscending) {
-                [self loadNextPageOfImojisFromSearch];
-            }
-
-            return cell;
-        } else {
-            IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-            [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellNoResults andImageBundle:self.imagesBundle];
-            self.noResultsTapGesture.enabled = YES;
-            return splashCell;
-        }
+        [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellNoResults andImageBundle:self.imagesBundle];
+        self.noResultsTapGesture.enabled = YES;
+        return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
         IMKeyboardCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMKeyboardCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
@@ -114,37 +105,9 @@
 
         [splashCell setupSplashCellWithType:IMKeyboardCollectionViewSplashCellEnableFullAccess andImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
-        self.doubleTapFolderGesture.enabled = NO;
-        IMImojiCategoryObject *categoryObject = cellContent;
-        IMKeyboardCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
-
-        [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
-
-        [self.session renderImoji:categoryObject.previewImoji
-                          options:self.renderingOptions
-                         callback:^(UIImage *image, NSError *error) {
-                             if (!error) {
-                                 [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
-                             }
-                         }];
-        return cell;
     } else {
-        self.doubleTapFolderGesture.enabled = YES;
-        IMKeyboardCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
-        [cell loadImojiImage:nil];
-
-        if ([cellContent isKindOfClass:[IMImojiObject class]]) {
-            [self.session renderImoji:cellContent
-                              options:self.renderingOptions
-                             callback:^(UIImage *image, NSError *error) {
-                                 if (!error) {
-                                     [cell loadImojiImage:image];
-                                 }
-                             }];
-        }
-
-        return cell;
+        self.doubleTapFolderGesture.enabled = self.contentType == ImojiCollectionViewContentTypeImojis;
+        return [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     }
 }
 

@@ -24,17 +24,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
-extern NSString *const IMCategoryCollectionViewCellReuseId;
+@interface IMResourceBundleUtil : NSObject
 
-@interface IMCategoryCollectionViewCell : UICollectionViewCell
++ (NSString *)localizedStringForKey:(NSString *)key;
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage;
++ (NSString *)localizedStringForKey:(NSString *)key comment:(NSString *)comment;
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated;
++ (NSBundle *)stringsBundle;
 
-@property(nonatomic, strong) UIImageView *imojiView;
-@property(nonatomic, strong) UILabel *titleView;
++ (NSBundle *)assetsBundle;
 
 @end

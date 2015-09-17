@@ -26,6 +26,7 @@
 #import "IMCreateImojiViewController.h"
 #import "IMCreateImojiView.h"
 #import "IMTagCollectionView.h"
+#import "IMResourceBundleUtil.h"
 #import <Masonry/Masonry.h>
 
 
@@ -95,7 +96,7 @@
                                                      target:self
                                                      action:@selector(showTagScreen)];
 
-    _navigationTitle = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"createImojiHeaderTrim", nil, [IMCreateImojiViewController stringsBundle], @"Trim")
+    _navigationTitle = [[UIBarButtonItem alloc] initWithTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]
                                                         style:UIBarButtonItemStylePlain
                                                        target:nil
                                                        action:nil];
@@ -217,7 +218,7 @@
                      }
                      completion:^(BOOL finished) {
                          self.creationView.hidden = YES;
-                         [self.navigationTitle setTitle:NSLocalizedStringFromTableInBundle(@"createImojiHeaderTag", nil, [IMCreateImojiViewController stringsBundle], @"Tag")];
+                         [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTag"]];
                          self.navigationButtonView.items = self.tagViewButtons;
 
                          self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
@@ -239,7 +240,7 @@
                          }
                          completion:^(BOOL finished) {
                              self.tagView.hidden = YES;
-                             [self.navigationTitle setTitle:NSLocalizedStringFromTableInBundle(@"createImojiHeaderTrim", nil, [IMCreateImojiViewController stringsBundle], @"Trim")];
+                             [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]];
                          }];
     } else {
         if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidCancelImageEdit:)]) {
@@ -255,18 +256,6 @@
 - (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView {
     self.undoButton.enabled = editorView.canUndo;
     self.forwardButton.enabled = editorView.hasOutputImage;
-}
-
-+ (NSBundle *)stringsBundle {
-    static NSBundle *bundle = nil;
-    static dispatch_once_t predicate;
-
-    dispatch_once(&predicate, ^{
-        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiUIStrings"
-                                                                          ofType:@"bundle"]];
-    });
-
-    return bundle;
 }
 
 + (instancetype)controllerWithSourceImage:(UIImage *)sourceImage {

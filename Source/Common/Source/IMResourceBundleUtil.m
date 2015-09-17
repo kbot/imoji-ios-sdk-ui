@@ -23,18 +23,42 @@
 //  IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "IMResourceBundleUtil.h"
 
-extern NSString *const IMCategoryCollectionViewCellReuseId;
+@implementation IMResourceBundleUtil {
 
-@interface IMCategoryCollectionViewCell : UICollectionViewCell
+}
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage;
++ (NSString *)localizedStringForKey:(NSString *)key {
+    return [IMResourceBundleUtil localizedStringForKey:key comment:key];
+}
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated;
++ (NSString *)localizedStringForKey:(NSString *)key comment:(NSString *)comment {
+    return NSLocalizedStringFromTableInBundle(key, nil, [IMResourceBundleUtil stringsBundle], comment);
+}
 
-@property(nonatomic, strong) UIImageView *imojiView;
-@property(nonatomic, strong) UILabel *titleView;
++ (NSBundle *)stringsBundle {
+    static NSBundle *bundle = nil;
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiUIStrings"
+                                                                          ofType:@"bundle"]];
+    });
+
+    return bundle;
+}
+
++ (NSBundle *)assetsBundle {
+    static NSBundle *bundle = nil;
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiUIAssets"
+                                                                          ofType:@"bundle"]];
+    });
+
+    return bundle;
+}
 
 @end
