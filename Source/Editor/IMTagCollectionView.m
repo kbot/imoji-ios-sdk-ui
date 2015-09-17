@@ -205,7 +205,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     [self performBatchUpdates:^{
                 [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:index inSection:0]]];
-                for (int i = index + 1; i < self.tags.count + 1; ++i) {
+                for (NSUInteger i = index + 1; i < self.tags.count + 1; ++i) {
                     [self moveItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]
                                   toIndexPath:[NSIndexPath indexPathForItem:i - 1 inSection:0]];
                 }
