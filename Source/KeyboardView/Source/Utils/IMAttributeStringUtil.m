@@ -26,6 +26,9 @@
 #import "IMAttributeStringUtil.h"
 
 NSString *const DEFAULT_FONT = @"HelveticaNeue-Medium";
+NSString *const SF_UI_DISPLAY_LIGHT_FONT = @"SFUIDisplay-Light";
+NSString *const SF_UI_DISPLAY_REGULAR_FONT = @"SFUIDisplay-Regular";
+NSString *const SF_UI_DISPLAY_MEDIUM_FONT = @"SFUIDisplay-Medium";
 
 @implementation IMAttributeStringUtil {
 
@@ -35,26 +38,37 @@ NSString *const DEFAULT_FONT = @"HelveticaNeue-Medium";
     return [UIFont fontWithName:DEFAULT_FONT size:size];
 }
 
-+ (NSAttributedString *)attributedString:(NSString *)text
-                            withFontSize:(CGFloat)fontSize
-                               textColor:(UIColor *)textColor {
-    return [IMAttributeStringUtil attributedString:text
-                                      withFontSize:fontSize
-                                         textColor:textColor
-                                     textAlignment:NSTextAlignmentLeft];
++ (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size {
+    return [UIFont fontWithName:SF_UI_DISPLAY_LIGHT_FONT size:size];
+}
+
++ (UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size {
+    return [UIFont fontWithName:SF_UI_DISPLAY_REGULAR_FONT size:size];
+}
+
++ (UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size {
+    return [UIFont fontWithName:SF_UI_DISPLAY_MEDIUM_FONT size:size];
 }
 
 + (NSAttributedString *)attributedString:(NSString *)text
-                            withFontSize:(CGFloat)fontSize
-                               textColor:(UIColor *)textColor
-                           textAlignment:(NSTextAlignment)alignment {
+                                withFont:(UIFont *)font
+                                   color:(UIColor *)color
+                            andAlignment:(NSTextAlignment)alignment {
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = alignment;
 
+    return [IMAttributeStringUtil attributedString:text withFont:font color:color andParagraphStyle:paragraphStyle];
+}
+
++ (NSAttributedString *)attributedString:(NSString *)text
+                                withFont:(UIFont *)font
+                                   color:(UIColor *)color
+                       andParagraphStyle:(NSParagraphStyle *)paragraphStyle {
+
     NSDictionary *textAttributes = @{
-            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:fontSize],
-            NSForegroundColorAttributeName : textColor,
+            NSFontAttributeName : font,
+            NSForegroundColorAttributeName : color,
             NSParagraphStyleAttributeName : paragraphStyle
     };
 

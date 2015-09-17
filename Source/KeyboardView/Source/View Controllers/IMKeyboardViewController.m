@@ -159,9 +159,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     // menu view
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
+                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                       color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                andAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     [self.view addSubview:self.titleLabel];
 
@@ -217,8 +217,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         self.collectionView.contentType = ImojiCollectionViewContentTypeEnableFullAccessSplash;
         [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     } else if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
@@ -229,8 +230,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
         [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
 
@@ -476,8 +478,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             case IMKeyboardButtonRecents:
                 [self.collectionView loadRecentImojis:self.recentImojis];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
-                                                                            withFontSize:14.0f
-                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
                 self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
                 self.closeButton.hidden = YES;
                 break;
@@ -487,8 +490,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
                 [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
-                                                                            withFontSize:14.0f
-                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
                 self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
                 self.closeButton.hidden = YES;
                 break;
@@ -498,18 +502,18 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
                 [self.collectionView loadImojiCategories:self.currentCategoryClassification];
                 self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
-                                                                            withFontSize:14.0f
-                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
                 self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
                 self.closeButton.hidden = YES;
                 break;
             case IMKeyboardButtonFavorites: {
                 [self.collectionView loadFavoriteImojis:self.favoritedImojis];
-                NSString *title = @"COLLECTION";
-
-                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:title
-                                                                            withFontSize:14.0f
-                                                                               textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"COLLECTION"
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
                 self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
                 self.closeButton.hidden = YES;
                 break;
@@ -521,8 +525,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
         [self.collectionView.content addObject:[NSNull null]];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
 
@@ -544,13 +549,15 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     } else {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
 }
@@ -579,8 +586,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         self.closeButton.hidden = NO;
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[self.searchField.text uppercaseString]
-                                                                    withFontSize:14.0f
-                                                                       textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
         [self.collectionView loadImojisFromSearch:self.searchField.text];
@@ -595,8 +603,9 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
     self.closeButton.hidden = NO;
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[category.title uppercaseString]
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]];
+                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                       color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                andAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     [self.collectionView loadImojisFromSearch:category.identifier];
 }
@@ -634,32 +643,32 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"DOWNLOADING ..."
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
+                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                       color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                andAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     self.closeButton.hidden = YES;
 }
 
 - (void)showFinishedDownloadedWithMessage:(NSString *)message {
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[message uppercaseString]
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
+                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                       color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                andAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
     self.copiedImageView.hidden = NO;
     [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
 }
 
-- (void)userDidAddImojiToCollection {
+- (void)showAddedToCollectionIndicator {
     if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
         _previousTitle = self.titleLabel.attributedText;
     }
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
-                                                                withFontSize:14.0f
-                                                                   textColor:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                               textAlignment:NSTextAlignmentLeft];
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO COLLECTION"
+                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                       color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                andAlignment:NSTextAlignmentLeft];
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
 
     self.closeButton.hidden = YES;
@@ -669,6 +678,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
     [self saveToFavorites:imoji];
+    [self showAddedToCollectionIndicator];
 }
 
 - (void)userDidTapNoResultsView {

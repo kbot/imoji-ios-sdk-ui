@@ -26,22 +26,21 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, IMKeyboardCollectionViewSplashCellType) {
-    IMKeyboardCollectionViewSplashCellNoConnection = 1,
-    IMKeyboardCollectionViewSplashCellEnableFullAccess,
-    IMKeyboardCollectionViewSplashCellNoResults,
-    IMKeyboardCollectionViewSplashCellRecents,
-    IMKeyboardCollectionViewSplashCellCollection
+typedef NS_ENUM(NSUInteger, IMCollectionViewSplashCellType) {
+    IMCollectionViewSplashCellNoConnection = 1,
+    IMCollectionViewSplashCellEnableFullAccess,
+    IMCollectionViewSplashCellNoResults,
+    IMCollectionViewSplashCellRecents,
+    IMCollectionViewSplashCellCollection
 };
 
-extern NSString *const IMKeyboardCollectionViewSplashCellReuseId;
+extern NSString *const IMCollectionViewSplashCellReuseId;
 
-@interface IMKeyboardCollectionViewSplashCell : UICollectionViewCell
+@interface IMCollectionViewSplashCell : UICollectionViewCell
 
 @property(nonatomic, strong) UIImageView *splashGraphic;
 @property(nonatomic, strong) UILabel *splashText;
 
-- (void)setupSplashCellWithType:(IMKeyboardCollectionViewSplashCellType)type
-                 andImageBundle:(NSBundle *)imagesBundle;
+- (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle *)imageBundle;
 
 @end
