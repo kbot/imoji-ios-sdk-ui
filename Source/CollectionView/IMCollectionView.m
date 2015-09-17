@@ -243,6 +243,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                                       }
                                                                              completion:^(BOOL finished) {
                                                                                  for (IMImojiCategoryObject *category in imojiCategories) {
+                                                                                     if (operation.isCancelled) {
+                                                                                         break;
+                                                                                     }
+
                                                                                      NSUInteger index = [imojiCategories indexOfObject:category];
                                                                                      [self renderImojiResult:category.previewImoji
                                                                                                      content:category
@@ -448,16 +452,21 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         }
 
         if (insertedPaths.count > 0 || loadingOffset != NSNotFound) {
-            [self performBatchUpdates:^{
-                        if (loadingOffset != NSNotFound) {
-                            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
-                        }
-
-                        if (insertedPaths.count > 0) {
-                            [self insertItemsAtIndexPaths:insertedPaths];
-                        }
+            // TODO: address assertion issue with insert/removal that occurs when a user quickly switches from categories to imojis
+            if (offset == 0) {
+                [self reloadData];
+            } else {
+                [self performBatchUpdates:^{
+                    if (loadingOffset != NSNotFound) {
+                        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
                     }
-                           completion:nil];
+                    
+                    if (insertedPaths.count > 0) {
+                        [self insertItemsAtIndexPaths:insertedPaths];
+                    }
+                }
+                               completion:nil];
+            }
         }
 
         if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
@@ -483,24 +492,29 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                          if (operation && !operation.isCancelled) {
                              self.images[index + offset] = image ? image : [NSNull null];
                              [self.reloadPaths addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
-                             [self runBatchUpdate];
+                             [self runBatchUpdate:operation];
                          }
                      }];
 }
 
-- (void)runBatchUpdate {
+- (void)runBatchUpdate:(NSOperation *)operation {
     // queue up update to avoid iOS 7's restrictions
-    if (self.reloadPaths.count > 0 && !self.runningBatchUpdates) {
+    if (self.reloadPaths.count > 0 && !self.runningBatchUpdates && operation && !operation.isCancelled) {
         __block NSArray *paths = [NSArray arrayWithArray:self.reloadPaths];
         self.runningBatchUpdates = YES;
+
         [self performBatchUpdates:^{
-                    [self reloadItemsAtIndexPaths:paths];
+                    if (operation && !operation.isCancelled) {
+                        [self reloadItemsAtIndexPaths:paths];
+                    }
                 }
                        completion:^(BOOL finished) {
                            [self.reloadPaths removeObjectsInArray:paths];
                            self.runningBatchUpdates = NO;
 
-                           [self runBatchUpdate];
+                           if (operation && !operation.isCancelled) {
+                               [self runBatchUpdate:operation];
+                           }
                        }];
     }
 }
