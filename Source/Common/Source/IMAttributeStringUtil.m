@@ -39,15 +39,24 @@ NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
 }
 
 + (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:IMAttributeStringUtilSFLightFont size:size];
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFLightFont andSize:size];
 }
 
 + (UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:IMAttributeStringUtilSFRegularFont size:size];
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFRegularFont andSize:size];
 }
 
 + (UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:IMAttributeStringUtilSFMediumFont size:size];
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFMediumFont andSize:size];
+}
+
++ (UIFont *)checkedStyledFontWithName:(NSString*)name andSize:(CGFloat)size {
+    UIFont *font = [UIFont fontWithName:name size:size];
+    if (font) {
+        return font;
+    }
+
+    return [IMAttributeStringUtil defaultFontWithSize:size];
 }
 
 + (NSAttributedString *)attributedString:(NSString *)text

@@ -77,6 +77,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         [self registerClass:[IMCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMCollectionViewStatusCell class] forCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId];
+        [self registerClass:[IMCollectionViewSplashCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
     }
 
     return self;
@@ -219,9 +220,13 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         case ImojiCollectionViewContentTypeCollectionSplash:
         case ImojiCollectionViewContentTypeNoConnectionSplash:
         case ImojiCollectionViewContentTypeEnableFullAccessSplash:
-        case ImojiCollectionViewContentTypeNoResultsSplash:
-            return self.frame.size;
-
+        case ImojiCollectionViewContentTypeNoResultsSplash: {
+            UIEdgeInsets insets = [self collectionView:collectionView
+                                          layout:collectionViewLayout
+                          insetForSectionAtIndex:indexPath.section];
+            
+            return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height - insets.top - insets.bottom);
+        }
         default: {
             id content = self.content[(NSUInteger) indexPath.row];
             if (self.content.count == 1) {
