@@ -272,22 +272,29 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 }
 
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
-    [self prepareViewForImojiResultSet:@(imojiIdentifiers.count)
-                                offset:0
-                                 error:nil];
-
-    __block NSOperation *operation;
-    self.imojiOperation = operation =
-            [self.session fetchImojisByIdentifiers:imojiIdentifiers
-                           fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                               if (!operation.isCancelled && !error) {
-                                   [self renderImojiResult:imoji
-                                                   content:imoji
-                                                   atIndex:index
-                                                    offset:0
-                                                 operation:operation];
-                               }
-                           }];
+    self.contentType = ImojiCollectionViewContentTypeImojis;
+    [self generateNewResultSetOperationWithSearchOffset:nil];
+    
+    // allow the loading indicator to display by calling generateNewResultSetOperationWithSearchOffset:
+    // before we reload the views
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self prepareViewForImojiResultSet:@(imojiIdentifiers.count)
+                                    offset:0
+                                     error:nil];
+        
+        __block NSOperation *operation;
+        self.imojiOperation = operation =
+                [self.session fetchImojisByIdentifiers:imojiIdentifiers
+                               fetchedResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                   if (!operation.isCancelled && !error) {
+                                       [self renderImojiResult:imoji
+                                                       content:imoji
+                                                       atIndex:index
+                                                        offset:0
+                                                     operation:operation];
+                                   }
+                               }];
+    });
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
