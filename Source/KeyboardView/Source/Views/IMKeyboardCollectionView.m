@@ -29,6 +29,7 @@
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
 #import "IMConnectivityUtil.h"
+#import "IMResourceBundleUtil.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -45,7 +46,7 @@
 - (instancetype)initWithSession:(IMImojiSession *)session {
     self = [super initWithSession:session];
     if (self) {
-        self.imagesBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
+        self.imagesBundle = [IMResourceBundleUtil assetsBundle];
 
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;

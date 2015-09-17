@@ -661,11 +661,11 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self performSelector:@selector(showPreviousTitle) withObject:self afterDelay:1.5];
 }
 
-- (void)userDidAddImojiToCollection {
+- (void)showAddedToCollectionIndicator {
     if (![self.titleLabel.attributedText.string isEqual:@"COPIED TO CLIPBOARD"] && ![self.titleLabel.attributedText.string isEqual:@"DOWNLOADING ..."] && ![self.titleLabel.attributedText.string isEqual:@"SAVED TO COLLECTION"]) {
         _previousTitle = self.titleLabel.attributedText;
     }
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO FAVORITES"
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"SAVED TO COLLECTION"
                                                                     withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                        color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                 andAlignment:NSTextAlignmentLeft];
@@ -678,6 +678,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
     [self saveToFavorites:imoji];
+    [self showAddedToCollectionIndicator];
 }
 
 - (void)userDidTapNoResultsView {
