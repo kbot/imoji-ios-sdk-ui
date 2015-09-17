@@ -10,8 +10,7 @@
 		1A032CE71B91161100CC92A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CE61B91161100CC92A3 /* main.m */; };
 		1A032CEA1B91161100CC92A3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A032CE91B91161100CC92A3 /* AppDelegate.m */; };
 		1A032CF21B91161100CC92A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A032CF11B91161100CC92A3 /* Images.xcassets */; };
-		1A17D7081B91182900B6CD0C /* ImojiTextUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A17D7071B91182900B6CD0C /* ImojiTextUtil.m */; settings = {ASSET_TAGS = (); }; };
-		1A17D7101B91195400B6CD0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A17D70E1B91195400B6CD0C /* Main.storyboard */; settings = {ASSET_TAGS = (); }; };
+		1A17D7101B91195400B6CD0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A17D70E1B91195400B6CD0C /* Main.storyboard */; };
 		1A1D46F31B91177400217662 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1D46F21B91177400217662 /* MainViewController.m */; };
 		1A1D46F81B91179100217662 /* ImojiDetailsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1D46F51B91179100217662 /* ImojiDetailsView.m */; };
 		1A1D46F91B91179100217662 /* ImojiResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1D46F71B91179100217662 /* ImojiResultsView.m */; };
@@ -25,8 +24,6 @@
 		1A032CE91B91161100CC92A3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Source/AppDelegate.m; sourceTree = SOURCE_ROOT; };
 		1A032CF11B91161100CC92A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = SOURCE_ROOT; };
 		1A032CF61B91161100CC92A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
-		1A17D7061B91182900B6CD0C /* ImojiTextUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImojiTextUtil.h; path = Source/Util/ImojiTextUtil.h; sourceTree = SOURCE_ROOT; };
-		1A17D7071B91182900B6CD0C /* ImojiTextUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImojiTextUtil.m; path = Source/Util/ImojiTextUtil.m; sourceTree = SOURCE_ROOT; };
 		1A17D7091B9118A800B6CD0C /* imoji-sdk-sample.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "imoji-sdk-sample.pch"; sourceTree = SOURCE_ROOT; };
 		1A17D70F1B91195400B6CD0C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		1A1D46F11B91177400217662 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = Source/ViewControllers/MainViewController.h; sourceTree = SOURCE_ROOT; };
@@ -73,7 +70,6 @@
 		1A032CE41B91161100CC92A3 /* imoji-collection-view */ = {
 			isa = PBXGroup;
 			children = (
-				1A17D7051B91181B00B6CD0C /* Util */,
 				1A1D46EF1B91175F00217662 /* Views */,
 				1A1D46F01B91176500217662 /* View Controllers */,
 				1A032CE81B91161100CC92A3 /* AppDelegate.h */,
@@ -93,15 +89,6 @@
 				1A032CE61B91161100CC92A3 /* main.m */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1A17D7051B91181B00B6CD0C /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				1A17D7061B91182900B6CD0C /* ImojiTextUtil.h */,
-				1A17D7071B91182900B6CD0C /* ImojiTextUtil.m */,
-			);
-			name = Util;
 			sourceTree = "<group>";
 		};
 		1A1D46EF1B91175F00217662 /* Views */ = {
@@ -246,7 +233,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A032CEA1B91161100CC92A3 /* AppDelegate.m in Sources */,
-				1A17D7081B91182900B6CD0C /* ImojiTextUtil.m in Sources */,
 				1A1D46F31B91177400217662 /* MainViewController.m in Sources */,
 				1A1D46F81B91179100217662 /* ImojiDetailsView.m in Sources */,
 				1A032CE71B91161100CC92A3 /* main.m in Sources */,

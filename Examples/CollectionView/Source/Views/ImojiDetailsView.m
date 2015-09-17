@@ -6,9 +6,8 @@
 #import <Masonry/View+MASAdditions.h>
 #import <ImojiSDK/IMImojiObject.h>
 #import <ImojiSDK/IMImojiSession.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import "ImojiDetailsView.h"
-#import "ImojiTextUtil.h"
-
 
 @interface ImojiDetailsView ()
 @property(nonatomic, strong) UIImageView *imojiView;
@@ -80,10 +79,10 @@
                              if (imoji.tags && imoji.tags.count > 0) {
                                  NSMutableString *tags = [NSMutableString stringWithString:@"#"];
                                  [tags appendString:[imoji.tags componentsJoinedByString:@" #"]];
-                                 self.tags.attributedText = [ImojiTextUtil attributedString:tags
-                                                                               withFontSize:16.0f
-                                                                                  textColor:[UIColor whiteColor]
-                                                                              textAlignment:NSTextAlignmentCenter];
+                                 self.tags.attributedText = [IMAttributeStringUtil attributedString:tags
+                                                                                           withFont:[IMAttributeStringUtil defaultFontWithSize:16.0f]
+                                                                                              color:[UIColor whiteColor]
+                                                                                       andAlignment:NSTextAlignmentCenter];
                              }
                          } else {
                              DDLogInfo(@"Full size imoji not available! %@", error);

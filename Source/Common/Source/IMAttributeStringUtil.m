@@ -25,29 +25,29 @@
 
 #import "IMAttributeStringUtil.h"
 
-NSString *const DEFAULT_FONT = @"HelveticaNeue-Medium";
-NSString *const SF_UI_DISPLAY_LIGHT_FONT = @"SFUIDisplay-Light";
-NSString *const SF_UI_DISPLAY_REGULAR_FONT = @"SFUIDisplay-Regular";
-NSString *const SF_UI_DISPLAY_MEDIUM_FONT = @"SFUIDisplay-Medium";
+NSString *const IMAttributeStringUtilDefaultFont = @"HelveticaNeue-Medium";
+NSString *const IMAttributeStringUtilSFLightFont = @"SFUIDisplay-Light";
+NSString *const IMAttributeStringUtilSFRegularFont = @"SFUIDisplay-Regular";
+NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
 
 @implementation IMAttributeStringUtil {
 
 }
 
 + (UIFont *)defaultFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:DEFAULT_FONT size:size];
+    return [UIFont fontWithName:IMAttributeStringUtilDefaultFont size:size];
 }
 
 + (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:SF_UI_DISPLAY_LIGHT_FONT size:size];
+    return [UIFont fontWithName:IMAttributeStringUtilSFLightFont size:size];
 }
 
 + (UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:SF_UI_DISPLAY_REGULAR_FONT size:size];
+    return [UIFont fontWithName:IMAttributeStringUtilSFRegularFont size:size];
 }
 
 + (UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size {
-    return [UIFont fontWithName:SF_UI_DISPLAY_MEDIUM_FONT size:size];
+    return [UIFont fontWithName:IMAttributeStringUtilSFMediumFont size:size];
 }
 
 + (NSAttributedString *)attributedString:(NSString *)text

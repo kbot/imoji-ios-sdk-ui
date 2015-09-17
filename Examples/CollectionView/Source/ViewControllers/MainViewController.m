@@ -8,10 +8,11 @@
 
 #import <Masonry/View+MASAdditions.h>
 #import <ImojiSDK/ImojiSyncSDK.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
+#import <ImojiSDKUI/IMCollectionView.h>
+
 #import "MainViewController.h"
-#import "IMCollectionView.h"
 #import "ImojiResultsView.h"
-#import "ImojiTextUtil.h"
 
 @interface MainViewController () <UIAlertViewDelegate, IMImojiSessionDelegate>
 
@@ -62,42 +63,47 @@
     self.categoriesButton.layer.cornerRadius = self.featuredButton.layer.cornerRadius =
             self.searchButton.layer.cornerRadius = self.collectionsButton.layer.cornerRadius = 5.0f;
 
-    title.attributedText = [ImojiTextUtil attributedString:@"Imoji SDK Sample"
-                                              withFontSize:20.0f
-                                                 textColor:[UIColor colorWithRed:120.0f / 255.0f
-                                                                           green:120.0f / 255.0f
-                                                                            blue:120.0f / 255.0f
-                                                                           alpha:1.0f]];
+    title.attributedText = [IMAttributeStringUtil attributedString:@"Imoji SDK Sample"
+                                                          withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                             color:[UIColor colorWithRed:120.0f / 255.0f
+                                                                                   green:120.0f / 255.0f
+                                                                                    blue:120.0f / 255.0f
+                                                                                   alpha:1.0f]
+                                                      andAlignment:NSTextAlignmentLeft
+                            ];
 
     [self.categoriesButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.featuredButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.searchButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.collectionsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 
-    [self.categoriesButton setAttributedTitle:[ImojiTextUtil attributedString:@"Categories"
-                                                                 withFontSize:20.0f
-                                                                    textColor:[UIColor whiteColor]]
-
+    [self.categoriesButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Categories"
+                                                                             withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                                color:[UIColor whiteColor]
+                                                                         andAlignment:NSTextAlignmentLeft]
                                      forState:UIControlStateNormal
     ];
 
-    [self.featuredButton setAttributedTitle:[ImojiTextUtil attributedString:@"Featured"
-                                                               withFontSize:20.0f
-                                                                  textColor:[UIColor whiteColor]]
+    [self.featuredButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Featured"
+                                                                           withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                              color:[UIColor whiteColor]
+                                                                       andAlignment:NSTextAlignmentLeft]
 
                                    forState:UIControlStateNormal
     ];
 
-    [self.searchButton setAttributedTitle:[ImojiTextUtil attributedString:@"Search"
-                                                             withFontSize:20.0f
-                                                                textColor:[UIColor whiteColor]]
+    [self.searchButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Search"
+                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                            color:[UIColor whiteColor]
+                                                                     andAlignment:NSTextAlignmentLeft]
 
                                  forState:UIControlStateNormal
     ];
 
-    [self.collectionsButton setAttributedTitle:[ImojiTextUtil attributedString:@"Authenticate Account"
-                                                                  withFontSize:20.0f
-                                                                     textColor:[UIColor whiteColor]]
+    [self.collectionsButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Authenticate Account"
+                                                                  withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                     color:[UIColor whiteColor]
+                                                                          andAlignment:NSTextAlignmentLeft]
 
                                       forState:UIControlStateNormal
     ];
@@ -214,16 +220,18 @@
 
 - (void)imojiSession:(IMImojiSession *)session stateChanged:(IMImojiSessionState)newState fromState:(IMImojiSessionState)oldState {
     if (self.imojiSession.sessionState == IMImojiSessionStateConnectedSynchronized) {
-        [self.collectionsButton setAttributedTitle:[ImojiTextUtil attributedString:@"Collections"
-                                                                      withFontSize:20.0f
-                                                                         textColor:[UIColor whiteColor]]
+        [self.collectionsButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Collections"
+                                                                                  withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                                     color:[UIColor whiteColor]
+                                                                              andAlignment:NSTextAlignmentLeft]
 
                                           forState:UIControlStateNormal
         ];
     } else {
-        [self.collectionsButton setAttributedTitle:[ImojiTextUtil attributedString:@"Authenticate Account"
-                                                                      withFontSize:20.0f
-                                                                         textColor:[UIColor whiteColor]]
+        [self.collectionsButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Authenticate Account"
+                                                                                  withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                                     color:[UIColor whiteColor]
+                                                                              andAlignment:NSTextAlignmentLeft]
 
                                           forState:UIControlStateNormal
         ];
