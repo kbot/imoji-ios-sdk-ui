@@ -178,6 +178,8 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [super scrollViewDidScroll:scrollView];
+    
     if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView: userDidScroll:)]) {
         [self.collectionViewDelegate imojiCollectionView:self userDidScroll:scrollView];
     }

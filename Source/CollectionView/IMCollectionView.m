@@ -92,12 +92,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         if (cellContent == self.loadingIndicatorObject) {
             [cell showLoading];
-
-            // iOS 7 does not support collectionView:willDisplayCell:forItemAtIndexPath, fetch next page when displaying cell
-            if ([[[UIDevice currentDevice] systemVersion] compare:@"8.0.0" options:NSNumericSearch] == NSOrderedAscending) {
-                [self loadNextPageOfImojisFromSearch];
-            }
-
         } else {
             [cell showNoResults];
         }
@@ -128,15 +122,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 #pragma mark UICollectionViewDelegate
 
-- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row > 0) {
-        id content = self.content[(NSUInteger) indexPath.row];
-        if (content == self.loadingIndicatorObject) {
-            [self loadNextPageOfImojisFromSearch];
-        }
-    }
-}
-
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     id cellContent = self.content[(NSUInteger) indexPath.row];
     return cellContent && ![cellContent isKindOfClass:[NSNull class]];
@@ -166,6 +151,37 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         cell.imojiView.highlighted = NO;
     }
 }
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // check to see if the user is at the end of the scrollview
+    // this is a iOS 7 safe approach since collectionView:willDisplayCell:forItemAtIndexPath:indexPath
+    // is not supported`
+    if (self.content.count > 1 && [self.collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]]) {
+        NSUInteger loadingPosition = [self.content indexOfObject:self.loadingIndicatorObject];
+
+        if (loadingPosition != NSNotFound) {
+            UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *) self.collectionViewLayout;
+
+            CGSize loadingCellSize = [self collectionView:self
+                                                   layout:flowLayout
+                                   sizeForItemAtIndexPath:[NSIndexPath indexPathForItem:loadingPosition inSection:0]];
+
+            BOOL userIsAtEndOfList;
+            if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+                userIsAtEndOfList = self.contentOffset.x + self.frame.size.width >= self.contentSize.width - loadingCellSize.width;
+            } else {
+                userIsAtEndOfList = self.contentOffset.y + self.frame.size.height >= self.contentSize.height - loadingCellSize.height;
+            }
+
+            if (userIsAtEndOfList) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self loadNextPageOfImojisFromSearch];
+                });
+            }
+        }
+    }
+}
+
 
 #pragma mark UICollectionViewDelegateFlowLayout
 
@@ -216,7 +232,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                           if (!operation.isCancelled) {
                                                               [self.content addObjectsFromArray:imojiCategories];
 
-                                                              NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
+                                                              __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
                                                               for (int i = 0; i < imojiCategories.count; ++i) {
                                                                   [self.images addObject:[NSNull null]];
                                                                   [insertedPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
@@ -274,14 +290,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
     self.contentType = ImojiCollectionViewContentTypeImojis;
     [self generateNewResultSetOperationWithSearchOffset:nil];
-    
+
     // allow the loading indicator to display by calling generateNewResultSetOperationWithSearchOffset:
     // before we reload the views
     dispatch_async(dispatch_get_main_queue(), ^{
         [self prepareViewForImojiResultSet:@(imojiIdentifiers.count)
                                     offset:0
                                      error:nil];
-        
+
         __block NSOperation *operation;
         self.imojiOperation = operation =
                 [self.session fetchImojisByIdentifiers:imojiIdentifiers
@@ -370,8 +386,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         [self.content removeObject:self.loadingIndicatorObject];
 
         [self performBatchUpdates:^{
-            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.content.count inSection:0]]];
-        }
+                    [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.content.count inSection:0]]];
+                }
                        completion:^(BOOL finished) {
                            [self loadImojisFromSearch:self.currentSearchTerm offset:@(self.content.count + 1)];
                        }];
@@ -407,7 +423,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 }
 
 - (void)prepareViewForImojiResultSet:(NSNumber *)resultCount offset:(NSUInteger)offset error:(NSError *)error {
-    NSUInteger loadingOffset = [self.content indexOfObject:self.loadingIndicatorObject];
+    __block NSUInteger loadingOffset = [self.content indexOfObject:self.loadingIndicatorObject];
 
     if (offset == 0) {
         [self.content removeAllObjects];
@@ -415,7 +431,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     }
 
     if (!error) {
-        NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:MAX(resultCount.unsignedIntegerValue, 1)];
+        __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:MAX(resultCount.unsignedIntegerValue, 1)];
         if (resultCount.unsignedIntegerValue > 0) {
             [self.content removeObject:self.loadingIndicatorObject];
 
