@@ -26,6 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <ImojiSDK/IMImojiSession.h>
+#import "IMCollectionViewSplashCell.h"
 
 typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
     ImojiCollectionViewContentTypeImojis,
@@ -82,6 +83,8 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 - (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView;
 
 - (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
+
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView;
 
 - (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
 

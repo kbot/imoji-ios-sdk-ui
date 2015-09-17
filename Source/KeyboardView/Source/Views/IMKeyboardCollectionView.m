@@ -34,7 +34,6 @@
 @interface IMKeyboardCollectionView ()
 
 @property(nonatomic) UITapGestureRecognizer *doubleTapFolderGesture;
-@property(nonatomic) UITapGestureRecognizer *noResultsTapGesture;
 
 @end
 
@@ -56,11 +55,6 @@
         [self.doubleTapFolderGesture setNumberOfTouchesRequired:1];
         [self addGestureRecognizer:self.doubleTapFolderGesture];
 
-        self.noResultsTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                           action:@selector(userDidTapNoResultsView:)];
-        self.noResultsTapGesture.enabled = NO;
-        [self addGestureRecognizer:self.noResultsTapGesture];
-
         [self registerClass:[IMKeyboardCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMKeyboardCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
     }
@@ -69,7 +63,6 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.noResultsTapGesture.enabled = self.contentType == ImojiCollectionViewContentTypeNoResultsSplash;
     id cellContent = [super contentForIndexPath:indexPath];
 
     if (cellContent == self.loadingIndicatorObject) {
@@ -154,14 +147,6 @@
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [super scrollViewDidScroll:scrollView];
-
-    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView: userDidScroll:)]) {
-        [self.collectionViewDelegate imojiCollectionView:self userDidScroll:scrollView];
-    }
-}
-
 - (void)processDoubleTap:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         CGPoint point = [sender locationInView:self];
@@ -178,12 +163,6 @@
 
             [self processCellAnimations:indexPath];
         }
-    }
-}
-
-- (void)userDidTapNoResultsView:(UITapGestureRecognizer *)sender {
-    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidTapNoResultsView)]) {
-        [self.collectionViewDelegate userDidTapNoResultsView];
     }
 }
 

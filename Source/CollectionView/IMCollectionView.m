@@ -39,6 +39,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *reloadPaths;
 @property(nonatomic, strong) NSMutableArray *content;
+@property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 
@@ -56,15 +57,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     self = [super initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
     if (self) {
         _session = session;
-
-        self.dataSource = self;
-        self.delegate = self;
         _loadingIndicatorObject = [NSObject new];
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
 
+        self.dataSource = self;
+        self.delegate = self;
+        
         self.numberOfImojisToLoad = IMCollectionViewNumberOfItemsToLoad;
         self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
-
 
         self.backgroundColor = [UIColor whiteColor];
 
@@ -73,6 +73,12 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         self.reloadPaths = [NSMutableArray array];
         self.runningBatchUpdates = NO;
         self.renderCount = 0;
+        
+        self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                  action:@selector(userTappedSplashView:)];
+        self.tapGesture.enabled = NO;
+        [self addGestureRecognizer:self.tapGesture];
+
 
         [self registerClass:[IMCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
@@ -90,8 +96,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    id cellContent = self.content[(NSUInteger) indexPath.row];
+    self.tapGesture.enabled = NO;
 
+    id cellContent = self.content[(NSUInteger) indexPath.row];
+    
     if (cellContent == self.loadingIndicatorObject) {
         IMCollectionViewStatusCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId forIndexPath:indexPath];
 
@@ -114,21 +122,25 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         return cell;
     } else if (self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
         IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
+        self.tapGesture.enabled = YES;
+        
         [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
         IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
+        self.tapGesture.enabled = YES;
+        
         [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
         IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeNoResultsSplash) {
         IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellNoResults withImageBundle:self.imagesBundle];
         return splashCell;
@@ -590,6 +602,43 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                            self.runningBatchUpdates = NO;
                            [self runBatchUpdate:operation];
                        }];
+    }
+}
+
+- (void)userTappedSplashView:(UITapGestureRecognizer *)sender {
+    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectSplash:fromCollectionView:)]) {
+        IMCollectionViewSplashCellType splashCellType;
+        BOOL isSplash = YES;
+        
+        switch (self.contentType) {
+            case ImojiCollectionViewContentTypeRecentsSplash:
+                splashCellType = IMCollectionViewSplashCellRecents;
+                break;
+                
+            case ImojiCollectionViewContentTypeCollectionSplash:
+                splashCellType = IMCollectionViewSplashCellCollection;
+                break;
+                
+            case ImojiCollectionViewContentTypeNoConnectionSplash:
+                splashCellType = IMCollectionViewSplashCellNoConnection;
+                break;
+                
+            case ImojiCollectionViewContentTypeEnableFullAccessSplash:
+                splashCellType = IMCollectionViewSplashCellEnableFullAccess;
+                break;
+                
+            case ImojiCollectionViewContentTypeNoResultsSplash:
+                splashCellType = IMCollectionViewSplashCellNoResults;
+                break;
+                
+            default:
+                isSplash = NO;
+                break;
+        }
+        
+        if (isSplash) {
+            [self.collectionViewDelegate userDidSelectSplash:splashCellType fromCollectionView:self];
+        }
     }
 }
 

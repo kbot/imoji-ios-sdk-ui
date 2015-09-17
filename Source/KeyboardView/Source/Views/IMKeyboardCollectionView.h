@@ -48,8 +48,6 @@
 
 @optional
 
-- (void)userDidTapNoResultsView;
-
 - (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
 
 @end

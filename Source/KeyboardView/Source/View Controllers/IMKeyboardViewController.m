@@ -678,9 +678,11 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self showAddedToCollectionIndicator];
 }
 
-- (void)userDidTapNoResultsView {
-    self.searchView.hidden = NO;
-    [self.progressView setProgress:0.f animated:YES];
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
+    if (splashType == IMCollectionViewSplashCellNoResults) {
+        self.searchView.hidden = NO;
+        [self.progressView setProgress:0.f animated:YES];
+    }
 }
 
 - (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView {
