@@ -232,13 +232,13 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                                           if (!operation.isCancelled) {
                                                               [self.content addObjectsFromArray:imojiCategories];
 
-                                                              __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
-                                                              for (int i = 0; i < imojiCategories.count; ++i) {
-                                                                  [self.images addObject:[NSNull null]];
-                                                                  [insertedPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-                                                              }
-
                                                               [self performBatchUpdates:^{
+                                                                          __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
+                                                                          for (int i = 0; i < imojiCategories.count; ++i) {
+                                                                              [self.images addObject:[NSNull null]];
+                                                                              [insertedPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                                                                          }
+
                                                                           [self insertItemsAtIndexPaths:insertedPaths];
                                                                       }
                                                                              completion:^(BOOL finished) {
@@ -348,9 +348,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
                              // append the loading indicator to the content to fetch the next set of results
                              if (index + 1 == self.numberOfImojisToLoad) {
-                                 [self.content addObject:self.loadingIndicatorObject];
-
                                  [self performBatchUpdates:^{
+                                             [self.content addObject:self.loadingIndicatorObject];
                                              [self insertItemsAtIndexPaths:@[
                                                      [NSIndexPath indexPathForItem:self.content.count - 1
                                                                          inSection:0]
@@ -387,9 +386,9 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     // do not append the next set of imojis until the current set of them has completely rendered to avoid
     // mutating the data model while the collection view is reloading
     if (self.currentSearchTerm != nil && self.renderCount == 0) {
-        [self.content removeObject:self.loadingIndicatorObject];
-
         [self performBatchUpdates:^{
+                    [self.content removeObject:self.loadingIndicatorObject];
+
                     [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.content.count inSection:0]]];
                 }
                        completion:^(BOOL finished) {
@@ -457,14 +456,14 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                 [self reloadData];
             } else {
                 [self performBatchUpdates:^{
-                    if (loadingOffset != NSNotFound) {
-                        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
-                    }
-                    
-                    if (insertedPaths.count > 0) {
-                        [self insertItemsAtIndexPaths:insertedPaths];
-                    }
-                }
+                            if (loadingOffset != NSNotFound) {
+                                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
+                            }
+
+                            if (insertedPaths.count > 0) {
+                                [self insertItemsAtIndexPaths:insertedPaths];
+                            }
+                        }
                                completion:nil];
             }
         }
