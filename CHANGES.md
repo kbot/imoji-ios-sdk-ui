@@ -1,5 +1,13 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.8
+
+* Adds sentence parsing functionality to the collection views!
+* Adds IMCollectionViewController to facilitate integration
+* Modified IMCreateImojiViewController to require IMImojiSession
+* refactor ImojiCollectionViewContentType to IMCollectionViewContentType
+* refactor imojiCollectionViewDidFinishSearching: to imojiCollectionView:didFinishLoadingContentType:
+
 ### Version 0.1.7
 
 * Improvements to collection views! 
