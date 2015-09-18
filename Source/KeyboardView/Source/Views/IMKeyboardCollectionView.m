@@ -29,7 +29,6 @@
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
 #import "IMConnectivityUtil.h"
-#import "IMResourceBundleUtil.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -70,7 +69,8 @@
         cell.title.text = @""; // hide 'loading' text for keyboard
         return cell;
     } else if (self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell =
+                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellEnableFullAccess withImageBundle:self.imagesBundle];
         return splashCell;
