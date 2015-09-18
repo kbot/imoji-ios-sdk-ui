@@ -29,20 +29,12 @@
 #import "IMAttributeStringUtil.h"
 #import "IMQwertyViewController.h"
 #import "IMConnectivityUtil.h"
-
-typedef NS_ENUM(NSUInteger, IMKeyboardContentType) {
-    IMKeyboardButtonSearch = 1,
-    IMKeyboardButtonRecents,
-    IMKeyboardButtonCategoryReactions,
-    IMKeyboardButtonCategoryTrending,
-    IMKeyboardButtonFavorites,
-    IMKeyboardButtonDelete
-};
+#import "IMKeyboardToolbar.h"
 
 NSString *const IMKeyboardViewControllerDefaultFontFamily = @"Imoji-Regular";
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate>
+@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate, IMKeyboardToolbarDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
@@ -61,15 +53,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 // progress bar
 @property(nonatomic, strong) UIProgressView *progressView;
 
-// menu buttons
-@property(nonatomic, strong) UIView *bottomNavView;
-@property(nonatomic, strong) UIButton *nextKeyboardButton;
-@property(nonatomic, strong) UIButton *searchButton;
-@property(nonatomic, strong) UIButton *recentsButton;
-@property(nonatomic, strong) UIButton *generalCatButton;
-@property(nonatomic, strong) UIButton *trendingCatButton;
-@property(nonatomic, strong) UIButton *collectionButton;
-@property(nonatomic, strong) UIButton *deleteButton;
+// keyboard toolbar
+@property(nonatomic, strong) IMKeyboardToolbar *keyboardToolbar;
 
 // search
 @property(nonatomic, strong) UIView *searchView;
@@ -211,7 +196,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }];
 
     // menu view
-    [self setupMenuView];
+    [self setupKeyboardToolbar];
 
     if (!self.hasFullAccess) {
         [self.collectionView displaySplashOfType:IMCollectionViewSplashCellEnableFullAccess];
@@ -233,8 +218,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                                                                     andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     }
-
-    self.generalCatButton.selected = YES;
 
     // search
     self.searchView = [[UIView alloc] init];
@@ -306,228 +289,39 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.searchView.hidden = YES;
 }
 
-- (void)setupMenuView {
-    int navHeight = 40;
-    self.bottomNavView = [[UIView alloc] init];
-    self.bottomNavView.backgroundColor = [UIColor clearColor];
+- (void)setupKeyboardToolbar {
+    self.keyboardToolbar = [IMKeyboardToolbar imojiKeyboardToolbar];
+    self.keyboardToolbar.delegate = self;
+    self.keyboardToolbar.backgroundColor = [UIColor clearColor];
+    self.keyboardToolbar.clipsToBounds = YES;
 
-    [self.view addSubview:self.bottomNavView];
-    [self.bottomNavView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.view addSubview:self.keyboardToolbar];
+
+    [self.keyboardToolbar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.view.mas_bottom);
-        make.left.equalTo(self.view.mas_left).with.offset(10);
-        make.right.equalTo(self.view.mas_right).with.offset(-10);
-        make.height.equalTo(@(navHeight));
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+        make.height.equalTo(@(IMKeyboardToolbarButtonHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
 
-    self.nextKeyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.nextKeyboardButton.tag = 0;
-    self.nextKeyboardButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-
-    UIImage *nextKeyboardImageNormal = [UIImage imageNamed:@"keyboard_globe" inBundle:self.imagesBundle compatibleWithTraitCollection:nil];
-
-    [self.nextKeyboardButton setImage:nextKeyboardImageNormal forState:UIControlStateNormal];
-    [self.nextKeyboardButton addTarget:self action:@selector(advanceToNextInputMode) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.nextKeyboardButton];
-
-    self.searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.searchButton.tag = IMKeyboardButtonSearch;
-    self.searchButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.searchButton setImage:[UIImage imageNamed:@"keyboard_search" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.searchButton setImage:[UIImage imageNamed:@"keyboard_search_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
-    [self.searchButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.searchButton];
-
-    self.recentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.recentsButton.tag = IMKeyboardButtonRecents;
-    self.recentsButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.recentsButton setImage:[UIImage imageNamed:@"keyboard_recents" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.recentsButton setImage:[UIImage imageNamed:@"keyboard_recents_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
-    [self.recentsButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.recentsButton];
-
-    self.generalCatButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.generalCatButton.tag = IMKeyboardButtonCategoryReactions;
-    self.generalCatButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.generalCatButton setImage:[UIImage imageNamed:@"keyboard_reactions" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.generalCatButton setImage:[UIImage imageNamed:@"keyboard_reactions_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
-    [self.generalCatButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.generalCatButton];
-
-    self.trendingCatButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.trendingCatButton.tag = IMKeyboardButtonCategoryTrending;
-    self.trendingCatButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.trendingCatButton setImage:[UIImage imageNamed:@"keyboard_trending" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.trendingCatButton setImage:[UIImage imageNamed:@"keyboard_trending_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
-    [self.trendingCatButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.trendingCatButton];
-
-    self.collectionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.collectionButton.tag = IMKeyboardButtonFavorites;
-    self.collectionButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.collectionButton setImage:[UIImage imageNamed:@"keyboard_collection" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.collectionButton setImage:[UIImage imageNamed:@"keyboard_collection_active" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateSelected];
-    [self.collectionButton addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.collectionButton];
-
-    self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.deleteButton.tag = IMKeyboardButtonDelete;
-    self.deleteButton.frame = CGRectMake(0, 0, navHeight, navHeight);
-    [self.deleteButton setImage:[UIImage imageNamed:@"keyboard_delete" inBundle:self.imagesBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-    [self.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navButtonsArray addObject:self.deleteButton];
-
-    [self.bottomNavView addSubview:self.nextKeyboardButton];
-    [self.bottomNavView addSubview:self.searchButton];
-    [self.bottomNavView addSubview:self.recentsButton];
-    [self.bottomNavView addSubview:self.generalCatButton];
-    [self.bottomNavView addSubview:self.trendingCatButton];
-    [self.bottomNavView addSubview:self.collectionButton];
-    [self.bottomNavView addSubview:self.deleteButton];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonNextKeyboard];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonSearch];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonRecents];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonReactions];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonTrending];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonCollection];
+    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonDelete];
 
     if (!self.hasFullAccess) {
-        self.nextKeyboardButton.alpha = 0.5f;
-        [self.searchButton setEnabled:NO];
-        [self.recentsButton setEnabled:NO];
-        [self.generalCatButton setEnabled:NO];
-        [self.trendingCatButton setEnabled:NO];
-        [self.collectionButton setEnabled:NO];
-        [self.deleteButton setEnabled:NO];
-    }
-
-    [self positionMenuButtons];
-}
-
-- (void)positionMenuButtons {
-    // left
-    [self.nextKeyboardButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.bottomNavView).dividedBy(7);
-        make.left.equalTo(self.bottomNavView.mas_left);
-    }];
-
-    // right
-    [self.deleteButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.right.equalTo(self.bottomNavView.mas_right);
-    }];
-
-    // left center
-    [self.searchButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.left.equalTo(self.nextKeyboardButton.mas_right);
-    }];
-
-    [self.recentsButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.left.equalTo(self.searchButton.mas_right);
-    }];
-
-    // center
-    [self.generalCatButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.centerX.equalTo(self.bottomNavView);
-    }];
-
-    // right center
-    [self.trendingCatButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.left.equalTo(self.generalCatButton.mas_right);
-    }];
-
-    [self.collectionButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.height.equalTo(self.bottomNavView);
-        make.width.equalTo(self.nextKeyboardButton);
-        make.left.equalTo(self.trendingCatButton.mas_right);
-    }];
-}
-
-- (IBAction)navPressed:(UIButton *)sender {
-    BOOL sameButtonPressed = NO;
-    // set selected state
-
-    if (sender.tag != 1) {
-        for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
-            UIButton *tmpButton = (UIButton *) [self.view viewWithTag:i];
-            if (tmpButton.selected && i == sender.tag) {
-                sameButtonPressed = YES; // check if it's the same button being pressed
+        for (UIBarButtonItem *item in self.keyboardToolbar.items) {
+            if (item.customView.tag == IMKeyboardToolbarButtonNextKeyboard) {
+                [(UIButton *) item.customView setAlpha:0.5f];
+            } else {
+                [(UIButton *) item.customView setEnabled:NO];
             }
-            tmpButton.selected = NO;
         }
-        sender.selected = YES; // set button pressed to selected
     }
-
-    if (sameButtonPressed && sender.tag != IMKeyboardButtonCategoryReactions && sender.tag != IMKeyboardButtonCategoryTrending) {
-        return;
-    }
-
-    // run action
-    if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
-        switch (sender.tag) {
-            case IMKeyboardButtonSearch:
-                self.searchView.hidden = NO;
-                [self.progressView setProgress:0.f animated:YES];
-                break;
-            case IMKeyboardButtonRecents:
-                [self.collectionView loadRecentImojis:self.recentImojis];
-                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
-                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                                            andAlignment:NSTextAlignmentLeft];
-                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-                self.closeButton.hidden = YES;
-                break;
-            case IMKeyboardButtonCategoryReactions:
-                // Set classification for use in returning user to Reactions when closing a category
-                self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
-
-                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
-                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
-                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                                            andAlignment:NSTextAlignmentLeft];
-                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-                self.closeButton.hidden = YES;
-                break;
-            case IMKeyboardButtonCategoryTrending:
-                // Set classification for use in returning user to Trending when closing a category
-                self.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
-
-                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
-                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
-                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                                            andAlignment:NSTextAlignmentLeft];
-                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-                self.closeButton.hidden = YES;
-                break;
-            case IMKeyboardButtonFavorites: {
-                [self.collectionView loadFavoriteImojis:self.favoritedImojis];
-                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"COLLECTION"
-                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                                            andAlignment:NSTextAlignmentLeft];
-                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-                self.closeButton.hidden = YES;
-                break;
-            }
-            default:
-                break;
-        }
-    } else {
-        [self.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
-        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
-                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
-                                                                    andAlignment:NSTextAlignmentLeft];
-        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
-    }
-
 }
 
 - (void)closeCategory {
@@ -565,10 +359,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.copiedImageView.hidden = YES;
     self.heartImageView.hidden = YES;
     self.closeButton.hidden = NO;
-}
-
-- (IBAction)deletePressed:(id)sender {
-    [self.textDocumentProxy deleteBackward];
 }
 
 - (void)setAppGroup:(NSString *)appGroup {
@@ -715,6 +505,79 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (BOOL)hasFullAccess {
     return [UIPasteboard generalPasteboard] != nil;
+}
+
+#pragma mark IMKeyboardToolbarDelegate
+
+- (void)userDidSelectNextKeyboardButton {
+    [self advanceToNextInputMode];
+}
+
+- (void)userDidSelectToolbarButton:(IMKeyboardToolbarButtonType)buttonType {
+    if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
+        switch (buttonType) {
+            case IMKeyboardToolbarButtonSearch:
+                self.searchView.hidden = NO;
+                [self.progressView setProgress:0.f animated:YES];
+                break;
+            case IMKeyboardToolbarButtonRecents:
+                [self.collectionView loadRecentImojis:self.recentImojis];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"RECENTS"
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardToolbarButtonReactions:
+                // Set classification for use in returning user to Reactions when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardToolbarButtonTrending:
+                // Set classification for use in returning user to Trending when closing a category
+                self.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+
+                [self.collectionView loadImojiCategories:self.currentCategoryClassification];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            case IMKeyboardToolbarButtonCollection: {
+                [self.collectionView loadFavoriteImojis:self.favoritedImojis];
+                self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"COLLECTION"
+                                                                                withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                                   color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                            andAlignment:NSTextAlignmentLeft];
+                self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+                self.closeButton.hidden = YES;
+                break;
+            }
+            default:
+                break;
+        }
+    } else {
+        [self.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    }
+}
+
+- (void)userDidSelectDeleteButton {
+    [self.textDocumentProxy deleteBackward];
 }
 
 #pragma mark Recents Logic
