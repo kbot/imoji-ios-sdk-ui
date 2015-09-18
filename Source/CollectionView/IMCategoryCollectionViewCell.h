@@ -36,5 +36,6 @@ extern NSString *const IMCategoryCollectionViewCellReuseId;
 
 @property(nonatomic, strong) UIImageView *imojiView;
 @property(nonatomic, strong) UILabel *titleView;
+@property(nonatomic, readonly) BOOL hasImojiImage;
 
 @end

@@ -34,8 +34,7 @@
 
 }
 
-
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
+- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
     float imageHeightRatio = 0.75f;
     float textHeightRatio = 0.18f;
     int inBetweenPadding = 3;
@@ -63,14 +62,7 @@
         }];
     }
 
-    if (imojiImage) {
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imojiView.image = imojiImage;
-        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
-    } else {
-        self.imojiView.contentMode = UIViewContentModeCenter;
-        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:20];
-    }
+    [super loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:animated];
 
     self.titleView.attributedText = [IMAttributeStringUtil attributedString:categoryTitle
                                                                    withFont:[IMAttributeStringUtil defaultFontWithSize:12.0f]

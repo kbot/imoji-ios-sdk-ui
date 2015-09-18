@@ -34,7 +34,7 @@
 }
 
 
-- (void)loadImojiImage:(UIImage *)imojiImage {
+- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
     if (!self.imojiView) {
         self.imojiView = [UIImageView new];
 
@@ -45,14 +45,7 @@
         }];
     }
 
-    if (imojiImage) {
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
-        self.imojiView.image = imojiImage;
-        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
-    } else {
-        self.imojiView.contentMode = UIViewContentModeCenter;
-        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:20];
-    }
+    [super loadImojiImage:imojiImage animated:animated];
 }
 
 - (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {

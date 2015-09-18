@@ -28,7 +28,6 @@
 #import "IMKeyboardCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
-#import "IMConnectivityUtil.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -62,20 +61,18 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    id cellContent = [super contentForIndexPath:indexPath];
-
-    if (cellContent == self.loadingIndicatorObject) {
+    if ([self isPathShowingLoadingIndicator:indexPath]) {
         IMCollectionViewStatusCell *cell = (IMCollectionViewStatusCell *) [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
         cell.title.text = @""; // hide 'loading' text for keyboard
         return cell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeEnableFullAccessSplash) {
+    } else if (self.contentType == IMCollectionViewContentTypeEnableFullAccessSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellEnableFullAccess withImageBundle:self.imagesBundle];
         return splashCell;
     } else {
-        self.doubleTapFolderGesture.enabled = self.contentType == ImojiCollectionViewContentTypeImojis;
+        self.doubleTapFolderGesture.enabled = self.contentType == IMCollectionViewContentTypeImojis;
         return [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     }
 }
@@ -88,12 +85,12 @@
     CGFloat screenW = screenSize.width;
     BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
 
-    id cellContent = [super contentForIndexPath:indexPath];
-
     switch (self.contentType) {
-        case ImojiCollectionViewContentTypeImojis:
-        case ImojiCollectionViewContentTypeImojiCategories:
-            if (cellContent == self.loadingIndicatorObject) {
+        case IMCollectionViewContentTypeImojis:
+        case IMCollectionViewContentTypeImojiCategories:
+            if ([self isPathShowingLoadingIndicator:indexPath]) {
+
+                // full sized loading indicator
                 if (indexPath.row == 0) {
                     return self.frame.size;
                 } else {
@@ -118,29 +115,19 @@
 }
 
 - (void)loadRecentImojis:(NSArray *)recents {
-    self.contentType = ImojiCollectionViewContentTypeImojis;
-
-    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
-        self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
+    if (!recents || recents.count == 0) {
+        [self displaySplashOfType:IMCollectionViewSplashCellRecents];
     } else {
-        if (!recents || recents.count == 0) {
-            self.contentType = ImojiCollectionViewContentTypeRecentsSplash;
-        } else {
-            [self loadImojisFromIdentifiers:recents];
-        }
+        [self loadImojisFromIdentifiers:recents];
     }
 }
 
 - (void)loadFavoriteImojis:(NSArray *)favoritedImojis {
-    self.contentType = ImojiCollectionViewContentTypeImojis;
-
-    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
-        self.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
-    } else if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
+    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
         [self loadUserCollectionImojis];
     } else {
         if (!favoritedImojis || favoritedImojis.count == 0) {
-            self.contentType = ImojiCollectionViewContentTypeCollectionSplash;
+            [self displaySplashOfType:IMCollectionViewSplashCellCollection];
         } else {
             [self loadImojisFromIdentifiers:favoritedImojis];
         }
@@ -151,7 +138,7 @@
     if (sender.state == UIGestureRecognizerStateEnded) {
         CGPoint point = [sender locationInView:self];
         NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];
-        if (indexPath && self.contentType == ImojiCollectionViewContentTypeImojis) {
+        if (indexPath && self.contentType == IMCollectionViewContentTypeImojis) {
             id cellContent = [super contentForIndexPath:indexPath];
 
             if (self.collectionViewDelegate &&

@@ -60,12 +60,14 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         }];
     }
 
-    BOOL showAnimations = animated && imojiImage != nil && !self.imojiView.image;
+    BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
     
     if (imojiImage) {
         self.imojiView.image = imojiImage;
         self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+
+        _hasImojiImage = YES;
         
         if (showAnimations) {
             self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
@@ -73,6 +75,8 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     } else {
         self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:30];
         self.imojiView.contentMode = UIViewContentModeCenter;
+
+        _hasImojiImage = NO;
     }
 
     self.titleView.text = categoryTitle;

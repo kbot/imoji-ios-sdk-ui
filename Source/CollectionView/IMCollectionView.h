@@ -28,50 +28,103 @@
 #import <ImojiSDK/IMImojiSession.h>
 #import "IMCollectionViewSplashCell.h"
 
-typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
-    ImojiCollectionViewContentTypeImojis,
-    ImojiCollectionViewContentTypeImojiCategories,
-    ImojiCollectionViewContentTypeRecentsSplash,
-    ImojiCollectionViewContentTypeCollectionSplash,
-    ImojiCollectionViewContentTypeNoConnectionSplash,
-    ImojiCollectionViewContentTypeEnableFullAccessSplash,
-    ImojiCollectionViewContentTypeNoResultsSplash
+typedef NS_ENUM(NSUInteger, IMCollectionViewContentType) {
+    IMCollectionViewContentTypeImojis,
+    IMCollectionViewContentTypeImojiCategories,
+    IMCollectionViewContentTypeRecentsSplash,
+    IMCollectionViewContentTypeCollectionSplash,
+    IMCollectionViewContentTypeNoConnectionSplash,
+    IMCollectionViewContentTypeEnableFullAccessSplash,
+    IMCollectionViewContentTypeNoResultsSplash
 };
+
+extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 @class IMImojiSession, IMImojiCategoryObject, IMImojiObject;
 
 @protocol IMCollectionViewDelegate;
 
+/**
+ * A resuable collection view for displaying stickers backed by the ImojiSDK.
+ */
 @interface IMCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
 
+/**
+* @abstract The current imoji session
+*/
 @property(nonatomic, strong, readonly) IMImojiSession *session;
-@property(nonatomic, strong, readonly) NSObject *loadingIndicatorObject;
 
-@property(nonatomic) ImojiCollectionViewContentType contentType;
+/**
+* @abstract The type of content currently displayed in collection view
+*/
+@property(nonatomic, readonly) IMCollectionViewContentType contentType;
+
+/**
+ * @abstract The number of Imoji stickers to load. Defaults to IMCollectionViewNumberOfItemsToLoad.
+ */
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
+
 @property(nonatomic) CGFloat sideInsets;
+
+/**
+ * @abstract The image bundle to use for displaying shared assets such as splash screen images. Defaults to
+ * [IMResourceBundleUtil assetsBundle]
+*/
 @property(nonatomic, strong) NSBundle *imagesBundle;
+
+/**
+ * @abstract The default rendering options to use for displaying the stickers. Defaults to
+ * [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]
+*/
 @property(nonatomic, strong) IMImojiObjectRenderingOptions *renderingOptions;
 
 @property(nonatomic, weak) id <IMCollectionViewDelegate> collectionViewDelegate;
 
+/**
+ * @abstract Creates a collection view with the specified Imoji session
+ */
 - (instancetype)initWithSession:(IMImojiSession *)session;
 
+/**
+ * @abstract Creates a collection view with the specified Imoji session
+ */
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
 
 @end
 
 @interface IMCollectionView (ImojiLoading)
 
+/**
+ * @abstract Loads Imoji stickers into the collection view using getFeaturedImojisWithNumberOfResults from IMImojiSession
+ */
 - (void)loadFeaturedImojis;
 
+/**
+ * @abstract Loads Imoji categories into the collection view using getImojiCategoriesWithClassification from IMImojiSession
+ */
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
 
+/**
+ * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
+ * The collection view will automatically scroll through multiple pages of stickers if they exist
+ */
 - (void)loadImojisFromSearch:(NSString *)searchTerm;
 
+/**
+ * @abstract Loads Imoji stickers into the collection view using fetchImojisByIdentifiers from IMImojiSession
+ */
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers;
 
+/**
+ * @abstract Loads Imoji stickers for an authenticated user into the collection view using
+ * getImojisForAuthenticatedUserWithResultSetResponseCallback from IMImojiSession
+ */
 - (void)loadUserCollectionImojis;
+
+/**
+ * @abstract Shows specified splash content in the collection view
+ */
+- (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType;
 
 @end
 
@@ -81,20 +134,34 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 - (id)contentForIndexPath:(NSIndexPath *)path;
 
+- (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *)indexPath;
+
 @end
 
 @protocol IMCollectionViewDelegate <NSObject>
 
 @optional
 
-- (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView;
+/**
+ * @abstract Notified when the specified content has completed loading
+ */
+- (void)imojiCollectionView:(IMCollectionView *)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType;
 
-- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView;
-
+/**
+ * @abstract Notified when the user has tapped on the a given splash cell
+ */
 - (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView;
 
+/**
+ * @abstract Notified when a user selected an imoji
+ */
 - (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
 
+/**
+ * @abstract Notified when a user selected a category
+ */
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView;
+
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView;
 
 @end

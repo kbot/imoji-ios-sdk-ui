@@ -30,6 +30,7 @@
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
 #import "IMResourceBundleUtil.h"
+#import "IMConnectivityUtil.h"
 
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
@@ -40,10 +41,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 @property(nonatomic, strong) NSMutableArray *reloadPaths;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
+@property(nonatomic, strong) NSObject *loadingIndicatorObject;
+@property(nonatomic, strong) NSOperation *imojiOperation;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 
-@property(nonatomic, strong) NSOperation *imojiOperation;
 @property(nonatomic) BOOL runningBatchUpdates;
 @property(nonatomic) NSUInteger renderCount;
 
@@ -113,38 +115,41 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         return cell;
 
-    } else if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
+    } else if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         IMCategoryCollectionViewCell *cell =
                 (IMCategoryCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
 
-        id image = self.images[(NSUInteger) indexPath.item];
+        [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
 
-        [cell loadImojiCategory:categoryObject.title imojiImojiImage:([image isKindOfClass:[UIImage class]] ? image : nil)];
+        id image = self.images[(NSUInteger) indexPath.item];
+        if ([image isKindOfClass:[UIImage class]]) {
+            [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
+        }
 
         return cell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
+    } else if (self.contentType == IMCollectionViewContentTypeCollectionSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
+    } else if (self.contentType == IMCollectionViewContentTypeRecentsSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
+    } else if (self.contentType == IMCollectionViewContentTypeNoConnectionSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == ImojiCollectionViewContentTypeNoResultsSplash) {
+    } else if (self.contentType == IMCollectionViewContentTypeNoResultsSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
@@ -239,11 +244,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
     // splash views occupy the full screen
     switch (self.contentType) {
-        case ImojiCollectionViewContentTypeRecentsSplash:
-        case ImojiCollectionViewContentTypeCollectionSplash:
-        case ImojiCollectionViewContentTypeNoConnectionSplash:
-        case ImojiCollectionViewContentTypeEnableFullAccessSplash:
-        case ImojiCollectionViewContentTypeNoResultsSplash: {
+        case IMCollectionViewContentTypeRecentsSplash:
+        case IMCollectionViewContentTypeCollectionSplash:
+        case IMCollectionViewContentTypeNoConnectionSplash:
+        case IMCollectionViewContentTypeEnableFullAccessSplash:
+        case IMCollectionViewContentTypeNoResultsSplash: {
             UIEdgeInsets insets = [self collectionView:collectionView
                                                 layout:collectionViewLayout
                                 insetForSectionAtIndex:indexPath.section];
@@ -261,7 +266,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                 return CGSizeMake(self.frame.size.width, 100.0f);
             }
 
-            if (self.contentType == ImojiCollectionViewContentTypeImojis) {
+            if (self.contentType == IMCollectionViewContentTypeImojis) {
                 return CGSizeMake(self.frame.size.width / 3.0f, 100.0f);
             }
 
@@ -273,7 +278,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
-    if (self.contentType == ImojiCollectionViewContentTypeImojis) {
+    if (self.contentType == IMCollectionViewContentTypeImojis) {
         return UIEdgeInsetsZero;
     }
 
@@ -295,7 +300,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
-    self.contentType = ImojiCollectionViewContentTypeImojiCategories;
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.contentType = IMCollectionViewContentTypeImojiCategories;
     [self generateNewResultSetOperationWithSearchOffset:nil];
 
     __block NSOperation *operation;
@@ -329,15 +339,20 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                                                  }
                                                                              }];
 
-                                                              if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
-                                                                  [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
+                                                              if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
+                                                                  [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
                                                               }
                                                           }
                                                       }];
 }
 
 - (void)loadFeaturedImojis {
-    self.contentType = ImojiCollectionViewContentTypeImojis;
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.contentType = IMCollectionViewContentTypeImojis;
     [self generateNewResultSetOperationWithSearchOffset:nil];
 
     __block NSOperation *operation;
@@ -360,12 +375,22 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm {
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
     self.currentSearchTerm = searchTerm;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
-    self.contentType = ImojiCollectionViewContentTypeImojis;
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.contentType = IMCollectionViewContentTypeImojis;
     [self generateNewResultSetOperationWithSearchOffset:nil];
 
     // allow the loading indicator to display by calling generateNewResultSetOperationWithSearchOffset:
@@ -390,11 +415,69 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     });
 }
 
+- (void)loadUserCollectionImojis {
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.contentType = IMCollectionViewContentTypeImojis;
+    [self generateNewResultSetOperationWithSearchOffset:nil];
+
+    __block NSOperation *operation;
+    self.imojiOperation = operation =
+            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                        if (!operation.isCancelled) {
+                            [self prepareViewForImojiResultSet:resultCount
+                                                        offset:0
+                                                         error:error];
+                        }
+                    }
+                                                               imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                                                   if (!operation.isCancelled && !error) {
+                                                                       [self renderImojiResult:imoji
+                                                                                       content:imoji
+                                                                                       atIndex:index
+                                                                                        offset:0
+                                                                                     operation:operation];
+                                                                   }
+                                                               }];
+}
+
+- (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
+    switch (splashType) {
+        case IMCollectionViewSplashCellNoConnection:
+            self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+            break;
+
+        case IMCollectionViewSplashCellEnableFullAccess:
+            self.contentType = IMCollectionViewContentTypeEnableFullAccessSplash;
+            break;
+
+        case IMCollectionViewSplashCellNoResults:
+            self.contentType = IMCollectionViewContentTypeNoResultsSplash;
+            break;
+
+        case IMCollectionViewSplashCellRecents:
+            self.contentType = IMCollectionViewContentTypeRecentsSplash;
+            break;
+
+        case IMCollectionViewSplashCellCollection:
+            self.contentType = IMCollectionViewContentTypeCollectionSplash;
+            break;
+
+        default:
+            break;
+    }
+}
+
+#pragma mark Private Imoji Loading Methods
+
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
     NSUInteger offsetValue = offset ? offset.unsignedIntegerValue - 1 : 0;
 
     if (!offset) {
-        self.contentType = ImojiCollectionViewContentTypeImojis;
+        self.contentType = IMCollectionViewContentTypeImojis;
         [self generateNewResultSetOperationWithSearchOffset:offset];
     }
 
@@ -433,28 +516,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          }];
 }
 
-- (void)loadUserCollectionImojis {
-    __block NSOperation *operation;
-    self.imojiOperation = operation =
-            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
-                        if (!operation.isCancelled) {
-                            [self prepareViewForImojiResultSet:resultCount
-                                                        offset:0
-                                                         error:error];
-                        }
-                    }
-                                                               imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                                                                   if (!operation.isCancelled && !error) {
-                                                                       [self renderImojiResult:imoji
-                                                                                       content:imoji
-                                                                                       atIndex:index
-                                                                                        offset:0
-                                                                                     operation:operation];
-                                                                   }
-                                                               }];
-}
-
-
 - (void)loadNextPageOfImojisFromSearch {
     // do not append the next set of imojis until the current set of them has completely rendered to avoid
     // mutating the data model while the collection view is reloading
@@ -481,7 +542,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self.content removeAllObjects];
 
         // loading indicator exists already for results with an offset
-        if (self.contentType == ImojiCollectionViewContentTypeImojis) {
+        if (self.contentType == IMCollectionViewContentTypeImojis) {
             [self.content addObject:self.loadingIndicatorObject];
         }
     }
@@ -502,7 +563,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self.images removeAllObjects];
 
         if (resultCount.unsignedIntegerValue == 0) {
-            self.contentType = ImojiCollectionViewContentTypeNoResultsSplash;
+            self.contentType = IMCollectionViewContentTypeNoResultsSplash;
             return;
         }
     }
@@ -538,8 +599,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             }
         }
 
-        if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidFinishSearching:)]) {
-            [self.collectionViewDelegate imojiCollectionViewDidFinishSearching:self];
+        if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
+            [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
         }
     }
 }
@@ -585,42 +646,34 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)userTappedSplashView:(UITapGestureRecognizer *)sender {
     if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectSplash:fromCollectionView:)]) {
-        IMCollectionViewSplashCellType splashCellType;
-        BOOL isSplash = YES;
-
         switch (self.contentType) {
-            case ImojiCollectionViewContentTypeRecentsSplash:
-                splashCellType = IMCollectionViewSplashCellRecents;
+            case IMCollectionViewContentTypeRecentsSplash:
+                [self.collectionViewDelegate userDidSelectSplash:IMCollectionViewSplashCellRecents fromCollectionView:self];
                 break;
 
-            case ImojiCollectionViewContentTypeCollectionSplash:
-                splashCellType = IMCollectionViewSplashCellCollection;
+            case IMCollectionViewContentTypeCollectionSplash:
+                [self.collectionViewDelegate userDidSelectSplash:IMCollectionViewSplashCellCollection fromCollectionView:self];
                 break;
 
-            case ImojiCollectionViewContentTypeNoConnectionSplash:
-                splashCellType = IMCollectionViewSplashCellNoConnection;
+            case IMCollectionViewContentTypeNoConnectionSplash:
+                [self.collectionViewDelegate userDidSelectSplash:IMCollectionViewSplashCellNoConnection fromCollectionView:self];
                 break;
 
-            case ImojiCollectionViewContentTypeEnableFullAccessSplash:
-                splashCellType = IMCollectionViewSplashCellEnableFullAccess;
+            case IMCollectionViewContentTypeEnableFullAccessSplash:
+                [self.collectionViewDelegate userDidSelectSplash:IMCollectionViewSplashCellEnableFullAccess fromCollectionView:self];
                 break;
 
-            case ImojiCollectionViewContentTypeNoResultsSplash:
-                splashCellType = IMCollectionViewSplashCellNoResults;
+            case IMCollectionViewContentTypeNoResultsSplash:
+                [self.collectionViewDelegate userDidSelectSplash:IMCollectionViewSplashCellNoResults fromCollectionView:self];
                 break;
 
             default:
-                isSplash = NO;
                 break;
-        }
-
-        if (isSplash) {
-            [self.collectionViewDelegate userDidSelectSplash:splashCellType fromCollectionView:self];
         }
     }
 }
 
-#pragma mark Animations
+#pragma mark Public Overridable Methods
 
 - (void)processCellAnimations:(NSIndexPath *)currentIndexPath {
     for (UICollectionViewCell *cell in self.visibleCells) {
@@ -636,6 +689,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (id)contentForIndexPath:(NSIndexPath *)path {
     return path.row > self.content.count ? nil : self.content[(NSUInteger) path.row];
+}
+
+- (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *)indexPath {
+    id cellContent = [self contentForIndexPath:indexPath];
+    return (cellContent == self.loadingIndicatorObject);
 }
 
 #pragma mark Properties
@@ -660,17 +718,17 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     [self reloadData];
 }
 
-- (void)setContentType:(ImojiCollectionViewContentType)contentType {
+- (void)setContentType:(IMCollectionViewContentType)contentType {
     BOOL dirty = _contentType != contentType;
     _contentType = contentType;
 
     if (dirty) {
         switch (contentType) {
-            case ImojiCollectionViewContentTypeRecentsSplash:
-            case ImojiCollectionViewContentTypeCollectionSplash:
-            case ImojiCollectionViewContentTypeNoConnectionSplash:
-            case ImojiCollectionViewContentTypeEnableFullAccessSplash:
-            case ImojiCollectionViewContentTypeNoResultsSplash:
+            case IMCollectionViewContentTypeRecentsSplash:
+            case IMCollectionViewContentTypeCollectionSplash:
+            case IMCollectionViewContentTypeNoConnectionSplash:
+            case IMCollectionViewContentTypeEnableFullAccessSplash:
+            case IMCollectionViewContentTypeNoResultsSplash:
 
                 // add a filler object for rendering splashes
                 [self.content addObject:[NSNull null]];

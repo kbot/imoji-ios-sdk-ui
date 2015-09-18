@@ -214,7 +214,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     [self setupMenuView];
 
     if (!self.hasFullAccess) {
-        self.collectionView.contentType = ImojiCollectionViewContentTypeEnableFullAccessSplash;
+        [self.collectionView displaySplashOfType:IMCollectionViewSplashCellEnableFullAccess];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REQUIRES FULL ACCESS"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -226,7 +226,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             [self.collectionView loadImojiCategories:self.currentCategoryClassification];
         });
     } else {
-        self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
+        [self.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -520,7 +520,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 break;
         }
     } else {
-        self.collectionView.contentType = ImojiCollectionViewContentTypeNoConnectionSplash;
+        [self.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"NO NETWORK CONNECTION"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -685,7 +685,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
-- (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView {
+- (void)imojiCollectionView:(IMCollectionView *)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
     if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
