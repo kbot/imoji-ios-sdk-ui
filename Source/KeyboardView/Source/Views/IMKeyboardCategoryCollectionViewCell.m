@@ -27,6 +27,7 @@
 #import "IMKeyboardCategoryCollectionViewCell.h"
 #import "IMAttributeStringUtil.h"
 #import "IMCollectionView.h"
+#import "IMResourceBundleUtil.h"
 
 
 @implementation IMKeyboardCategoryCollectionViewCell {
@@ -68,7 +69,7 @@
         self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
     } else {
         self.imojiView.contentMode = UIViewContentModeCenter;
-        self.imojiView.image = [IMCollectionView placeholderImageWithRadius:20];
+        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:20];
     }
 
     self.titleView.attributedText = [IMAttributeStringUtil attributedString:categoryTitle

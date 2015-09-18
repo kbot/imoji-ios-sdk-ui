@@ -59,10 +59,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         _session = session;
         _loadingIndicatorObject = [NSObject new];
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
+        _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
 
         self.dataSource = self;
         self.delegate = self;
-        
+
         self.numberOfImojisToLoad = IMCollectionViewNumberOfItemsToLoad;
         self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
 
@@ -73,7 +74,7 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         self.reloadPaths = [NSMutableArray array];
         self.runningBatchUpdates = NO;
         self.renderCount = 0;
-        
+
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                   action:@selector(userTappedSplashView:)];
         self.tapGesture.enabled = NO;
@@ -99,9 +100,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     self.tapGesture.enabled = NO;
 
     id cellContent = self.content[(NSUInteger) indexPath.row];
-    
+
     if (cellContent == self.loadingIndicatorObject) {
-        IMCollectionViewStatusCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId forIndexPath:indexPath];
+        IMCollectionViewStatusCell *cell =
+                (IMCollectionViewStatusCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId forIndexPath:indexPath];
 
         if (cellContent == self.loadingIndicatorObject) {
             [cell showLoading];
@@ -113,7 +115,8 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
     } else if (self.contentType == ImojiCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
-        IMCategoryCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
+        IMCategoryCollectionViewCell *cell =
+                (IMCategoryCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
 
         id image = self.images[(NSUInteger) indexPath.item];
 
@@ -121,31 +124,36 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         return cell;
     } else if (self.contentType == ImojiCollectionViewContentTypeCollectionSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell =
+                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
-        
+
         [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeRecentsSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell =
+                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
-        
+
         [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeNoConnectionSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell =
+                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
         return splashCell;
     } else if (self.contentType == ImojiCollectionViewContentTypeNoResultsSplash) {
-        IMCollectionViewSplashCell *splashCell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
+        IMCollectionViewSplashCell *splashCell =
+                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
         self.tapGesture.enabled = YES;
 
         [splashCell showSplashCellType:IMCollectionViewSplashCellNoResults withImageBundle:self.imagesBundle];
         return splashCell;
     } else {
-        IMCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
+        IMCollectionViewCell *cell =
+                (IMCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
         [cell loadImojiImage:nil];
 
         id imojiImage = self.images[(NSUInteger) indexPath.row];
@@ -217,8 +225,11 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
             }
         }
     }
-}
 
+    if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionViewDidScroll:)]) {
+        [self.collectionViewDelegate imojiCollectionViewDidScroll:self];
+    }
+}
 
 #pragma mark UICollectionViewDelegateFlowLayout
 
@@ -234,9 +245,9 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         case ImojiCollectionViewContentTypeEnableFullAccessSplash:
         case ImojiCollectionViewContentTypeNoResultsSplash: {
             UIEdgeInsets insets = [self collectionView:collectionView
-                                          layout:collectionViewLayout
-                          insetForSectionAtIndex:indexPath.section];
-            
+                                                layout:collectionViewLayout
+                                insetForSectionAtIndex:indexPath.section];
+
             return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height - insets.top - insets.bottom);
         }
         default: {
@@ -269,15 +280,15 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     return UIEdgeInsetsMake(0, self.sideInsets, 0, self.sideInsets);
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout *)collectionViewLayout
-        minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)          collectionView:(UICollectionView *)collectionView
+                             layout:(UICollectionViewLayout *)collectionViewLayout
+minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout *)collectionViewLayout
-        minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+- (CGFloat)               collectionView:(UICollectionView *)collectionView
+                                  layout:(UICollectionViewLayout *)collectionViewLayout
+minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
@@ -461,39 +472,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     }
 }
 
-- (void)setContentType:(ImojiCollectionViewContentType)contentType {
-    BOOL dirty = _contentType != contentType;
-    _contentType = contentType;
-
-    if (dirty) {
-        switch (contentType) {
-            case ImojiCollectionViewContentTypeRecentsSplash:
-            case ImojiCollectionViewContentTypeCollectionSplash:
-            case ImojiCollectionViewContentTypeNoConnectionSplash:
-            case ImojiCollectionViewContentTypeEnableFullAccessSplash:
-            case ImojiCollectionViewContentTypeNoResultsSplash:
-
-                // add a filler object for rendering splashes
-                [self.content addObject:[NSNull null]];
-                break;
-
-            default:
-                break;
-        }
-
-        [self reloadData];
-    }
-}
-
-- (void)setImagesBundle:(NSBundle *)imagesBundle {
-    _imagesBundle = imagesBundle;
-    [self reloadData];
-}
-
-- (IMImojiObjectRenderingOptions *)renderingOptions {
-    return [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
-}
-
 - (void)generateNewResultSetOperationWithSearchOffset:(NSNumber *)searchOffset {
     [self.reloadPaths removeAllObjects];
 
@@ -609,33 +587,33 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectSplash:fromCollectionView:)]) {
         IMCollectionViewSplashCellType splashCellType;
         BOOL isSplash = YES;
-        
+
         switch (self.contentType) {
             case ImojiCollectionViewContentTypeRecentsSplash:
                 splashCellType = IMCollectionViewSplashCellRecents;
                 break;
-                
+
             case ImojiCollectionViewContentTypeCollectionSplash:
                 splashCellType = IMCollectionViewSplashCellCollection;
                 break;
-                
+
             case ImojiCollectionViewContentTypeNoConnectionSplash:
                 splashCellType = IMCollectionViewSplashCellNoConnection;
                 break;
-                
+
             case ImojiCollectionViewContentTypeEnableFullAccessSplash:
                 splashCellType = IMCollectionViewSplashCellEnableFullAccess;
                 break;
-                
+
             case ImojiCollectionViewContentTypeNoResultsSplash:
                 splashCellType = IMCollectionViewSplashCellNoResults;
                 break;
-                
+
             default:
                 isSplash = NO;
                 break;
         }
-        
+
         if (isSplash) {
             [self.collectionViewDelegate userDidSelectSplash:splashCellType fromCollectionView:self];
         }
@@ -660,26 +638,56 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
     return path.row > self.content.count ? nil : self.content[(NSUInteger) path.row];
 }
 
+#pragma mark Properties
+
+- (void)setNumberOfImojisToLoad:(NSUInteger)numberOfImojisToLoad {
+    _numberOfImojisToLoad = numberOfImojisToLoad;
+    [self reloadData];
+}
+
+- (void)setSideInsets:(CGFloat)sideInsets {
+    _sideInsets = sideInsets;
+    [self reloadData];
+}
+
+- (void)setRenderingOptions:(IMImojiObjectRenderingOptions *)renderingOptions {
+    _renderingOptions = renderingOptions;
+    [self reloadData];
+}
+
+- (void)setImagesBundle:(NSBundle *)imagesBundle {
+    _imagesBundle = imagesBundle;
+    [self reloadData];
+}
+
+- (void)setContentType:(ImojiCollectionViewContentType)contentType {
+    BOOL dirty = _contentType != contentType;
+    _contentType = contentType;
+
+    if (dirty) {
+        switch (contentType) {
+            case ImojiCollectionViewContentTypeRecentsSplash:
+            case ImojiCollectionViewContentTypeCollectionSplash:
+            case ImojiCollectionViewContentTypeNoConnectionSplash:
+            case ImojiCollectionViewContentTypeEnableFullAccessSplash:
+            case ImojiCollectionViewContentTypeNoResultsSplash:
+
+                // add a filler object for rendering splashes
+                [self.content addObject:[NSNull null]];
+                break;
+
+            default:
+                break;
+        }
+
+        [self reloadData];
+    }
+}
+
 #pragma mark Initialization
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session {
     return [[IMCollectionView alloc] initWithSession:session];
-}
-
-+ (UIImage *)placeholderImageWithRadius:(CGFloat)radius {
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius, radius), NO, 0.f);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:.3f].CGColor);
-    CGContextSetBlendMode(context, kCGBlendModeNormal);
-    CGContextSetLineWidth(context, 0);
-    CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
-
-    UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
-
-    UIGraphicsEndImageContext();
-
-    return layer;
 }
 
 @end

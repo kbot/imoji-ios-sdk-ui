@@ -699,13 +699,13 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
-- (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView {
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *) collectionView.collectionViewLayout;
     CGFloat progress;
     if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
-        progress = (scrollView.contentOffset.x + scrollView.frame.size.width) / scrollView.contentSize.width;
+        progress = (collectionView.contentOffset.x + collectionView.frame.size.width) / collectionView.contentSize.width;
     } else {
-        progress = (scrollView.contentOffset.y + scrollView.frame.size.height) / scrollView.contentSize.height;
+        progress = (collectionView.contentOffset.y + collectionView.frame.size.height) / collectionView.contentSize.height;
     }
 
     if (progress != INFINITY) {

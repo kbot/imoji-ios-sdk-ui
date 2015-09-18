@@ -35,4 +35,8 @@
 
 + (NSBundle *)assetsBundle;
 
++ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius;
+
++ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(UIColor *)color;
+
 @end

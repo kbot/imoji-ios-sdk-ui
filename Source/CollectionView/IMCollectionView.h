@@ -48,9 +48,10 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 @property(nonatomic, strong, readonly) NSObject *loadingIndicatorObject;
 
 @property(nonatomic) ImojiCollectionViewContentType contentType;
-@property(nonatomic, strong) NSBundle *imagesBundle;
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
 @property(nonatomic) CGFloat sideInsets;
+@property(nonatomic, strong) NSBundle *imagesBundle;
+@property(nonatomic, strong) IMImojiObjectRenderingOptions *renderingOptions;
 
 @property(nonatomic, weak) id <IMCollectionViewDelegate> collectionViewDelegate;
 
@@ -58,7 +59,9 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 + (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
 
-+ (UIImage *)placeholderImageWithRadius:(CGFloat)radius;
+@end
+
+@interface IMCollectionView (ImojiLoading)
 
 - (void)loadFeaturedImojis;
 
@@ -69,6 +72,10 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers;
 
 - (void)loadUserCollectionImojis;
+
+@end
+
+@interface IMCollectionView (Override)
 
 - (void)processCellAnimations:(NSIndexPath *)currentIndexPath;
 
@@ -82,7 +89,7 @@ typedef NS_ENUM(NSUInteger, ImojiCollectionViewContentType) {
 
 - (void)imojiCollectionViewDidFinishSearching:(IMCollectionView *)collectionView;
 
-- (void)imojiCollectionView:(IMCollectionView *)collectionView userDidScroll:(UIScrollView *)scrollView;
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView;
 
 - (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView;
 

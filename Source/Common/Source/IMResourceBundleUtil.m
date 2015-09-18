@@ -61,4 +61,27 @@
     return bundle;
 }
 
++ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius {
+    return [IMResourceBundleUtil loadingPlaceholderImageWithRadius:radius color:[UIColor colorWithRed:81.0f / 255.0f
+                                                                                                green:185.0f / 255.0f
+                                                                                                 blue:197.0f / 255.0f
+                                                                                                alpha:.3f]];
+}
+
++ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(UIColor *)color {
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius, radius), NO, 0.f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextSetBlendMode(context, kCGBlendModeNormal);
+    CGContextSetLineWidth(context, 0);
+    CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
+
+    UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
+
+    UIGraphicsEndImageContext();
+
+    return layer;
+}
+
 @end

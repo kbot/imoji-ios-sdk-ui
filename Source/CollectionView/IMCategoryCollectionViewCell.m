@@ -26,6 +26,7 @@
 #import "IMCategoryCollectionViewCell.h"
 #import <Masonry/View+MASAdditions.h>
 #import "IMCollectionView.h"
+#import "IMResourceBundleUtil.h"
 
 NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionViewCellReuseId";
 
@@ -70,7 +71,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
             self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
         }
     } else {
-        self.imojiView.image = [IMCollectionView placeholderImageWithRadius:30];
+        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:30];
         self.imojiView.contentMode = UIViewContentModeCenter;
     }
 

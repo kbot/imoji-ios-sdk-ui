@@ -23,8 +23,9 @@
 //  IN THE SOFTWARE.
 //
 
+#import <Masonry/Masonry.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "IMCollectionViewCell.h"
-#import <Masonry/View+MASAdditions.h>
 #import "IMCollectionView.h"
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
@@ -60,7 +61,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
             self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
         }
     } else {
-        self.imojiView.image = [IMCollectionView placeholderImageWithRadius:30];
+        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:30];
         self.imojiView.contentMode = UIViewContentModeCenter;
         _hasImojiImage = NO;
     }
