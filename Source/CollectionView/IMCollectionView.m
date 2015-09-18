@@ -401,7 +401,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
                              if (!operation.isCancelled) {
                                  [self prepareViewForImojiResultSet:resultCount
-                                                             offset:nil
+                                                             offset:0
                                                               error:error];
                              }
                          }
@@ -410,7 +410,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                      [self renderImojiResult:imoji
                                                      content:imoji
                                                      atIndex:index
-                                                      offset:nil
+                                                      offset:0
                                                    operation:operation];
                                  }
                              }];
