@@ -27,6 +27,7 @@
 #import "IMCollectionViewController.h"
 #import "IMCollectionView.h"
 #import "IMAttributeStringUtil.h"
+#import "IMResourceBundleUtil.h"
 
 @interface IMCollectionViewController ()
 
@@ -81,6 +82,16 @@
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDisplayedForSearchField:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardHiddenForSearchField:)
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
+
     self.view = [UIView new];
 
     [self.view addSubview:self.collectionView];
@@ -106,7 +117,7 @@
 
     NSMutableParagraphStyle *placeholderParagraphStyle = [NSMutableParagraphStyle new];
     placeholderParagraphStyle.alignment = NSTextAlignmentCenter;
-    self.searchField.attributedPlaceholder = [IMAttributeStringUtil attributedString:@"Search Stickers"
+    self.searchField.attributedPlaceholder = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"]
                                                                             withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                                color:[UIColor colorWithWhite:185 / 255.0f alpha:1.0f]
                                                                    andParagraphStyle:placeholderParagraphStyle];
@@ -118,8 +129,6 @@
 }
 
 - (void)updateViewConstraints {
-    NSLog(@"updateViewConstraints, height %@", @([UIApplication sharedApplication].statusBarFrame.size.height));
-
     [super updateViewConstraints];
 
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -141,9 +150,47 @@
     }];
 }
 
+#pragma mark Notifications
+
 - (void)deviceOrientationDidChange {
     [self updateViewConstraints];
 }
+
+- (void)keyboardDisplayedForSearchField:(NSNotification *)notification {
+    NSDictionary *keyboardInfo = [notification userInfo];
+    CGRect startRect = [[keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat occupiedHeight = startRect.origin.y - endRect.origin.y;
+
+    // adjust the content size for the keyboard using the displaced height
+    if (occupiedHeight != 0) {
+        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
+                self.collectionView.contentInset.top,
+                self.collectionView.contentInset.left,
+                self.collectionView.contentInset.bottom + occupiedHeight,
+                self.collectionView.contentInset.right
+        );
+    }
+}
+
+- (void)keyboardHiddenForSearchField:(NSNotification *)notification {
+    NSDictionary *keyboardInfo = [notification userInfo];
+    CGRect startRect = [[keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat occupiedHeight = endRect.origin.y - startRect.origin.y;
+
+    // restore the content size of the collection view
+    if (occupiedHeight != 0) {
+        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
+                self.collectionView.contentInset.top,
+                self.collectionView.contentInset.left,
+                self.collectionView.contentInset.bottom - occupiedHeight,
+                self.collectionView.contentInset.right
+        );
+    }
+}
+
+#pragma mark Overrides
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
@@ -152,14 +199,14 @@
 #pragma mark Search field delegates
 
 - (void)searchFieldTextDidChange {
-    if (self.sentenceParseEnabled) {
-        [self.collectionView loadImojisFromSentence:self.searchField.text];
-    } else {
-        if (self.searchField.text.length > 0) {
-            [self.collectionView loadImojisFromSearch:self.searchField.text];
+    if (self.searchField.text.length > 0) {
+        if (self.sentenceParseEnabled) {
+            [self.collectionView loadImojisFromSentence:self.searchField.text];
         } else {
-            [self.collectionView loadFeaturedImojis];
+            [self.collectionView loadImojisFromSearch:self.searchField.text];
         }
+    } else {
+        [self.collectionView loadFeaturedImojis];
     }
 }
 
