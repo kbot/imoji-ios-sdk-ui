@@ -26,16 +26,19 @@
 #import <Foundation/Foundation.h>
 
 @protocol IMCreateImojiViewControllerDelegate;
+@class IMImojiObject;
+@class IMImojiSession;
 
 @interface IMCreateImojiViewController : UIViewController
 
 @property(readonly) UIImage *sourceImage;
 
-- (instancetype)initWithSourceImage:(UIImage *)sourceImage;
+- (instancetype)initWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session;
 
-+ (instancetype)controllerWithSourceImage:(UIImage *)sourceImage;
++ (instancetype)controllerWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session;
 
 @property(nonatomic, strong) id <IMCreateImojiViewControllerDelegate> createDelegate;
+@property(nonatomic, strong) IMImojiSession *session;
 
 @end
 
@@ -43,7 +46,7 @@
 
 @optional
 
-- (void)userDidEditImage:(IMCreateImojiViewController *)viewController image:(UIImage *)image tags:(NSArray *)tags;
+- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji withError:(NSError *)error;
 
 - (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController;
 

@@ -27,6 +27,8 @@
 #import "IMCreateImojiView.h"
 #import "IMTagCollectionView.h"
 #import "IMResourceBundleUtil.h"
+#import "IMImojiObject.h"
+#import "IMImojiSession.h"
 #import <Masonry/Masonry.h>
 
 
@@ -57,10 +59,11 @@
 
 }
 
-- (instancetype)initWithSourceImage:(UIImage *)sourceImage {
+- (instancetype)initWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _sourceImage = sourceImage;
+        _session = session;
     }
 
     return self;
@@ -199,8 +202,12 @@
 }
 
 - (void)finishEditing {
-    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidEditImage:image:tags:)]) {
-        [self.createDelegate userDidEditImage:self image:self.imojiEditor.outputImage tags:self.tagCollectionView.tags.array];
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:)]) {
+        [self.session createImojiWithImage:self.imojiEditor.outputImage
+                                      tags:self.tagCollectionView.tags.array
+                                  callback:^(IMImojiObject *imoji, NSError *error) {
+                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error];
+                                  }];
     }
 }
 
@@ -258,8 +265,8 @@
     self.forwardButton.enabled = editorView.hasOutputImage;
 }
 
-+ (instancetype)controllerWithSourceImage:(UIImage *)sourceImage {
-    return [[self alloc] initWithSourceImage:sourceImage];
++ (instancetype)controllerWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session {
+    return [[self alloc] initWithSourceImage:sourceImage session:session];
 }
 
 @end
