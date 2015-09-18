@@ -384,6 +384,38 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
+- (void)loadImojisFromSentence:(NSString *)sentence {
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.currentSearchTerm = nil;
+    self.contentType = IMCollectionViewContentTypeImojis;
+    [self generateNewResultSetOperationWithSearchOffset:nil];
+
+    __block NSOperation *operation;
+    self.imojiOperation = operation =
+            [self.session searchImojisWithSentence:sentence
+                                   numberOfResults:@(self.numberOfImojisToLoad)
+                         resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                             if (!operation.isCancelled) {
+                                 [self prepareViewForImojiResultSet:resultCount
+                                                             offset:nil
+                                                              error:error];
+                             }
+                         }
+                             imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                 if (!operation.isCancelled && !error) {
+                                     [self renderImojiResult:imoji
+                                                     content:imoji
+                                                     atIndex:index
+                                                      offset:nil
+                                                   operation:operation];
+                                 }
+                             }];
+}
+
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;

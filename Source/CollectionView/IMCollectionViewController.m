@@ -75,6 +75,12 @@
                                              selector:@selector(searchFieldTextDidChange)
                                                  name:UITextFieldTextDidChangeNotification
                                                object:_searchField];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deviceOrientationDidChange)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
     self.view = [UIView new];
 
     [self.view addSubview:self.collectionView];
@@ -89,15 +95,13 @@
     self.view.backgroundColor = [UIColor colorWithWhite:105 / 255.0f alpha:1.0f];
     self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
 
-    self.searchField.placeholder = @"Search Stickers";
-
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.alignment = NSTextAlignmentLeft;
 
     self.searchField.defaultTextAttributes = @{
             NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
             NSParagraphStyleAttributeName : paragraphStyle,
-            NSForegroundColorAttributeName: self.collectionView.backgroundColor
+            NSForegroundColorAttributeName : self.collectionView.backgroundColor
     };
 
     NSMutableParagraphStyle *placeholderParagraphStyle = [NSMutableParagraphStyle new];
@@ -137,18 +141,25 @@
     }];
 }
 
+- (void)deviceOrientationDidChange {
+    [self updateViewConstraints];
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
-
 #pragma mark Search field delegates
 
 - (void)searchFieldTextDidChange {
-    if (self.searchField.text.length > 0) {
-        [self.collectionView loadImojisFromSearch:self.searchField.text];
+    if (self.sentenceParseEnabled) {
+        [self.collectionView loadImojisFromSentence:self.searchField.text];
     } else {
-        [self.collectionView loadFeaturedImojis];
+        if (self.searchField.text.length > 0) {
+            [self.collectionView loadImojisFromSearch:self.searchField.text];
+        } else {
+            [self.collectionView loadFeaturedImojis];
+        }
     }
 }
 

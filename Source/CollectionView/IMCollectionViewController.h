@@ -35,6 +35,7 @@
 + (instancetype)collectionViewControllerWithSession:(IMImojiSession *)session;
 
 @property(nonatomic, strong) IMImojiSession* session;
+@property(nonatomic) BOOL sentenceParseEnabled;
 
 @property(nonatomic, strong, readonly) UITextField *searchField;
 @property(nonatomic, strong, readonly) IMCollectionView* collectionView;

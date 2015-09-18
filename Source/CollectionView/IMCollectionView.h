@@ -111,6 +111,11 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 - (void)loadImojisFromSearch:(NSString *)searchTerm;
 
 /**
+ * @abstract Parses a given sentence for popular Imoji stickers
+ */
+- (void)loadImojisFromSentence:(NSString *)sentence;
+
+/**
  * @abstract Loads Imoji stickers into the collection view using fetchImojisByIdentifiers from IMImojiSession
  */
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers;
