@@ -29,7 +29,7 @@
 #import "IMAttributeStringUtil.h"
 #import "IMResourceBundleUtil.h"
 
-@interface IMCollectionViewController ()
+@interface IMCollectionViewController () <UITextFieldDelegate>
 
 @end
 
@@ -92,6 +92,8 @@
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
 
+    self.searchField.delegate = self;
+
     self.view = [UIView new];
 
     [self.view addSubview:self.collectionView];
@@ -109,6 +111,8 @@
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.alignment = NSTextAlignmentLeft;
 
+    self.searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.searchField.returnKeyType = UIReturnKeyDone;
     self.searchField.defaultTextAttributes = @{
             NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
             NSParagraphStyleAttributeName : paragraphStyle,
@@ -208,6 +212,12 @@
     } else {
         [self.collectionView loadFeaturedImojis];
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.searchField resignFirstResponder];
+
+    return YES;
 }
 
 #pragma mark Initializers
