@@ -1,9 +1,9 @@
 //
 //  main.m
-//  imoji-sdk-sample
+//  imoji-categories
 //
-//  Created by Nima on 4/6/15.
-//  Copyright (c) 2015 Nima Khoshini. All rights reserved.
+//  Created by Nima on 9/18/15.
+//  Copyright © 2015 Imoji. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
