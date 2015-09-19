@@ -40,7 +40,7 @@
 - (instancetype)initWithSession:(IMImojiSession *)session {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        self.session = session;
+        [self setupCollectionViewControllerWithSession:session];
     }
 
     return self;
@@ -49,7 +49,7 @@
 - (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.session = [IMImojiSession imojiSession];
+        [self setupCollectionViewControllerWithSession:[IMImojiSession imojiSession]];
     }
 
     return self;
@@ -58,17 +58,15 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
-        self.session = [IMImojiSession imojiSession];
+        [self setupCollectionViewControllerWithSession:[IMImojiSession imojiSession]];
     }
 
     return self;
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+- (void)setupCollectionViewControllerWithSession:(IMImojiSession *)session {
+    self.session = [IMImojiSession imojiSession];
 
-- (void)loadView {
     _searchField = [UITextField new];
     _collectionView = [IMCollectionView imojiCollectionViewWithSession:self.session];
     _searchOnTextChanges = YES;
@@ -94,6 +92,13 @@
                                                object:nil];
 
     self.searchField.delegate = self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)loadView {
 
     self.view = [UIView new];
 
