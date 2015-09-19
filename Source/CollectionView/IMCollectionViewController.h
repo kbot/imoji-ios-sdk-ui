@@ -28,14 +28,33 @@
 
 @class IMImojiSession, IMCollectionView;
 
+/**
+ * @abstract A simple view controller that displays a full screen collection view with Imoji content. A search field
+ * is bundled in by default and positioned on the top of the page. To override the layout constraints, subclasses should
+ * override updateViewConstraints to position the components how they like.
+ */
 @interface IMCollectionViewController : UIViewController
 
 - (instancetype)initWithSession:(IMImojiSession *)session;
 
 + (instancetype)collectionViewControllerWithSession:(IMImojiSession *)session;
 
+/**
+ * @abstract Loads Imoji stickers into the collection view using getFeaturedImojisWithNumberOfResults from IMImojiSession
+ */
 @property(nonatomic, strong) IMImojiSession* session;
+
+/**
+ * @abstract If YES, calls IMImojiSession searchImojisWithSentence: to parse Imoji content from a sentence. Otherwise,
+ * a standard query search is performed.
+ */
 @property(nonatomic) BOOL sentenceParseEnabled;
+
+/**
+ * @abstract If YES, performs a search for every change to the text field entered by the user. If NO, the user must
+ * hit return to search
+ */
+@property(nonatomic) BOOL searchOnTextChanges;
 
 @property(nonatomic, strong, readonly) UITextField *searchField;
 @property(nonatomic, strong, readonly) IMCollectionView* collectionView;
