@@ -144,7 +144,11 @@
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view).insets(UIEdgeInsetsMake(0, 5, 0, 5));
         if (self.searchField.hidden) {
-            make.top.equalTo(self.view.mas_top).offset([UIApplication sharedApplication].statusBarFrame.size.height);
+#ifndef IMOJI_APP_EXTENSION
+            make.top.equalTo(self.view).offset([UIApplication sharedApplication].statusBarFrame.size.height);
+#else
+            make.top.equalTo(self.view);
+#endif
         } else {
             make.top.equalTo(self.searchField.mas_bottom).insets(UIEdgeInsetsMake(5, 0, 5, 0));
         }
@@ -156,7 +160,13 @@
         make.width.equalTo(self.view).multipliedBy(.96f);
         make.height.equalTo(@(self.searchField.font.lineHeight * 2.0f)).insets(UIEdgeInsetsMake(5, 0, 5, 0));
         make.centerX.equalTo(self.view);
+        
+#ifndef IMOJI_APP_EXTENSION
         make.top.equalTo(self.view).offset([UIApplication sharedApplication].statusBarFrame.size.height);
+#else
+        make.top.equalTo(self.view);
+#endif
+
     }];
 }
 
