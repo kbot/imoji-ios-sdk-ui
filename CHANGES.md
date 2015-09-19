@@ -1,5 +1,11 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.9
+
+* Switched over to showing 3 Imoij Categories in Collection View
+* Added ability to switch on/off auto search in collection view controller
+* Improved collection view controller to handle updating content insets when keyboard is shown
+
 ### Version 0.1.8
 
 * Adds sentence parsing functionality to the collection views!
