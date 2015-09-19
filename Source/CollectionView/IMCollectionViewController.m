@@ -71,6 +71,7 @@
 - (void)loadView {
     _searchField = [UITextField new];
     _collectionView = [IMCollectionView imojiCollectionViewWithSession:self.session];
+    _searchOnTextChanges = YES;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(searchFieldTextDidChange)
@@ -101,10 +102,10 @@
 
     [self updateViewConstraints];
 
-    [self setupControllerComponentLookAndFeel];
+    [self setupControllerComponentsLookAndFeel];
 }
 
-- (void)setupControllerComponentLookAndFeel {
+- (void)setupControllerComponentsLookAndFeel {
     self.view.backgroundColor = [UIColor colorWithWhite:105 / 255.0f alpha:1.0f];
     self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
 
@@ -112,7 +113,7 @@
     paragraphStyle.alignment = NSTextAlignmentLeft;
 
     self.searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.searchField.returnKeyType = UIReturnKeyDone;
+    self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
     self.searchField.defaultTextAttributes = @{
             NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
             NSParagraphStyleAttributeName : paragraphStyle,
@@ -129,7 +130,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.collectionView loadFeaturedImojis];
+    [self performSearch];
 }
 
 - (void)updateViewConstraints {
@@ -200,9 +201,30 @@
     return UIStatusBarStyleLightContent;
 }
 
+- (void)setSearchOnTextChanges:(BOOL)searchOnTextChanges {
+    _searchOnTextChanges = searchOnTextChanges;
+    self.searchField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+}
+
 #pragma mark Search field delegates
 
 - (void)searchFieldTextDidChange {
+    if (self.searchOnTextChanges) {
+        [self performSearch];
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    if (!self.searchOnTextChanges) {
+        [self performSearch];
+    }
+
+    [self.searchField resignFirstResponder];
+
+    return YES;
+}
+
+- (void)performSearch {
     if (self.searchField.text.length > 0) {
         if (self.sentenceParseEnabled) {
             [self.collectionView loadImojisFromSentence:self.searchField.text];
@@ -212,12 +234,6 @@
     } else {
         [self.collectionView loadFeaturedImojis];
     }
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self.searchField resignFirstResponder];
-
-    return YES;
 }
 
 #pragma mark Initializers
