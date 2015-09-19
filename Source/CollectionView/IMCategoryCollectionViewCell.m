@@ -27,6 +27,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import "IMCollectionView.h"
 #import "IMResourceBundleUtil.h"
+#import "IMAttributeStringUtil.h"
 
 NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionViewCellReuseId";
 
@@ -44,31 +45,38 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 
         [self addSubview:self.imojiView];
         [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.centerY.equalTo(self);
-            make.height.width.equalTo(self.mas_height).multipliedBy(.75f);
+            make.centerX.equalTo(self);
+            make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
         }];
     }
 
     if (!self.titleView) {
         self.titleView = [UILabel new];
+        self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:14.0f];
+        self.titleView.textColor = [UIColor colorWithWhite:.4f alpha:1.0f];
+        self.titleView.numberOfLines = 2;
+        self.titleView.textAlignment = NSTextAlignmentCenter;
+        self.titleView.lineBreakMode = NSLineBreakByWordWrapping;
 
         [self addSubview:self.titleView];
 
         [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.height.centerY.equalTo(self);
-            make.left.equalTo(self.imojiView.mas_right).offset(10);
+            make.width.equalTo(self).multipliedBy(.75f);
+            make.centerX.equalTo(self);
+            make.top.equalTo(self.imojiView.mas_bottom);
+            make.height.equalTo(@(self.titleView.font.lineHeight * 2.0f + 1.0f));
         }];
     }
 
     BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
-    
+
     if (imojiImage) {
         self.imojiView.image = imojiImage;
         self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
 
         _hasImojiImage = YES;
-        
+
         if (showAnimations) {
             self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
         }
@@ -80,7 +88,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     }
 
     self.titleView.text = categoryTitle;
-    
+
     if (showAnimations) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:.5f
@@ -97,7 +105,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 }
 
 
-- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+- (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
     CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
     [image drawInRect:drawRect];

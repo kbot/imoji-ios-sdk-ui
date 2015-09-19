@@ -242,6 +242,10 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                   layout:(UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 
+    UIEdgeInsets insets = [self collectionView:collectionView
+                                        layout:collectionViewLayout
+                        insetForSectionAtIndex:indexPath.section];
+
     // splash views occupy the full screen
     switch (self.contentType) {
         case IMCollectionViewContentTypeRecentsSplash:
@@ -249,28 +253,22 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         case IMCollectionViewContentTypeNoConnectionSplash:
         case IMCollectionViewContentTypeEnableFullAccessSplash:
         case IMCollectionViewContentTypeNoResultsSplash: {
-            UIEdgeInsets insets = [self collectionView:collectionView
-                                                layout:collectionViewLayout
-                                insetForSectionAtIndex:indexPath.section];
 
             return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height - insets.top - insets.bottom);
         }
         default: {
+
             id content = self.content[(NSUInteger) indexPath.row];
             if (self.content.count == 1) {
                 if (content == self.loadingIndicatorObject) {
-                    return CGSizeMake(self.frame.size.width, self.frame.size.height);
+                    return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height);
                 }
             } else if (content == self.loadingIndicatorObject) {
                 // loading indicator at the bottom of the results
-                return CGSizeMake(self.frame.size.width, 100.0f);
+                return CGSizeMake(self.frame.size.width - insets.right - insets.left, 100.0f);
             }
 
-            if (self.contentType == IMCollectionViewContentTypeImojis) {
-                return CGSizeMake(self.frame.size.width / 3.0f, 100.0f);
-            }
-
-            return CGSizeMake(self.frame.size.width - (self.sideInsets * 2.0f), 100.0f);
+            return CGSizeMake((self.frame.size.width - insets.right - insets.left) / 3.0f, 100.0f);
         }
     }
 }
@@ -278,16 +276,20 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
-    if (self.contentType == IMCollectionViewContentTypeImojis) {
-        return UIEdgeInsetsZero;
+    if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
+        return UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
     }
 
-    return UIEdgeInsetsMake(0, self.sideInsets, 0, self.sideInsets);
+    return UIEdgeInsetsZero;
 }
 
 - (CGFloat)          collectionView:(UICollectionView *)collectionView
                              layout:(UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
+        return 15.0f;
+    }
+
     return 0;
 }
 
