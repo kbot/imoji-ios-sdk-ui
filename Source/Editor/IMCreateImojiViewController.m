@@ -202,11 +202,11 @@
 }
 
 - (void)finishEditing {
-    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:)]) {
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:fromViewController:)]) {
         [self.session createImojiWithImage:self.imojiEditor.outputImage
                                       tags:self.tagCollectionView.tags.array
                                   callback:^(IMImojiObject *imoji, NSError *error) {
-                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error];
+                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error fromViewController:self];
                                   }];
     }
 }

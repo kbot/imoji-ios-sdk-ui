@@ -46,7 +46,7 @@
 
 @optional
 
-- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji withError:(NSError *)error;
+- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji withError:(NSError *)error fromViewController:(IMCreateImojiViewController *)viewController;
 
 - (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController;
 
