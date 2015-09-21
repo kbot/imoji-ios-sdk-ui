@@ -16,9 +16,10 @@
 #define vectorDefine(vectorType, elementType) \
     struct vectorType { \
         elementType *elements; \
-        int count; \
-        int capacity; \
-        int _elementSize; \
+        size_t count; \
+        size_t capacity; \
+        size_t readCursor; \
+        size_t _elementSize; \
     }; \
     typedef struct vectorType vectorType
 
@@ -66,6 +67,19 @@ vectorDefine(BoolVector, bool);
     _vectorPush((_Vector *) _vector, (char *) &_element); \
 })
 
+#define vectorWrite(vector, element) vectorPush(vector, element)
+
+// Push bytes to end of vector and return its index, or -1 if vector is NULL or
+// the length is not a multiple of the element size.
+#define vectorPushData(vector, data, length) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(data) _data = data; \
+    typeof(length) _length = length; \
+    _vectorPushData((_Vector *) _vector, (char *) _data, _length); \
+})
+
+#define vectorWriteData(vector, data, length) vectorPushData(vector, data, length)
+
 // Pop element from end of vector and return its value. Prints an error message to stderr and
 // returns a zero-filled value if the vector is empty or NULL.
 #define vectorPop(vector) ({ \
@@ -73,6 +87,43 @@ vectorDefine(BoolVector, bool);
     typeof(*_vector->elements) _element; \
     _vectorPop((_Vector *) _vector, (char *) &_element); \
     _element; \
+})
+
+// Read element at cursor, advance the cursor, and return the element's value. Prints an error
+// message to stderr and returns a zero-filled value if the vector is empty or NULL.
+#define vectorRead(vector) ({ \
+typeof(vector) _vector = vector; \
+typeof(*_vector->elements) _element; \
+_vectorRead((_Vector *) _vector, (char *) &_element); \
+_element; \
+})
+
+// Pop bytes from end of vector and return true. Prints an error message to stderr and
+// returns false the vector is too small or NULL, or the length is not a multiple of the
+// element size.
+#define vectorPopData(vector, data, length) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(data) _data = data; \
+    typeof(length) _length = length; \
+    _vectorPopData((_Vector *) _vector, (char *) _data, _length); \
+})
+
+// Read bytes at cursor, advance cursor, and return true. Prints an error message to
+// stderr and returns false the vector is too small or NULL, or the length is not a
+// multiple of the element size.
+#define vectorReadData(vector, data, length) ({ \
+typeof(vector) _vector = vector; \
+typeof(data) _data = data; \
+typeof(length) _length = length; \
+_vectorReadData((_Vector *) _vector, (char *) _data, _length); \
+})
+
+// Move cursor to given position, and return true. Prints an error message to stderr
+// and returns false if the position is greater than the vector count.
+#define vectorSeek(vector, position) ({ \
+typeof(vector) _vector = vector; \
+typeof(position) _position = position; \
+_vectorSeek((_Vector *) _vector, _position); \
 })
 
 // Remove element at index and return element value. Equal or higher elements are moved one index
@@ -144,19 +195,40 @@ vectorDefine(BoolVector, bool);
     _element; \
 })
 
+#define vectorSerialize(vector, toVector) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(toVector) _toVector = toVector; \
+    \
+    _vectorSerialize((_Vector *) _vector, _toVector); \
+})
+
+#define vectorDeserialize(vector, fromVector) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(fromVector) _fromVector = fromVector; \
+    \
+    _vectorDeserialize((_Vector *) _vector, _fromVector); \
+})
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-_Vector * _vectorCreate(int elementSize, int capacity);
+_Vector * _vectorCreate(size_t elementSize, size_t capacity);
 void _vectorDestroy(_Vector * vector);
 int _vectorPush(_Vector * vector, char * element);
+int _vectorPushData(_Vector * vector, char * data, size_t length);
 void _vectorPop(_Vector * vector, char * element);
+void _vectorRead(_Vector * vector, char * element);
+bool _vectorPopData(_Vector * vector, char * data, size_t length);
+bool _vectorReadData(_Vector * vector, char * data, size_t length);
+bool _vectorSeek(_Vector * vector, size_t position);
 void _vectorRemoveAt(_Vector * vector, int index, char * element);
 int _vectorRemove(_Vector * vector, char * element);
 bool _vectorInsertAt(_Vector * vector, int index, char * element);
 _Vector * _vectorCopy(_Vector * vector);
 bool _vectorReverse(_Vector *vector);
+void _vectorSerialize(_Vector * vector, UInt8Vector * toVector);
+void _vectorDeserialize(_Vector * vector, UInt8Vector * fromVector);
 
 #ifdef __cplusplus
 }

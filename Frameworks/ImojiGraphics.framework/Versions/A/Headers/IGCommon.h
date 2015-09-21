@@ -108,17 +108,13 @@ typedef bool IGbool;
 typedef float IGfloat;
 typedef double IGdouble;
 
-#if !TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-#define IG_USE_RGBA
-#else
-#define IG_USE_BGRA
-#endif
-
-#if TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
-#define IG_USE_CORE_VIDEO_TEXTURES
-#else
+//#if TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+//#define IG_USE_CORE_VIDEO_TEXTURES
+//#define IG_USE_BGRA
+//#else
 #define IG_USE_PLAIN_TEXTURES
-#endif
+#define IG_USE_RGBA
+//#endif
 
 #if TARGET_IPHONE_SIMULATOR
 #define IG_PREFER_CORE_GRAPHICS

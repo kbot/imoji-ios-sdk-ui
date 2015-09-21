@@ -108,23 +108,36 @@ extern "C" {
         IGImage * igInputImage;
         IGImage * igViewportImage;
         IGCanvas * igViewportCanvas;
+        
         struct {
             IGPaths * paths; // Edge polygon(s)
-            IGFPoint min; // Upper left bounds
-            IGFPoint max; // Lower right bounds
+            IGIPoint min; // Upper left bounds
+            IGIPoint max; // Lower right bounds
             IGfloat pitch; // Desired polygon pitch as fraction of polygon size
             IGbool nudged;
         } edge;
+        
         IGBorder * igBorder;
         IGImage * igBorderImage;
         
         IGEditorState state;
         IGEditorSubstate substate;
-        
+
         // Viewport state
         IGfloat x, y, scale;
         IGfloat startX, startY, startScale;
         IGTouches * touches;
+
+        IGfloat strokeWidth;
+
+        // Viewport colors
+        struct {
+            IGfloat background[4];
+            IGfloat strokes[4];
+            IGfloat dots[4];
+        } colors;
+        
+        IGfloat igInputImageAlpha;
         
         struct {
             IGFPoint lastPosition;
@@ -143,6 +156,18 @@ extern "C" {
     // life time of the editor object.
     IG_FUNCTION(void, EditorDisplay, IGEditor * igEditor);
     
+    // Set background color of editor
+    IG_FUNCTION(void, EditorSetBackgroundColor, IGEditor * igEditor, IGint red, IGint green, IGint blue, IGint alpha);
+    
+    // Set color of strokes in draw mode
+    IG_FUNCTION(void, EditorSetStrokeColor, IGEditor * igEditor, IGint red, IGint green, IGint blue, IGint alpha);
+    
+    // Set width (in pixels) of strokes in draw mode
+    IG_FUNCTION(void, EditorSetStrokeWidth, IGEditor * igEditor, float strokeWidth);
+
+    // Set color of dots in draw mode; small line dots overlap the big cursor dot
+    IG_FUNCTION(void, EditorSetDotColor, IGEditor * igEditor, IGint red, IGint green, IGint blue, IGint alpha);
+
     // The touch event function handles all touch events in the editor viewport. Call EditorDisplay() after this.
     //
     // The UID must uniquely and persistently identify each touch through its lifetime. On Android, an int is accepted
@@ -181,6 +206,27 @@ extern "C" {
     
     // Returns true if an imoji is ready for output via GetOutputImage()
     IG_FUNCTION(IGbool, EditorImojiIsReady, IGEditor * igEditor);
+
+#ifdef __ANDROID__
+    // Serializes the current state, including the edge paths, the undo history and the visual settings of the editor
+    // into an array and returns it.
+    IG_FUNCTION(jbyteArray, EditorSerialize, IGEditor * igEditor);
+
+    // Deserializes the current state, including the edge paths, the undo history and the visual settings of the editor
+    // from an array.
+    IG_FUNCTION(void, EditorDeserialize, IGEditor * igEditor, jbyteArray data);
+#else
+    // Serializes the current state, including the edge paths, the undo history and the visual settings of the editor
+    // into an array. 'data' should point to a vacant char pointer, 'length' to a vacant size_t. A malloc()'ed array of
+    // serialized data will be placed in 'data', and the data length in bytes is written to 'length'. The data should
+    // be free()'d after use.
+    IG_FUNCTION(void, EditorSerialize, IGEditor * igEditor, char ** data, size_t * length);
+
+    // Deserializes the current state, including the edge paths, the undo history and the visual settings of the editor
+    // from an array. 'data' should point to an array of data previously serialized with EditorSerialize(), 'length'
+    // should indicate the data length in bytes.
+    IG_FUNCTION(void, EditorDeserialize, IGEditor * igEditor, const char * data, size_t length);
+#endif
     
 #ifdef __cplusplus
 }

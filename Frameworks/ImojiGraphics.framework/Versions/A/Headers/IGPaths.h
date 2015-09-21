@@ -52,6 +52,10 @@ extern "C" {
 
     IG_FUNCTION(IGPaths *, PathsJoinEnds, IGPaths * igPaths, IGfloat maxDistance);
     
+    void pathsSerialize(IGPaths * igPaths, UInt8Vector * toVector);
+    
+    void pathsDeserialize(IGPaths * igPaths, UInt8Vector * fromVector);
+
 #ifdef __cplusplus
 }
 #endif
