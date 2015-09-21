@@ -35,8 +35,14 @@
  */
 @interface IMCollectionViewController : UIViewController
 
+/**
+ * @abstract Creates a new collection view controller with a specified Imoji Session object
+ */
 - (instancetype)initWithSession:(IMImojiSession *)session;
 
+/**
+ * @abstract Creates a new collection view controller with a specified Imoji Session object
+ */
 + (instancetype)collectionViewControllerWithSession:(IMImojiSession *)session;
 
 /**
@@ -56,7 +62,16 @@
  */
 @property(nonatomic) BOOL searchOnTextChanges;
 
+/**
+ * @abstract The search field component for the collection view. If you hiding this field, make sure to call
+ * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
+ * updateViewConstraints in your own representation.
+ */
 @property(nonatomic, strong, readonly) UITextField *searchField;
+
+/* @abstract The collection view associated to the view controller. To change the dimensions of this field, override
+ * updateViewConstraints in your own representation.
+ */
 @property(nonatomic, strong, readonly) IMCollectionView* collectionView;
 
 @end
