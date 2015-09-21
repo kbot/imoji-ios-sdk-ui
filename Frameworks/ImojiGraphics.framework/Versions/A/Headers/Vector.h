@@ -92,10 +92,10 @@ vectorDefine(BoolVector, bool);
 // Read element at cursor, advance the cursor, and return the element's value. Prints an error
 // message to stderr and returns a zero-filled value if the vector is empty or NULL.
 #define vectorRead(vector) ({ \
-typeof(vector) _vector = vector; \
-typeof(*_vector->elements) _element; \
-_vectorRead((_Vector *) _vector, (char *) &_element); \
-_element; \
+    typeof(vector) _vector = vector; \
+    typeof(*_vector->elements) _element; \
+    _vectorRead((_Vector *) _vector, (char *) &_element); \
+    _element; \
 })
 
 // Pop bytes from end of vector and return true. Prints an error message to stderr and
@@ -126,6 +126,13 @@ typeof(position) _position = position; \
 _vectorSeek((_Vector *) _vector, _position); \
 })
 
+// Push element to end of vector and return its index, or -1 if vector is NULL.
+#define vectorAvailable(vector) ({ \
+    typeof(vector) _vector = vector; \
+    _vector->count - _vector->readCursor; \
+})
+
+
 // Remove element at index and return element value. Equal or higher elements are moved one index
 // down. Prints an error message to stderr and returns a zero-filled value if index is out of
 // bounds.
@@ -151,6 +158,12 @@ _vectorSeek((_Vector *) _vector, _position); \
     typeof(vector) _vector = vector; \
     typeof(*_vector->elements) _element = element; \
     _vectorInsertAt((_Vector *) _vector, index, (char *) &_element); \
+})
+
+#define vectorBinaryInsert(vector, element, compar, arg) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(*_vector->elements) _element = element; \
+    _vectorBinaryInsert((_Vector *) _vector, (char *) &_element, (compar), (arg)); \
 })
 
 // Make a copy of a vector and return a pointer to it, or NULL if the input vector is NULL.
@@ -222,9 +235,11 @@ void _vectorRead(_Vector * vector, char * element);
 bool _vectorPopData(_Vector * vector, char * data, size_t length);
 bool _vectorReadData(_Vector * vector, char * data, size_t length);
 bool _vectorSeek(_Vector * vector, size_t position);
-void _vectorRemoveAt(_Vector * vector, int index, char * element);
+void _vectorRemoveAt(_Vector * vector, size_t index, char * element);
 int _vectorRemove(_Vector * vector, char * element);
-bool _vectorInsertAt(_Vector * vector, int index, char * element);
+bool _vectorInsertAt(_Vector * vector, size_t index, char * element);
+int _vectorBinaryInsert(_Vector * vector, char * element, int (*compar)(const char *, const char *, void *),
+                        void * arg);
 _Vector * _vectorCopy(_Vector * vector);
 bool _vectorReverse(_Vector *vector);
 void _vectorSerialize(_Vector * vector, UInt8Vector * toVector);
