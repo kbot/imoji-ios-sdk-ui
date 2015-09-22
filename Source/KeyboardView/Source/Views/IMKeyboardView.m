@@ -46,9 +46,6 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 // progress bar
 @property(nonatomic, strong) UIProgressView *progressView;
 
-// search
-@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
-
 @end
 
 @implementation IMKeyboardView {
@@ -264,8 +261,9 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         return;
     }
 
-    // check which category keyboard displaying
-    [self.collectionView loadImojiCategories:self.currentCategoryClassification];
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidCloseCategoryFromView:)]) {
+        [self.delegate userDidCloseCategoryFromView:self];
+    }
 
     if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"

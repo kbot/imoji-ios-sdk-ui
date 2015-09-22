@@ -34,12 +34,15 @@
 
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardCollectionViewDelegate, IMKeyboardToolbarDelegate>
+@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardViewDelegate, IMKeyboardCollectionViewDelegate, IMKeyboardToolbarDelegate>
 
 // keyboard size
 @property(nonatomic) CGFloat portraitHeight;
 @property(nonatomic) CGFloat landscapeHeight;
 @property(nonatomic) NSLayoutConstraint *heightConstraint;
+
+@property(nonatomic) BOOL isViewingImojiCategory;
+@property(nonatomic) IMKeyboardToolbarButtonType currentToolbarButtonSelected;
 
 @end
 
@@ -53,6 +56,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         // Perform custom initialization work here
         self.portraitHeight = IMKeyboardViewPortraitHeight;
         self.landscapeHeight = IMKeyboardViewLandscapeHeight;
+        self.isViewingImojiCategory = NO;
+        self.currentToolbarButtonSelected = IMKeyboardToolbarButtonReactions;
 
         _appGroup = IMKeyboardViewControllerDefaultAppGroup;
 
@@ -118,6 +123,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     IMKeyboardView *keyboardView = [IMKeyboardView imojiKeyboardViewWithSession:self.session
                                                                        andFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, IMKeyboardViewPortraitHeight)];
     self.view = keyboardView;
+    keyboardView.delegate = self;
     keyboardView.collectionView.collectionViewDelegate = self;
     keyboardView.keyboardToolbar.delegate = self;
 
@@ -157,9 +163,19 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
+#pragma mark IMKeyboardViewDelegate
+
+- (void)userDidCloseCategoryFromView:(IMKeyboardView *)view {
+    self.isViewingImojiCategory = NO;
+
+    // Display previous category
+    [view.collectionView loadImojiCategories:view.currentCategoryClassification];
+}
+
 #pragma mark IMKeyboardCollectionViewDelegate
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    self.isViewingImojiCategory = YES;
     [((IMKeyboardView *) self.view) updateTitleWithText:category.title hideCloseButton:NO];
     [((IMKeyboardView *) self.view).collectionView loadImojisFromSearch:category.identifier];
 }
@@ -250,18 +266,26 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                 [keyboardView updateTitleWithText:@"RECENTS" hideCloseButton:YES];
                 break;
             case IMKeyboardToolbarButtonReactions:
-                // Set classification for use in returning user to Reactions when closing a category
-                keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+                if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
+                    self.isViewingImojiCategory = NO;
 
-                [keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-                [keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
+                    // Set classification for use in returning user to Reactions when closing a category
+                    keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+
+                    [keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                    [keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
+                }
                 break;
             case IMKeyboardToolbarButtonTrending:
-                // Set classification for use in returning user to Trending when closing a category
-                keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+                if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
+                    self.isViewingImojiCategory = NO;
 
-                [keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
-                [keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
+                    // Set classification for use in returning user to Trending when closing a category
+                    keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+
+                    [keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                    [keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
+                }
                 break;
             case IMKeyboardToolbarButtonCollection: {
                 [keyboardView.collectionView loadFavoriteImojis:self.favoritedImojis];
@@ -271,6 +295,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             default:
                 break;
         }
+
+        self.currentToolbarButtonSelected = buttonType;
     } else {
         [keyboardView.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
         [keyboardView updateTitleWithText:@"NO NETWORK CONNECTION" hideCloseButton:YES];

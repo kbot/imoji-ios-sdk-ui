@@ -35,6 +35,8 @@
 @class IMKeyboardSearchTextField;
 @class IMImojiCategoryObject;
 
+@protocol IMKeyboardViewDelegate;
+
 @interface IMKeyboardView : UIView
 
 // Views
@@ -46,6 +48,12 @@
 // Components
 @property(nonatomic, strong) NSBundle *imageBundle;
 @property(nonatomic, strong) NSString *fontFamily;
+
+// search
+@property(nonatomic) IMImojiSessionCategoryClassification currentCategoryClassification;
+
+// delegate
+@property(nonatomic, weak) id<IMKeyboardViewDelegate> delegate;
 
 // Methods
 - (void)updateTitleWithText:(NSString *)text hideCloseButton:(BOOL)isHidden;
@@ -61,5 +69,13 @@
 - (void)setCurrentCategoryClassification:(IMImojiSessionCategoryClassification)currentCategoryClassification;
 
 + (instancetype)imojiKeyboardViewWithSession:(IMImojiSession *)session andFrame:(CGRect)frame;
+
+@end
+
+@protocol IMKeyboardViewDelegate <NSObject>
+
+@optional
+
+- (void)userDidCloseCategoryFromView:(IMKeyboardView *)view;
 
 @end

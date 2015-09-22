@@ -90,16 +90,14 @@
     // set selected state
 
     if (sender.tag != IMKeyboardToolbarButtonSearch && sender.tag != IMKeyboardToolbarButtonDelete) {
-        for (NSUInteger i = 0; i < self.items.count; i++) { // loop through all buttons and deselect them
-            if (i != IMKeyboardToolbarButtonNextKeyboard && i != IMKeyboardToolbarButtonDelete) {
-                UIBarButtonItem *item = self.items[i];
-                UIButton *tmpButton = (UIButton *) item.customView;
-                if (tmpButton.isSelected && i == sender.tag) {
-                    sameButtonPressed = YES; // check if it's the same button being pressed
-                }
-                tmpButton.selected = NO;
+        for(UIBarButtonItem *item in self.items) {
+            UIButton *tmpButton = (UIButton *) item.customView;
+            if(tmpButton.isSelected && tmpButton.tag == sender.tag) {
+                sameButtonPressed = YES;
             }
+            tmpButton.selected = NO;
         }
+
         sender.selected = YES; // set button pressed to selected
     }
 
