@@ -187,6 +187,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         make.right.equalTo(self.searchView.mas_right).with.offset(0);
         make.height.equalTo(@(40));
     }];
+
     CALayer *bottomBorder = [CALayer layer];
     bottomBorder.frame = CGRectMake(0, 39.f, [[UIScreen mainScreen] applicationFrame].size.height, 1.0f);
     bottomBorder.backgroundColor = [UIColor colorWithRed:194 / 255.f green:194 / 255.f blue:194 / 255.f alpha:1].CGColor;

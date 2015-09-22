@@ -58,9 +58,18 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         _session = session;
         _session.delegate = self;
+
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(deviceOrientationDidChange)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
     }
 
     return self;
+}
+
+- (void)deviceOrientationDidChange {
+    [self updateViewConstraints];
 }
 
 - (void)updateViewConstraints {
@@ -85,7 +94,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         [self.inputView addConstraint:self.heightConstraint];
     }
 
-    [((IMKeyboardView *)self.view).collectionView performBatchUpdates:nil completion:nil];
+    [((IMKeyboardView *) self.view).collectionView performBatchUpdates:nil completion:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -106,7 +115,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
 
     // View setup
-    IMKeyboardView *keyboardView = [IMKeyboardView imojiKeyboardViewWithSession:self.session andFrame:[UIScreen mainScreen].bounds];
+    IMKeyboardView *keyboardView = [IMKeyboardView imojiKeyboardViewWithSession:self.session
+                                                                       andFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, IMKeyboardViewPortraitHeight)];
     self.view = keyboardView;
     keyboardView.collectionView.collectionViewDelegate = self;
     keyboardView.keyboardToolbar.delegate = self;
@@ -188,8 +198,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 - (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
     if (splashType == IMCollectionViewSplashCellNoResults) {
-        ((IMKeyboardView *)self.view).searchView.hidden = NO;
-        [(IMKeyboardView *)self.view updateProgressBarWithValue:0.f];
+        ((IMKeyboardView *) self.view).searchView.hidden = NO;
+        [(IMKeyboardView *) self.view updateProgressBarWithValue:0.f];
     }
 }
 
@@ -228,7 +238,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 }
 
 - (void)userDidSelectToolbarButton:(IMKeyboardToolbarButtonType)buttonType {
-    IMKeyboardView *keyboardView = (IMKeyboardView *)self.view;
+    IMKeyboardView *keyboardView = (IMKeyboardView *) self.view;
     if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         switch (buttonType) {
             case IMKeyboardToolbarButtonSearch:
