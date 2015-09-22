@@ -26,12 +26,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * _Nonnull const IMCollectionViewStatusCellReuseId;
+extern NSString *_Nonnull const IMCollectionViewStatusCellReuseId;
 
 @interface IMCollectionViewStatusCell : UICollectionViewCell
 
-@property(nonatomic, strong) UIActivityIndicatorView *_Nonnull activityIndicatorView;
-@property(nonatomic, strong) UILabel *_Nonnull title;
+@property(nonatomic, strong, nonnull) UIActivityIndicatorView *activityIndicatorView;
+
+@property(nonatomic, strong, nonnull) UILabel *title;
 
 - (void)showLoading;
 

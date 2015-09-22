@@ -26,16 +26,18 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * _Nonnull const IMCategoryCollectionViewCellReuseId;
+extern __nonnull NSString *const IMCategoryCollectionViewCellReuseId;
 
 @interface IMCategoryCollectionViewCell : UICollectionViewCell
 
-- (void)loadImojiCategory:(NSString *_Nullable)categoryTitle imojiImojiImage:(UIImage *_Nullable)imojiImage;
+- (void)loadImojiCategory:(__nullable NSString *)categoryTitle imojiImojiImage:(__nullable UIImage *)imojiImage;
 
-- (void)loadImojiCategory:(NSString *_Nullable)categoryTitle imojiImojiImage:(UIImage *_Nullable)imojiImage animated:(BOOL)animated;
+- (void)loadImojiCategory:(__nullable NSString *)categoryTitle imojiImojiImage:(__nullable UIImage *)imojiImage animated:(BOOL)animated;
 
-@property(nonatomic, strong) UIImageView *_Nullable imojiView;
-@property(nonatomic, strong) UILabel *_Nullable titleView;
+@property(nonatomic, strong, nullable) UIImageView *imojiView;
+
+@property(nonatomic, strong, nullable) UILabel *titleView;
+
 @property(nonatomic, readonly) BOOL hasImojiImage;
 
 @end

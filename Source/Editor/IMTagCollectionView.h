@@ -27,11 +27,11 @@
 
 @interface IMTagCollectionView : UICollectionView
 
-@property(nonatomic, strong, readonly) NSOrderedSet * _Nonnull tags;
+@property(nonatomic, strong, readonly, nonnull) NSOrderedSet *tags;
 
-+ (UIFont *_Nonnull)textFont;
++ (__nonnull UIFont *)textFont;
 
-+ (UIImage *_Nonnull)removeIcon;
++ (__nonnull UIImage *)removeIcon;
 
 @property(nonatomic) BOOL tagInputFieldShouldBeFirstResponder;
 

@@ -30,6 +30,12 @@
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
+@interface IMCollectionViewCell()
+
+@property(nonatomic, readonly) BOOL hasImojiImage;
+
+@end
+
 @implementation IMCollectionViewCell {
 
 }

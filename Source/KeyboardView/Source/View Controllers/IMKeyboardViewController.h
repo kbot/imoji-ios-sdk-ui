@@ -28,12 +28,12 @@
 
 @interface IMKeyboardViewController : UIInputViewController
 
-@property(nonatomic, strong) NSBundle *imagesBundle;
-@property(nonatomic, strong, readonly) IMImojiSession *session;
+@property(nonatomic, strong, nonnull) NSBundle *imagesBundle;
+@property(nonatomic, strong, readonly, nonnull) IMImojiSession *session;
 
-@property(nonatomic, strong) NSString *fontFamily;
-@property(nonatomic, strong) NSString *appGroup;
+@property(nonatomic, strong, nonnull) NSString *fontFamily;
+@property(nonatomic, strong, nonnull) NSString *appGroup;
 
-- (id)initWithImojiSession:(IMImojiSession *)session;
+- (id)initWithImojiSession:(__nonnull IMImojiSession *)session;
 
 @end

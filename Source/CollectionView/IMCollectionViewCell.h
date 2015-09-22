@@ -26,19 +26,18 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * _Nonnull const IMCollectionViewCellReuseId;
+extern __nonnull NSString *const IMCollectionViewCellReuseId;
 
 @interface IMCollectionViewCell : UICollectionViewCell
 
-- (void)loadImojiImage:(UIImage *_Nullable)imojiImage;
+- (void)loadImojiImage:(__nullable UIImage *)imojiImage;
 
-- (void)loadImojiImage:(UIImage *_Nullable)imojiImage animated:(BOOL)animated;
+- (void)loadImojiImage:(__nullable UIImage *)imojiImage animated:(BOOL)animated;
 
 - (void)performGrowAnimation;
 
 - (void)performTranslucentAnimation;
 
-@property(nonatomic, strong) UIImageView *_Nullable imojiView;
-@property(nonatomic, readonly) BOOL hasImojiImage;
+@property(nonatomic, strong, nullable) UIImageView *imojiView;
 
 @end

@@ -28,7 +28,7 @@
 
 @interface IMConnectivityUtil : NSObject
 
-+ (IMConnectivityUtil *  _Nonnull)sharedInstance;
++ (__nonnull IMConnectivityUtil *)sharedInstance;
 
 - (BOOL)hasConnectivity;
 

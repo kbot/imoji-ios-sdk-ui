@@ -27,7 +27,8 @@
 
 @interface IMKeyboardSearchTextField : UILabel
 
--(void) deleteBackward;
--(void) insertText:(NSString*)string;
+- (void)deleteBackward;
+
+- (void)insertText:(__nonnull NSString *)string;
 
 @end
