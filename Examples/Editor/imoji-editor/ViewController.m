@@ -27,7 +27,9 @@
     return self;
 }
 
-- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji withError:(NSError *)error {
+- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji
+                         withError:(NSError *)error
+                fromViewController:(IMCreateImojiViewController *)viewController {
     if (error) {
         [[[UIAlertView alloc] initWithTitle:@"Unable to create Imoji :("
                                    message:[NSString stringWithFormat:@"error: %@", error]
