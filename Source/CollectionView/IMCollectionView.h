@@ -52,7 +52,7 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
 * @abstract The current imoji session
 */
-@property(nonatomic, strong, readonly) IMImojiSession *session;
+@property(nonatomic, strong, readonly) IMImojiSession *_Nonnull session;
 
 /**
 * @abstract The type of content currently displayed in collection view
@@ -70,25 +70,25 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  * @abstract The image bundle to use for displaying shared assets such as splash screen images. Defaults to
  * [IMResourceBundleUtil assetsBundle]
 */
-@property(nonatomic, strong) NSBundle *imagesBundle;
+@property(nonatomic, strong) NSBundle *_Nonnull imagesBundle;
 
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
  * [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]
 */
-@property(nonatomic, strong) IMImojiObjectRenderingOptions *renderingOptions;
+@property(nonatomic, strong) IMImojiObjectRenderingOptions *_Nonnull renderingOptions;
 
-@property(nonatomic, weak) id <IMCollectionViewDelegate> collectionViewDelegate;
-
-/**
- * @abstract Creates a collection view with the specified Imoji session
- */
-- (instancetype)initWithSession:(IMImojiSession *)session;
+@property(nonatomic, weak) id <IMCollectionViewDelegate> _Nullable collectionViewDelegate;
 
 /**
  * @abstract Creates a collection view with the specified Imoji session
  */
-+ (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
+- (instancetype _Nonnull)initWithSession:(IMImojiSession *_Nonnull)session;
+
+/**
+ * @abstract Creates a collection view with the specified Imoji session
+ */
++ (instancetype _Nonnull)imojiCollectionViewWithSession:(IMImojiSession *_Nonnull)session;
 
 @end
 
@@ -108,17 +108,17 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
  * The collection view will automatically scroll through multiple pages of stickers if they exist
  */
-- (void)loadImojisFromSearch:(NSString *)searchTerm;
+- (void)loadImojisFromSearch:(NSString *_Nullable)searchTerm;
 
 /**
  * @abstract Parses a given sentence for popular Imoji stickers
  */
-- (void)loadImojisFromSentence:(NSString *)sentence;
+- (void)loadImojisFromSentence:(NSString *_Nonnull)sentence;
 
 /**
  * @abstract Loads Imoji stickers into the collection view using fetchImojisByIdentifiers from IMImojiSession
  */
-- (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers;
+- (void)loadImojisFromIdentifiers:(NSArray *_Nonnull)imojiIdentifiers;
 
 /**
  * @abstract Loads Imoji stickers for an authenticated user into the collection view using
@@ -135,11 +135,11 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 @interface IMCollectionView (Override)
 
-- (void)processCellAnimations:(NSIndexPath *)currentIndexPath;
+- (void)processCellAnimations:(NSIndexPath *_Nonnull)currentIndexPath;
 
-- (id)contentForIndexPath:(NSIndexPath *)path;
+- (id _Nullable)contentForIndexPath:(NSIndexPath *_Nonnull)path;
 
-- (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *)indexPath;
+- (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *_Nonnull)indexPath;
 
 @end
 
@@ -150,23 +150,23 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Notified when the specified content has completed loading
  */
-- (void)imojiCollectionView:(IMCollectionView *)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType;
+- (void)imojiCollectionView:(IMCollectionView *_Nonnull)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType;
 
 /**
  * @abstract Notified when the user has tapped on the a given splash cell
  */
-- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView;
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *_Nonnull)collectionView;
 
 /**
  * @abstract Notified when a user selected an imoji
  */
-- (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
+- (void)userDidSelectImoji:(IMImojiObject *_Nonnull)imoji fromCollectionView:(IMCollectionView *_Nonnull)collectionView;
 
 /**
  * @abstract Notified when a user selected a category
  */
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView;
+- (void)userDidSelectCategory:(IMImojiCategoryObject *_Nonnull)category fromCollectionView:(IMCollectionView *_Nonnull)collectionView;
 
-- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView;
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *_Nonnull)collectionView;
 
 @end

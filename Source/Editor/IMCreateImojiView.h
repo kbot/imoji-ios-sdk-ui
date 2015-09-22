@@ -61,7 +61,7 @@
 /**
 * @abstract Reverts the last edit made by the user if any
 */
-- (void)loadImage:(UIImage *)image;
+- (void)loadImage:(UIImage *_Nonnull)image;
 
 /**
 * @abstract Clears all edits and resets the viewport
@@ -71,17 +71,17 @@
 /**
 * @abstract The finalized image without borders for export. If hasOutputImage is false, this will return nil.
 */
-@property(nonatomic, readonly) UIImage* outputImage;
+@property(nonatomic, readonly) UIImage *_Nonnull outputImage;
 
 /**
 * @abstract The finalized image with borders for export. If hasOutputImage is false, this will return nil.
 */
-@property(nonatomic, readonly) UIImage* borderedOutputImage;
+@property(nonatomic, readonly) UIImage *_Nonnull borderedOutputImage;
 
 /**
 * @abstract Optional delegate property to listen for changes to the editor
 */
-@property(nonatomic, assign) id<IMCreateImojiViewDelegate> editorDelegate;
+@property(nonatomic, assign) id<IMCreateImojiViewDelegate> _Nullable editorDelegate;
 
 @end
 
@@ -89,6 +89,6 @@
 
 @optional
 
-- (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView;
+- (void)userDidUpdatePathInEditorView:(IMCreateImojiView *_Nonnull)editorView;
 
 @end

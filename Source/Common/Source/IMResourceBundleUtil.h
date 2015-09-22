@@ -27,16 +27,16 @@
 
 @interface IMResourceBundleUtil : NSObject
 
-+ (NSString *)localizedStringForKey:(NSString *)key;
++ (NSString *_Nullable)localizedStringForKey:(NSString *_Nonnull)key;
 
-+ (NSString *)localizedStringForKey:(NSString *)key comment:(NSString *)comment;
++ (NSString *_Nullable)localizedStringForKey:(NSString *_Nonnull)key comment:(NSString *_Nullable)comment;
 
-+ (NSBundle *)stringsBundle;
++ (NSBundle *_Nonnull)stringsBundle;
 
-+ (NSBundle *)assetsBundle;
++ (NSBundle *_Nonnull)assetsBundle;
 
-+ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius;
++ (UIImage *_Nonnull)loadingPlaceholderImageWithRadius:(CGFloat)radius;
 
-+ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(UIColor *)color;
++ (UIImage *_Nonnull)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(UIColor *_Nonnull)color;
 
 @end

@@ -16,19 +16,6 @@ typedef NS_ENUM(NSUInteger, IMKeyboardToolbarButtonType) {
     IMKeyboardToolbarButtonDelete
 };
 
-@protocol IMKeyboardToolbarDelegate;
-
-@interface IMKeyboardToolbar : UIToolbar
-
-@property(nonatomic, strong) NSBundle *imageBundle;
-@property(nonatomic, weak) id<IMKeyboardToolbarDelegate> delegate;
-
-- (void)addToolbarButtonWithType:(IMKeyboardToolbarButtonType)buttonType;
-
-+ (instancetype)imojiKeyboardToolbar;
-
-@end
-
 @protocol IMKeyboardToolbarDelegate <UIToolbarDelegate>
 
 - (void)userDidSelectNextKeyboardButton;
@@ -38,5 +25,16 @@ typedef NS_ENUM(NSUInteger, IMKeyboardToolbarButtonType) {
 @optional
 
 - (void)userDidSelectToolbarButton:(IMKeyboardToolbarButtonType)buttonType;
+
+@end
+
+@interface IMKeyboardToolbar : UIToolbar
+
+@property(nonatomic, strong) NSBundle * _Nonnull imageBundle;
+@property(nonatomic, weak) id<IMKeyboardToolbarDelegate> _Nullable delegate;
+
+- (void)addToolbarButtonWithType:(IMKeyboardToolbarButtonType)buttonType;
+
++ (instancetype _Nonnull)imojiKeyboardToolbar;
 
 @end

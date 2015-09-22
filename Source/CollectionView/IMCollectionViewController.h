@@ -38,17 +38,17 @@
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-- (instancetype)initWithSession:(IMImojiSession *)session;
+- (instancetype _Nonnull)initWithSession:(IMImojiSession *_Nonnull)session;
 
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-+ (instancetype)collectionViewControllerWithSession:(IMImojiSession *)session;
++ (instancetype _Nonnull)collectionViewControllerWithSession:(IMImojiSession *_Nonnull)session;
 
 /**
  * @abstract Loads Imoji stickers into the collection view using getFeaturedImojisWithNumberOfResults from IMImojiSession
  */
-@property(nonatomic, strong) IMImojiSession* session;
+@property(nonatomic, strong) IMImojiSession *_Nonnull session;
 
 /**
  * @abstract If YES, calls IMImojiSession searchImojisWithSentence: to parse Imoji content from a sentence. Otherwise,
@@ -67,11 +67,11 @@
  * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
-@property(nonatomic, strong, readonly) UITextField *searchField;
+@property(nonatomic, strong, readonly) UITextField *_Nonnull searchField;
 
 /* @abstract The collection view associated to the view controller. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
-@property(nonatomic, strong, readonly) IMCollectionView* collectionView;
+@property(nonatomic, strong, readonly) IMCollectionView *_Nonnull collectionView;
 
 @end

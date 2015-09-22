@@ -8,6 +8,8 @@
 
 }
 
+@dynamic delegate;
+
 - (instancetype)initImojiKeyboardToolbar {
     self = [super init];
     if(self) {

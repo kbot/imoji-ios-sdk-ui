@@ -39,6 +39,8 @@
 
 }
 
+@dynamic collectionViewDelegate;
+
 - (instancetype)initWithSession:(IMImojiSession *)session {
     self = [super initWithSession:session];
     if (self) {

@@ -38,8 +38,6 @@
 
 @implementation IMCreateImojiView
 
-@synthesize outputImage = _outputImage, borderedOutputImage = _borderedOutputImage;
-
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -132,8 +130,6 @@
                 [self.editorDelegate userDidUpdatePathInEditorView:self];
             });
         }
-
-        _borderedOutputImage = _outputImage = nil;
     }
 }
 
@@ -197,24 +193,14 @@
         return nil;
     }
 
-    if (_outputImage) {
-        return _outputImage;
-    }
-
     IGImage *trimmedImage = igEditorGetTrimmedOutputImage(self.igEditor);
     CGImageRef pImage = igImageToNative(trimmedImage);
     igImageDestroy(trimmedImage);
 
-    _outputImage = [UIImage imageWithCGImage:pImage];
-
-    return _outputImage;
+    return [UIImage imageWithCGImage:pImage];
 }
 
 - (UIImage *)borderedOutputImage {
-    if (_borderedOutputImage) {
-        return _borderedOutputImage;
-    }
-
     UIImage *image = self.outputImage;
     if (!image) {
         return nil;
@@ -239,9 +225,7 @@
     igImageDestroy(outputImage);
     igBorderDestroy(border, true);
 
-    _borderedOutputImage = borderedImoji;
-
-    return _borderedOutputImage;
+    return borderedImoji;
 }
 
 + (CGImageRef)CGImageWithCorrectOrientation:(UIImage *)originalImage {

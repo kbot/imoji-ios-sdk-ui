@@ -31,23 +31,23 @@
 
 @interface IMCreateImojiViewController : UIViewController
 
-@property(readonly) UIImage *sourceImage;
+@property(readonly) UIImage *_Nonnull sourceImage;
 
-- (instancetype)initWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session;
+- (instancetype _Nonnull)initWithSourceImage:(UIImage *_Nonnull)sourceImage session:(IMImojiSession *_Nonnull)session;
 
-+ (instancetype)controllerWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session;
++ (instancetype _Nonnull)controllerWithSourceImage:(UIImage *_Nonnull)sourceImage session:(IMImojiSession *_Nonnull)session;
 
-@property(nonatomic, strong) id <IMCreateImojiViewControllerDelegate> createDelegate;
-@property(nonatomic, strong) IMImojiSession *session;
+@property(nonatomic, strong) id <IMCreateImojiViewControllerDelegate> _Nullable createDelegate;
+@property(nonatomic, strong) IMImojiSession *_Nonnull session;
 
 @end
 
-@protocol IMCreateImojiViewControllerDelegate<NSObject>
+@protocol IMCreateImojiViewControllerDelegate <NSObject>
 
 @optional
 
-- (void)userDidFinishCreatingImoji:(IMImojiObject *)imoji withError:(NSError *)error fromViewController:(IMCreateImojiViewController *)viewController;
+- (void)userDidFinishCreatingImoji:(IMImojiObject *_Nullable)imoji withError:(NSError *_Nullable)error fromViewController:(IMCreateImojiViewController *_Nonnull)viewController;
 
-- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController;
+- (void)userDidCancelImageEdit:(IMCreateImojiViewController *_Nonnull)viewController;
 
 @end

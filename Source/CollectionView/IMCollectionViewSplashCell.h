@@ -34,13 +34,13 @@ typedef NS_ENUM(NSUInteger, IMCollectionViewSplashCellType) {
     IMCollectionViewSplashCellCollection
 };
 
-extern NSString *const IMCollectionViewSplashCellReuseId;
+extern NSString * _Nonnull const IMCollectionViewSplashCellReuseId;
 
 @interface IMCollectionViewSplashCell : UICollectionViewCell
 
-@property(nonatomic, strong) UIImageView *splashGraphic;
-@property(nonatomic, strong) UILabel *splashText;
+@property(nonatomic, strong) UIImageView *_Nullable splashGraphic;
+@property(nonatomic, strong) UILabel *_Nullable splashText;
 
-- (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle *)imageBundle;
+- (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle *_Nonnull)imageBundle;
 
 @end

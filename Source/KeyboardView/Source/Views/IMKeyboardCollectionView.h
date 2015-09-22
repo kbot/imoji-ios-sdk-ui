@@ -28,27 +28,25 @@
 #import <ImojiSDK/ImojiSDK.h>
 #import "IMCollectionView.h"
 
-@class IMImojiSession;
-
-@protocol IMKeyboardCollectionViewDelegate;
-
-@interface IMKeyboardCollectionView : IMCollectionView
-
-@property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
-
-+ (instancetype)imojiCollectionViewWithSession:(IMImojiSession *)session;
-
-- (void)loadRecentImojis:(NSArray *)recents;
-
-- (void)loadFavoriteImojis:(NSArray *)favoritedImojis;
-
-@end
-
-@protocol IMKeyboardCollectionViewDelegate <IMCollectionViewDelegate>
+@protocol IMKeyboardCollectionViewDelegate <NSObject, IMCollectionViewDelegate>
 
 @optional
 
-- (void)userDidDoubleTapImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView;
+- (void)userDidDoubleTapImoji:(IMImojiObject * _Nonnull)imoji fromCollectionView:(IMCollectionView * _Nonnull)collectionView;
+
+@end
+
+@class IMImojiSession;
+
+@interface IMKeyboardCollectionView : IMCollectionView
+
+@property(nonatomic, weak) id <IMKeyboardCollectionViewDelegate> _Nullable collectionViewDelegate;
+
++ (instancetype _Nonnull)imojiCollectionViewWithSession:(IMImojiSession * _Nonnull)session;
+
+- (void)loadRecentImojis:(NSArray * _Nonnull)recents;
+
+- (void)loadFavoriteImojis:(NSArray * _Nonnull)favoritedImojis;
 
 @end
 

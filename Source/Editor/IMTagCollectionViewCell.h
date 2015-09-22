@@ -27,12 +27,12 @@
 
 @interface IMTagCollectionViewCell : UICollectionViewCell
 
-@property(nonatomic, strong) NSString *tagContents;
-@property(nonatomic, strong, readonly) UIButton *removeButton;
-@property(nonatomic, strong, readonly) UILabel *textView;
+@property(nonatomic, strong) NSString *_Nonnull tagContents;
+@property(nonatomic, strong, readonly) UIButton *_Nonnull removeButton;
+@property(nonatomic, strong, readonly) UILabel *_Nonnull textView;
 
-+ (CGSize)sizeThatFitsTag:(NSString *)tag andSize:(CGSize)size;
++ (CGSize)sizeThatFitsTag:(NSString *_Nonnull)tag andSize:(CGSize)size;
 
-+ (IMTagCollectionViewCell *)instance;
++ (IMTagCollectionViewCell *_Nonnull)instance;
 
 @end
