@@ -28,6 +28,7 @@
 #import "IMKeyboardCollectionViewCell.h"
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
+#import "IMKeyboardView.h"
 
 @interface IMKeyboardCollectionView ()
 

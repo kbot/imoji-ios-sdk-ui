@@ -71,7 +71,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
         self.imojiView.contentMode = UIViewContentModeCenter;
         _hasImojiImage = NO;
     }
-    
+
     if (showAnimations) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:.5f
