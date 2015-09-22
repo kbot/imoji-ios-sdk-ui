@@ -1,5 +1,11 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.10
+
+* Fixed crash that occurs in the editor when the user goes to the tag screen then goes back and makes changes to the sticker
+* Panning around the Editor can now be done with one finger once the border has been drawn. Previously users had to use 2 touches.
+* Refactored userDidFinishCreatingImoji:withError: in IMCreateImojiViewControllerDelegate and added the source view controller to the signature
+
 ### Version 0.1.9
 
 * Switched over to showing 3 Imoij Categories in Collection View
