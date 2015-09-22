@@ -38,7 +38,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 @interface IMCollectionView ()
 
 @property(nonatomic, strong) NSMutableArray *images;
-@property(nonatomic, strong) NSMutableArray *reloadPaths;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property(nonatomic, strong) NSObject *loadingIndicatorObject;
@@ -73,7 +72,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
         self.content = [NSMutableArray array];
         self.images = [NSMutableArray array];
-        self.reloadPaths = [NSMutableArray array];
         self.runningBatchUpdates = NO;
         self.renderCount = 0;
 
@@ -568,8 +566,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)generateNewResultSetOperationWithSearchOffset:(NSNumber *)searchOffset {
-    [self.reloadPaths removeAllObjects];
-
     if (!searchOffset) {
         self.renderCount = 0;
         [self.images removeAllObjects];
@@ -655,27 +651,15 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                          if (!operation.isCancelled) {
                              self.images[index + offset] = image ? image : [NSNull null];
-                             [self.reloadPaths addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
-                             [self runBatchUpdate:operation];
+                             
+                             [self performBatchUpdates:^{
+                                 [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(index + offset) inSection:0]]];
+                             }
+                                            completion:^(BOOL finished) {
+                                            }
+                              ];
                          }
                      }];
-}
-
-- (void)runBatchUpdate:(NSOperation *)operation {
-    // queue up update to avoid iOS 7's restrictions
-    if (self.reloadPaths.count > 0 && !self.runningBatchUpdates && !operation.isCancelled) {
-        __block NSArray *paths = [NSArray arrayWithArray:self.reloadPaths];
-        self.runningBatchUpdates = YES;
-
-        [self performBatchUpdates:^{
-                    [self reloadItemsAtIndexPaths:paths];
-                }
-                       completion:^(BOOL finished) {
-                           [self.reloadPaths removeObjectsInArray:paths];
-                           self.runningBatchUpdates = NO;
-                           [self runBatchUpdate:operation];
-                       }];
-    }
 }
 
 - (void)userTappedSplashView:(UITapGestureRecognizer *)sender {
