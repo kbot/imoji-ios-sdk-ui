@@ -160,10 +160,16 @@ _vectorSeek((_Vector *) _vector, _position); \
     _vectorInsertAt((_Vector *) _vector, index, (char *) &_element); \
 })
 
-#define vectorBinaryInsert(vector, element, compar, arg) ({ \
+#define vectorBinaryInsert(vector, element, compar) ({ \
     typeof(vector) _vector = vector; \
     typeof(*_vector->elements) _element = element; \
-    _vectorBinaryInsert((_Vector *) _vector, (char *) &_element, (compar), (arg)); \
+    _vectorBinaryInsert((_Vector *) _vector, (char *) &_element, (compar)); \
+})
+
+#define vectorBinarySearch(vector, element, compar) ({ \
+    typeof(vector) _vector = vector; \
+    typeof(*_vector->elements) _element = element; \
+    _vectorBinarySearch((_Vector *) _vector, (char *) &_element, (compar)); \
 })
 
 // Make a copy of a vector and return a pointer to it, or NULL if the input vector is NULL.
@@ -171,42 +177,6 @@ _vectorSeek((_Vector *) _vector, _position); \
 
 // Reverse the elements in a vector. Returns false if vector is NULL.
 #define vectorReverse(vector) _vectorReverse((_Vector *) (vector))
-
-// Search a vector of structs for a struct having a member of a given value. Returns the index of
-// the matching struct, or -1 if no matches were found. Prints an error message to
-// stderr and returns -1 if the vector is NULL.
-#define vectorSearch(vector, member, value) ({ \
-    typeof(vector) _vector = vector; \
-    typeof(value) _value = value; \
-    int _index = -1; \
-    \
-    if(_vector != NULL) { \
-        for(int _i = 0; _i < _vector->count; _i++) { \
-            if(_vector->elements[_i].member == _value) { \
-                _index = _i; \
-                break; \
-            } \
-        } \
-    } \
-    _index; \
-})
-
-// Search a vector of struct pointers for a struct having a member of a given value. NULL pointers
-// are handled by skipping over them. Returns a matching element (struct pointer), or NULL if no
-// matches were found. Prints an error message to stderr and returns NULL if the vector is NULL.
-#define vectorSearchIndirect(vector, member, value) ({ \
-    typeof(vector) _vector = vector; \
-    typeof(value) _value = value; \
-    typeof(_vector->elements) _element = NULL; \
-    \
-    for(int _i = 0; _i < _vector->count; _i++) { \
-        if(_vector->elements[_i] != NULL && _vector->elements[_i]->member == _value) { \
-            _element = _vector->elements[_i]; \
-            break; \
-        } \
-    } \
-    _element; \
-})
 
 #define vectorSerialize(vector, toVector) ({ \
     typeof(vector) _vector = vector; \
@@ -238,10 +208,10 @@ bool _vectorSeek(_Vector * vector, size_t position);
 void _vectorRemoveAt(_Vector * vector, size_t index, char * element);
 int _vectorRemove(_Vector * vector, char * element);
 bool _vectorInsertAt(_Vector * vector, size_t index, char * element);
-int _vectorBinaryInsert(_Vector * vector, char * element, int (*compar)(const char *, const char *, void *),
-                        void * arg);
+int _vectorBinaryInsert(_Vector * vector, char * element, int (*compar)(const void *, const void *));
 _Vector * _vectorCopy(_Vector * vector);
 bool _vectorReverse(_Vector *vector);
+int _vectorBinarySearch(_Vector * vector, char * element, int (*compar)(const void *, const void *));
 void _vectorSerialize(_Vector * vector, UInt8Vector * toVector);
 void _vectorDeserialize(_Vector * vector, UInt8Vector * fromVector);
 
