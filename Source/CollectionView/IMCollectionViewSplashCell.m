@@ -25,6 +25,7 @@
 
 #import "IMCollectionViewSplashCell.h"
 #import "IMAttributeStringUtil.h"
+#import "IMResourceBundleUtil.h"
 #import <Masonry/Masonry.h>
 
 NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCellReuseId";
@@ -37,7 +38,7 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     switch (splashCellType) {
         case IMCollectionViewSplashCellNoConnection:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"Enable wifi or cellular data\nto use imoji sticker keyboard"
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoConnection"]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
@@ -45,39 +46,43 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
             [self setupSplashCellWithText:attributedString imageName:@"collection_view_splash_noconnection" andImageBundle:imageBundle];
             break;
         case IMCollectionViewSplashCellEnableFullAccess:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"Allow Full Access in Settings\nto use imoji sticker keyboard"
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashEnableFullAccess"]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
             [self setupSplashCellWithText:attributedString imageName:@"collection_view_splash_enableaccess" andImageBundle:imageBundle];
             break;
-        case IMCollectionViewSplashCellNoResults:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"No Results\n"
+        case IMCollectionViewSplashCellNoResults: {
+            NSArray *textArray = [[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoResults"] componentsSeparatedByString:@"|"];
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[0]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:19.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"Try Again"
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[1]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:16.0f]
                                                                                        color:[UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
             [self setupSplashCellWithText:attributedString imageName:@"collection_view_splash_noresults" andImageBundle:imageBundle];
             break;
-        case IMCollectionViewSplashCellCollection:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"Double tap "
+        }
+        case IMCollectionViewSplashCellCollection:{
+            NSArray *textArray = [[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashCollection"] componentsSeparatedByString:@"|"];
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[0]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayMediumFontWithSize:15.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"stickers to add them\nto your collection!"
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[1]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:15.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
             [self setupSplashCellWithText:attributedString imageName:@"collection_view_splash_collection" andImageBundle:imageBundle];
             break;
+        }
         case IMCollectionViewSplashCellRecents:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:@"Stickers you send\nwill appear here"
+            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashRecents"]
                                                                                     withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:15.0f]
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];

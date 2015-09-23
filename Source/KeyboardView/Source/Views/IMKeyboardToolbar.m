@@ -12,7 +12,7 @@
 
 - (instancetype)initImojiKeyboardToolbar {
     self = [super init];
-    if(self) {
+    if (self) {
         self.imageBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
         self.items = [[NSArray alloc] init];
     }
@@ -21,7 +21,7 @@
 }
 
 - (void)addToolbarButtonWithType:(IMKeyboardToolbarButtonType)buttonType {
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, IMKeyboardToolbarButtonHeight, IMKeyboardToolbarButtonHeight);
 
     switch (buttonType) {
@@ -59,24 +59,28 @@
     }
 
     button.tag = buttonType;
-    if(buttonType != IMKeyboardToolbarButtonNextKeyboard && buttonType != IMKeyboardToolbarButtonDelete) {
+    if (buttonType != IMKeyboardToolbarButtonNextKeyboard && buttonType != IMKeyboardToolbarButtonDelete) {
         [button addTarget:self action:@selector(navPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
 
     UIBarButtonItem *toolbarButton;
     toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:button];
 
+    if (self.items.count > 0) {
+        self.items = [self.items arrayByAddingObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+    }
+
     self.items = [self.items arrayByAddingObject:toolbarButton];
 }
 
 - (IBAction)nextKeyboardPressed:(UIButton *)sender {
-    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
         [self.delegate userDidSelectNextKeyboardButton];
     }
 }
 
 - (IBAction)deletePressed:(id)sender {
-    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectDeleteButton)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectDeleteButton)]) {
         [self.delegate userDidSelectDeleteButton];
     }
 }
@@ -86,16 +90,14 @@
     // set selected state
 
     if (sender.tag != IMKeyboardToolbarButtonSearch && sender.tag != IMKeyboardToolbarButtonDelete) {
-        for (NSUInteger i = 0; i < self.items.count; i++) { // loop through all buttons and deselect them
-            if (i != IMKeyboardToolbarButtonNextKeyboard && i != IMKeyboardToolbarButtonDelete) {
-                UIBarButtonItem *item = self.items[i];
-                UIButton *tmpButton = (UIButton *)item.customView;
-                if (tmpButton.isSelected && i == sender.tag) {
-                    sameButtonPressed = YES; // check if it's the same button being pressed
-                }
-                tmpButton.selected = NO;
+        for(UIBarButtonItem *item in self.items) {
+            UIButton *tmpButton = (UIButton *) item.customView;
+            if(tmpButton.isSelected && tmpButton.tag == sender.tag) {
+                sameButtonPressed = YES;
             }
+            tmpButton.selected = NO;
         }
+
         sender.selected = YES; // set button pressed to selected
     }
 
@@ -104,7 +106,7 @@
     }
 
     // run action
-    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
         [self.delegate userDidSelectToolbarButton:(IMKeyboardToolbarButtonType) sender.tag];
     }
 }
