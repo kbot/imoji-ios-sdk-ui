@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString *_Nonnull const IMCollectionViewStatusCellReuseId;
+extern NSString *__nonnull const IMCollectionViewStatusCellReuseId;
 
 @interface IMCollectionViewStatusCell : UICollectionViewCell
 
