@@ -26,12 +26,13 @@
 #import <Masonry/Masonry.h>
 #import "IMKeyboardView.h"
 #import "IMKeyboardCollectionView.h"
-#import "IMKeyboardToolbar.h"
+#import "IMToolbar.h"
 #import "IMAttributeStringUtil.h"
 #import "IMConnectivityUtil.h"
 #import "IMKeyboardSearchTextField.h"
 
 NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
+NSUInteger const IMKeyboardToolbarHeight = 40;
 
 @interface IMKeyboardView ()
 
@@ -217,7 +218,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 }
 
 - (void)setupKeyboardToolbar {
-    _keyboardToolbar = [IMKeyboardToolbar imojiKeyboardToolbar];
+    _keyboardToolbar = [IMToolbar imojiToolbar];
     self.keyboardToolbar.backgroundColor = [UIColor clearColor];
     self.keyboardToolbar.clipsToBounds = YES;
 
@@ -227,21 +228,69 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         make.bottom.equalTo(self.mas_bottom);
         make.left.equalTo(self.mas_left);
         make.right.equalTo(self.mas_right);
-        make.height.equalTo(@(IMKeyboardToolbarButtonHeight));
+        make.height.equalTo(@(IMKeyboardToolbarHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
 
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonNextKeyboard];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonSearch];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonRecents];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonReactions];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonTrending];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonCollection];
-    [self.keyboardToolbar addToolbarButtonWithType:IMKeyboardToolbarButtonDelete];
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardNextKeyboard
+                                             image:[UIImage imageNamed:@"keyboard_globe"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:nil];
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonSearch
+                                             image:[UIImage imageNamed:@"keyboard_search"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:[UIImage imageNamed:@"keyboard_search_active"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+    ];
+
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonRecents
+                                             image:[UIImage imageNamed:@"keyboard_recents"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:[UIImage imageNamed:@"keyboard_recents_active"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+    ];
+
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonReactions
+                                             image:[UIImage imageNamed:@"keyboard_reactions"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:[UIImage imageNamed:@"keyboard_reactions_active"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+    ];
+
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonTrending
+                                             image:[UIImage imageNamed:@"keyboard_trending"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:[UIImage imageNamed:@"keyboard_trending_active"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+    ];
+
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonCollection
+                                             image:[UIImage imageNamed:@"keyboard_collection"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:[UIImage imageNamed:@"keyboard_collection_active"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+    ];
+
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardDelete
+                                             image:[UIImage imageNamed:@"keyboard_delete"
+                                                              inBundle:self.imageBundle
+                                         compatibleWithTraitCollection:nil]
+                                       activeImage:nil];
 
     if (!self.hasFullAccess) {
         for (UIBarButtonItem *item in self.keyboardToolbar.items) {
-            if (item.customView.tag == IMKeyboardToolbarButtonNextKeyboard) {
+            if (item.customView.tag == IMToolbarButtonKeyboardNextKeyboard) {
                 [(UIButton *) item.customView setAlpha:0.5f];
             } else {
                 [(UIButton *) item.customView setEnabled:NO];
@@ -261,7 +310,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         return;
     }
 
-    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidCloseCategoryFromView:)]) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidCloseCategoryFromView:)]) {
         [self.delegate userDidCloseCategoryFromView:self];
     }
 

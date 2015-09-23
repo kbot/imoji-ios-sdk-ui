@@ -31,7 +31,7 @@
 
 @class IMImojiSession;
 @class IMKeyboardCollectionView;
-@class IMKeyboardToolbar;
+@class IMToolbar;
 @class IMKeyboardSearchTextField;
 @class IMImojiCategoryObject;
 
@@ -41,7 +41,7 @@
 
 // Views
 @property(nonatomic, strong, readonly) IMKeyboardCollectionView *collectionView;
-@property(nonatomic, strong, readonly) IMKeyboardToolbar *keyboardToolbar;
+@property(nonatomic, strong, readonly) IMToolbar *keyboardToolbar;
 @property(nonatomic, strong, readonly) UIView *searchView;
 @property(nonatomic, strong, readonly) IMKeyboardSearchTextField *searchField;
 

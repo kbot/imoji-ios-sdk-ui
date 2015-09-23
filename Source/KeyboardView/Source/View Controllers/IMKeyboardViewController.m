@@ -26,15 +26,15 @@
 #import <Masonry/Masonry.h>
 #import "IMKeyboardViewController.h"
 #import "IMKeyboardCollectionView.h"
-#import "IMAttributeStringUtil.h"
 #import "IMQwertyViewController.h"
 #import "IMConnectivityUtil.h"
-#import "IMKeyboardToolbar.h"
+#import "IMToolbar.h"
 #import "IMKeyboardView.h"
 
 NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
 
-@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardViewDelegate, IMKeyboardCollectionViewDelegate, IMKeyboardToolbarDelegate>
+@interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardViewDelegate,
+        IMKeyboardCollectionViewDelegate, IMToolbarDelegate>
 
 // keyboard view
 @property(nonatomic, strong) IMKeyboardView *keyboardView;
@@ -46,7 +46,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
 // toolbar collection view switching variables
 @property(nonatomic) BOOL isViewingImojiCategory;
-@property(nonatomic) IMKeyboardToolbarButtonType currentToolbarButtonSelected;
+@property(nonatomic) IMToolbarButtonType currentToolbarButtonSelected;
 
 @end
 
@@ -61,7 +61,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         self.portraitHeight = IMKeyboardViewPortraitHeight;
         self.landscapeHeight = IMKeyboardViewLandscapeHeight;
         self.isViewingImojiCategory = NO;
-        self.currentToolbarButtonSelected = IMKeyboardToolbarButtonReactions;
+        self.currentToolbarButtonSelected = IMToolbarButtonReactions;
 
         _appGroup = IMKeyboardViewControllerDefaultAppGroup;
 
@@ -253,24 +253,36 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
     }
 }
 
-#pragma mark IMKeyboardToolbarDelegate
+#pragma mark IMToolbarDelegate
 
-- (void)userDidSelectNextKeyboardButton {
-    [self advanceToNextInputMode];
-}
+- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
+    BOOL sameButtonPressed = self.currentToolbarButtonSelected == buttonType;
 
-- (void)userDidSelectToolbarButton:(IMKeyboardToolbarButtonType)buttonType {
+    if (sameButtonPressed
+            && buttonType != IMToolbarButtonReactions
+            && buttonType != IMToolbarButtonTrending) {
+        return;
+    }
+
     if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         switch (buttonType) {
-            case IMKeyboardToolbarButtonSearch:
+            case IMToolbarButtonKeyboardDelete:
+                [self.textDocumentProxy deleteBackward];
+                break;
+
+            case IMToolbarButtonKeyboardNextKeyboard:
+                [self advanceToNextInputMode];
+                break;
+
+            case IMToolbarButtonSearch:
                 self.keyboardView.searchView.hidden = NO;
                 [self.keyboardView updateProgressBarWithValue:0.f];
                 break;
-            case IMKeyboardToolbarButtonRecents:
+            case IMToolbarButtonRecents:
                 [self.keyboardView.collectionView loadRecentImojis:self.recentImojis];
                 [self.keyboardView updateTitleWithText:@"RECENTS" hideCloseButton:YES];
                 break;
-            case IMKeyboardToolbarButtonReactions:
+            case IMToolbarButtonReactions:
                 if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
                     self.isViewingImojiCategory = NO;
 
@@ -281,7 +293,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                     [self.keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
                 }
                 break;
-            case IMKeyboardToolbarButtonTrending:
+            case IMToolbarButtonTrending:
                 if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
                     self.isViewingImojiCategory = NO;
 
@@ -292,7 +304,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
                     [self.keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
                 }
                 break;
-            case IMKeyboardToolbarButtonCollection: {
+            case IMToolbarButtonCollection: {
                 [self.keyboardView.collectionView loadFavoriteImojis:self.favoritedImojis];
                 [self.keyboardView updateTitleWithText:@"COLLECTION" hideCloseButton:YES];
                 break;
@@ -306,10 +318,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
         [self.keyboardView.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
         [self.keyboardView updateTitleWithText:@"NO NETWORK CONNECTION" hideCloseButton:YES];
     }
-}
-
-- (void)userDidSelectDeleteButton {
-    [self.textDocumentProxy deleteBackward];
 }
 
 #pragma mark Recents/Favorites Logic
