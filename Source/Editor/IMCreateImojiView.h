@@ -61,7 +61,7 @@
 /**
 * @abstract Reverts the last edit made by the user if any
 */
-- (void)loadImage:(__nonnull UIImage *)image;
+- (void)loadImage:(UIImage * __nonnull )image;
 
 /**
 * @abstract Clears all edits and resets the viewport
@@ -92,6 +92,6 @@
 /**
 * @abstract Called when the user made an edit to the view
 */
-- (void)userDidUpdatePathInEditorView:(__nonnull IMCreateImojiView *)editorView;
+- (void)userDidUpdatePathInEditorView:(IMCreateImojiView * __nonnull)editorView;
 
 @end

@@ -28,22 +28,22 @@
 
 @interface IMAttributeStringUtil : NSObject
 
-+ (__nonnull UIFont *)defaultFontWithSize:(CGFloat)size;
++ (UIFont *__nonnull)defaultFontWithSize:(CGFloat)size;
 
-+ (__nonnull UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size;
++ (UIFont *__nonnull)sfUIDisplayLightFontWithSize:(CGFloat)size;
 
-+ (__nonnull UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size;
++ (UIFont *__nonnull)sfUIDisplayRegularFontWithSize:(CGFloat)size;
 
-+ (__nonnull UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size;
++ (UIFont *__nonnull)sfUIDisplayMediumFontWithSize:(CGFloat)size;
 
-+ (__nonnull NSAttributedString *)attributedString:(__nonnull NSString *)text
-                                          withFont:(__nonnull UIFont *)font
-                                             color:(__nonnull UIColor *)color
-                                      andAlignment:(NSTextAlignment)alignment;
++ (NSAttributedString *__nonnull)attributedString:(NSString *__nonnull)text
+                                         withFont:(UIFont *__nonnull)font
+                                            color:(UIColor *__nonnull)color
+                                     andAlignment:(NSTextAlignment)alignment;
 
-+ (__nonnull NSAttributedString *)attributedString:(__nonnull NSString *)text
-                                          withFont:(__nonnull UIFont *)font
-                                             color:(__nonnull UIColor *)color
-                                 andParagraphStyle:(__nonnull NSParagraphStyle *)paragraphStyle;
++ (NSAttributedString *__nonnull)attributedString:(NSString *__nonnull)text
+                                         withFont:(UIFont *__nonnull)font
+                                            color:(UIColor *__nonnull)color
+                                andParagraphStyle:(NSParagraphStyle *__nonnull)paragraphStyle;
 
 @end

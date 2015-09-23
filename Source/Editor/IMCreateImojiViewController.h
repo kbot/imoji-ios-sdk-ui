@@ -33,17 +33,17 @@
 */
 @interface IMCreateImojiViewController : UIViewController
 
-@property(readonly, nonnull) UIImage * sourceImage;
+@property(readonly, nonnull) UIImage *sourceImage;
 
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-- (__nonnull instancetype)initWithSourceImage:(__nonnull UIImage *)sourceImage session:(__nonnull IMImojiSession *)session;
+- (instancetype __nonnull)initWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
 
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-+ (__nonnull instancetype)controllerWithSourceImage:(__nonnull UIImage *)sourceImage session:(__nonnull IMImojiSession *)session;
++ (instancetype __nonnull)controllerWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
 
 /**
 * @abstract A delegate to receive events from the editor view controller
@@ -53,7 +53,7 @@
 /**
 * @abstract The current Imoji Session
 */
-@property(nonatomic, strong, nonnull) IMImojiSession * session;
+@property(nonatomic, strong, nonnull) IMImojiSession *session;
 
 @end
 
@@ -65,14 +65,14 @@
 * @abstract Called by IMCreateImojiViewController once the user has completed the editing process. If any error occurred,
  * the imoji object will be nil and the error parameter will be specified.
 */
-- (void)userDidFinishCreatingImoji:(__nullable IMImojiObject *)imoji
-                         withError:(__nullable NSError *)error
-                fromViewController:(__nonnull IMCreateImojiViewController *)viewController;
+- (void)userDidFinishCreatingImoji:(IMImojiObject *__nullable)imoji
+                         withError:(NSError *__nullable)error
+                fromViewController:(IMCreateImojiViewController *__nonnull)viewController;
 
 /**
 * @abstract Called by IMCreateImojiViewController when the user hits the back button. The caller should dismiss the view
  * controller accordingly
 */
-- (void)userDidCancelImageEdit:(__nonnull IMCreateImojiViewController *)viewController;
+- (void)userDidCancelImageEdit:(IMCreateImojiViewController *__nonnull)viewController;
 
 @end

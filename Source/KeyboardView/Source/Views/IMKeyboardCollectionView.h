@@ -32,7 +32,7 @@
 
 @optional
 
-- (void)userDidDoubleTapImoji:(__nonnull IMImojiObject *)imoji fromCollectionView:(__nonnull IMCollectionView *)collectionView;
+- (void)userDidDoubleTapImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView;
 
 @end
 
@@ -42,11 +42,11 @@
 
 @property(nonatomic, weak, nullable) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
 
-+ (__nonnull instancetype)imojiCollectionViewWithSession:(__nonnull IMImojiSession *)session;
++ (instancetype __nonnull)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
 
-- (void)loadRecentImojis:(__nonnull NSArray *)recents;
+- (void)loadRecentImojis:(NSArray *__nonnull)recents;
 
-- (void)loadFavoriteImojis:(__nonnull NSArray *)favoritedImojis;
+- (void)loadFavoriteImojis:(NSArray *__nonnull)favoritedImojis;
 
 @end
 

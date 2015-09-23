@@ -30,11 +30,11 @@ typedef NS_ENUM(NSUInteger, IMKeyboardToolbarButtonType) {
 
 @interface IMKeyboardToolbar : UIToolbar
 
-@property(nonatomic, strong) NSBundle * _Nonnull imageBundle;
-@property(nonatomic, weak) id<IMKeyboardToolbarDelegate> _Nullable delegate;
+@property(nonatomic, strong, nonnull) NSBundle * imageBundle;
+@property(nonatomic, weak, nullable) id<IMKeyboardToolbarDelegate> delegate;
 
 - (void)addToolbarButtonWithType:(IMKeyboardToolbarButtonType)buttonType;
 
-+ (instancetype _Nonnull)imojiKeyboardToolbar;
++ (instancetype __nonnull)imojiKeyboardToolbar;
 
 @end
