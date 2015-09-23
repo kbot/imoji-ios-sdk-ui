@@ -26,6 +26,8 @@
 #import "IMToolbar.h"
 #import "IMResourceBundleUtil.h"
 
+NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
+
 @implementation IMToolbar {
 
 }
@@ -42,7 +44,7 @@
     return self;
 }
 
-- (void)addToolbarButtonWithType:(IMToolbarButtonType)buttonType {
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType {
     UIImage *image, *activeImage;
 
     switch (buttonType) {
@@ -71,25 +73,39 @@
 
             break;
         default:
-            return;
+            return nil;
     }
 
-    [self addToolbarButtonWithType:buttonType
-                             image:image
-                       activeImage:activeImage];
+    return [self addToolbarButtonWithType:buttonType
+                                    image:image
+                              activeImage:activeImage];
 }
 
-- (void)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
-                           image:(nonnull UIImage *)image
-                     activeImage:(nullable UIImage *)activeImage {
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
+                                                image:(nonnull UIImage *)image
+                                          activeImage:(nullable UIImage *)activeImage {
+    
+    return [self addToolbarButtonWithType:buttonType
+                                    image:image
+                              activeImage:activeImage
+                                    width:IMToolbarDefaultButtonItemWidthAndHeight];
+}
+
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
+                                                image:(nonnull UIImage *)image
+                                          activeImage:(nullable UIImage *)activeImage
+                                                width:(CGFloat)width {
+    
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 
     [button setImage:image forState:UIControlStateNormal];
     if (activeImage) {
         [button setImage:activeImage forState:UIControlStateSelected];
     }
-
+    
+    button.frame = CGRectMake(0, 0, width, width);
     button.tag = buttonType;
+    
     [button addTarget:self action:@selector(imojiToolbarButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
 
     UIBarButtonItem *toolbarButton;
@@ -98,22 +114,31 @@
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
     if (items.count > 0) {
-        [items arrayByAddingObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     }
 
-    [items arrayByAddingObject:toolbarButton];
+    [items addObject:toolbarButton];
 
     self.items = items;
+    
+    return toolbarButton;
+}
+
+- (void)selectButtonOfType:(IMToolbarButtonType)buttonType {
+    for (UIBarButtonItem* barButtonItem in self.items) {
+        if (barButtonItem.customView && barButtonItem.customView.tag == buttonType) {
+            [self imojiToolbarButtonTapped:(UIButton*) barButtonItem.customView];
+            break;
+        }
+    }
 }
 
 - (void)imojiToolbarButtonTapped:(UIButton *)sender {
-    if (sender.tag != IMToolbarButtonSearch && sender.tag != IMToolbarButtonKeyboardDelete) {
-        for (UIBarButtonItem *item in self.items) {
-            ((UIButton *) item.customView).selected = NO;
-        }
-
-        sender.selected = YES; // set button pressed to selected
+    for (UIBarButtonItem *item in self.items) {
+        ((UIButton *) item.customView).selected = NO;
     }
+
+    sender.selected = YES;
 
     // run action
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {

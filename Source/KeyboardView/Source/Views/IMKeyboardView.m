@@ -32,7 +32,6 @@
 #import "IMKeyboardSearchTextField.h"
 
 NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
-NSUInteger const IMKeyboardToolbarHeight = 40;
 
 @interface IMKeyboardView ()
 
@@ -228,7 +227,7 @@ NSUInteger const IMKeyboardToolbarHeight = 40;
         make.bottom.equalTo(self.mas_bottom);
         make.left.equalTo(self.mas_left);
         make.right.equalTo(self.mas_right);
-        make.height.equalTo(@(IMKeyboardToolbarHeight));
+        make.height.equalTo(@(IMToolbarDefaultButtonItemWidthAndHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
 

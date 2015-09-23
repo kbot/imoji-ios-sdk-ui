@@ -37,6 +37,8 @@ typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
     IMToolbarButtonKeyboardDelete
 };
 
+extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
+
 @protocol IMToolbarDelegate <UIToolbarDelegate>
 
 @optional
@@ -51,11 +53,18 @@ typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
 
 @property(nonatomic, weak, nullable) id<IMToolbarDelegate> delegate;
 
-- (void)addToolbarButtonWithType:(IMToolbarButtonType)buttonType;
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType;
 
-- (void)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
-                           image:(nonnull UIImage *)image
-                     activeImage:(nullable UIImage *)activeImage;
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
+                                                image:(nonnull UIImage *)image
+                                          activeImage:(nullable UIImage *)activeImage;
+
+- (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
+                                                image:(nonnull UIImage *)image
+                                          activeImage:(nullable UIImage *)activeImage
+                                                width:(CGFloat)width;
+
+- (void)selectButtonOfType:(IMToolbarButtonType)buttonType;
 
 + (nonnull instancetype)imojiToolbar;
 

@@ -109,46 +109,47 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    for (UIView *subview in self.view.subviews) {
-        [subview removeFromSuperview];
+    if (!self.keyboardView) {
+        // Constraints
+        self.heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView
+                                                             attribute:NSLayoutAttributeHeight
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:nil
+                                                             attribute:NSLayoutAttributeNotAnAttribute
+                                                            multiplier:0.0
+                                                              constant:IMKeyboardViewPortraitHeight];
+        self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
+
+        // View setup
+        self.keyboardView = [IMKeyboardView imojiKeyboardViewWithSession:self.session];
+        self.keyboardView.delegate = self;
+        self.keyboardView.collectionView.collectionViewDelegate = self;
+        self.keyboardView.keyboardToolbar.delegate = self;
+
+        [self.view addSubview:self.keyboardView];
+
+        [self.keyboardView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.view);
+        }];
+
+        // Assign qwerty controller to searchView
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"IMQwerty" bundle:[NSBundle mainBundle]];
+        IMQwertyViewController *vc = [storyboard instantiateInitialViewController];
+        vc.searchField = self.keyboardView.searchField;
+        vc.delegate = self;
+        [self addChildViewController:vc];
+        [self.keyboardView.searchView addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        [vc.view mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.keyboardView.searchField.mas_bottom).with.offset(0);
+            make.left.equalTo(self.keyboardView.mas_left).with.offset(0);
+            make.right.equalTo(self.keyboardView.mas_right).with.offset(0);
+            make.bottom.equalTo(self.keyboardView.mas_bottom);
+        }];
     }
-
-    // Constraints
-    self.heightConstraint = [NSLayoutConstraint constraintWithItem:self.inputView
-                                                         attribute:NSLayoutAttributeHeight
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:0.0
-                                                          constant:IMKeyboardViewPortraitHeight];
-    self.heightConstraint.priority = UILayoutPriorityRequired - 1; // This will eliminate the constraint conflict warning.
-
-    // View setup
-    self.keyboardView = [IMKeyboardView imojiKeyboardViewWithSession:self.session];
-    self.keyboardView.delegate = self;
-    self.keyboardView.collectionView.collectionViewDelegate = self;
-    self.keyboardView.keyboardToolbar.delegate = self;
-
-    [self.view addSubview:self.keyboardView];
-
-    [self.keyboardView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
-
-    // Assign qwerty controller to searchView
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"IMQwerty" bundle:[NSBundle mainBundle]];
-    IMQwertyViewController *vc = [storyboard instantiateInitialViewController];
-    vc.searchField = self.keyboardView.searchField;
-    vc.delegate = self;
-    [self addChildViewController:vc];
-    [self.keyboardView.searchView addSubview:vc.view];
-    [vc didMoveToParentViewController:self];
-    [vc.view mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.keyboardView.searchField.mas_bottom).with.offset(0);
-        make.left.equalTo(self.keyboardView.mas_left).with.offset(0);
-        make.right.equalTo(self.keyboardView.mas_right).with.offset(0);
-        make.bottom.equalTo(self.keyboardView.mas_bottom);
-    }];
+    
+    self.currentToolbarButtonSelected = IMToolbarButtonKeyboardNextKeyboard;
+    [self.keyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonReactions];
 }
 
 - (void)setAppGroup:(NSString *)appGroup {
@@ -163,9 +164,6 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         [self.keyboardView updateTitleWithText:self.keyboardView.searchField.text hideCloseButton:NO];
         [self.keyboardView.collectionView loadImojisFromSearch:self.keyboardView.searchField.text];
-        for (int i = 1; i < 6; i++) { // loop through all buttons and deselect them
-            ((UIButton *) [self.keyboardView viewWithTag:i]).selected = i == 1;
-        }
     }
 }
 
@@ -260,7 +258,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     if (sameButtonPressed
             && buttonType != IMToolbarButtonReactions
-            && buttonType != IMToolbarButtonTrending) {
+            && buttonType != IMToolbarButtonTrending
+            && buttonType != IMToolbarButtonSearch) {
         return;
     }
 
