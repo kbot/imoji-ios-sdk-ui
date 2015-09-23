@@ -26,13 +26,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern __nonnull NSString *const IMCollectionViewCellReuseId;
+extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 @interface IMCollectionViewCell : UICollectionViewCell
 
-- (void)loadImojiImage:(__nullable UIImage *)imojiImage;
+- (void)loadImojiImage:(UIImage * __nullable)imojiImage;
 
-- (void)loadImojiImage:(__nullable UIImage *)imojiImage animated:(BOOL)animated;
+- (void)loadImojiImage:(UIImage * __nullable)imojiImage animated:(BOOL)animated;
 
 - (void)performGrowAnimation;
 

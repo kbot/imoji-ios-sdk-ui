@@ -34,6 +34,6 @@
 @property(nonatomic, strong, nonnull) NSString *fontFamily;
 @property(nonatomic, strong, nonnull) NSString *appGroup;
 
-- (id)initWithImojiSession:(__nonnull IMImojiSession *)session;
+- (id __nonnull)initWithImojiSession:(IMImojiSession *__nonnull)session;
 
 @end

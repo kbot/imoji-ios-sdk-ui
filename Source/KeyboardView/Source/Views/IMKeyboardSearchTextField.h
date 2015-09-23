@@ -29,6 +29,6 @@
 
 - (void)deleteBackward;
 
-- (void)insertText:(__nonnull NSString *)string;
+- (void)insertText:(NSString *__nonnull)string;
 
 @end

@@ -31,8 +31,8 @@
 @property(nonatomic, strong, readonly, nonnull) UIButton *removeButton;
 @property(nonatomic, strong, readonly, nonnull) UILabel *textView;
 
-+ (CGSize)sizeThatFitsTag:(__nonnull NSString *)tag andSize:(CGSize)size;
++ (CGSize)sizeThatFitsTag:(NSString *__nonnull)tag andSize:(CGSize)size;
 
-+ (__nonnull IMTagCollectionViewCell *)instance;
++ (IMTagCollectionViewCell *__nonnull)instance;
 
 @end
