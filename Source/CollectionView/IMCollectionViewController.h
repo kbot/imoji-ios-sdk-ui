@@ -38,12 +38,12 @@
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-- (instancetype __nonnull)initWithSession:(IMImojiSession * __nonnull)session;
+- (nonnull instancetype)initWithSession:(IMImojiSession * __nonnull)session;
 
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-+ (instancetype __nonnull)collectionViewControllerWithSession:(IMImojiSession * __nonnull)session;
++ (nonnull instancetype)collectionViewControllerWithSession:(IMImojiSession * __nonnull)session;
 
 /**
  * @abstract Loads Imoji stickers into the collection view using getFeaturedImojisWithNumberOfResults from IMImojiSession

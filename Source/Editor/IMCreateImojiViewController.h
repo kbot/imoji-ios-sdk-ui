@@ -38,12 +38,12 @@
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-- (instancetype __nonnull)initWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
+- (nonnull instancetype)initWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
 
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-+ (instancetype __nonnull)controllerWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
++ (nonnull instancetype)controllerWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
 
 /**
 * @abstract A delegate to receive events from the editor view controller

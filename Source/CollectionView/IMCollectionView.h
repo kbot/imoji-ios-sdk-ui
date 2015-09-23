@@ -83,12 +83,12 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Creates a collection view with the specified Imoji session
  */
-- (instancetype __nonnull)initWithSession:(IMImojiSession *__nonnull)session;
+- (nonnull instancetype)initWithSession:(IMImojiSession *__nonnull)session;
 
 /**
  * @abstract Creates a collection view with the specified Imoji session
  */
-+ (instancetype __nonnull)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
++ (nonnull instancetype)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
 
 @end
 
@@ -118,7 +118,7 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Loads Imoji stickers into the collection view using fetchImojisByIdentifiers from IMImojiSession
  */
-- (void)loadImojisFromIdentifiers:(NSArray<NSString *> *__nonnull)imojiIdentifiers;
+- (void)loadImojisFromIdentifiers:(NSArray *__nonnull)imojiIdentifiers;
 
 /**
  * @abstract Loads Imoji stickers for an authenticated user into the collection view using
