@@ -29,6 +29,4 @@
 
 @interface IMKeyboardCollectionViewCell : IMCollectionViewCell
 
-- (void)performAnimation;
-
 @end

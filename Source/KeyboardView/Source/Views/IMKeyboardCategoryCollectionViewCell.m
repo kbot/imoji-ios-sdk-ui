@@ -70,15 +70,4 @@
                                                                andAlignment:NSTextAlignmentCenter];
 }
 
-- (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
-    CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
-    [image drawInRect:drawRect];
-    [tintColor set];
-    UIRectFillUsingBlendMode(drawRect, kCGBlendModeSourceAtop);
-    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return tintedImage;
-}
-
 @end
