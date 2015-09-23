@@ -52,8 +52,8 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     NSAttributedString *_previousTitle;
 }
 
-- (instancetype)initWithSession:(IMImojiSession *)session andFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (instancetype)initWithSession:(IMImojiSession *)session {
+    self = [super initWithFrame:CGRectZero];
     if (self) {
         self.session = session;
         self.imageBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
@@ -81,7 +81,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         make.height.equalTo(@(1));
     }];
 
-    // menu view
+    // title
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
                                                                     withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
@@ -349,8 +349,8 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     return [UIPasteboard generalPasteboard] != nil;
 }
 
-+ (instancetype)imojiKeyboardViewWithSession:(IMImojiSession *)session andFrame:(CGRect)frame {
-    return [[IMKeyboardView alloc] initWithSession:session andFrame:frame];
++ (instancetype)imojiKeyboardViewWithSession:(IMImojiSession *)session {
+    return [[IMKeyboardView alloc] initWithSession:session];
 }
 
 @end

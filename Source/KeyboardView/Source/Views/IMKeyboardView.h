@@ -68,7 +68,7 @@
 
 - (void)setCurrentCategoryClassification:(IMImojiSessionCategoryClassification)currentCategoryClassification;
 
-+ (instancetype)imojiKeyboardViewWithSession:(IMImojiSession *)session andFrame:(CGRect)frame;
++ (instancetype)imojiKeyboardViewWithSession:(IMImojiSession *)session;
 
 @end
 
