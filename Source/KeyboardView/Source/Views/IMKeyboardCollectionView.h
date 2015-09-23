@@ -42,7 +42,7 @@
 
 @property(nonatomic, weak, nullable) id <IMKeyboardCollectionViewDelegate> collectionViewDelegate;
 
-+ (instancetype __nonnull)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
++ (nonnull instancetype)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
 
 - (void)loadRecentImojis:(NSArray *__nonnull)recents;
 

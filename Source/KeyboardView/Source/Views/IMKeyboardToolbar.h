@@ -35,6 +35,6 @@ typedef NS_ENUM(NSUInteger, IMKeyboardToolbarButtonType) {
 
 - (void)addToolbarButtonWithType:(IMKeyboardToolbarButtonType)buttonType;
 
-+ (instancetype __nonnull)imojiKeyboardToolbar;
++ (nonnull instancetype)imojiKeyboardToolbar;
 
 @end
