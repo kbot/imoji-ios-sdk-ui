@@ -103,7 +103,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
-    if (items.count > 0) {
+    if (items.count > 0 && ((UIBarButtonItem *)items.lastObject).customView) {
         [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     }
 
@@ -112,6 +112,14 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     self.items = items;
     
     return toolbarButton;
+}
+
+- (nonnull UIBarButtonItem *)addFlexibleSpace {
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+
+    self.items = [self.items arrayByAddingObject:item];
+
+    return item;
 }
 
 - (void)selectButtonOfType:(IMToolbarButtonType)buttonType {

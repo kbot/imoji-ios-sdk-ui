@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
-    IMToolbarButtonSearch,
+    IMToolbarButtonSearch = 1,
     IMToolbarButtonRecents,
     IMToolbarButtonReactions,
     IMToolbarButtonTrending,
@@ -43,29 +43,72 @@ extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
 
 @optional
 
+/**
+ * @abstract Triggered when the user taps a toolbar item
+ * @param buttonType The corresponding button type of the toolbar item
+ */
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType;
 
 @end
 
 @interface IMToolbar : UIToolbar
 
+/**
+ * @abstract The image bundle to use for loading the toolbar images. Defaults to [IMResourceBundleUtil assetsBundle]
+ */
 @property(nonatomic, strong, nonnull) NSBundle * imageBundle;
 
+/**
+ * @abstract Optional Imoji Toolbar Delegate
+ */
 @property(nonatomic, weak, nullable) id<IMToolbarDelegate> delegate;
 
+/**
+ * @abstract Adds an Imoji toolbar item to IMToolbar.items. If there are existing toolbar items already added, a flexible
+ * space will be added automatically. Will attempt to load a default image from the ImojiUIAssets resource bundle for
+ * the toolbar item.
+ */
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType;
 
+/**
+ * @abstract Adds an Imoji toolbar item to IMToolbar.items. If there are existing toolbar items already added, a flexible
+ * space will be added automatically. Sets the default width of the toolbar item
+ * to IMToolbarDefaultButtonItemWidthAndHeight
+ * @param buttonType The imoji button type
+ * @param image The toolbar item image
+ * @param activeImage An optional image to display the selected state
+ */
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage;
 
+/**
+ * @abstract Adds an Imoji toolbar item to IMToolbar.items. If there are existing toolbar items already added, a flexible
+ * space will be added automatically.
+ * @param buttonType The imoji button type
+ * @param image The toolbar item image
+ * @param activeImage An optional image to display the selected state
+ * @param width The width of the toolbar item
+ */
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width;
 
+/**
+ * @abstract Adds a simple UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace
+ */
+- (nonnull UIBarButtonItem *)addFlexibleSpace;
+
+/**
+ * @abstract Triggers the selection of a specified toolbar item. The delegate method userDidSelectToolbarButton: will
+ * subsequently be triggered.
+ */
 - (void)selectButtonOfType:(IMToolbarButtonType)buttonType;
 
+/**
+ * @abstract Creates a new Imoji toolbar
+ */
 + (nonnull instancetype)imojiToolbar;
 
 @end
