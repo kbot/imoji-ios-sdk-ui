@@ -138,11 +138,6 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
                                                                    andParagraphStyle:placeholderParagraphStyle];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [self performSearch];
-}
-
 - (void)updateViewConstraints {
     [super updateViewConstraints];
 
