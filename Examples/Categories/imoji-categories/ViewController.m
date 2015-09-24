@@ -162,8 +162,6 @@
     [viewController.bottomToolbar addFlexibleSpace];
 
     viewController.topToolbar.delegate = viewController.bottomToolbar.delegate = self;
-    viewController.bottomToolbar.backgroundColor = [UIColor redColor];
-    viewController.bottomToolbar.translucent = NO;
 
     [self presentViewController:viewController animated:YES completion:^{
         switch (categoryClassification) {
