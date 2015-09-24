@@ -34,43 +34,33 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
 @dynamic delegate;
 
-- (instancetype)initImojiToolbar {
+- (instancetype)init {
     self = [super init];
     if (self) {
         self.imageBundle = [IMResourceBundleUtil assetsBundle];
-        self.items = [[NSArray alloc] init];
     }
 
     return self;
 }
 
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType {
-    UIImage *image, *activeImage;
+    UIImage *image;
 
     switch (buttonType) {
         case IMToolbarButtonSearch:
             image = [UIImage imageNamed:@"toolbar_search" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_search_active" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
         case IMToolbarButtonRecents:
             image = [UIImage imageNamed:@"toolbar_recents" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_recents_active" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-
             break;
         case IMToolbarButtonReactions:
             image = [UIImage imageNamed:@"toolbar_reactions" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_reactions_active" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-
             break;
         case IMToolbarButtonTrending:
             image = [UIImage imageNamed:@"toolbar_trending" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_trending_active" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-
             break;
         case IMToolbarButtonCollection:
             image = [UIImage imageNamed:@"toolbar_collection" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_collection_active" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-
             break;
         default:
             return nil;
@@ -78,7 +68,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
     return [self addToolbarButtonWithType:buttonType
                                     image:image
-                              activeImage:activeImage];
+                              activeImage:nil];
 }
 
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
@@ -147,7 +137,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 }
 
 + (instancetype)imojiToolbar {
-    return [[IMToolbar alloc] initImojiToolbar];
+    return [[IMToolbar alloc] init];
 }
 
 @end
