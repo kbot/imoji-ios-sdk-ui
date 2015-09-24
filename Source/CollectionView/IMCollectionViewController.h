@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class IMImojiSession, IMCollectionView;
+@class IMImojiSession, IMCollectionView, IMToolbar;
 
 /**
  * @abstract A simple view controller that displays a full screen collection view with Imoji content. A search field
@@ -38,17 +38,17 @@
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-- (nonnull instancetype)initWithSession:(IMImojiSession * __nonnull)session;
+- (nonnull instancetype)initWithSession:(IMImojiSession *__nonnull)session;
 
 /**
  * @abstract Creates a new collection view controller with a specified Imoji Session object
  */
-+ (nonnull instancetype)collectionViewControllerWithSession:(IMImojiSession * __nonnull)session;
++ (nonnull instancetype)collectionViewControllerWithSession:(IMImojiSession *__nonnull)session;
 
 /**
  * @abstract Loads Imoji stickers into the collection view using getFeaturedImojisWithNumberOfResults from IMImojiSession
  */
-@property(nonatomic, strong, nonnull) IMImojiSession * session;
+@property(nonatomic, strong, nonnull) IMImojiSession *session;
 
 /**
  * @abstract If YES, calls IMImojiSession searchImojisWithSentence: to parse Imoji content from a sentence. Otherwise,
@@ -67,11 +67,15 @@
  * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
-@property(nonatomic, strong, readonly, nonnull) UITextField * searchField;
+@property(nonatomic, strong, readonly, nonnull) UITextField *searchField;
 
 /* @abstract The collection view associated to the view controller. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
-@property(nonatomic, strong, readonly, nonnull) IMCollectionView * collectionView;
+@property(nonatomic, strong, readonly, nonnull) IMCollectionView *collectionView;
+
+/* @abstract
+ */
+@property(nonatomic, strong, readonly, nonnull) IMToolbar *toolbar;
 
 @end

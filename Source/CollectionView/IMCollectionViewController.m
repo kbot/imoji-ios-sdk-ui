@@ -28,6 +28,9 @@
 #import "IMCollectionView.h"
 #import "IMAttributeStringUtil.h"
 #import "IMResourceBundleUtil.h"
+#import "IMToolbar.h"
+
+CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
 @interface IMCollectionViewController () <UITextFieldDelegate>
 
@@ -68,6 +71,7 @@
     self.session = [IMImojiSession imojiSession];
 
     _searchField = [UITextField new];
+    _toolbar = [IMToolbar new];
     _collectionView = [IMCollectionView imojiCollectionViewWithSession:self.session];
     _searchOnTextChanges = YES;
 
@@ -104,6 +108,7 @@
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.searchField];
+    [self.view addSubview:self.toolbar];
 
     [self updateViewConstraints];
 
@@ -153,7 +158,13 @@
             make.top.equalTo(self.searchField.mas_bottom).insets(UIEdgeInsetsMake(5, 0, 5, 0));
         }
 
-        make.left.and.bottom.equalTo(self.view);
+        make.left.equalTo(self.view);
+
+        if (self.toolbar.hidden || self.toolbar.items.count == 0) {
+            make.bottom.equalTo(self.view);
+        } else {
+            make.bottom.equalTo(self.toolbar.mas_top);
+        }
     }];
 
     [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -167,6 +178,11 @@
         make.top.equalTo(self.view);
 #endif
 
+    }];
+
+    [self.toolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
+        make.left.right.and.bottom.equalTo(self.view);
     }];
 }
 
