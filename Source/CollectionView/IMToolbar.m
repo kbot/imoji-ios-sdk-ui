@@ -62,19 +62,28 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
         case IMToolbarButtonCollection:
             image = [UIImage imageNamed:@"toolbar_collection" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
+        case IMToolbarButtonBack:
+            image = [UIImage imageNamed:@"toolbar_back" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            break;
         default:
             return nil;
     }
 
     return [self addToolbarButtonWithType:buttonType
                                     image:image
-                              activeImage:nil];
+                              activeImage:[IMToolbar tintImage:image
+                                                       toColor:[UIColor colorWithRed:10.0f / 255.0f
+                                                                               green:140.0f / 255.0f
+                                                                                blue:255.0f / 255.0f
+                                                                               alpha:1.0f]
+                              ]
+    ];
 }
 
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage {
-    
+
     return [self addToolbarButtonWithType:buttonType
                                     image:image
                               activeImage:activeImage
@@ -85,47 +94,58 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width {
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-
-    [button setImage:image forState:UIControlStateNormal];
-    if (activeImage) {
-        [button setImage:activeImage forState:UIControlStateSelected];
-    }
-    
-    button.frame = CGRectMake(0, 0, width, width);
-    button.tag = buttonType;
-    
-    [button addTarget:self action:@selector(imojiToolbarButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-
     UIBarButtonItem *toolbarButton;
-    toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    switch (buttonType) {
+        case IMToolbarSearchField: {
+            UISearchBar *searchBar = [UISearchBar new];
+            toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+        }
+
+            break;
+        default: {
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+
+            [button setImage:image forState:UIControlStateNormal];
+            if (activeImage) {
+                [button setImage:activeImage forState:UIControlStateSelected];
+            }
+
+            button.frame = CGRectMake(0, 0, width, width);
+            button.tag = buttonType;
+
+            [button addTarget:self action:@selector(imojiToolbarButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+
+            toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+        }
+    }
 
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
-    if (items.count > 0 && ((UIBarButtonItem *)items.lastObject).customView) {
+    if (items.count > 0 && ((UIBarButtonItem *) items.lastObject).customView.tag > IMToolbarButtonSearch) {
         [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     }
 
     [items addObject:toolbarButton];
 
     self.items = items;
-    
+
     return toolbarButton;
 }
 
 - (nonnull UIBarButtonItem *)addFlexibleSpace {
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.items ? self.items : @[]];
 
-    self.items = [self.items arrayByAddingObject:item];
+    [items addObject:item];
+    self.items = items;
 
     return item;
 }
 
 - (void)selectButtonOfType:(IMToolbarButtonType)buttonType {
-    for (UIBarButtonItem* barButtonItem in self.items) {
+    for (UIBarButtonItem *barButtonItem in self.items) {
         if (barButtonItem.customView && barButtonItem.customView.tag == buttonType) {
-            [self imojiToolbarButtonTapped:(UIButton*) barButtonItem.customView];
+            [self imojiToolbarButtonTapped:(UIButton *) barButtonItem.customView];
             break;
         }
     }
@@ -142,6 +162,21 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
         [self.delegate userDidSelectToolbarButton:(IMToolbarButtonType) sender.tag];
     }
+}
+
++ (UIImage *)tintImage:(UIImage *)image toColor:(UIColor *)color {
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0.0f);
+
+    [color setFill];
+    CGRect bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+
+    UIRectFill(bounds);
+    [image drawInRect:bounds blendMode:kCGBlendModeDestinationIn alpha:1.0];
+
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return tintedImage;
 }
 
 + (instancetype)imojiToolbar {

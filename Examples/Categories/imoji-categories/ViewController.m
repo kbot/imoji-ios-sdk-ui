@@ -12,8 +12,9 @@
 #import <ImojiSDKUI/IMCollectionViewController.h>
 #import <ImojiSDKUI/IMCollectionView.h>
 #import "ViewController.h"
+#import "IMToolbar.h"
 
-@interface ViewController () <IMCollectionViewDelegate>
+@interface ViewController () <IMCollectionViewDelegate, IMToolbarDelegate>
 
 @property(nonatomic, strong) UIButton *reactionsButton;
 @property(nonatomic, strong) UIButton *trendingButton;
@@ -95,36 +96,62 @@
         make.centerX.equalTo(self.view);
         make.bottom.equalTo(self.reactionsButton.mas_top).offset(-10.0f);
     }];
-    
+
     self.title = @"Categories";
 }
 
 - (void)displayReactions {
-    IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
-    viewController.collectionView.collectionViewDelegate = self;
-    viewController.modalPresentationStyle = UIModalPresentationPopover;
-    viewController.searchField.hidden = YES;
-
-    [self presentViewController:viewController animated:YES completion:^{
-        [viewController.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-        [viewController updateViewConstraints];
-    }];
+    [self displayCollectionViewControllerWithCategory:IMImojiSessionCategoryClassificationGeneric];
 }
 
 - (void)displayTrending {
-    IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
-    viewController.collectionView.collectionViewDelegate = self;
-    viewController.modalPresentationStyle = UIModalPresentationPopover;
-    viewController.searchField.hidden = YES;
-
-    [self presentViewController:viewController animated:YES completion:^{
-        [viewController.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
-        [viewController updateViewConstraints];
-    }];
+    [self displayCollectionViewControllerWithCategory:IMImojiSessionCategoryClassificationTrending];
 }
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
     [collectionView loadImojisFromSearch:category.identifier];
+}
+
+- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
+    switch (buttonType) {
+        case IMToolbarButtonReactions:
+            [((IMCollectionViewController *)self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            break;
+
+        case IMToolbarButtonTrending:
+            [((IMCollectionViewController *)self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            break;
+
+        default:
+            break;
+    }
+}
+
+- (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
+    IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
+    viewController.collectionView.collectionViewDelegate = self;
+    viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [viewController.bottomToolbar addFlexibleSpace];
+    [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];
+    [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonTrending];
+    [viewController.bottomToolbar addFlexibleSpace];
+
+    viewController.bottomToolbar.delegate = self;
+    viewController.bottomToolbar.backgroundColor = [UIColor redColor];
+    viewController.bottomToolbar.translucent = NO;
+
+    [self presentViewController:viewController animated:YES completion:^{
+        switch(categoryClassification) {
+            case IMImojiSessionCategoryClassificationTrending:
+                [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonTrending];
+                break;
+            case IMImojiSessionCategoryClassificationGeneric:
+                [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonReactions];
+                break;
+            default:
+                break;
+        }
+    }];
 }
 
 @end

@@ -32,7 +32,7 @@
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
-@interface IMCollectionViewController () <UITextFieldDelegate>
+@interface IMCollectionViewController () <UISearchBarDelegate>
 
 @end
 
@@ -70,15 +70,10 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 - (void)setupCollectionViewControllerWithSession:(IMImojiSession *)session {
     self.session = [IMImojiSession imojiSession];
 
-    _searchField = [UITextField new];
-    _toolbar = [IMToolbar new];
+    _bottomToolbar = [IMToolbar new];
+    _topToolbar = [IMToolbar new];
     _collectionView = [IMCollectionView imojiCollectionViewWithSession:self.session];
     _searchOnTextChanges = YES;
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(searchFieldTextDidChange)
-                                                 name:UITextFieldTextDidChangeNotification
-                                               object:_searchField];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChange)
@@ -95,7 +90,11 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
 
-    self.searchField.delegate = self;
+    [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack];
+    UIBarButtonItem *barButtonItem = [self.topToolbar addToolbarButtonWithType:IMToolbarSearchField];
+    _searchField = (UISearchBar *) barButtonItem.customView;
+    _searchField.delegate = self;
+    
 }
 
 - (void)dealloc {
@@ -108,7 +107,8 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.searchField];
-    [self.view addSubview:self.toolbar];
+    [self.view addSubview:self.topToolbar];
+    [self.view addSubview:self.bottomToolbar];
 
     [self updateViewConstraints];
 
@@ -122,20 +122,16 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
     paragraphStyle.alignment = NSTextAlignmentLeft;
 
-    self.searchField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
-    self.searchField.defaultTextAttributes = @{
-            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
-            NSParagraphStyleAttributeName : paragraphStyle,
-            NSForegroundColorAttributeName : self.collectionView.backgroundColor
-    };
+//    self.searchField.defaultTextAttributes = @{
+//            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
+//            NSParagraphStyleAttributeName : paragraphStyle,
+//            NSForegroundColorAttributeName : self.collectionView.backgroundColor
+//    };
 
     NSMutableParagraphStyle *placeholderParagraphStyle = [NSMutableParagraphStyle new];
     placeholderParagraphStyle.alignment = NSTextAlignmentCenter;
-    self.searchField.attributedPlaceholder = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"]
-                                                                            withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
-                                                                               color:[UIColor colorWithWhite:185 / 255.0f alpha:1.0f]
-                                                                   andParagraphStyle:placeholderParagraphStyle];
+    self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
 }
 
 - (void)updateViewConstraints {
@@ -143,42 +139,31 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view).insets(UIEdgeInsetsMake(0, 5, 0, 5));
-        if (self.searchField.hidden) {
-#ifndef IMOJI_APP_EXTENSION
-            make.top.equalTo(self.view).offset([UIApplication sharedApplication].statusBarFrame.size.height);
-#else
-            make.top.equalTo(self.view);
-#endif
-        } else {
-            make.top.equalTo(self.searchField.mas_bottom).insets(UIEdgeInsetsMake(5, 0, 5, 0));
-        }
-
+        make.top.equalTo(self.mas_topLayoutGuide);
         make.left.equalTo(self.view);
-
-        if (self.toolbar.hidden || self.toolbar.items.count == 0) {
-            make.bottom.equalTo(self.view);
-        } else {
-            make.bottom.equalTo(self.toolbar.mas_top);
-        }
+        make.bottom.equalTo(self.view);
     }];
 
-    [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view).multipliedBy(.96f);
-        make.height.equalTo(@(self.searchField.font.lineHeight * 2.0f)).insets(UIEdgeInsetsMake(5, 0, 5, 0));
+        make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
         make.centerX.equalTo(self.view);
-        
-#ifndef IMOJI_APP_EXTENSION
-        make.top.equalTo(self.view).offset([UIApplication sharedApplication].statusBarFrame.size.height);
-#else
-        make.top.equalTo(self.view);
-#endif
-
+        make.top.equalTo(self.mas_topLayoutGuide);
     }];
 
-    [self.toolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.bottomToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
         make.left.right.and.bottom.equalTo(self.view);
     }];
+
+    self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
+            (!self.topToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
+            0,
+            (!self.bottomToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
+            0
+    );
+
+    NSLog(@"frame is %@", [NSValue valueWithCGRect:self.view.frame]);
 }
 
 #pragma mark Notifications
@@ -234,18 +219,18 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
 #pragma mark Search field delegates
 
-- (void)searchFieldTextDidChange {
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (self.searchOnTextChanges) {
         [self performSearch];
     }
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
     if (!self.searchOnTextChanges) {
         [self performSearch];
     }
 
-    [self.searchField resignFirstResponder];
+//    [self.searchField resignFirstResponder];
 
     return YES;
 }

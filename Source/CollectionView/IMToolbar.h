@@ -32,6 +32,9 @@ typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
     IMToolbarButtonTrending,
     IMToolbarButtonCollection,
 
+    IMToolbarButtonBack,
+    IMToolbarSearchField,
+
     // keyboard specific button types
     IMToolbarButtonKeyboardNextKeyboard,
     IMToolbarButtonKeyboardDelete

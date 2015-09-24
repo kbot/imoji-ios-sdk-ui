@@ -67,7 +67,7 @@
  * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
-@property(nonatomic, strong, readonly, nonnull) UITextField *searchField;
+@property(nonatomic, strong, readonly, nonnull) UISearchBar *searchField;
 
 /* @abstract The collection view associated to the view controller. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
@@ -76,6 +76,10 @@
 
 /* @abstract
  */
-@property(nonatomic, strong, readonly, nonnull) IMToolbar *toolbar;
+@property(nonatomic, strong, readonly, nonnull) IMToolbar *bottomToolbar;
+
+/* @abstract
+  */
+@property(nonatomic, strong, readonly, nonnull) IMToolbar *topToolbar;
 
 @end
