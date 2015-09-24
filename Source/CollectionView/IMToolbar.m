@@ -94,42 +94,32 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width {
-    UIBarButtonItem *toolbarButton;
-    switch (buttonType) {
-        case IMToolbarSearchField: {
-            UISearchBar *searchBar = [UISearchBar new];
-            toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
-        }
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 
-            break;
-        default: {
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-
-            [button setImage:image forState:UIControlStateNormal];
-            if (activeImage) {
-                [button setImage:activeImage forState:UIControlStateSelected];
-            }
-
-            button.frame = CGRectMake(0, 0, width, width);
-            button.tag = buttonType;
-
-            [button addTarget:self action:@selector(imojiToolbarButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-
-            toolbarButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-        }
+    [button setImage:image forState:UIControlStateNormal];
+    if (activeImage) {
+        [button setImage:activeImage forState:UIControlStateSelected];
     }
 
-    NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
+    button.frame = CGRectMake(0, 0, width, width);
+    button.tag = buttonType;
 
-    if (items.count > 0 && ((UIBarButtonItem *) items.lastObject).customView.tag > IMToolbarButtonSearch) {
-        [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
-    }
+    [button addTarget:self action:@selector(imojiToolbarButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
 
-    [items addObject:toolbarButton];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
 
-    self.items = items;
+    [self appendBarButtonItem:barButtonItem  withPrependedFlexibleSpace:YES];
 
-    return toolbarButton;
+    return barButtonItem;
+}
+
+- (UIBarButtonItem *)addSearchBarItem {
+    UISearchBar *searchBar = [UISearchBar new];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+
+    [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
+
+    return barButtonItem;
 }
 
 - (nonnull UIBarButtonItem *)addFlexibleSpace {
@@ -153,7 +143,9 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
 - (void)imojiToolbarButtonTapped:(UIButton *)sender {
     for (UIBarButtonItem *item in self.items) {
-        ((UIButton *) item.customView).selected = NO;
+        if ([item.customView isKindOfClass:[UIButton class]]) {
+            ((UIButton *) item.customView).selected = NO;
+        }
     }
 
     sender.selected = YES;
@@ -162,6 +154,18 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
         [self.delegate userDidSelectToolbarButton:(IMToolbarButtonType) sender.tag];
     }
+}
+
+- (void)appendBarButtonItem:(UIBarButtonItem *)barButtonItem withPrependedFlexibleSpace:(BOOL)withSpace {
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
+
+    if (withSpace && items.count > 0 && ((UIBarButtonItem *) items.lastObject).customView.tag > IMToolbarButtonSearch) {
+        [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+    }
+
+    [items addObject:barButtonItem];
+
+    self.items = items;
 }
 
 + (UIImage *)tintImage:(UIImage *)image toColor:(UIColor *)color {

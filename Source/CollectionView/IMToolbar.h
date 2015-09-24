@@ -31,9 +31,7 @@ typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
     IMToolbarButtonReactions,
     IMToolbarButtonTrending,
     IMToolbarButtonCollection,
-
     IMToolbarButtonBack,
-    IMToolbarSearchField,
 
     // keyboard specific button types
     IMToolbarButtonKeyboardNextKeyboard,
@@ -97,6 +95,8 @@ extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
                                                 image:(nonnull UIImage *)image
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width;
+
+- (UIBarButtonItem *)addSearchBarItem;
 
 /**
  * @abstract Adds a simple UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace

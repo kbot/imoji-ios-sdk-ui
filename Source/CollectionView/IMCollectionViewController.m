@@ -31,9 +31,12 @@
 #import "IMToolbar.h"
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
+UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
 
 @interface IMCollectionViewController () <UISearchBarDelegate>
 
+@property(nonatomic, strong) UIBarButtonItem *backButton;
+@property(nonatomic) UIEdgeInsets preKeyboardDisplayedCollectionViewInsets;
 @end
 
 @implementation IMCollectionViewController {
@@ -90,11 +93,10 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
 
-    [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack];
-    UIBarButtonItem *barButtonItem = [self.topToolbar addToolbarButtonWithType:IMToolbarSearchField];
+    _backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack];
+    UIBarButtonItem *barButtonItem = [self.topToolbar addSearchBarItem];
     _searchField = (UISearchBar *) barButtonItem.customView;
     _searchField.delegate = self;
-    
 }
 
 - (void)dealloc {
@@ -106,7 +108,6 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
     self.view = [UIView new];
 
     [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.searchField];
     [self.view addSubview:self.topToolbar];
     [self.view addSubview:self.bottomToolbar];
 
@@ -145,7 +146,7 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
     }];
 
     [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(self.view).multipliedBy(.96f);
+        make.width.equalTo(self.view);
         make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
         make.centerX.equalTo(self.view);
         make.top.equalTo(self.mas_topLayoutGuide);
@@ -156,14 +157,18 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
         make.left.right.and.bottom.equalTo(self.view);
     }];
 
+    [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.height.and.top.equalTo(self.backButton.customView);
+        make.right.equalTo(self.view).offset(-IMCollectionViewControllerSearchFieldInsets.right);
+        make.left.equalTo(self.backButton.customView.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
+    }];
+
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
             (!self.topToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
             0,
             (!self.bottomToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
             0
     );
-
-    NSLog(@"frame is %@", [NSValue valueWithCGRect:self.view.frame]);
 }
 
 #pragma mark Notifications
@@ -180,10 +185,11 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
     // adjust the content size for the keyboard using the displaced height
     if (occupiedHeight != 0) {
+        self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
                 self.collectionView.contentInset.top,
                 self.collectionView.contentInset.left,
-                self.collectionView.contentInset.bottom + occupiedHeight,
+                occupiedHeight,
                 self.collectionView.contentInset.right
         );
     }
@@ -197,12 +203,7 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 
     // restore the content size of the collection view
     if (occupiedHeight != 0) {
-        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
-                self.collectionView.contentInset.top,
-                self.collectionView.contentInset.left,
-                self.collectionView.contentInset.bottom - occupiedHeight,
-                self.collectionView.contentInset.right
-        );
+        self.collectionView.scrollIndicatorInsets = self.preKeyboardDisplayedCollectionViewInsets;
     }
 }
 
@@ -225,14 +226,12 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
     }
 }
 
-- (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar {
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     if (!self.searchOnTextChanges) {
         [self performSearch];
     }
 
-//    [self.searchField resignFirstResponder];
-
-    return YES;
+    [self.searchField resignFirstResponder];
 }
 
 - (void)performSearch {
