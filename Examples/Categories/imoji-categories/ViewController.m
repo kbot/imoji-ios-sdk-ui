@@ -25,7 +25,6 @@
 @implementation ViewController
 
 
-
 - (void)loadView {
     [super loadView];
 
@@ -112,14 +111,40 @@
     [collectionView loadImojisFromSearch:category.identifier];
 }
 
+- (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {
+    [self.imojiSession renderImoji:imoji
+                           options:[IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]
+                          callback:^(UIImage *image, NSError *error) {
+                              NSArray *sharingItems = @[image];
+                              UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:sharingItems
+                                                                                                               applicationActivities:nil];
+                              activityController.excludedActivityTypes = @[
+                                      UIActivityTypePrint,
+                                      UIActivityTypeCopyToPasteboard,
+                                      UIActivityTypeAssignToContact,
+                                      UIActivityTypeSaveToCameraRoll,
+                                      UIActivityTypeAddToReadingList,
+                                      UIActivityTypePostToFlickr,
+                                      UIActivityTypePostToVimeo
+                              ];
+
+                              [self.presentedViewController presentViewController:activityController animated:YES completion:nil];
+                          }];
+}
+
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
     switch (buttonType) {
         case IMToolbarButtonReactions:
-            [((IMCollectionViewController *)self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
             break;
 
         case IMToolbarButtonTrending:
-            [((IMCollectionViewController *)self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            break;
+
+
+        case IMToolbarButtonBack:
+            [self dismissViewControllerAnimated:YES completion:nil];
             break;
 
         default:
@@ -136,12 +161,12 @@
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonTrending];
     [viewController.bottomToolbar addFlexibleSpace];
 
-    viewController.bottomToolbar.delegate = self;
+    viewController.topToolbar.delegate = viewController.bottomToolbar.delegate = self;
     viewController.bottomToolbar.backgroundColor = [UIColor redColor];
     viewController.bottomToolbar.translucent = NO;
 
     [self presentViewController:viewController animated:YES completion:^{
-        switch(categoryClassification) {
+        switch (categoryClassification) {
             case IMImojiSessionCategoryClassificationTrending:
                 [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonTrending];
                 break;
