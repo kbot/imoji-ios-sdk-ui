@@ -124,14 +124,6 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
     paragraphStyle.alignment = NSTextAlignmentLeft;
 
     self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
-//    self.searchField.defaultTextAttributes = @{
-//            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.0f],
-//            NSParagraphStyleAttributeName : paragraphStyle,
-//            NSForegroundColorAttributeName : self.collectionView.backgroundColor
-//    };
-
-    NSMutableParagraphStyle *placeholderParagraphStyle = [NSMutableParagraphStyle new];
-    placeholderParagraphStyle.alignment = NSTextAlignmentCenter;
     self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
 }
 
@@ -139,8 +131,8 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
     [super updateViewConstraints];
 
     [self.collectionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(self.view).insets(UIEdgeInsetsMake(0, 5, 0, 5));
-        make.top.equalTo(self.mas_topLayoutGuide);
+        make.width.equalTo(self.view);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
         make.left.equalTo(self.view);
         make.bottom.equalTo(self.view);
     }];
@@ -149,7 +141,7 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
         make.width.equalTo(self.view);
         make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
         make.centerX.equalTo(self.view);
-        make.top.equalTo(self.mas_topLayoutGuide);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
     }];
 
     [self.bottomToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
