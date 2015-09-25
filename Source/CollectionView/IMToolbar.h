@@ -96,7 +96,7 @@ extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width;
 
-- (UIBarButtonItem *)addSearchBarItem;
+- (nonnull UIBarButtonItem *)addSearchBarItem;
 
 /**
  * @abstract Adds a simple UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace

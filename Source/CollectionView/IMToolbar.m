@@ -44,7 +44,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 }
 
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType {
-    UIImage *image;
+    UIImage *image, *activeImage;
 
     switch (buttonType) {
         case IMToolbarButtonSearch:
@@ -52,15 +52,19 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
             break;
         case IMToolbarButtonRecents:
             image = [UIImage imageNamed:@"toolbar_recents" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            activeImage = [UIImage imageNamed:@"toolbar_recents_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
         case IMToolbarButtonReactions:
             image = [UIImage imageNamed:@"toolbar_reactions" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            activeImage = [UIImage imageNamed:@"toolbar_reactions_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
         case IMToolbarButtonTrending:
             image = [UIImage imageNamed:@"toolbar_trending" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            activeImage = [UIImage imageNamed:@"toolbar_trending_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
         case IMToolbarButtonCollection:
             image = [UIImage imageNamed:@"toolbar_collection" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            activeImage = [UIImage imageNamed:@"toolbar_collection_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
             break;
         case IMToolbarButtonBack:
             image = [UIImage imageNamed:@"toolbar_back" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
@@ -71,13 +75,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
     return [self addToolbarButtonWithType:buttonType
                                     image:image
-                              activeImage:[IMToolbar tintImage:image
-                                                       toColor:[UIColor colorWithRed:10.0f / 255.0f
-                                                                               green:140.0f / 255.0f
-                                                                                blue:255.0f / 255.0f
-                                                                               alpha:1.0f]
-                              ]
-    ];
+                              activeImage:activeImage];
 }
 
 - (nonnull UIBarButtonItem *)addToolbarButtonWithType:(IMToolbarButtonType)buttonType
@@ -113,7 +111,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     return barButtonItem;
 }
 
-- (UIBarButtonItem *)addSearchBarItem {
+- (nonnull UIBarButtonItem *)addSearchBarItem {
     UISearchBar *searchBar = [UISearchBar new];
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
 
@@ -166,21 +164,6 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     [items addObject:barButtonItem];
 
     self.items = items;
-}
-
-+ (UIImage *)tintImage:(UIImage *)image toColor:(UIColor *)color {
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0.0f);
-
-    [color setFill];
-    CGRect bounds = CGRectMake(0, 0, image.size.width, image.size.height);
-
-    UIRectFill(bounds);
-    [image drawInRect:bounds blendMode:kCGBlendModeDestinationIn alpha:1.0];
-
-    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    return tintedImage;
 }
 
 + (instancetype)imojiToolbar {
