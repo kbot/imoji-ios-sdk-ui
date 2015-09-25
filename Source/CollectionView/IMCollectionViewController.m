@@ -276,7 +276,9 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 }
 
 - (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
-    if (self.collectionViewControllerDelegate && [self.collectionViewControllerDelegate respondsToSelector:@selector(positionForBar:)]) {
+    if (![self conformsToProtocol:@protocol(IMCollectionViewControllerDelegate)] &&
+        self.collectionViewControllerDelegate &&
+        [self.collectionViewControllerDelegate respondsToSelector:@selector(positionForBar:)]) {
         return [self.collectionViewControllerDelegate positionForBar:bar];
     }
 

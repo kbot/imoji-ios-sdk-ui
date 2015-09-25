@@ -28,7 +28,7 @@
 #import "IMToolbar.h"
 #import "IMCollectionView.h"
 
-@class IMImojiSession, IMCollectionViewController;
+@class IMImojiSession;
 
 @protocol IMCollectionViewControllerDelegate <IMToolbarDelegate, IMCollectionViewDelegate>
 
@@ -38,7 +38,7 @@
  * @abstract Allows the implementor to specify the background color of the view prior to presenting. Implement this
  * if you wish to have the status bar section have a different color than the toolbars.
  */
-- (nullable UIColor *)backgroundColorForCollectionViewController:(IMCollectionViewController *)collectionViewController;
+- (nullable UIColor *)backgroundColorForCollectionViewController:(nonnull UIViewController *)collectionViewController;
 
 @end
 
