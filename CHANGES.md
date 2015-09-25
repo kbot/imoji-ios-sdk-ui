@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.11
+
+* Many enhancements to IMCollectionViewController for customizing the toolbar contents and display
+* Exposes a shared common toolbar IMToolbar for Imoji components
+
 ### Version 0.1.10
 
 * Fixed crash that occurs in the editor when the user goes to the tag screen then goes back and makes changes to the sticker
