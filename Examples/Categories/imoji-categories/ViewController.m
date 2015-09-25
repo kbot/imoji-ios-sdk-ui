@@ -13,8 +13,9 @@
 #import <ImojiSDKUI/IMCollectionView.h>
 #import "ViewController.h"
 #import "IMToolbar.h"
+#import "IMResourceBundleUtil.h"
 
-@interface ViewController () <IMCollectionViewDelegate, IMToolbarDelegate>
+@interface ViewController () <IMCollectionViewControllerDelegate>
 
 @property(nonatomic, strong) UIButton *reactionsButton;
 @property(nonatomic, strong) UIButton *trendingButton;
@@ -112,8 +113,12 @@
 }
 
 - (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {
+    IMImojiObjectRenderingOptions *renderingOptions =
+            [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+    renderingOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+
     [self.imojiSession renderImoji:imoji
-                           options:[IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]
+                           options:renderingOptions
                           callback:^(UIImage *image, NSError *error) {
                               NSArray *sharingItems = @[image];
                               UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:sharingItems
@@ -156,12 +161,18 @@
     IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
     viewController.collectionView.collectionViewDelegate = self;
     viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    viewController.backButton.hidden = NO;
+
     [viewController.bottomToolbar addFlexibleSpace];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonTrending];
     [viewController.bottomToolbar addFlexibleSpace];
 
-    viewController.topToolbar.delegate = viewController.bottomToolbar.delegate = self;
+    viewController.topToolbar.barTintColor =
+            viewController.bottomToolbar.barTintColor =
+                    [UIColor colorWithRed:33.0f / 255.0f green:53.0f / 255.0f blue:107.0f / 255.0f alpha:1.0f];
+
+    viewController.collectionViewControllerDelegate = self;
 
     [self presentViewController:viewController animated:YES completion:^{
         switch (categoryClassification) {
