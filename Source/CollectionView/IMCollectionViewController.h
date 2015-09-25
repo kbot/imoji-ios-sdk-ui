@@ -25,8 +25,23 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "IMToolbar.h"
+#import "IMCollectionView.h"
 
-@class IMImojiSession, IMCollectionView, IMToolbar;
+@class IMImojiSession, IMCollectionViewController;
+
+@protocol IMCollectionViewControllerDelegate <IMToolbarDelegate, IMCollectionViewDelegate>
+
+@optional
+
+/**
+ * @abstract Allows the implementor to specify the background color of the view prior to presenting. Implement this
+ * if you wish to have the status bar section have a different color than the toolbars.
+ */
+- (nullable UIColor *)backgroundColorForCollectionViewController:(IMCollectionViewController *)collectionViewController;
+
+@end
+
 
 /**
  * @abstract A simple view controller that displays a full screen collection view with Imoji content. A search field
@@ -69,17 +84,33 @@
  */
 @property(nonatomic, strong, readonly, nonnull) UISearchBar *searchField;
 
-/* @abstract The collection view associated to the view controller. To change the dimensions of this field, override
+/**
+ * @abstract The collection view associated to the view controller. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
  */
 @property(nonatomic, strong, readonly, nonnull) IMCollectionView *collectionView;
 
-/* @abstract
+/**
+ * @abstract A standard toolbar that will appear below the collection view component. If no items are added to the
+ * toolbar, it will not be displayed
  */
 @property(nonatomic, strong, readonly, nonnull) IMToolbar *bottomToolbar;
 
-/* @abstract
-  */
+/**
+ * @abstract A standard toolbar that will appear above the collection view component. By default, the searchField
+ * component is added and always displayed.
+ */
 @property(nonatomic, strong, readonly, nonnull) IMToolbar *topToolbar;
 
+/**
+ * @abstract Back button displayed in topToolbar. This view is hidden by default.
+ */
+@property(nonatomic, strong, readonly, nonnull) UIButton *backButton;
+
+/**
+ * @abstract An optional delegate that will receive events from the toolbars as well as the collection view itself
+ */
+@property(nonatomic, weak, nullable) id <IMCollectionViewControllerDelegate> collectionViewControllerDelegate;
+
 @end
+

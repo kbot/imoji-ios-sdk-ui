@@ -31,12 +31,13 @@
 #import "IMToolbar.h"
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
-UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
+UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
+UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
-@interface IMCollectionViewController () <UISearchBarDelegate>
+@interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate>
 
-@property(nonatomic, strong) UIBarButtonItem *backButton;
 @property(nonatomic) UIEdgeInsets preKeyboardDisplayedCollectionViewInsets;
+
 @end
 
 @implementation IMCollectionViewController {
@@ -93,10 +94,16 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
                                                  name:UIKeyboardDidHideNotification
                                                object:nil];
 
-    _backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack];
-    UIBarButtonItem *barButtonItem = [self.topToolbar addSearchBarItem];
-    _searchField = (UISearchBar *) barButtonItem.customView;
+    _backButton = (UIButton *) [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
+    _searchField = (UISearchBar *) [self.topToolbar addSearchBarItem].customView;
     _searchField.delegate = self;
+    _bottomToolbar.delegate = _topToolbar.delegate = self;
+
+    self.backButton.hidden = YES;
+
+    if (self.collectionViewControllerDelegate) {
+        _collectionView.collectionViewDelegate = self.collectionViewControllerDelegate;
+    }
 }
 
 - (void)dealloc {
@@ -117,7 +124,6 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
 }
 
 - (void)setupControllerComponentsLookAndFeel {
-    self.view.backgroundColor = [UIColor colorWithWhite:105 / 255.0f alpha:1.0f];
     self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
 
     NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
@@ -125,6 +131,10 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
 
     self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
     self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
+
+    if ([self.collectionViewControllerDelegate respondsToSelector:@selector(backgroundColorForCollectionViewController:)]) {
+        self.view.backgroundColor = [self.collectionViewControllerDelegate backgroundColorForCollectionViewController:self];
+    }
 }
 
 - (void)updateViewConstraints {
@@ -150,10 +160,26 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
     }];
 
     [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.and.top.equalTo(self.backButton.customView);
+        make.height.and.top.equalTo(self.backButton);
         make.right.equalTo(self.view).offset(-IMCollectionViewControllerSearchFieldInsets.right);
-        make.left.equalTo(self.backButton.customView.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
+
+        if (self.backButton.hidden) {
+            make.left.equalTo(self.view).offset(IMCollectionViewControllerSearchFieldInsets.left);
+        } else {
+            make.left.equalTo(self.backButton.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
+        }
     }];
+
+    [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.topToolbar);
+        make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
+    }];
+
+    self.bottomToolbar.hidden = !self.bottomToolbar.items || self.bottomToolbar.items.count == 0;
+
+    // hide the top toolbar if both of the default components are hidden
+    self.topToolbar.hidden = !self.topToolbar.items || self.topToolbar.items.count == 0 ||
+            (self.backButton.hidden && self.searchField.hidden && self.topToolbar.items.count == 2);
 
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
             (!self.topToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
@@ -195,7 +221,7 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
 
     // restore the content size of the collection view
     if (occupiedHeight != 0) {
-        self.collectionView.scrollIndicatorInsets = self.preKeyboardDisplayedCollectionViewInsets;
+        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = self.preKeyboardDisplayedCollectionViewInsets;
     }
 }
 
@@ -208,6 +234,11 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
 - (void)setSearchOnTextChanges:(BOOL)searchOnTextChanges {
     _searchOnTextChanges = searchOnTextChanges;
     self.searchField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+}
+
+- (void)setCollectionViewControllerDelegate:(id)collectionViewControllerDelegate {
+    _collectionViewControllerDelegate = collectionViewControllerDelegate;
+    _collectionView.collectionViewDelegate = collectionViewControllerDelegate;
 }
 
 #pragma mark Search field delegates
@@ -238,12 +269,26 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 5, 0, 10};
     }
 }
 
+- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
+    if (self.collectionViewControllerDelegate && [self.collectionViewControllerDelegate respondsToSelector:@selector(userDidSelectToolbarButton:)]) {
+        [self.collectionViewControllerDelegate userDidSelectToolbarButton:buttonType];
+    }
+}
+
+- (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
+    if (self.collectionViewControllerDelegate && [self.collectionViewControllerDelegate respondsToSelector:@selector(positionForBar:)]) {
+        return [self.collectionViewControllerDelegate positionForBar:bar];
+    }
+
+    return self.topToolbar == bar ?
+            UIBarPositionTopAttached :
+            self.bottomToolbar == bar ? UIBarPositionBottom : UIBarPositionAny;
+}
+
 #pragma mark Initializers
 
 + (instancetype)collectionViewControllerWithSession:(IMImojiSession *)session {
-    IMCollectionViewController *controller = [[IMCollectionViewController alloc] initWithNibName:nil bundle:nil];
-    controller.session = session;
-    return controller;
+    return [[IMCollectionViewController alloc] initWithSession:session];
 }
 
 @end
