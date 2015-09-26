@@ -84,4 +84,26 @@
     return layer;
 }
 
++ (nonnull UIImage *)rightArrowButtonImage:(CGFloat)radius
+                               circleColor:(nonnull UIColor *)circleColor
+                               borderColor:(nonnull UIColor *)borderColor
+                               strokeWidth:(CGFloat)borderWidth {
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius + borderWidth, radius + borderWidth), NO, 0.f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextSetLineWidth(context, borderWidth);
+    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);
+    CGContextStrokeEllipseInRect(context, CGRectMake(borderWidth / 2.0f, borderWidth / 2.0f, radius, radius));
+
+    CGContextSetFillColorWithColor(context, circleColor.CGColor);
+    CGContextSetBlendMode(context, kCGBlendModeNormal);
+    CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
+
+    UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
+
+    UIGraphicsEndImageContext();
+
+    return layer;
+}
+
 @end

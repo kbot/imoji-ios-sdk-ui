@@ -29,15 +29,18 @@
 #import "IMResourceBundleUtil.h"
 #import "IMImojiObject.h"
 #import "IMImojiSession.h"
+#import "IMCreateImojiAssistantViewController.h"
+#import "IMPopInAnimatedTransition.h"
 #import <Masonry/Masonry.h>
 
 
-@interface IMCreateImojiViewController () <IMCreateImojiViewDelegate>
+@interface IMCreateImojiViewController () <IMCreateImojiViewDelegate, UIViewControllerTransitioningDelegate>
 
 @property(nonatomic, readonly) UIBarButtonItem *undoButton;
 @property(nonatomic, readonly) UIBarButtonItem *doneButton;
 @property(nonatomic, readonly) UIBarButtonItem *forwardButton;
 @property(nonatomic, readonly) UIBarButtonItem *backButton;
+@property(nonatomic, readonly) UIBarButtonItem *helpButton;
 @property(nonatomic, readonly) UIBarButtonItem *navigationTitle;
 
 @property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
@@ -86,6 +89,10 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(performUndo)];
+    _helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiFinish.png"]
+                                                   style:UIBarButtonItemStyleDone
+                                                  target:self
+                                                  action:@selector(showHelpScreen)];
     _doneButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiFinish.png"]
                                                    style:UIBarButtonItemStyleDone
                                                   target:self
@@ -130,7 +137,9 @@
     [self.tagView addSubview:self.tagCollectionView];
 
     self.editorButtonView.items = @[
-            self.undoButton
+            self.undoButton,
+            [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+            self.helpButton
     ];
     self.editorButtonView.barStyle = UIBarStyleBlackTranslucent;
     self.editorButtonView.tintColor = [UIColor whiteColor];
@@ -199,6 +208,30 @@
         [self.imojiEditor undo];
         self.undoButton.enabled = self.imojiEditor.canUndo;
     }
+}
+
+- (void)showHelpScreen {
+    IMCreateImojiAssistantViewController *assistantViewController =
+            [IMCreateImojiAssistantViewController createAssistantViewControllerWithSession:self.session];
+
+    assistantViewController.transitioningDelegate = self;
+    assistantViewController.modalPresentationStyle = UIModalPresentationCustom;
+
+    [self presentViewController:assistantViewController
+                       animated:YES
+                     completion:nil];
+}
+
+- (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
+                                                                   presentingController:(UIViewController *)presenting
+                                                                       sourceController:(UIViewController *)source {
+    IMPopInAnimatedTransition *transition = [IMPopInAnimatedTransition new];
+    transition.presenting = YES;
+    return transition;
+}
+
+- (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    return [IMPopInAnimatedTransition new];
 }
 
 - (void)finishEditing {
