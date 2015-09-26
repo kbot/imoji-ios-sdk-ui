@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.12
+
+* Nifty tutorials for the editor!
+
 ### Version 0.1.11
 
 * Many enhancements to IMCollectionViewController for customizing the toolbar contents and display

@@ -87,8 +87,10 @@
 + (nonnull UIImage *)rightArrowButtonImage:(CGFloat)radius
                                circleColor:(nonnull UIColor *)circleColor
                                borderColor:(nonnull UIColor *)borderColor
-                               strokeWidth:(CGFloat)borderWidth {
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(radius + borderWidth, radius + borderWidth), NO, 0.f);
+                               strokeWidth:(CGFloat)borderWidth
+                                 iconImage:(nullable UIImage *)iconImage {
+    CGSize size = CGSizeMake(radius + borderWidth, radius + borderWidth);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0.f);
     CGContextRef context = UIGraphicsGetCurrentContext();
 
     CGContextSetLineWidth(context, borderWidth);
@@ -98,6 +100,13 @@
     CGContextSetFillColorWithColor(context, circleColor.CGColor);
     CGContextSetBlendMode(context, kCGBlendModeNormal);
     CGContextFillEllipseInRect(context, CGRectMake(0, 0, radius, radius));
+    
+    if (iconImage) {
+        [iconImage drawInRect:CGRectMake(
+                (size.width - iconImage.size.width)/2.0f, (size.height - iconImage.size.height)/2.0f,
+                iconImage.size.width, iconImage.size.height
+        )];
+    }
 
     UIImage *layer = UIGraphicsGetImageFromCurrentImageContext();
 

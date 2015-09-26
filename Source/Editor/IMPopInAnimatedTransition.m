@@ -25,33 +25,38 @@
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
 
     if (self.presenting) {
+        UIView *fromView = [fromViewController.view resizableSnapshotViewFromRect:fromViewController.view.frame
+                                                               afterScreenUpdates:NO
+                                                                    withCapInsets:UIEdgeInsetsZero];
+        UIView *toView = toViewController.view;
+
         UIView *blurredView = [self generateViewControllerBackground:fromViewController];
         [transitionContext.containerView addSubview:blurredView];
-        [transitionContext.containerView addSubview:toViewController.view];
+        [transitionContext.containerView addSubview:toView];
 
-        CGRect startFrame, endFrame = toViewController.view.frame;
+        CGRect startFrame, endFrame = toView.frame;
 
         switch (self.transitionDirection) {
             case IMPopInAnimatedTransitionDirectionLeft:
                 startFrame = CGRectMake(
-                        -toViewController.view.frame.size.width, 0,
-                        toViewController.view.frame.size.width, toViewController.view.frame.size.height
+                        -toView.frame.size.width, 0,
+                        toView.frame.size.width, toView.frame.size.height
                 );
 
                 break;
 
             case IMPopInAnimatedTransitionDirectionRight:
                 startFrame = CGRectMake(
-                        toViewController.view.frame.size.width, 0,
-                        toViewController.view.frame.size.width, toViewController.view.frame.size.height
+                        toView.frame.size.width, 0,
+                        toView.frame.size.width, toView.frame.size.height
                 );
 
                 break;
 
             case IMPopInAnimatedTransitionDirectionDown:
                 startFrame = CGRectMake(
-                        0, -toViewController.view.frame.size.height,
-                        toViewController.view.frame.size.width, toViewController.view.frame.size.height
+                        0, -toView.frame.size.height,
+                        toView.frame.size.width, toView.frame.size.height
                 );
 
                 break;
@@ -59,14 +64,14 @@
             case IMPopInAnimatedTransitionDirectionUp:
             default:
                 startFrame = CGRectMake(
-                        0, toViewController.view.frame.size.height,
-                        toViewController.view.frame.size.width, toViewController.view.frame.size.height
+                        0, toView.frame.size.height,
+                        toView.frame.size.width, toView.frame.size.height
                 );
 
                 break;
         }
 
-        toViewController.view.frame = startFrame;
+        toView.frame = startFrame;
         blurredView.layer.opacity = 0.0f;
 
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
@@ -75,38 +80,41 @@
               initialSpringVelocity:1.0f
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             fromViewController.view.layer.opacity = 0.0f;
+                             fromView.layer.opacity = 0.0f;
                              blurredView.layer.opacity = 1.0f;
-                             toViewController.view.frame = endFrame;
+                             toView.frame = endFrame;
                          }
                          completion:^(BOOL finished) {
                              [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                          }];
     } else {
-        [transitionContext.containerView addSubview:fromViewController.view];
+        UIView *fromView = fromViewController.view;
+        UIView *blurredBackgroundView = transitionContext.containerView.subviews.firstObject;
+
+        [transitionContext.containerView addSubview:fromView];
 
         CGRect endFrame;
         switch (self.transitionDirection) {
             case IMPopInAnimatedTransitionDirectionLeft:
                 endFrame = CGRectMake(
-                        -fromViewController.view.frame.size.width, 0,
-                        fromViewController.view.frame.size.width, fromViewController.view.frame.size.height
+                        -fromView.frame.size.width, 0,
+                        fromView.frame.size.width, fromView.frame.size.height
                 );
 
                 break;
 
             case IMPopInAnimatedTransitionDirectionRight:
                 endFrame = CGRectMake(
-                        fromViewController.view.frame.size.width, 0,
-                        fromViewController.view.frame.size.width, fromViewController.view.frame.size.height
+                        fromView.frame.size.width, 0,
+                        fromView.frame.size.width, fromView.frame.size.height
                 );
 
                 break;
 
             case IMPopInAnimatedTransitionDirectionDown:
                 endFrame = CGRectMake(
-                        0, -fromViewController.view.frame.size.height,
-                        fromViewController.view.frame.size.width, fromViewController.view.frame.size.height
+                        0, -fromView.frame.size.height,
+                        fromView.frame.size.width, fromView.frame.size.height
                 );
 
                 break;
@@ -114,8 +122,8 @@
             case IMPopInAnimatedTransitionDirectionUp:
             default:
                 endFrame = CGRectMake(
-                        0, fromViewController.view.frame.size.height,
-                        fromViewController.view.frame.size.width, fromViewController.view.frame.size.height
+                        0, fromView.frame.size.height,
+                        fromView.frame.size.width, fromView.frame.size.height
                 );
 
                 break;
@@ -123,11 +131,10 @@
 
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                          animations:^{
-                             fromViewController.view.layer.opacity = 0.0f;
-                             fromViewController.view.frame = endFrame;
+                             blurredBackgroundView.layer.opacity = 0.0f;
+                             fromView.frame = endFrame;
                          }
                          completion:^(BOOL finished) {
-                             [fromViewController.view removeFromSuperview];
                              [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
                          }
         ];

@@ -42,6 +42,7 @@
 + (nonnull UIImage *)rightArrowButtonImage:(CGFloat)radius
                                circleColor:(nonnull UIColor *)circleColor
                                borderColor:(nonnull UIColor *)borderColor
-                               strokeWidth:(CGFloat)borderWidth;
+                               strokeWidth:(CGFloat)borderWidth
+                                 iconImage:(nullable UIImage *)iconImage;
 
 @end

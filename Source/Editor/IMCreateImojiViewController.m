@@ -89,7 +89,7 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(performUndo)];
-    _helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/createImojiFinish.png"]
+    _helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_hints"]
                                                    style:UIBarButtonItemStyleDone
                                                   target:self
                                                   action:@selector(showHelpScreen)];

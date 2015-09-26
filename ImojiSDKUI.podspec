@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '0.1.11'
+  s.version  = '0.1.12'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration.'
   s.homepage = 'http://imoji.io/sdk'
@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
     ss.public_header_files = 'Frameworks/ImojiGraphics.framework/Versions/A/Headers/*.h'
     ss.vendored_frameworks = 'Frameworks/ImojiGraphics.framework'
 
-    ss.ios.resource_bundles = {'ImojiEditorAssets' => ['Source/Editor/Resources/Icons/*.png']}
+    ss.ios.resource_bundles = {'ImojiEditorAssets' => ['Source/Editor/Resources/Icons/*.png', 'Source/Editor/Resources/Images/*.png']}
   
     ss.ios.source_files = 'Source/Editor/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/Editor/*.h'
