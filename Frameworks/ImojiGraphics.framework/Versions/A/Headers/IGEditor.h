@@ -26,32 +26,34 @@ extern "C" {
 #endif
 
     enum IGTouchType {
-        IG_TOUCH_BEGAN = 1,
-        IG_TOUCH_MOVED,
-        IG_TOUCH_ENDED,
-        IG_TOUCH_CANCELED
+        IG_TOUCH_BEGAN = 1,     // New touch
+        IG_TOUCH_MOVED,         // Update touch
+        IG_TOUCH_ENDED,         // End touch
+        IG_TOUCH_CANCELED       // End/revert all touches
     };
     
     enum IGEditorState {
         IG_EDITOR_DRAW = 1,
         IG_EDITOR_NUDGE
     };
-    typedef enum IGEditorState IGEditorState;
     
     enum IGEditorSubstate {
-        IG_EDITOR_IDLE = 1,
-        IG_EDITOR_DRAG,
-        IG_EDITOR_PINCH,
-        IG_EDITOR_HOLD
+        IG_EDITOR_IDLE = 1,     // Idle
+        IG_EDITOR_DRAG,         // Single touch ongoing
+        IG_EDITOR_PINCH,        // Double touch (or scroll) ongoing
+        IG_EDITOR_HOLD          // Unrecognized touch(es) ongoing
     };
-    typedef enum IGEditorSubstate IGEditorSubstate;
     
 #if __ANDROID__
     typedef IGint IGTouchID;
     typedef IGint IGTouchType;
+    typedef IGint IGEditorState;
+    typedef IGint IGEditorSubstate;
 #else
     typedef const void * IGTouchID;
     typedef enum IGTouchType IGTouchType;
+    typedef enum IGEditorState IGEditorState;
+    typedef enum IGEditorSubstate IGEditorSubstate;
 #endif
 
     struct IGTouch {
@@ -167,6 +169,12 @@ extern "C" {
 
     // Set color of dots in draw mode; small line dots overlap the big cursor dot
     IG_FUNCTION(void, EditorSetDotColor, IGEditor * igEditor, IGint red, IGint green, IGint blue, IGint alpha);
+
+    // Return current IGEditorState of editor
+    IG_FUNCTION(IGEditorState, EditorGetState, IGEditor * igEditor);
+    
+    // Return current IGEditorSubstate of editor
+    IG_FUNCTION(IGEditorSubstate, EditorGetSubstate, IGEditor * igEditor);
 
     // The touch event function handles all touch events in the editor viewport. Call EditorDisplay() after this.
     //
