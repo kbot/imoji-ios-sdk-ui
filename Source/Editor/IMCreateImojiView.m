@@ -83,10 +83,12 @@
             GLint viewportWidth = viewport[2] - viewport[0];
             GLint viewportHeight = viewport[3] - viewport[1];
 
-            if (igImageGetWidth(self.igInputImage) > viewportWidth) {
-                igEditorZoomTo(self.igEditor, (CGFloat) viewportWidth / (CGFloat) igImageGetWidth(self.igInputImage));
-            } else if (igImageGetHeight(self.igInputImage) > viewportHeight) {
+            // check and see if the image is longer than the viewport, since the editor
+            // will be used primarily in portrait, it's important that the height is checked first
+            if (igImageGetHeight(self.igInputImage) > viewportHeight) {
                 igEditorZoomTo(self.igEditor, (CGFloat) viewportHeight / (CGFloat) igImageGetHeight(self.igInputImage));
+            } else if (igImageGetWidth(self.igInputImage) > viewportWidth) {
+                igEditorZoomTo(self.igEditor, (CGFloat) viewportWidth / (CGFloat) igImageGetWidth(self.igInputImage));
             }
         }
 
