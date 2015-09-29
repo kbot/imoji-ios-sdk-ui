@@ -52,12 +52,13 @@
     [self.view addSubview:self.tipsView];
     [self.view addSubview:self.proceedButton];
     [self.view addSubview:self.doneButton];
-    [self.view addSubview:self.tipTitle];
-    [self.view addSubview:self.tipDescription];
-    [self.view addSubview:self.tipImage];
-    [self.view addSubview:topImageBorder];
-    [self.view addSubview:bottomImageBorder];
     [self.view addSubview:self.pageControl];
+
+    [self.tipsView addSubview:self.tipTitle];
+    [self.tipsView addSubview:self.tipDescription];
+    [self.tipsView addSubview:self.tipImage];
+    [self.tipsView addSubview:topImageBorder];
+    [self.tipsView addSubview:bottomImageBorder];
 
     [self.tipsView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.view).multipliedBy(.961f);
@@ -106,7 +107,7 @@
 
     [self.pageControl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.tipImage);
-        make.top.equalTo(self.view.mas_bottom).multipliedBy(.81f);
+        make.top.equalTo(self.tipsView.mas_bottom).multipliedBy(1.005f);
     }];
 
     self.tipsView.backgroundColor = [UIColor colorWithWhite:248.f / 255.f alpha:1.0f];
@@ -157,15 +158,13 @@
             [UIColor colorWithWhite:22.f / 255.f alpha:.12f];
 
     self.pageControl.numberOfPages = 3;
+    [self.pageControl addTarget:self
+                         action:@selector(loadContentForCurrentPage)
+               forControlEvents:UIControlEventValueChanged];
     [self loadContentForCurrentPage];
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-
-    self.tipDescription.font = self.tipTitle.font =
-            [IMAttributeStringUtil defaultFontWithSize:self.view.frame.size.width * .041f];
-}
+#pragma mark Page Control
 
 - (void)proceedButtonTapped:(id)sender {
     self.pageControl.currentPage = self.pageControl.currentPage + 1;
@@ -182,6 +181,8 @@
             self.tipTitle.text = @"You’ve got a border now!";
             self.tipDescription.text = @"Adjust the border by pushing it";
             self.tipImage.image = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_2"];
+            self.proceedButton.hidden = NO;
+            self.doneButton.hidden = YES;
 
             break;
         case 2:
@@ -205,9 +206,20 @@
     }
 }
 
+#pragma mark UIViewController Overrides
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    self.tipDescription.font = self.tipTitle.font =
+            [IMAttributeStringUtil defaultFontWithSize:self.tipDescription.frame.size.height * .2f];
+}
+
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
+
+#pragma mark Initialization
 
 + (instancetype)createAssistantViewControllerWithSession:(nonnull IMImojiSession *)session {
     return [[IMCreateImojiAssistantViewController alloc] initWithSession:session];
