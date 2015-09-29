@@ -289,6 +289,10 @@
     }
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
