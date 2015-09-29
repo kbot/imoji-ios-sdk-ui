@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C0FF3FDB2680350632333359 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B173F07D4BF8919FB0432D /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		4365293F550EA1DED07D7AD2 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51954BCBF163B1EFB67DA2AF /* libPods.a */; };
 		FA92230A1BB4B07A00366238 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9223091BB4B07A00366238 /* AppDelegate.swift */; };
 		FA92230C1BB4B07A00366238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA92230B1BB4B07A00366238 /* ViewController.swift */; };
 		FA92230F1BB4B07A00366238 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA92230D1BB4B07A00366238 /* Main.storyboard */; };
@@ -18,7 +18,7 @@
 
 /* Begin PBXFileReference section */
 		164B7CDBC49B04C8935BE1D3 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		85B173F07D4BF8919FB0432D /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51954BCBF163B1EFB67DA2AF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		FA7A37B81BB4C1B600A8FC2F /* Artmoji-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Artmoji-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA9223041BB4B07A00366238 /* artmoji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = artmoji.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,7 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0FF3FDB2680350632333359 /* Pods.framework in Frameworks */,
+				4365293F550EA1DED07D7AD2 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,7 +46,7 @@
 		60E24340947F5871CBF8ADEB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				85B173F07D4BF8919FB0432D /* Pods.framework */,
+				51954BCBF163B1EFB67DA2AF /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,7 +113,6 @@
 				FA9223011BB4B07A00366238 /* Frameworks */,
 				FA9223021BB4B07A00366238 /* Resources */,
 				63AF4392E6AC5A6A9E55EAC6 /* Copy Pods Resources */,
-				CDBE21718D0F5CFF10C6C3FB /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -201,21 +200,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CDBE21718D0F5CFF10C6C3FB /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -290,8 +274,10 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -328,7 +314,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -340,8 +328,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = artmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Debug;
 		};
@@ -352,8 +345,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = artmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Release;
 		};
