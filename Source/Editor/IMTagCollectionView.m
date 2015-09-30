@@ -26,6 +26,7 @@
 #import <Masonry/Masonry.h>
 #import "IMTagCollectionView.h"
 #import "IMTagCollectionViewCell.h"
+#import "UICollectionViewLeftAlignedLayout.h"
 
 @interface IMTagCollectionView () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UITextFieldDelegate>
 
@@ -38,7 +39,7 @@ NSString *const IMTagCollectionViewCellReuseId = @"IMTagCollectionViewCellReuseI
 @implementation IMTagCollectionView
 
 - (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame collectionViewLayout:[UICollectionViewFlowLayout new]];
+    self = [super initWithFrame:frame collectionViewLayout:[UICollectionViewLeftAlignedLayout new]];
     if (self) {
         self.delegate = self;
         self.dataSource = self;
