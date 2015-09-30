@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4365293F550EA1DED07D7AD2 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51954BCBF163B1EFB67DA2AF /* libPods.a */; };
+		9A76CD3FC1FFE314B924445D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D161FCB8F4B85A8C1BAD6BF5 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA92230A1BB4B07A00366238 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9223091BB4B07A00366238 /* AppDelegate.swift */; };
 		FA92230C1BB4B07A00366238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA92230B1BB4B07A00366238 /* ViewController.swift */; };
 		FA92230F1BB4B07A00366238 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA92230D1BB4B07A00366238 /* Main.storyboard */; };
@@ -18,8 +18,8 @@
 
 /* Begin PBXFileReference section */
 		164B7CDBC49B04C8935BE1D3 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		51954BCBF163B1EFB67DA2AF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		D161FCB8F4B85A8C1BAD6BF5 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA7A37B81BB4C1B600A8FC2F /* Artmoji-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Artmoji-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA9223041BB4B07A00366238 /* artmoji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = artmoji.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA9223081BB4B07A00366238 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -36,7 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4365293F550EA1DED07D7AD2 /* libPods.a in Frameworks */,
+				9A76CD3FC1FFE314B924445D /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,7 +46,7 @@
 		60E24340947F5871CBF8ADEB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				51954BCBF163B1EFB67DA2AF /* libPods.a */,
+				D161FCB8F4B85A8C1BAD6BF5 /* Pods.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,6 +113,7 @@
 				FA9223011BB4B07A00366238 /* Frameworks */,
 				FA9223021BB4B07A00366238 /* Resources */,
 				63AF4392E6AC5A6A9E55EAC6 /* Copy Pods Resources */,
+				0AC55583E19896825AD1616B /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -170,6 +171,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0AC55583E19896825AD1616B /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		4ABD4D676900BDB439D6C8F8 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
