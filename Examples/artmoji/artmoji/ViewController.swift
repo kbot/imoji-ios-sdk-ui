@@ -37,17 +37,17 @@ class ViewController: UIViewController {
         navigationTitle.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "HelveticaNeue-Medium", size: 18.0)!], forState: UIControlState.Normal)
 
         // Set up toolbar buttons
-        captureButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        captureButton = UIButton(type: UIButtonType.Custom)
         captureButton.setImage(UIImage(named: "toolbar_collection_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         captureButton.frame = CGRectMake(0, 0, 40, 40)
 
-        flipButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "toolbar_trending_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         flipButton.addTarget(self, action: "flipButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         flipButton.frame = CGRectMake(0, 0, 40, 40)
 
-        photoLibraryButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        photoLibraryButton = UIButton(type: UIButtonType.Custom)
         photoLibraryButton.setImage(UIImage(named: "toolbar_recents_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         photoLibraryButton.addTarget(self, action: "photoLibraryButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         photoLibraryButton.frame = CGRectMake(0, 0, 40, 40)
@@ -56,7 +56,7 @@ class ViewController: UIViewController {
 
         backButton = UIBarButtonItem(image: UIImage(named: "toolbar_back", inBundle: imageBundle, compatibleWithTraitCollection: nil), style: UIBarButtonItemStyle.Plain, target: self, action: "backButtonTapped")
 
-        imojiButton = UIButton.buttonWithType(UIButtonType.Custom) as! UIButton
+        imojiButton = UIButton(type: UIButtonType.Custom)
         imojiButton.setImage(UIImage(named: "toolbar_reactions_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         imojiButton.addTarget(self, action: "imojiButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         imojiButton.frame = CGRectMake(0, 0, 40, 40)
@@ -175,11 +175,11 @@ class ViewController: UIViewController {
     }
 
     func forwardButtonTapped() {
-        print("FORWARD!")
+        print("FORWARD!", terminator: "")
     }
 
     func backButtonTapped() {
-        print("FALL BACK!")
+        print("FALL BACK!", terminator: "")
     }
 
     func collectionViewControllerBackButtonTapped() {
@@ -196,7 +196,7 @@ class ViewController: UIViewController {
 
 // Mark: - PBJVisionDelegate
 extension ViewController: PBJVisionDelegate {
-    func vision(PBJVision, capturedPhoto photoDict: [NSObject:AnyObject]?, error: NSError?) {
+    func vision(_: PBJVision, capturedPhoto photoDict: [NSObject:AnyObject]?, error: NSError?) {
         if error != nil {
             if let image = photoDict?[PBJVisionPhotoImageKey] as? UIImage {
                 let createImojiViewController = IMCreateImojiViewController(sourceImage: image, session: imojiSession)

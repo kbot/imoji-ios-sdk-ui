@@ -130,6 +130,8 @@
 		FA9222FC1BB4B07A00366238 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = Imoji;
 				TargetAttributes = {
