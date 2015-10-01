@@ -64,7 +64,11 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  */
 @property(nonatomic) NSUInteger numberOfImojisToLoad;
 
-@property(nonatomic) CGFloat sideInsets;
+/**
+ * @abstract The size in which to display the Imoji's. By default this is set to 100x100 and the collection view
+ * will expand the cell to occupy any remaining space so that the cells fill the rows.
+ */
+@property(nonatomic) CGSize preferredImojiDisplaySize;
 
 /**
  * @abstract The image bundle to use for displaying shared assets such as splash screen images. Defaults to

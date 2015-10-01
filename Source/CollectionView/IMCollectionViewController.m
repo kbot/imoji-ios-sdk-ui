@@ -193,6 +193,7 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
 - (void)deviceOrientationDidChange {
     [self updateViewConstraints];
+    [self.collectionView reloadData];
 }
 
 - (void)keyboardDisplayedForSearchField:(NSNotification *)notification {

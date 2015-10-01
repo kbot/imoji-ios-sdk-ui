@@ -33,7 +33,6 @@
 #import "IMConnectivityUtil.h"
 
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
-CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 @interface IMCollectionView ()
 
@@ -45,7 +44,6 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 
-@property(nonatomic) BOOL runningBatchUpdates;
 @property(nonatomic) NSUInteger renderCount;
 
 @end
@@ -61,18 +59,17 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         _loadingIndicatorObject = [NSObject new];
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
         _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
+        _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
 
         self.dataSource = self;
         self.delegate = self;
 
         self.numberOfImojisToLoad = IMCollectionViewNumberOfItemsToLoad;
-        self.sideInsets = IMCollectionViewImojiCategoryLeftRightInset;
 
         self.backgroundColor = [UIColor whiteColor];
 
         self.content = [NSMutableArray array];
         self.images = [NSMutableArray array];
-        self.runningBatchUpdates = NO;
         self.renderCount = 0;
 
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -244,6 +241,13 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
                                         layout:collectionViewLayout
                         insetForSectionAtIndex:indexPath.section];
 
+    CGSize availableSize = CGSizeMake(
+            self.frame.size.width - insets.right - insets.left -
+                    self.contentInset.left - self.contentInset.right,
+            self.frame.size.height - insets.top - insets.bottom -
+                    self.contentInset.left - self.contentInset.right
+    );
+
     // splash views occupy the full screen
     switch (self.contentType) {
         case IMCollectionViewContentTypeRecentsSplash:
@@ -252,21 +256,33 @@ CGFloat const IMCollectionViewImojiCategoryLeftRightInset = 10.0f;
         case IMCollectionViewContentTypeEnableFullAccessSplash:
         case IMCollectionViewContentTypeNoResultsSplash: {
 
-            return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height - insets.top - insets.bottom);
+            return availableSize;
         }
         default: {
 
             id content = self.content[(NSUInteger) indexPath.row];
             if (self.content.count == 1) {
                 if (content == self.loadingIndicatorObject) {
-                    return CGSizeMake(self.frame.size.width - insets.right - insets.left, self.frame.size.height);
+                    return availableSize;
                 }
             } else if (content == self.loadingIndicatorObject) {
-                // loading indicator at the bottom of the results
-                return CGSizeMake(self.frame.size.width - insets.right - insets.left, 100.0f);
+                return CGSizeMake(availableSize.width, self.preferredImojiDisplaySize.height);
             }
 
-            return CGSizeMake((self.frame.size.width - insets.right - insets.left) / 3.0f, 100.0f);
+            // ensure the Imoji stickers take up the entire view space so that they
+            // do not get aligned to the edges when not using maxium space
+
+            CGFloat numberOfImagesPerRow = floorf(availableSize.width / self.preferredImojiDisplaySize.width);
+            CGFloat paddedSpace =
+                    self.preferredImojiDisplaySize.width * (
+                            availableSize.width / self.preferredImojiDisplaySize.width -
+                                    numberOfImagesPerRow
+                    ) / numberOfImagesPerRow;
+
+            return CGSizeMake(
+                    self.preferredImojiDisplaySize.width + paddedSpace,
+                    self.preferredImojiDisplaySize.height + paddedSpace
+            );
         }
     }
 }
@@ -651,13 +667,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                          if (!operation.isCancelled) {
                              self.images[index + offset] = image ? image : [NSNull null];
-                             
+
                              [self performBatchUpdates:^{
-                                 [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(index + offset) inSection:0]]];
-                             }
+                                         [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(index + offset) inSection:0]]];
+                                     }
                                             completion:^(BOOL finished) {
                                             }
-                              ];
+                             ];
                          }
                      }];
 }
@@ -721,8 +737,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     [self reloadData];
 }
 
-- (void)setSideInsets:(CGFloat)sideInsets {
-    _sideInsets = sideInsets;
+- (void)setPreferredImojiDisplaySize:(CGSize)preferredImojiDisplaySize {
+    _preferredImojiDisplaySize = preferredImojiDisplaySize;
     [self reloadData];
 }
 
