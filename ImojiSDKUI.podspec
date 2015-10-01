@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '0.1.12'
+  s.version  = '0.1.13'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration.'
   s.homepage = 'http://imoji.io/sdk'
