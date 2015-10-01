@@ -10,7 +10,6 @@ import UIKit
 import ImojiSDK
 
 class ViewController: UIViewController {
-    private var cameraView: UIView!
     private var previewView: UIView!
     private var previewLayer: AVCaptureVideoPreviewLayer!
     private var navigationBar: UIToolbar!
@@ -28,9 +27,7 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
 
-        // camera view
-        cameraView = UIView(frame: CGRectZero)
-        cameraView.backgroundColor = UIColor(red: 48 / 255, green: 48 / 255, blue: 48 / 255, alpha: 1)
+        view.backgroundColor = UIColor(red: 48 / 255, green: 48 / 255, blue: 48 / 255, alpha: 1)
 
         // Set up title
         navigationTitle = UIBarButtonItem(title: "ARTMOJI", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
@@ -86,8 +83,26 @@ class ViewController: UIViewController {
                            UIBarButtonItem(customView: flipButton)]
         bottomBar.delegate = self
 
+        // Set up PBJVision
+        let vision = PBJVision.sharedInstance()
+        vision.delegate = self
+        vision.cameraDevice = PBJCameraDevice.Front
+        vision.cameraMode = PBJCameraMode.Photo
+        vision.previewOrientation = PBJCameraOrientation.Portrait
+        vision.focusMode = PBJFocusMode.ContinuousAutoFocus
+        vision.exposureMode = PBJExposureMode.ContinuousAutoExposure
+
+        previewView = UIView(frame: CGRectZero)
+        previewView.backgroundColor = view.backgroundColor
+        previewView.frame = view.frame
+
+        previewLayer = PBJVision.sharedInstance().previewLayer
+        previewLayer.frame = previewView.bounds
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewView.layer.addSublayer(previewLayer)
+
         // Add subviews
-        view.addSubview(cameraView)
+        view.addSubview(previewView)
         view.addSubview(navigationBar)
         view.addSubview(bottomBar)
 
@@ -106,31 +121,7 @@ class ViewController: UIViewController {
             make.height.equalTo()(65)
         }
 
-        cameraView.mas_makeConstraints { make in
-            make.edges.equalTo()(view)
-        }
-
-        // Set up PBJVision
-        let vision = PBJVision.sharedInstance()
-        vision.delegate = self
-        vision.cameraDevice = PBJCameraDevice.Front
-        vision.cameraMode = PBJCameraMode.Photo
-        vision.cameraOrientation = PBJCameraOrientation.Portrait
-        vision.focusMode = PBJFocusMode.ContinuousAutoFocus
-        vision.exposureMode = PBJExposureMode.ContinuousAutoExposure
-
-        previewView = UIView(frame: CGRectZero)
-        previewView.backgroundColor = cameraView.backgroundColor
-        previewView.frame = cameraView.frame
-
-        previewLayer = PBJVision.sharedInstance().previewLayer
-        previewLayer.frame = previewView.bounds
-        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        previewView.layer.addSublayer(previewLayer)
-
-        cameraView.addSubview(previewView)
-
-        PBJVision.sharedInstance().startPreview()
+        vision.startPreview()
     }
 
     override func prefersStatusBarHidden() -> Bool {
@@ -197,7 +188,7 @@ class ViewController: UIViewController {
 // Mark: - PBJVisionDelegate
 extension ViewController: PBJVisionDelegate {
     func vision(_: PBJVision, capturedPhoto photoDict: [NSObject:AnyObject]?, error: NSError?) {
-        if error != nil {
+        if error == nil {
             if let image = photoDict?[PBJVisionPhotoImageKey] as? UIImage {
                 let createImojiViewController = IMCreateImojiViewController(sourceImage: image, session: imojiSession)
                 createImojiViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
@@ -219,10 +210,8 @@ extension ViewController: UIImagePickerControllerDelegate {
         createImojiViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
         createImojiViewController.modalPresentationStyle = UIModalPresentationStyle.FullScreen
         self.dismissViewControllerAnimated(true, completion: { finished in
-
+            self.presentViewController(createImojiViewController, animated: true, completion: nil)
         })
-        self.presentViewController(createImojiViewController, animated: true, completion: nil)
-
     }
 }
 

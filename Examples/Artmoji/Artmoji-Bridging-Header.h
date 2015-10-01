@@ -9,12 +9,12 @@
 #ifndef artmoji_Artmoji_Bridging_Header_h
 #define artmoji_Artmoji_Bridging_Header_h
 
-#import "ImojiSDK/ImojiSDK.h"
-#import "ImojiSDK/IMImojiSession.h"
-#import "ImojiSDKUI/IMCollectionViewController.h"
-#import "ImojiSDKUI/IMCreateImojiViewController.h"
-#import "ImojiSDKUI/IMToolbar.h"
-#import "ImojiSDKUI/IMResourceBundleUtil.h"
+#import "ImojiSDK.h"
+#import "IMImojiSession.h"
+#import "IMCollectionViewController.h"
+#import "IMCreateImojiViewController.h"
+#import "IMToolbar.h"
+#import "IMResourceBundleUtil.h"
 #import "Masonry/View+MASAdditions.h"
 #import "PBJVision/PBJVision.h"
 
