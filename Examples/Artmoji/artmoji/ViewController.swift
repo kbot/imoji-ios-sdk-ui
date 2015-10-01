@@ -8,6 +8,7 @@
 
 import UIKit
 import ImojiSDK
+import Pods
 
 class ViewController: UIViewController {
     private var previewView: UIView!
@@ -65,7 +66,7 @@ class ViewController: UIViewController {
         navigationBar = UIToolbar()
         navigationBar.clipsToBounds = true
         navigationBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        navigationBar.tintColor = UIColor(white: 105.0/255, alpha: 1.0)
+        navigationBar.tintColor = UIColor.whiteColor()
         navigationBar.barTintColor = UIColor.clearColor()
         navigationBar.items = [backButton,
                                UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil),
