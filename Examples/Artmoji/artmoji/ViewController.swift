@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     private var previewLayer: AVCaptureVideoPreviewLayer!
     private var navigationBar: UIToolbar!
     private var bottomBar: UIToolbar!
-    private var navigationTitle: UIBarButtonItem!
+    private var navigationTitle: UIButton!
     private var captureButton: UIButton!
     private var flipButton: UIButton!
     private var photoLibraryButton: UIButton!
@@ -27,27 +27,30 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
 
-        view.backgroundColor = UIColor(red: 48 / 255, green: 48 / 255, blue: 48 / 255, alpha: 1)
+        view.backgroundColor = UIColor(red: 48.0 / 255.0, green: 48.0 / 255.0, blue: 48.0 / 255.0, alpha: 1.0)
 
         // Set up title
-        navigationTitle = UIBarButtonItem(title: "ARTMOJI", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
-        navigationTitle.setTitleTextAttributes([NSFontAttributeName: UIFont(name: "HelveticaNeue-Medium", size: 18.0)!], forState: UIControlState.Normal)
+        navigationTitle = UIButton(type: UIButtonType.Custom)
+        navigationTitle.setTitle("ARTMOJI", forState: UIControlState.Normal)
+        navigationTitle.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 18.0)
+        navigationTitle.sizeToFit()
+        navigationTitle.userInteractionEnabled = false
 
         // Set up toolbar buttons
         captureButton = UIButton(type: UIButtonType.Custom)
         captureButton.setImage(UIImage(named: "toolbar_collection_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        captureButton.frame = CGRectMake(0, 0, 40, 40)
+        captureButton.frame = CGRectMake(0, 0, 40.0, 40.0)
 
         flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "toolbar_trending_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         flipButton.addTarget(self, action: "flipButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        flipButton.frame = CGRectMake(0, 0, 40, 40)
+        flipButton.frame = CGRectMake(0, 0, 40.0, 40.0)
 
         photoLibraryButton = UIButton(type: UIButtonType.Custom)
         photoLibraryButton.setImage(UIImage(named: "toolbar_recents_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         photoLibraryButton.addTarget(self, action: "photoLibraryButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        photoLibraryButton.frame = CGRectMake(0, 0, 40, 40)
+        photoLibraryButton.frame = CGRectMake(0, 0, 40.0, 40.0)
 
         forwardButton = UIBarButtonItem(image: UIImage(named: "toolbar_back", inBundle: imageBundle, compatibleWithTraitCollection: nil), style: UIBarButtonItemStyle.Plain, target: self, action: "forwardButtonTapped")
 
@@ -56,17 +59,17 @@ class ViewController: UIViewController {
         imojiButton = UIButton(type: UIButtonType.Custom)
         imojiButton.setImage(UIImage(named: "toolbar_reactions_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
         imojiButton.addTarget(self, action: "imojiButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        imojiButton.frame = CGRectMake(0, 0, 40, 40)
+        imojiButton.frame = CGRectMake(0, 0, 40.0, 40.0)
 
         // Set up top nav bar
         navigationBar = UIToolbar()
         navigationBar.clipsToBounds = true
         navigationBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        navigationBar.tintColor = UIColor.whiteColor()
+        navigationBar.tintColor = UIColor(white: 105.0/255, alpha: 1.0)
         navigationBar.barTintColor = UIColor.clearColor()
         navigationBar.items = [backButton,
                                UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil),
-                               navigationTitle,
+                               UIBarButtonItem(customView: navigationTitle),
                                UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil),
                                forwardButton]
         navigationBar.delegate = self
@@ -111,14 +114,14 @@ class ViewController: UIViewController {
             make.top.equalTo()(self.view)
             make.left.equalTo()(self.view)
             make.right.equalTo()(self.view)
-            make.height.equalTo()(45)
+            make.height.equalTo()(45.0)
         }
 
         bottomBar.mas_makeConstraints { make in
             make.bottom.equalTo()(self.view)
             make.left.equalTo()(self.view)
             make.right.equalTo()(self.view)
-            make.height.equalTo()(65)
+            make.height.equalTo()(65.0)
         }
 
         vision.startPreview()
