@@ -3,6 +3,8 @@
 ### Version 0.1.12
 
 * Nifty tutorials for the editor!
+* Updated assets for creation and tagging
+* Allow for clients to specify their own styles
 
 ### Version 0.1.11
 
