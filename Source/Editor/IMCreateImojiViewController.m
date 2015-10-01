@@ -31,14 +31,15 @@
 #import "IMImojiSession.h"
 #import "IMCreateImojiAssistantViewController.h"
 #import "IMPopInAnimatedTransition.h"
-#import "IMAttributeStringUtil.h"
+#import "IMCreateImojiUITheme.h"
 #import <Masonry/Masonry.h>
 
 
-@interface IMCreateImojiViewController () <IMCreateImojiViewDelegate, UIViewControllerTransitioningDelegate>
+@interface IMCreateImojiViewController () <IMCreateImojiViewDelegate, UIViewControllerTransitioningDelegate, UIToolbarDelegate>
 
 @property(nonatomic, readonly) UIBarButtonItem *undoButton;
-@property(nonatomic, readonly) UIBarButtonItem *backButton;
+@property(nonatomic, readonly) UIBarButtonItem *cancelCreationButton;
+@property(nonatomic, readonly) UIBarButtonItem *backToTraceButton;
 @property(nonatomic, readonly) UIBarButtonItem *helpButton;
 @property(nonatomic, readonly) UIBarButtonItem *finishTraceButton;
 @property(nonatomic, readonly) UIBarButtonItem *finishTagButton;
@@ -55,12 +56,11 @@
 
 @property(nonatomic, readonly) UIImageView *imojiPreview;
 
-@property(nonatomic, strong) NSArray *editorViewButtons;
+@property(nonatomic, strong) NSMutableArray *traceViewButtons;
 @property(nonatomic, strong) NSArray *tagViewButtons;
 @end
 
 @implementation IMCreateImojiViewController {
-
 }
 
 - (instancetype)initWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session {
@@ -86,23 +86,27 @@
     _traceToolbar = [UIToolbar new];
 
     _imojiEditor = [IMCreateImojiView new];
-    _undoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_undo"]
+    _undoButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenUndoButtonImage
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(performUndo)];
-    _helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_hints"]
+    _helpButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenHelpButtonImage
                                                    style:UIBarButtonItemStyleDone
                                                   target:self
                                                   action:@selector(showHelpScreen)];
-    _backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_back"]
-                                                   style:UIBarButtonItemStylePlain
-                                                  target:self
-                                                  action:@selector(goBack)];
-    _finishTraceButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_proceed"]
+    _cancelCreationButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenCancelButtonImage
+                                                             style:UIBarButtonItemStylePlain
+                                                            target:self
+                                                            action:@selector(cancelImageEdit)];
+    _backToTraceButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].tagScreenBackButtonImage
+                                                          style:UIBarButtonItemStylePlain
+                                                         target:self
+                                                         action:@selector(showTrimView)];
+    _finishTraceButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenFinishTraceButtonImage
                                                           style:UIBarButtonItemStyleDone
                                                          target:self
                                                          action:@selector(showTagScreen)];
-    _finishTagButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tag_done"]
+    _finishTagButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].tagScreenFinishButtonImage
                                                         style:UIBarButtonItemStylePlain
                                                        target:self
                                                        action:@selector(finishEditing)];
@@ -113,8 +117,8 @@
                                                        action:nil];
 
     [_navigationTitle setTitleTextAttributes:@{
-                    NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:18.f],
-                    NSForegroundColorAttributeName : [UIColor whiteColor]
+                    NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenNavigationBarFont,
+                    NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].trimScreenTintColor
             }
                                     forState:UIControlStateNormal];
 
@@ -127,7 +131,8 @@
     self.finishTagButton.enabled = YES;
     self.finishTraceButton.enabled = self.undoButton.enabled = NO;
 
-    view.backgroundColor = [UIColor colorWithRed:48.0f / 255.0f green:48.0f / 255.0f blue:48.0f / 255.0f alpha:1];
+    _imojiEditor.backgroundColor = [UIColor clearColor];
+    view.backgroundColor = [IMCreateImojiUITheme instance].createViewBackgroundColor;
 
     [view addSubview:self.tagView];
     [view addSubview:self.creationView];
@@ -146,32 +151,34 @@
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.finishTraceButton
     ];
-    self.traceToolbar.tintColor = [UIColor whiteColor];
+    self.traceToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
+
     // to hide the top border
     self.traceToolbar.clipsToBounds = YES;
     [self.traceToolbar setBackgroundImage:[UIImage new]
                        forToolbarPosition:UIBarPositionAny
                                barMetrics:UIBarMetricsDefault];
 
-    self.editorViewButtons = @[
-            self.backButton,
+    self.traceViewButtons = [NSMutableArray arrayWithArray:@[
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.navigationTitle,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.helpButton
-    ];
+    ]];
+    [self determineCancelCreationButtonVisibility];
 
     self.tagViewButtons = @[
-            self.backButton,
+            self.backToTraceButton,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.navigationTitle,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.finishTagButton
     ];
 
-    self.navigationToolbar.items = self.editorViewButtons;
-    self.navigationToolbar.tintColor = [UIColor whiteColor];
+    self.navigationToolbar.items = self.traceViewButtons;
+    self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
     self.navigationToolbar.clipsToBounds = YES;
+    self.navigationToolbar.delegate = self;
     [self.navigationToolbar setBackgroundImage:[UIImage new]
                             forToolbarPosition:UIBarPositionAny
                                     barMetrics:UIBarMetricsDefault];
@@ -218,7 +225,7 @@
 - (void)performUndo {
     if ([self.imojiEditor canUndo]) {
         [self.imojiEditor undo];
-        self.undoButton.enabled = self.imojiEditor.canUndo;
+        [self updateTrimButtonStates];
     }
 }
 
@@ -234,6 +241,152 @@
                      completion:nil];
 }
 
+#pragma mark Delegate Dispatching
+
+- (void)finishEditing {
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:fromViewController:)]) {
+        [self.session createImojiWithImage:self.imojiEditor.outputImage
+                                      tags:self.tagCollectionView.tags.array
+                                  callback:^(IMImojiObject *imoji, NSError *error) {
+                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error fromViewController:self];
+                                  }];
+    }
+}
+
+- (void)cancelImageEdit {
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidCancelImageEdit:)]) {
+        [self.createDelegate userDidCancelImageEdit:self];
+    }
+}
+
+#pragma mark Showing/Hiding Tag and Trim Screens
+
+- (void)showTagScreen {
+    self.tagView.hidden = NO;
+    self.traceToolbar.hidden = YES;
+    self.tagView.layer.opacity = 0.0f;
+
+    self.imojiPreview.image = self.imojiEditor.borderedOutputImage;
+
+    self.navigationToolbar.clipsToBounds = NO;
+    [self.navigationToolbar setBackgroundImage:nil
+                            forToolbarPosition:UIBarPositionTop
+                                    barMetrics:UIBarMetricsDefault];
+    self.navigationToolbar.barTintColor = [IMCreateImojiUITheme instance].tagScreenNavigationToolbarBarTintColor;
+
+    [UIView animateWithDuration:.5f
+                     animations:^{
+                         self.tagView.layer.opacity = 1.0f;
+                         self.creationView.layer.opacity = 0.0f;
+                         self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].tagScreenTintColor;
+
+                         [_navigationTitle setTitleTextAttributes:@{
+                                         NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenNavigationBarFont,
+                                         NSForegroundColorAttributeName : self.navigationToolbar.tintColor
+                                 }
+                                                         forState:UIControlStateNormal];
+                     }
+                     completion:^(BOOL finished) {
+                         self.creationView.hidden = YES;
+                         [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTag"]];
+                         self.navigationToolbar.items = self.tagViewButtons;
+
+                         self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
+                     }
+    ];
+}
+
+- (void)showTrimView {
+    if (self.creationView.hidden) {
+        self.creationView.hidden = NO;
+        self.traceToolbar.hidden = NO;
+        self.navigationToolbar.items = self.traceViewButtons;
+        self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
+
+        self.navigationToolbar.clipsToBounds = YES;
+        [self.navigationToolbar setBackgroundImage:[UIImage new]
+                                forToolbarPosition:UIBarPositionTop
+                                        barMetrics:UIBarMetricsDefault];
+
+        [UIView animateWithDuration:.5f
+                         animations:^{
+                             self.tagView.layer.opacity = 0.0f;
+                             self.creationView.layer.opacity = 1.0f;
+                             self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
+
+                             [_navigationTitle setTitleTextAttributes:@{
+                                             NSFontAttributeName : [IMCreateImojiUITheme instance].trimScreenNavigationBarFont,
+                                             NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].trimScreenTintColor
+                                     }
+                                                             forState:UIControlStateNormal];
+                         }
+                         completion:^(BOOL finished) {
+                             self.tagView.hidden = YES;
+                             [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]];
+                         }];
+    }
+}
+
+#pragma mark Toolbar Management
+
+- (void)determineCancelCreationButtonVisibility {
+    [self.traceViewButtons removeObject:self.cancelCreationButton];
+
+    // add a close view button
+    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidCancelImageEdit:)]) {
+        [self.traceViewButtons insertObject:self.cancelCreationButton atIndex:0];
+    }
+
+    self.navigationToolbar.items = self.traceViewButtons;
+}
+
+#pragma mark Public Methods
+
+- (void)reset {
+    [self showTrimView];
+    [self.imojiEditor reset];
+}
+
+#pragma mark Property Accessor's
+
+- (void)setCreateDelegate:(id <IMCreateImojiViewControllerDelegate>)createDelegate {
+    BOOL changed = _createDelegate != createDelegate;
+    _createDelegate = createDelegate;
+
+    if (changed && self.navigationToolbar) {
+        [self determineCancelCreationButtonVisibility];
+    }
+}
+
+#pragma mark UIViewController overrides
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+#pragma mark IMCreateImojiViewDelegate
+
+- (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView {
+    [self updateTrimButtonStates];
+}
+
+- (void)updateTrimButtonStates {
+    self.undoButton.enabled = self.imojiEditor.canUndo;
+    self.finishTraceButton.enabled = self.imojiEditor.hasOutputImage;
+}
+
+#pragma mark Navigation Toolbar Delegate
+
+- (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
+    return UIBarPositionTop;
+}
+
+#pragma mark UIViewControllerTransitioningDelegate
+
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
                                                                    presentingController:(UIViewController *)presenting
                                                                        sourceController:(UIViewController *)source {
@@ -246,73 +399,7 @@
     return [IMPopInAnimatedTransition new];
 }
 
-- (void)finishEditing {
-    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:fromViewController:)]) {
-        [self.session createImojiWithImage:self.imojiEditor.outputImage
-                                      tags:self.tagCollectionView.tags.array
-                                  callback:^(IMImojiObject *imoji, NSError *error) {
-                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error fromViewController:self];
-                                  }];
-    }
-}
-
-- (void)showTagScreen {
-    self.tagView.hidden = NO;
-    self.traceToolbar.hidden = YES;
-    self.tagView.layer.opacity = 0.0f;
-
-    self.imojiPreview.image = self.imojiEditor.borderedOutputImage;
-
-    [UIView animateWithDuration:.7f
-                     animations:^{
-                         self.tagView.layer.opacity = 1.0f;
-                         self.creationView.layer.opacity = 0.0f;
-                     }
-                     completion:^(BOOL finished) {
-                         self.creationView.hidden = YES;
-                         [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTag"]];
-                         self.navigationToolbar.items = self.tagViewButtons;
-
-                         self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
-                     }
-    ];
-}
-
-- (void)goBack {
-    if (self.creationView.hidden) {
-        self.creationView.hidden = NO;
-        self.traceToolbar.hidden = NO;
-        self.navigationToolbar.items = self.editorViewButtons;
-        self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
-
-        [UIView animateWithDuration:.7f
-                         animations:^{
-                             self.tagView.layer.opacity = 0.0f;
-                             self.creationView.layer.opacity = 1.0f;
-                         }
-                         completion:^(BOOL finished) {
-                             self.tagView.hidden = YES;
-                             [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]];
-                         }];
-    } else {
-        if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidCancelImageEdit:)]) {
-            [self.createDelegate userDidCancelImageEdit:self];
-        }
-    }
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
-- (void)userDidUpdatePathInEditorView:(IMCreateImojiView *)editorView {
-    self.undoButton.enabled = editorView.canUndo;
-    self.finishTraceButton.enabled = editorView.hasOutputImage;
-}
+#pragma mark Initialization
 
 + (instancetype)controllerWithSourceImage:(UIImage *)sourceImage session:(IMImojiSession *)session {
     return [[self alloc] initWithSourceImage:sourceImage session:session];

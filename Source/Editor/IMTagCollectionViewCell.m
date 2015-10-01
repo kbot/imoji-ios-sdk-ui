@@ -26,8 +26,7 @@
 #import <Masonry/Masonry.h>
 #import "IMTagCollectionViewCell.h"
 #import "IMTagCollectionView.h"
-
-UIEdgeInsets const IMTagCollectionViewCellContentInsets = {2.5, 7.5, 2.5, 7.5};
+#import "IMCreateImojiUITheme.h"
 
 @interface IMTagCollectionViewCell ()
 
@@ -42,31 +41,25 @@ UIEdgeInsets const IMTagCollectionViewCellContentInsets = {2.5, 7.5, 2.5, 7.5};
         _textView = [UILabel new];
         _removeButton = [UIButton new];
 
-        [self.removeButton setImage:[IMTagCollectionView removeIcon] forState:UIControlStateNormal];
-
-        self.layer.borderColor = [UIColor whiteColor].CGColor;
-        self.backgroundColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.15f];
-        self.layer.borderWidth = 1.0f;
-        self.layer.cornerRadius = 7.5f;
-        self.layer.borderColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.5f].CGColor;
+        [self.removeButton setImage:[IMCreateImojiUITheme instance].tagScreenRemoveTagIcon forState:UIControlStateNormal];
 
         [self addSubview:self.textView];
         [self addSubview:self.removeButton];
 
         [self.removeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self).offset(-IMTagCollectionViewCellContentInsets.right);
+            make.right.equalTo(self).offset(-[IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.right);
             make.centerY.equalTo(self);
         }];
 
         [self.textView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self).offset(IMTagCollectionViewCellContentInsets.left);
+            make.left.equalTo(self).offset([IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.left);
             make.centerY.equalTo(self);
-            make.right.equalTo(self.removeButton.mas_left);
+            make.right.equalTo(self.removeButton.mas_left).offset(-[IMCreateImojiUITheme instance].tagScreenTagItemTextButtonSpacing);
         }];
     }
 
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:tagContents
-                                                                   attributes:@{NSFontAttributeName : [IMTagCollectionView textFont]}];
+                                                                   attributes:@{NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenTagFont}];
 }
 
 + (IMTagCollectionViewCell *)instance {
@@ -82,12 +75,18 @@ UIEdgeInsets const IMTagCollectionViewCellContentInsets = {2.5, 7.5, 2.5, 7.5};
 }
 
 + (CGSize)sizeThatFitsTag:(NSString *)tag andSize:(CGSize)size {
-    CGSize textSize = [tag sizeWithAttributes:@{NSFontAttributeName : [IMTagCollectionView textFont]}];
-    CGSize removeIconSize = [IMTagCollectionView removeIcon].size;
+    CGSize textSize = [tag sizeWithAttributes:@{NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenTagFont}];
+    CGSize removeIconSize = [IMCreateImojiUITheme instance].tagScreenRemoveTagIcon.size;
 
     return CGSizeMake(
-            MIN(textSize.width, size.width) + removeIconSize.width + IMTagCollectionViewCellContentInsets.left + IMTagCollectionViewCellContentInsets.right + 5,
-            MIN(MAX(textSize.height, removeIconSize.height), size.height) + IMTagCollectionViewCellContentInsets.top + IMTagCollectionViewCellContentInsets.bottom
+            MIN(textSize.width, size.width) + removeIconSize.width +
+                    [IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.left +
+                    [IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.right +
+                    [IMCreateImojiUITheme instance].tagScreenTagItemTextButtonSpacing * 2.f,
+
+            MIN(MAX(textSize.height, removeIconSize.height), size.height) +
+                    [IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.top +
+                    [IMCreateImojiUITheme instance].tagScreenTagItemViewInsets.bottom
     );
 }
 

@@ -43,6 +43,8 @@
                          cancelButtonTitle:@"OK"
                          otherButtonTitles:nil] show];
     }
+
+    [self reset];
 }
 
 @end

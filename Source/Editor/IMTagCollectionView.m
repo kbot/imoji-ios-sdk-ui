@@ -27,6 +27,9 @@
 #import "IMTagCollectionView.h"
 #import "IMTagCollectionViewCell.h"
 #import "UICollectionViewLeftAlignedLayout.h"
+#import "IMCreateImojiUITheme.h"
+#import "IMAttributeStringUtil.h"
+#import "IMResourceBundleUtil.h"
 
 @interface IMTagCollectionView () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UITextFieldDelegate>
 
@@ -75,9 +78,13 @@ NSString *const IMTagCollectionViewCellReuseId = @"IMTagCollectionViewCellReuseI
         [viewCell.removeButton addTarget:self
                                   action:@selector(removeTag:)
                         forControlEvents:UIControlEventTouchUpInside];
-    }
 
-    viewCell.textView.textColor = [UIColor whiteColor];
+        viewCell.textView.textColor = [IMCreateImojiUITheme instance].tagScreenTagFontColor;
+        viewCell.backgroundColor = [IMCreateImojiUITheme instance].tagScreenTagFieldBackgroundColor;
+        viewCell.layer.borderWidth = [IMCreateImojiUITheme instance].tagScreenTagFieldBorderWidth;
+        viewCell.layer.cornerRadius = [IMCreateImojiUITheme instance].tagScreenTagFieldCornerRadius;
+        viewCell.layer.borderColor = [IMCreateImojiUITheme instance].tagScreenTagItemBorderColor.CGColor;
+    }
 
     return viewCell;
 }
@@ -101,10 +108,10 @@ referenceSizeForHeaderInSection:(NSInteger)section {
             UITextField *textField = [UITextField new];
 
             textField.borderStyle = UITextBorderStyleRoundedRect;
-            textField.backgroundColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.3f];
-            textField.layer.borderWidth = 1.0f;
-            textField.layer.cornerRadius = 7.5f;
-            textField.layer.borderColor = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:.5f].CGColor;
+            textField.backgroundColor = [IMCreateImojiUITheme instance].tagScreenTagFieldBackgroundColor;
+            textField.layer.borderWidth = [IMCreateImojiUITheme instance].tagScreenTagFieldBorderWidth;
+            textField.layer.cornerRadius = [IMCreateImojiUITheme instance].tagScreenTagFieldCornerRadius;
+            textField.layer.borderColor = [IMCreateImojiUITheme instance].tagScreenTagItemBorderColor.CGColor;
 
             textField.returnKeyType = UIReturnKeyDone;
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -112,21 +119,24 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 
             textField.delegate = self;
             UIButton *clearButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0,
-                    [IMTagCollectionView removeIcon].size.width + 5.0f,
-                    [IMTagCollectionView removeIcon].size.height
+                    [IMCreateImojiUITheme instance].tagScreenRemoveTagIcon.size.width + 5.0f,
+                    [IMCreateImojiUITheme instance].tagScreenRemoveTagIcon.size.height
             )];
 
-
-            [clearButton setImage:[IMTagCollectionView removeIcon] forState:UIControlStateNormal];
+            [clearButton setImage:[IMCreateImojiUITheme instance].tagScreenRemoveTagIcon forState:UIControlStateNormal];
             [clearButton addTarget:self action:@selector(clearTextField:) forControlEvents:UIControlEventTouchUpInside];
 
             textField.rightView = clearButton;
             textField.rightViewMode = UITextFieldViewModeWhileEditing;
-
             textField.defaultTextAttributes = @{
-                    NSFontAttributeName : [IMTagCollectionView textFont],
-                    NSForegroundColorAttributeName : [UIColor whiteColor]
+                    NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenTagFont,
+                    NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].tagScreenTagFontColor
             };
+
+            textField.attributedPlaceholder = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"tagScreenInputPlaceholder"]
+                                                                             withFont:[IMCreateImojiUITheme instance].tagScreenTagFont
+                                                                                color:[IMCreateImojiUITheme instance].tagScreenPlaceHolderFontColor];
+
 
             [view addSubview:textField];
             [textField mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -163,12 +173,12 @@ referenceSizeForHeaderInSection:(NSInteger)section {
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(2.0f, 2.0f, 2.0f, 2.0f);
+    return [IMCreateImojiUITheme instance].tagScreenTagItemInsets;
 }
 
 - (CGFloat)               collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 10.0f;
+    return [IMCreateImojiUITheme instance].tagScreenTagItemInterspacingDistance;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -201,7 +211,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)removeTag:(UIButton *)button {
-    NSUInteger index = [self.tags indexOfObject:((IMTagCollectionViewCell *)button.superview).tagContents];
+    NSUInteger index = [self.tags indexOfObject:((IMTagCollectionViewCell *) button.superview).tagContents];
     [(NSMutableOrderedSet *) self.tags removeObjectAtIndex:(NSUInteger) index];
 
     [self performBatchUpdates:^{
@@ -215,57 +225,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     ];
 }
 
-
-+ (UIFont *)textFont {
-    static UIFont *_font;
-
-    @synchronized (self) {
-        if (_font == nil) {
-            _font = [UIFont fontWithName:@"HelveticaNeue" size:16.0f];
-        }
-    }
-
-    return _font;
-}
-
-+ (UIImage *)removeIcon {
-    static UIImage *_icon = nil;
-
-    @synchronized (self) {
-        if (_icon == nil) {
-            CGSize size = CGSizeMake(30.0f, 30.0f);
-            UIGraphicsBeginImageContextWithOptions(size, NO, 0.f);
-            CGContextRef context = UIGraphicsGetCurrentContext();
-
-            CGContextSetBlendMode(context, kCGBlendModeNormal);
-            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.5f].CGColor);
-
-            // draw divider line
-            CGContextSetLineWidth(context, 1.0f);
-            CGContextMoveToPoint(context, 0, 0);
-            CGContextAddLineToPoint(context, 0, size.height);
-            CGContextStrokePath(context);
-
-            // draw X
-            CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
-            CGContextSetLineWidth(context, 2.25f);
-            CGFloat relativeFrameScaleFactor = 1.5;
-            CGContextMoveToPoint(context, size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
-            CGContextAddLineToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
-
-            CGContextMoveToPoint(context, size.width - size.width / relativeFrameScaleFactor, size.height / relativeFrameScaleFactor);
-            CGContextAddLineToPoint(context, size.width / relativeFrameScaleFactor, size.height - size.height / relativeFrameScaleFactor);
-
-            CGContextStrokePath(context);
-
-            _icon = UIGraphicsGetImageFromCurrentImageContext();
-
-            UIGraphicsEndImageContext();
-        }
-    }
-
-    return _icon;
-}
 
 - (void)setTagInputFieldShouldBeFirstResponder:(BOOL)tagInputFieldShouldBeFirstResponder {
     _tagInputFieldShouldBeFirstResponder = tagInputFieldShouldBeFirstResponder;

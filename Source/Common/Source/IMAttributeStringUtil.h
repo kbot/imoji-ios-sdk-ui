@@ -28,22 +28,26 @@
 
 @interface IMAttributeStringUtil : NSObject
 
-+ (UIFont *__nonnull)defaultFontWithSize:(CGFloat)size;
++ (nonnull UIFont *)defaultFontWithSize:(CGFloat)size;
 
-+ (UIFont *__nonnull)sfUIDisplayLightFontWithSize:(CGFloat)size;
++ (nonnull UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size;
 
-+ (UIFont *__nonnull)sfUIDisplayRegularFontWithSize:(CGFloat)size;
++ (nonnull UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size;
 
-+ (UIFont *__nonnull)sfUIDisplayMediumFontWithSize:(CGFloat)size;
++ (nonnull UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size;
 
-+ (NSAttributedString *__nonnull)attributedString:(NSString *__nonnull)text
-                                         withFont:(UIFont *__nonnull)font
-                                            color:(UIColor *__nonnull)color
-                                     andAlignment:(NSTextAlignment)alignment;
++ (nonnull NSAttributedString *)attributedString:(nonnull NSString *)text
+                                        withFont:(nonnull UIFont *)font
+                                           color:(nonnull UIColor *)color;
 
-+ (NSAttributedString *__nonnull)attributedString:(NSString *__nonnull)text
-                                         withFont:(UIFont *__nonnull)font
-                                            color:(UIColor *__nonnull)color
-                                andParagraphStyle:(NSParagraphStyle *__nonnull)paragraphStyle;
++ (nonnull NSAttributedString *)attributedString:(nonnull NSString *)text
+                                        withFont:(nonnull UIFont *)font
+                                           color:(nonnull UIColor *)color
+                                    andAlignment:(NSTextAlignment)alignment;
+
++ (nonnull NSAttributedString *)attributedString:(nonnull NSString *)text
+                                        withFont:(nonnull UIFont *)font
+                                           color:(nonnull UIColor *)color
+                               andParagraphStyle:(nonnull NSParagraphStyle *)paragraphStyle;
 
 @end

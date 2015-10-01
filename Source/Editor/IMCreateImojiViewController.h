@@ -46,6 +46,11 @@
 + (nonnull instancetype)controllerWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
 
 /**
+* @abstract Clears all the edits and restores the original state of the editor
+*/
+- (void)reset;
+
+/**
 * @abstract A delegate to receive events from the editor view controller
 */
 @property(nonatomic, strong, nullable) id <IMCreateImojiViewControllerDelegate> createDelegate;

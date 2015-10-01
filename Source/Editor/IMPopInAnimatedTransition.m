@@ -175,7 +175,7 @@
 
     // show blurred background if available (iOS 8 and above)
     if (NSClassFromString(@"UIVisualEffectView")) {
-        foregroundView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        foregroundView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
     } else {
         // fall back to a simple translucent background
         foregroundView = [UIView new];
@@ -189,6 +189,5 @@
 
     return imageView;
 }
-
 
 @end

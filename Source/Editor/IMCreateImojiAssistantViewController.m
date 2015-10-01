@@ -27,6 +27,7 @@
 #import "View+MASAdditions.h"
 #import "IMResourceBundleUtil.h"
 #import "IMAttributeStringUtil.h"
+#import "IMCreateImojiUITheme.h"
 
 
 @interface IMCreateImojiAssistantViewController ()
@@ -150,7 +151,7 @@
                                                                  circleColor:[UIColor clearColor]
                                                                  borderColor:[UIColor colorWithWhite:22.f / 255.f alpha:.4f]
                                                                  strokeWidth:4.0f
-                                                                   iconImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_proceed"]]
+                                                                   iconImage:[IMCreateImojiUITheme instance].tagScreenHelpNextButtonImage]
                         forState:UIControlStateNormal];
 
     [self.proceedButton addTarget:self
@@ -161,7 +162,7 @@
                                                               circleColor:[UIColor clearColor]
                                                               borderColor:[UIColor colorWithWhite:22.f / 255.f alpha:.4f]
                                                               strokeWidth:4.0f
-                                                                iconImage:[UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_done"]]
+                                                                iconImage:[IMCreateImojiUITheme instance].tagScreenHelpDoneButtonImage]
                      forState:UIControlStateNormal];
 
     [self.doneButton addTarget:self
@@ -199,28 +200,26 @@
 - (void)loadContentForCurrentPage {
     switch (self.pageControl.currentPage) {
         case 1:
-            self.tipTitle.text = @"You’ve got a border now!";
-            self.tipDescription.text = @"Adjust the border by pushing it";
-            self.tipImage.image = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_2"];
+            self.tipTitle.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep2Title"];
+            self.tipDescription.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep2Description"];
+            self.tipImage.image = [IMCreateImojiUITheme instance].tagScreenHelpImageStep2;
             self.proceedButton.hidden = NO;
             self.doneButton.hidden = YES;
 
             break;
         case 2:
-            self.tipTitle.text = @"Pan and zoon with two fingers";
-            self.tipDescription.text = @"You can make more precise adjustments by zooming in";
-
-            self.tipImage.image = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_3"];
+            self.tipTitle.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep3Title"];
+            self.tipDescription.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep3Description"];
+            self.tipImage.image = [IMCreateImojiUITheme instance].tagScreenHelpImageStep3;
             self.proceedButton.hidden = YES;
             self.doneButton.hidden = NO;
             break;
 
         case 0:
         default:
-            self.tipTitle.text = @"Tips";
-            self.tipDescription.text = @"Trace what you want your sticker to be";
-
-            self.tipImage.image = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_1"];
+            self.tipTitle.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep1Title"];
+            self.tipDescription.text = [IMResourceBundleUtil localizedStringForKey:@"tagScreenHelpStep1Description"];
+            self.tipImage.image = [IMCreateImojiUITheme instance].tagScreenHelpImageStep1;
             self.proceedButton.hidden = NO;
             self.doneButton.hidden = YES;
             break;

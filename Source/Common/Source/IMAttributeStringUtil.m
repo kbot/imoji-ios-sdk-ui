@@ -50,7 +50,13 @@ NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
     return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFMediumFont andSize:size];
 }
 
-+ (UIFont *)checkedStyledFontWithName:(NSString*)name andSize:(CGFloat)size {
++ (NSAttributedString *)attributedString:(NSString *)text
+                                withFont:(UIFont *)font
+                                   color:(UIColor *)color {
+    return [IMAttributeStringUtil attributedString:text withFont:font color:color andAlignment:NSTextAlignmentLeft];
+}
+
++ (UIFont *)checkedStyledFontWithName:(NSString *)name andSize:(CGFloat)size {
     UIFont *font = [UIFont fontWithName:name size:size];
     if (font) {
         return font;

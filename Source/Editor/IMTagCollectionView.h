@@ -29,10 +29,6 @@
 
 @property(nonatomic, strong, readonly, nonnull) NSOrderedSet *tags;
 
-+ (UIFont * __nonnull)textFont;
-
-+ (UIImage * __nonnull)removeIcon;
-
 @property(nonatomic) BOOL tagInputFieldShouldBeFirstResponder;
 
 @end
