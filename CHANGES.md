@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.13
+
+* Fixed some issues with portrait/landscape transitions in IMCollectionViewController
+* Allows flexibility to specify the preferred displayed size of the imojis
+
 ### Version 0.1.12
 
 * Nifty tutorials for the editor!
