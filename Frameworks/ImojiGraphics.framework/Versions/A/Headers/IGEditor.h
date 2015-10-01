@@ -169,6 +169,9 @@ extern "C" {
 
     // Set color of dots in draw mode; small line dots overlap the big cursor dot
     IG_FUNCTION(void, EditorSetDotColor, IGEditor * igEditor, IGint red, IGint green, IGint blue, IGint alpha);
+    
+    // Sets the alpha overlay on the image
+    IG_FUNCTION(void, EditorSetImageAlpha, IGEditor * igEditor, IGint alpha);
 
     // Return current IGEditorState of editor
     IG_FUNCTION(IGEditorState, EditorGetState, IGEditor * igEditor);
