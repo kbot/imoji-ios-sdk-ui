@@ -17,7 +17,7 @@
 
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-    self = [super initWithSourceImage:[UIImage imageNamed:@"big-big-dog.jpg"] session:[IMImojiSession imojiSession]];
+    self = [super initWithSourceImage:[UIImage imageNamed:@"frosty-dog"] session:[IMImojiSession imojiSession]];
 
     self.createDelegate = self;
     if (self) {

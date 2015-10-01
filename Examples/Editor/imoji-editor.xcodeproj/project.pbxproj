@@ -13,8 +13,8 @@
 		1A1767871B9A690B000F6907 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A1767851B9A690B000F6907 /* Main.storyboard */; };
 		1A1767891B9A690B000F6907 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A1767881B9A690B000F6907 /* Images.xcassets */; };
 		1A17678C1B9A690B000F6907 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A17678A1B9A690B000F6907 /* LaunchScreen.xib */; };
+		1A23768B1BBCC7F4007E1CA5 /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A23768A1BBCC7F4007E1CA5 /* frosty-dog.png */; settings = {ASSET_TAGS = (); }; };
 		1A3B03E81B9A7386004084E1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B03E71B9A7386004084E1 /* libPods.a */; };
-		1A3B03EA1B9A7D6F004084E1 /* big-big-dog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,11 +29,11 @@
 		1A1767861B9A690B000F6907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1A1767881B9A690B000F6907 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1A17678B1B9A690B000F6907 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		1A23768A1BBCC7F4007E1CA5 /* frosty-dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frosty-dog.png"; sourceTree = SOURCE_ROOT; };
 		1A3B03E11B9A71BC004084E1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1A3B03E31B9A71C9004084E1 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		1A3B03E51B9A71D8004084E1 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		1A3B03E71B9A7386004084E1 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
-		1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "big-big-dog.jpg"; sourceTree = SOURCE_ROOT; };
 		275954F21559937BC36429D0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F10F17EA42D8FCF6B9319F0C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +71,7 @@
 		1A17677A1B9A690B000F6907 /* imoji-editor */ = {
 			isa = PBXGroup;
 			children = (
+				1A23768A1BBCC7F4007E1CA5 /* frosty-dog.png */,
 				1A17677F1B9A690B000F6907 /* AppDelegate.h */,
 				1A1767801B9A690B000F6907 /* AppDelegate.m */,
 				1A1767821B9A690B000F6907 /* ViewController.h */,
@@ -79,7 +80,6 @@
 				1A1767881B9A690B000F6907 /* Images.xcassets */,
 				1A17678A1B9A690B000F6907 /* LaunchScreen.xib */,
 				1A17677B1B9A690B000F6907 /* Supporting Files */,
-				1A3B03E91B9A7D6F004084E1 /* big-big-dog.jpg */,
 			);
 			path = "imoji-editor";
 			sourceTree = "<group>";
@@ -175,8 +175,8 @@
 			files = (
 				1A1767871B9A690B000F6907 /* Main.storyboard in Resources */,
 				1A17678C1B9A690B000F6907 /* LaunchScreen.xib in Resources */,
-				1A3B03EA1B9A7D6F004084E1 /* big-big-dog.jpg in Resources */,
 				1A1767891B9A690B000F6907 /* Images.xcassets in Resources */,
+				1A23768B1BBCC7F4007E1CA5 /* frosty-dog.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
