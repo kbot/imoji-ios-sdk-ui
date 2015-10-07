@@ -130,6 +130,12 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     return item;
 }
 
+- (void)addBarButton:(nonnull UIBarButtonItem *)barButtonItem {
+    NSMutableArray *items = [NSMutableArray arrayWithArray:self.items ? self.items : @[]];
+    [items addObject:barButtonItem];
+    self.items = items;
+}
+
 - (void)selectButtonOfType:(IMToolbarButtonType)buttonType {
     for (UIBarButtonItem *barButtonItem in self.items) {
         if (barButtonItem.customView && barButtonItem.customView.tag == buttonType) {

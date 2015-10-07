@@ -104,6 +104,11 @@ extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
 - (nonnull UIBarButtonItem *)addFlexibleSpace;
 
 /**
+ * @abstract Convenience method for adding a UIBarButtonItem to the toolbar
+ */
+- (void)addBarButton:(nonnull UIBarButtonItem *)barButtonItem;
+
+/**
  * @abstract Triggers the selection of a specified toolbar item. The delegate method userDidSelectToolbarButton: will
  * subsequently be triggered.
  */
