@@ -170,7 +170,7 @@
 
     viewController.topToolbar.barTintColor =
             viewController.bottomToolbar.barTintColor =
-                    [UIColor colorWithRed:33.0f / 255.0f green:53.0f / 255.0f blue:107.0f / 255.0f alpha:1.0f];
+                    [UIColor colorWithRed:55.0f / 255.0f green:123.0f / 255.0f blue:167.0f / 255.0f alpha:1.0f];
 
     viewController.collectionViewControllerDelegate = self;
 

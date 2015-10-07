@@ -19,6 +19,10 @@
     [super loadView];
     self.sentenceParseEnabled = YES;
     self.collectionViewControllerDelegate = self;
+    
+    self.topToolbar.barTintColor =
+    self.bottomToolbar.barTintColor =
+    [UIColor colorWithRed:55.0f / 255.0f green:123.0f / 255.0f blue:167.0f / 255.0f alpha:1.0f];
 }
 
 - (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {
