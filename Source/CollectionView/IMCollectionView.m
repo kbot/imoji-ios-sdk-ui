@@ -242,10 +242,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
                         insetForSectionAtIndex:indexPath.section];
 
     CGSize availableSize = CGSizeMake(
-            self.frame.size.width - insets.right - insets.left -
-                    self.contentInset.left - self.contentInset.right,
-            self.frame.size.height - insets.top - insets.bottom -
-                    self.contentInset.left - self.contentInset.right
+            self.frame.size.width - insets.right - insets.left,
+            self.frame.size.height - insets.top - insets.bottom
     );
 
     // splash views occupy the full screen
@@ -586,6 +584,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.renderCount = 0;
         [self.images removeAllObjects];
         [self.content removeAllObjects];
+        self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         // loading indicator exists already for results with an offset
         if (self.contentType == IMCollectionViewContentTypeImojis) {
@@ -607,6 +606,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     if (offset == 0) {
         [self.content removeAllObjects];
         [self.images removeAllObjects];
+        self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         if (resultCount.unsignedIntegerValue == 0) {
             self.contentType = IMCollectionViewContentTypeNoResultsSplash;
