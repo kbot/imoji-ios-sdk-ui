@@ -13,6 +13,7 @@
 #import "IMImojiSession.h"
 #import "IMCollectionViewController.h"
 #import "IMCreateImojiViewController.h"
+#import "IMCreateImojiUITheme.h"
 #import "IMToolbar.h"
 #import "IMResourceBundleUtil.h"
 #import "Masonry/View+MASAdditions.h"

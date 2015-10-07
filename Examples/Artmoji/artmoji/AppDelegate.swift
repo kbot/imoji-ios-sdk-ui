@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import ImojiSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
