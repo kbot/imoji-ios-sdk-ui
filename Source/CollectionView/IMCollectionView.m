@@ -375,7 +375,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             [self.session getFeaturedImojisWithNumberOfResults:@(self.numberOfImojisToLoad)
                                      resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
                                          if (!operation.isCancelled) {
-                                             [self prepareViewForImojiResultSet:resultCount offset:0 error:error];
+                                             [self prepareViewForImojiResultSet:resultCount
+                                                                         offset:0
+                                                                          error:error
+                                                        emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
                                          }
                                      }
                                          imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
@@ -417,7 +420,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              if (!operation.isCancelled) {
                                  [self prepareViewForImojiResultSet:resultCount
                                                              offset:0
-                                                              error:error];
+                                                              error:error
+                                            emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
                              }
                          }
                              imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
@@ -445,7 +449,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self prepareViewForImojiResultSet:@(imojiIdentifiers.count)
                                     offset:0
-                                     error:nil];
+                                     error:nil
+                   emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
 
         __block NSOperation *operation;
         self.imojiOperation = operation =
@@ -477,7 +482,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                         if (!operation.isCancelled) {
                             [self prepareViewForImojiResultSet:resultCount
                                                         offset:0
-                                                         error:error];
+                                                         error:error
+                                       emptyResultsContentType:IMCollectionViewContentTypeCollectionSplash];
                         }
                     }
                                                                imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
@@ -541,7 +547,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          if (!operation.isCancelled) {
                              [self prepareViewForImojiResultSet:resultCount
                                                          offset:offsetValue
-                                                          error:error];
+                                                          error:error
+                                        emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
                          }
                      }
                          imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
@@ -605,7 +612,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     [self reloadData];
 }
 
-- (void)prepareViewForImojiResultSet:(NSNumber *)resultCount offset:(NSUInteger)offset error:(NSError *)error {
+- (void)prepareViewForImojiResultSet:(NSNumber *)resultCount
+                              offset:(NSUInteger)offset
+                               error:(NSError *)error
+             emptyResultsContentType:(IMCollectionViewContentType)emptyResultsContentType {
     __block NSUInteger loadingOffset = [self.content indexOfObject:self.loadingIndicatorObject];
 
     if (offset == 0) {
@@ -614,7 +624,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         if (resultCount.unsignedIntegerValue == 0) {
-            self.contentType = IMCollectionViewContentTypeNoResultsSplash;
+            self.contentType = emptyResultsContentType;
             return;
         }
     }
