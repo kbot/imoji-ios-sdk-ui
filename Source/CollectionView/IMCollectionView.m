@@ -242,8 +242,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
                         insetForSectionAtIndex:indexPath.section];
 
     CGSize availableSize = CGSizeMake(
-            self.frame.size.width - insets.right - insets.left,
-            self.frame.size.height - insets.top - insets.bottom
+            self.frame.size.width - insets.right - insets.left - self.contentInset.left - self.contentInset.right,
+            self.frame.size.height - insets.top - insets.bottom - self.contentInset.top - self.contentInset.bottom
     );
 
     // splash views occupy the full screen
@@ -257,14 +257,12 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
             return availableSize;
         }
         default: {
-
-            id content = self.content[(NSUInteger) indexPath.row];
-            if (self.content.count == 1) {
-                if (content == self.loadingIndicatorObject) {
+            if ([self isPathShowingLoadingIndicator:indexPath]) {
+                if (self.content.count == 1) {
                     return availableSize;
+                } else {
+                    return CGSizeMake(availableSize.width, self.preferredImojiDisplaySize.height);
                 }
-            } else if (content == self.loadingIndicatorObject) {
-                return CGSizeMake(availableSize.width, self.preferredImojiDisplaySize.height);
             }
 
             // ensure the Imoji stickers take up the entire view space so that they
@@ -327,9 +325,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             [self.session getImojiCategoriesWithClassification:classification
                                                       callback:^(NSArray *imojiCategories, NSError *error) {
                                                           if (!operation.isCancelled) {
-                                                              [self.content addObjectsFromArray:imojiCategories];
-
                                                               [self performBatchUpdates:^{
+                                                                          // remove loading indicator
+                                                                          [self.content removeObject:self.loadingIndicatorObject];
+                                                                          [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+
+                                                                          [self.content addObjectsFromArray:imojiCategories];
                                                                           __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
                                                                           for (int i = 0; i < imojiCategories.count; ++i) {
                                                                               [self.images addObject:[NSNull null]];
@@ -587,7 +588,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         // loading indicator exists already for results with an offset
-        if (self.contentType == IMCollectionViewContentTypeImojis) {
+        if (self.contentType == IMCollectionViewContentTypeImojis || self.contentType == IMCollectionViewContentTypeImojiCategories) {
             [self.content addObject:self.loadingIndicatorObject];
         }
     }
@@ -666,9 +667,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          }
 
                          if (!operation.isCancelled) {
-                             self.images[index + offset] = image ? image : [NSNull null];
 
                              [self performBatchUpdates:^{
+                                         self.images[index + offset] = image ? image : [NSNull null];
                                          [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(index + offset) inSection:0]]];
                                      }
                                             completion:^(BOOL finished) {
