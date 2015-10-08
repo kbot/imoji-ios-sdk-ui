@@ -30,7 +30,7 @@
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
-@interface IMCollectionViewCell()
+@interface IMCollectionViewCell ()
 
 @property(nonatomic, readonly) BOOL hasImojiImage;
 
@@ -40,12 +40,11 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
 }
 
-- (void)loadImojiImage:(UIImage *)imojiImage {
-    [self loadImojiImage:imojiImage animated:YES];
-}
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.backgroundColor = [UIColor clearColor];
 
-- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    if (!self.imojiView) {
         self.imojiView = [UIImageView new];
 
         [self addSubview:self.imojiView];
@@ -54,7 +53,15 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
             make.width.and.height.equalTo(self).multipliedBy(.8f);
         }];
     }
-    
+
+    return self;
+}
+
+- (void)loadImojiImage:(UIImage *)imojiImage {
+    [self loadImojiImage:imojiImage animated:YES];
+}
+
+- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
     BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
 
     if (imojiImage) {
@@ -62,10 +69,6 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
         self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
         _hasImojiImage = YES;
-
-        if (showAnimations) {
-            self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
-        }
     } else {
         self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:30];
         self.imojiView.contentMode = UIViewContentModeCenter;
@@ -73,21 +76,26 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     }
 
     if (showAnimations) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:.5f
-                                  delay:0
-                 usingSpringWithDamping:1.0f
-                  initialSpringVelocity:1.0f
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.imojiView.transform = CGAffineTransformIdentity;
-                             }
-                             completion:nil];
-        });
+        [self performLoadedAnimation];
     }
 }
 
-- (UIImage *)tintImage:(UIImage*)image withColor:(UIColor *)tintColor {
+- (void)performLoadedAnimation {
+    self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:.5f
+                              delay:0
+             usingSpringWithDamping:1.0f
+              initialSpringVelocity:1.0f
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.imojiView.transform = CGAffineTransformIdentity;
+                         }
+                         completion:nil];
+    });
+}
+
+- (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
     CGRect drawRect = CGRectMake(0, 0, image.size.width, image.size.height);
     [image drawInRect:drawRect];
@@ -103,13 +111,13 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     [self.imojiView.layer removeAllAnimations];
     [CATransaction commit];
     self.imojiView.alpha = 1.0;
-    
+
     // grow image
     [UIView animateWithDuration:0.1 animations:^{
-        self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-        
-    }
-                     completion:^(BOOL finished){
+                self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
+
+            }
+                     completion:^(BOOL finished) {
                          if (!finished) {
                              return;
                          }
@@ -124,9 +132,9 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
 - (void)performTranslucentAnimation {
     [UIView animateWithDuration:0.1 animations:^{
-        self.imojiView.alpha = 0.5;
-    }
-                     completion:^(BOOL finished){
+                self.imojiView.alpha = 0.5;
+            }
+                     completion:^(BOOL finished) {
                          if (!finished) {
                              return;
                          }

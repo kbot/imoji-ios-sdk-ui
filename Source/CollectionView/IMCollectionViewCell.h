@@ -34,6 +34,8 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 - (void)loadImojiImage:(UIImage * __nullable)imojiImage animated:(BOOL)animated;
 
+- (void)performLoadedAnimation;
+
 - (void)performGrowAnimation;
 
 - (void)performTranslucentAnimation;

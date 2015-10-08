@@ -35,12 +35,11 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 
 }
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
-    [self loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:YES];
-}
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.backgroundColor = [UIColor clearColor];
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    if (!self.imojiView) {
         self.imojiView = [UIImageView new];
 
         [self addSubview:self.imojiView];
@@ -48,9 +47,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
             make.centerX.equalTo(self);
             make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
         }];
-    }
 
-    if (!self.titleView) {
         self.titleView = [UILabel new];
         self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:14.0f];
         self.titleView.textColor = [UIColor colorWithWhite:.4f alpha:1.0f];
@@ -68,6 +65,14 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         }];
     }
 
+    return self;
+}
+
+- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
+    [self loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:YES];
+}
+
+- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
     BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
 
     if (imojiImage) {
@@ -90,20 +95,24 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     self.titleView.text = categoryTitle;
 
     if (showAnimations) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:.5f
-                                  delay:0
-                 usingSpringWithDamping:1.0f
-                  initialSpringVelocity:1.0f
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 self.imojiView.transform = CGAffineTransformIdentity;
-                             }
-                             completion:nil];
-        });
+        [self performLoadedAnimation];
     }
 }
 
+- (void)performLoadedAnimation {
+    self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:.5f
+                              delay:0
+             usingSpringWithDamping:1.0f
+              initialSpringVelocity:1.0f
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.imojiView.transform = CGAffineTransformIdentity;
+                         }
+                         completion:nil];
+    });
+}
 
 - (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);

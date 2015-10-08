@@ -76,7 +76,7 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
     _bottomToolbar = [IMToolbar new];
     _topToolbar = [IMToolbar new];
-    _collectionView = [IMCollectionView imojiCollectionViewWithSession:self.session];
+    _collectionView = [self createCollectionViewWithSession:session];
     _searchOnTextChanges = YES;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -286,6 +286,12 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
     return self.topToolbar == bar ?
             UIBarPositionTopAttached :
             self.bottomToolbar == bar ? UIBarPositionBottom : UIBarPositionAny;
+}
+
+#pragma mark Overridable Methods
+
+- (nonnull IMCollectionView *)createCollectionViewWithSession:(IMImojiSession *)session {
+    return [IMCollectionView imojiCollectionViewWithSession:session];
 }
 
 #pragma mark Initializers
