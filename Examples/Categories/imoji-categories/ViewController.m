@@ -109,7 +109,7 @@
 }
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
-    [collectionView loadImojisFromSearch:category.identifier];
+    [collectionView loadImojisFromCategory:category];
 }
 
 - (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {

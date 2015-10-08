@@ -491,6 +491,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                                }];
 }
 
+- (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
+    [self loadImojisFromSearch:category.identifier];
+}
+
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
     switch (splashType) {
         case IMCollectionViewSplashCellNoConnection:

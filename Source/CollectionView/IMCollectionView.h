@@ -87,12 +87,12 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Creates a collection view with the specified Imoji session
  */
-- (nonnull instancetype)initWithSession:(IMImojiSession *__nonnull)session;
+- (nonnull instancetype)initWithSession:(nonnull IMImojiSession *)session;
 
 /**
  * @abstract Creates a collection view with the specified Imoji session
  */
-+ (nonnull instancetype)imojiCollectionViewWithSession:(IMImojiSession *__nonnull)session;
++ (nonnull instancetype)imojiCollectionViewWithSession:(nonnull IMImojiSession *)session;
 
 @end
 
@@ -112,23 +112,28 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
  * The collection view will automatically scroll through multiple pages of stickers if they exist
  */
-- (void)loadImojisFromSearch:(NSString *__nullable)searchTerm;
+- (void)loadImojisFromSearch:(nullable NSString *)searchTerm;
 
 /**
  * @abstract Parses a given sentence for popular Imoji stickers
  */
-- (void)loadImojisFromSentence:(NSString *__nonnull)sentence;
+- (void)loadImojisFromSentence:(nonnull NSString *)sentence;
 
 /**
  * @abstract Loads Imoji stickers into the collection view using fetchImojisByIdentifiers from IMImojiSession
  */
-- (void)loadImojisFromIdentifiers:(NSArray *__nonnull)imojiIdentifiers;
+- (void)loadImojisFromIdentifiers:(nonnull NSArray *)imojiIdentifiers;
 
 /**
  * @abstract Loads Imoji stickers for an authenticated user into the collection view using
  * getImojisForAuthenticatedUserWithResultSetResponseCallback from IMImojiSession
  */
 - (void)loadUserCollectionImojis;
+
+/**
+ * @abstract Loads Imoji stickers from a category
+ */
+- (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category;
 
 /**
  * @abstract Shows specified splash content in the collection view
@@ -139,11 +144,11 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 @interface IMCollectionView (Override)
 
-- (void)processCellAnimations:(NSIndexPath *__nonnull)currentIndexPath;
+- (void)processCellAnimations:(nonnull NSIndexPath *)currentIndexPath;
 
-- (id __nullable)contentForIndexPath:(NSIndexPath *__nonnull)path;
+- (nullable id)contentForIndexPath:(nonnull NSIndexPath *)path;
 
-- (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *__nonnull)indexPath;
+- (BOOL)isPathShowingLoadingIndicator:(nonnull NSIndexPath *)indexPath;
 
 @end
 
@@ -154,23 +159,23 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Notified when the specified content has completed loading
  */
-- (void)imojiCollectionView:(IMCollectionView *__nonnull)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType;
+- (void)imojiCollectionView:(nonnull IMCollectionView *)collectionView didFinishLoadingContentType:(IMCollectionViewContentType)contentType;
 
 /**
  * @abstract Notified when the user has tapped on the a given splash cell
  */
-- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *__nonnull)collectionView;
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
 /**
  * @abstract Notified when a user selected an imoji
  */
-- (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView;
+- (void)userDidSelectImoji:(nonnull IMImojiObject *)imoji fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
 /**
  * @abstract Notified when a user selected a category
  */
-- (void)userDidSelectCategory:(IMImojiCategoryObject *__nonnull)category fromCollectionView:(IMCollectionView *__nonnull)collectionView;
+- (void)userDidSelectCategory:(nonnull IMImojiCategoryObject *)category fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
-- (void)imojiCollectionViewDidScroll:(IMCollectionView *__nonnull)collectionView;
+- (void)imojiCollectionViewDidScroll:(nonnull IMCollectionView *)collectionView;
 
 @end
