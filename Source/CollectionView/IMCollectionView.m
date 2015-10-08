@@ -276,8 +276,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
                     ) / numberOfImagesPerRow;
 
             return CGSizeMake(
-                    self.preferredImojiDisplaySize.width + paddedSpace,
-                    self.preferredImojiDisplaySize.height + paddedSpace
+                    floorf(self.preferredImojiDisplaySize.width + paddedSpace),
+                    floorf(self.preferredImojiDisplaySize.height + paddedSpace)
             );
         }
     }
