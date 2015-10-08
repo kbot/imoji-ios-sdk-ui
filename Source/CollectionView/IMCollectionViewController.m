@@ -80,11 +80,6 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
     _searchOnTextChanges = YES;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deviceOrientationDidChange)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDisplayedForSearchField:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
@@ -191,9 +186,14 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
 #pragma mark Notifications
 
-- (void)deviceOrientationDidChange {
-    [self updateViewConstraints];
-    [self.collectionView reloadData];
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)keyboardDisplayedForSearchField:(NSNotification *)notification {
