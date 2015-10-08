@@ -77,9 +77,19 @@ public class IMCreateArtmojiViewController: UIViewController {
     // Mark: - UIKit.UIImagePickerController's completion selector
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<Void>) {
         if error == nil {
-            let alert = UIAlertController(title: "Saved!", message: "Your Artmoji has been saved to your photos.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-            presentViewController(alert, animated: true, completion: nil)
+            let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            activityController.excludedActivityTypes = [
+                UIActivityTypePrint,
+                UIActivityTypeCopyToPasteboard,
+                UIActivityTypeAssignToContact,
+                UIActivityTypeSaveToCameraRoll,
+                UIActivityTypeAddToReadingList,
+                UIActivityTypePostToFlickr,
+                UIActivityTypePostToVimeo
+            ]
+            
+            presentViewController(activityController, animated: true, completion: nil)
+
         } else {
             let alert = UIAlertController(title: "Yikes!", message: "There was a problem saving your Artmoji to your photos.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
