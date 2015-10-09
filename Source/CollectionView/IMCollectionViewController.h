@@ -116,6 +116,6 @@
 
 @interface IMCollectionViewController(Override)
 
-- (nonnull IMCollectionView *)createCollectionViewWithSession:(IMImojiSession *)session;
+- (nonnull IMCollectionView *)createCollectionViewWithSession:(nonnull IMImojiSession *)session;
 
 @end
