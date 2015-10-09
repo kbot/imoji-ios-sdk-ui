@@ -132,6 +132,10 @@
                 [self.editorDelegate userDidUpdatePathInEditorView:self];
             });
         }
+
+        if (self.hasOutputImage) {
+            igEditorSetImageAlpha(self.igEditor, 190);
+        }
     }
 }
 
@@ -139,6 +143,10 @@
     if (self.igEditor != nil) {
         igEditorUndo(self.igEditor);
         [self setNeedsDisplay];
+
+        if (!self.hasOutputImage) {
+            igEditorSetImageAlpha(self.igEditor, 255);
+        }
     }
 }
 
@@ -167,12 +175,14 @@
 }
 
 - (void)loadImage:(UIImage *)image {
-    CGImageRef cgImage = [IMCreateImojiView CGImageWithCorrectOrientation:image];
-    self.igInputImage = igImageFromNative(self.igContext, cgImage, 0);
+    if (image) {
+        CGImageRef cgImage = [IMCreateImojiView CGImageWithCorrectOrientation:image];
+        self.igInputImage = igImageFromNative(self.igContext, cgImage, 0);
 
-    CGImageRelease(cgImage);
+        CGImageRelease(cgImage);
 
-    [self reset];
+        [self reset];
+    }
 }
 
 - (void)reset {
@@ -186,6 +196,8 @@
 
     self.igEditor = igEditorCreate(self.igInputImage);
     self.firstDrawRect = YES;
+
+    igEditorSetImageAlpha(self.igEditor, 255);
 
     [self setNeedsDisplay];
 }
