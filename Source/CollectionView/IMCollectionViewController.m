@@ -72,7 +72,7 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 }
 
 - (void)setupCollectionViewControllerWithSession:(IMImojiSession *)session {
-    self.session = [IMImojiSession imojiSession];
+    self.session = session;
 
     _bottomToolbar = [IMToolbar new];
     _topToolbar = [IMToolbar new];
