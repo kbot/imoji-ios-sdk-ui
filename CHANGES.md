@@ -1,5 +1,19 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.14
+
+* Collection View fixes
+  * Fixes a bug in which the Imoji session passed up to IMCollectionViewController was being reset
+  * Splash screens were not centering properly
+  * Shows loading indicator when loading a category
+  * Modularized collection view to allow subclasses to have more control
+  * Collection view cells were not taking up the full width of the view, the rounding logic for the cell size was off
+  * Better support for orientation changes
+  * Added loadImojisFromCategory to IMCollectionView for convenience
+
+* Editor
+  * Avoid showing translucency on the image being edited until the user has selected a path
+
 ### Version 0.1.13
 
 * Fixed some issues with portrait/landscape transitions in IMCollectionViewController
