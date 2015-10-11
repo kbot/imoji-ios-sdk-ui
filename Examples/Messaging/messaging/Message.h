@@ -12,7 +12,7 @@
 
 @property(nonatomic, strong, nullable) NSAttributedString *text;
 @property(nonatomic, assign) BOOL sender;
-@property(nonatomic, assign, nullable) IMImojiObject *imoji;
+@property(nonatomic, strong, nullable) IMImojiObject *imoji;
 
 + (instancetype)messageWithImoji:(IMImojiObject *)imoji sender:(BOOL)sender;
 

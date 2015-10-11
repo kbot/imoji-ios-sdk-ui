@@ -27,6 +27,7 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
     if (self) {
         self.textView = [UITextView new];
         self.textView.layer.cornerRadius = 6.f;
+        self.textView.editable = self.textView.scrollEnabled = NO;
 
         [self addSubview:self.textView];
     }
@@ -74,7 +75,7 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
         self.textView.font = [IMAttributeStringUtil defaultFontWithSize:16.f];
         self.textView.textColor = [UIColor whiteColor];
 
-        self.textView.backgroundColor = message.sender ? [UIColor blueColor] : [UIColor greenColor];
+        self.textView.backgroundColor = message.sender ? [MessageViewCell MessageViewSenderColor] : [MessageViewCell MessageViewRecipientColor];
     }
 }
 
@@ -85,7 +86,7 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
         CGSize size = [message.text.string sizeWithAttributes:@{
                 NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.f]
         }];
-        return CGSizeMake(maximumSize.width, size.height*2);
+        return CGSizeMake(maximumSize.width, size.height * 2);
     }
 }
 
@@ -93,6 +94,14 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
     NSTextAttachment *attachment = [NSTextAttachment new];
     attachment.image = image;
     self.textView.attributedText = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+}
+
++ (UIColor *)MessageViewSenderColor {
+    return [UIColor colorWithRed:55.0f / 255.0f green:123.0f / 255.0f blue:167.0f / 255.0f alpha:1.0f];
+}
+
++ (UIColor *)MessageViewRecipientColor {
+    return [UIColor colorWithRed:81.0f / 255.0f green:185.0f / 255.0f blue:197.0f / 255.0f alpha:1.0f];
 }
 
 @end

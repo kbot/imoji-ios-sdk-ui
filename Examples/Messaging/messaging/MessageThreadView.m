@@ -63,9 +63,14 @@
 - (void)appendMessage:(nonnull Message *)message {
     [self.data addObject:message];
 
+    __block NSIndexPath *newPath = [NSIndexPath indexPathForItem:self.data.count - 1 inSection:0];
     [self performBatchUpdates:^{
-        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.data.count - 1 inSection:0]]];
-    } completion:nil];
+        [self insertItemsAtIndexPaths:@[newPath]];
+    } completion:^(BOOL finished) {
+        [self scrollToItemAtIndexPath:newPath
+                     atScrollPosition:UICollectionViewScrollPositionBottom
+                             animated:YES];
+    }];
 }
 
 @end
