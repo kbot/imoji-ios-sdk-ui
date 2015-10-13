@@ -76,6 +76,13 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 */
 @property(nonatomic, strong, nonnull) NSBundle *imagesBundle;
 
+
+/**
+ * @abstract Whether or not tapping on an Imoji sticker should animate. If YES, processCellAnimations is called when
+ * the user selects an Imoji.
+*/
+@property(nonatomic) BOOL animateSelection;
+
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
  * [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]

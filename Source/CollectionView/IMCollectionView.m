@@ -60,6 +60,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
         _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
+        _animateSelection = YES;
 
         self.dataSource = self;
         self.delegate = self;
@@ -184,7 +185,9 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         IMCollectionViewCell *cell = (IMCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
         cell.imojiView.highlighted = NO;
 
-        [self processCellAnimations:indexPath];
+        if (self.animateSelection) {
+            [self processCellAnimations:indexPath];
+        }
 
     } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]]) {
         if ([self.collectionViewDelegate respondsToSelector:@selector(userDidSelectCategory:fromCollectionView:)]) {
