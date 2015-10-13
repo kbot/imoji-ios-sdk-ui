@@ -45,11 +45,7 @@ public class IMCreateArtmojiViewController: UIViewController {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        self.sourceImage = UIImage(named: "frosty-dog")
-        self.session = IMImojiSession()
-        self.imageBundle = IMResourceBundleUtil.assetsBundle()
-
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - View lifecycle
@@ -115,7 +111,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
 
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
-        collectionViewController.topToolbar.backgroundColor = UIColor.redColor()
+        collectionViewController.topToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
         collectionViewController.collectionView.collectionViewDelegate = self
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
         collectionViewController.backButton.addTarget(self, action: "collectionViewControllerBackButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)

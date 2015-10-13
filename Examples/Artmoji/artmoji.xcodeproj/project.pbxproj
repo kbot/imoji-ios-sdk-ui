@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2DBA102E68C70FE6B7869573 /* IMCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */; };
 		2DBA147E7800A7B633E690CB /* IMCreateArtmojiSelectedImojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */; };
+		2DBA174C3B2BDFF6D669D50A /* IMColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */; };
 		2DBA18BBB1EC663DAD7364DA /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DBA1D4338E5FEB319434489 /* frosty-dog.png */; };
 		2DBA1B9574F67B608A727854 /* IMCreateArtmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */; };
 		F557B8BA020CE6054A57C91C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F4DEC2BC42F80CA06E5B8A /* libPods.a */; };
@@ -26,6 +27,7 @@
 		2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiView.swift; sourceTree = "<group>"; };
 		2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiSelectedImojiView.swift; sourceTree = "<group>"; };
 		2DBA1D4338E5FEB319434489 /* frosty-dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frosty-dog.png"; sourceTree = "<group>"; };
+		2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMColorSlider.swift; sourceTree = "<group>"; };
 		2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCameraViewController.swift; sourceTree = "<group>"; };
 		83F4DEC2BC42F80CA06E5B8A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */,
 				2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */,
 				2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */,
+				2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */,
 			);
 			path = artmoji;
 			sourceTree = "<group>";
@@ -231,6 +234,7 @@
 				2DBA102E68C70FE6B7869573 /* IMCameraViewController.swift in Sources */,
 				2DBA1B9574F67B608A727854 /* IMCreateArtmojiView.swift in Sources */,
 				2DBA147E7800A7B633E690CB /* IMCreateArtmojiSelectedImojiView.swift in Sources */,
+				2DBA174C3B2BDFF6D669D50A /* IMColorSlider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
