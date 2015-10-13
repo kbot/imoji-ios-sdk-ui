@@ -9,4 +9,8 @@
 
 - (void)appendMessage:(nonnull Message *)message;
 
+- (void)scrollToBottom;
+
+@property(nonatomic, readonly) BOOL empty;
+
 @end

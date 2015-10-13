@@ -10,12 +10,12 @@
 
 @interface Message : NSObject
 
-@property(nonatomic, strong, nullable) NSAttributedString *text;
+@property(nonatomic, strong, nullable) NSString *text;
 @property(nonatomic, assign) BOOL sender;
 @property(nonatomic, strong, nullable) IMImojiObject *imoji;
 
 + (nonnull instancetype)messageWithImoji:(nonnull IMImojiObject *)imoji sender:(BOOL)sender;
 
-+ (nonnull instancetype)messageWithText:(nonnull NSAttributedString *)text sender:(BOOL)sender;
++ (nonnull instancetype)messageWithText:(nonnull NSString *)text sender:(BOOL)sender;
 
 @end

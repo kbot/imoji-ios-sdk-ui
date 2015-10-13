@@ -9,7 +9,7 @@ extern NSString *const MessageViewCellReuseId;
 
 @interface MessageViewCell : UICollectionViewCell
 
-@property(nonatomic, strong) Message* message;
+@property(nonatomic, strong) Message *message;
 
 + (CGSize)estimatedSize:(CGSize)maximumSize forMessage:(Message *)message;
 

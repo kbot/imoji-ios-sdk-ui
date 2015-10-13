@@ -20,6 +20,8 @@
         [self registerClass:[ImojiSuggestionLoadingViewCell class] forCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId];
         [self registerClass:[ImojiSuggestionSplashViewCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
         [self registerClass:[ImojiSuggestionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
+
+        self.scrollsToTop = NO;
     }
 
     return self;

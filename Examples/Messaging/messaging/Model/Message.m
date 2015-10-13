@@ -11,7 +11,7 @@
 
 }
 
-- (instancetype)initWithText:(NSAttributedString *)text sender:(BOOL)sender {
+- (instancetype)initWithText:(NSString *)text sender:(BOOL)sender {
     self = [super init];
     if (self) {
         self.text = text;
@@ -31,7 +31,7 @@
     return self;
 }
 
-+ (instancetype)messageWithText:(NSAttributedString *)text sender:(BOOL)sender {
++ (instancetype)messageWithText:(NSString *)text sender:(BOOL)sender {
     return [[self alloc] initWithText:text sender:sender];
 }
 

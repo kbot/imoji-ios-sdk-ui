@@ -15,7 +15,7 @@ CGSize const MessageViewPreferredImojiSize = {100.f, 100.f};
 UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
 
 @interface MessageViewCell ()
-@property(nonatomic, strong) UITextView *textView;
+@property(nonatomic, strong) UILabel *label;
 @end
 
 @implementation MessageViewCell {
@@ -25,20 +25,25 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.textView = [UITextView new];
-        self.textView.layer.cornerRadius = 6.f;
-        self.textView.editable = self.textView.scrollEnabled = NO;
+        self.label = [UILabel new];
+        self.label.layer.cornerRadius = 6.f;
+        self.label.clipsToBounds = YES;
 
-        [self addSubview:self.textView];
+        [self addSubview:self.label];
     }
 
     return self;
 }
 
 - (void)setMessage:(Message *)message {
-    self.textView.attributedText = message.text;
+    if (message.text) {
+        self.label.attributedText = [IMAttributeStringUtil attributedString:message.text
+                                                                   withFont:[MessageViewCell MessageViewTextFont]
+                                                                      color:[UIColor whiteColor]
+                                                               andAlignment:NSTextAlignmentCenter];
+    }
 
-    [self.textView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.label mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (message.sender) {
             make.right.equalTo(self).offset(MessageViewCellInsets.right * -1);
         } else {
@@ -50,11 +55,11 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
         if (message.imoji) {
             make.width.equalTo(@(MessageViewPreferredImojiSize.width));
         } else {
-            CGSize size = [message.text.string sizeWithAttributes:@{
-                    NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.f]
+            CGSize size = [message.text sizeWithAttributes:@{
+                    NSFontAttributeName : [MessageViewCell MessageViewTextFont]
             }];
 
-            make.width.equalTo(@(size.width + (message.sender ? MessageViewCellInsets.right : MessageViewCellInsets.left)));
+            make.width.equalTo(@(size.width + MessageViewCellInsets.left + MessageViewCellInsets.right));
         }
     }];
 
@@ -70,21 +75,21 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
                                                                                          [self loadImageIntoTextView:image];
                                                                                      }
                                                                                  }];
-        self.textView.backgroundColor = [UIColor clearColor];
+        self.label.backgroundColor = [UIColor clearColor];
     } else {
-        self.textView.font = [IMAttributeStringUtil defaultFontWithSize:16.f];
-        self.textView.textColor = [UIColor whiteColor];
+        self.label.font = [MessageViewCell MessageViewTextFont];
+        self.label.textColor = [UIColor whiteColor];
 
-        self.textView.backgroundColor = message.sender ? [MessageViewCell MessageViewSenderColor] : [MessageViewCell MessageViewRecipientColor];
+        self.label.backgroundColor = message.sender ? [MessageViewCell MessageViewSenderColor] : [MessageViewCell MessageViewRecipientColor];
     }
 }
 
 + (CGSize)estimatedSize:(CGSize)maximumSize forMessage:(Message *)message {
     if (message.imoji) {
-        return CGSizeMake(maximumSize.width, MessageViewPreferredImojiSize.height + 10.0f);
+        return CGSizeMake(maximumSize.width, MessageViewPreferredImojiSize.height);
     } else {
-        CGSize size = [message.text.string sizeWithAttributes:@{
-                NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.f]
+        CGSize size = [message.text sizeWithAttributes:@{
+                NSFontAttributeName : [MessageViewCell MessageViewTextFont]
         }];
         return CGSizeMake(maximumSize.width, size.height * 2);
     }
@@ -93,7 +98,7 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
 - (void)loadImageIntoTextView:(UIImage *)image {
     NSTextAttachment *attachment = [NSTextAttachment new];
     attachment.image = image;
-    self.textView.attributedText = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+    self.label.attributedText = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
 }
 
 + (UIColor *)MessageViewSenderColor {
@@ -102,6 +107,10 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
 
 + (UIColor *)MessageViewRecipientColor {
     return [UIColor colorWithRed:81.0f / 255.0f green:185.0f / 255.0f blue:197.0f / 255.0f alpha:1.0f];
+}
+
++ (UIFont *)MessageViewTextFont {
+    return [IMAttributeStringUtil defaultFontWithSize:16.f];
 }
 
 @end

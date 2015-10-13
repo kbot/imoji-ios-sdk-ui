@@ -62,8 +62,8 @@
     self.inputField.returnKeyType = UIReturnKeySend;
     self.inputField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.inputField.defaultTextAttributes = @{
-            NSFontAttributeName: [IMAttributeStringUtil defaultFontWithSize:16.f],
-            NSForegroundColorAttributeName: [UIColor colorWithWhite:.2f alpha:1.f]
+            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.f],
+            NSForegroundColorAttributeName : [UIColor colorWithWhite:.2f alpha:1.f]
     };
     // text indent
     self.inputField.leftView = [UIView new];
@@ -78,6 +78,8 @@
     self.messageThreadView.backgroundColor = [UIColor colorWithWhite:235 / 255.f alpha:1.f];
     self.imojiSuggestionView.backgroundColor = self.view.backgroundColor;
     self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
+
+    [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
     self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(50.f, 50.f);
@@ -204,6 +206,9 @@
 
 #pragma mark Keyboard Handling
 
+- (void)messageThreadViewTapped {
+    [self.inputField resignFirstResponder];
+}
 
 - (void)inputFieldWillShow:(NSNotification *)notification {
     NSDictionary *keyboardInfo = [notification userInfo];
@@ -236,6 +241,13 @@
                                                 self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
                                         0
                                 );
+
+
+                if (self.messageThreadView.empty) {
+                    [self.messageThreadView.collectionViewLayout invalidateLayout];
+                } else {
+                    [self.messageThreadView scrollToBottom];
+                }
             }];
 }
 
@@ -265,6 +277,12 @@
                                 self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
                                 0
                         );
+
+
+                if (self.messageThreadView.empty) {
+                    [self.messageThreadView.collectionViewLayout invalidateLayout];
+                }
+
             }];
 }
 
@@ -292,7 +310,7 @@
 #pragma mark Sending Messages (Fake)
 
 - (void)sendMessageWithText:(nonnull NSString *)text {
-    [self.messageThreadView appendMessage:[Message messageWithText:[[NSAttributedString alloc] initWithString:text] sender:YES]];
+    [self.messageThreadView appendMessage:[Message messageWithText:text sender:YES]];
     [self sendFakeResponse];
 }
 
@@ -313,7 +331,7 @@
                                               }];
 
         } else {
-            NSArray<NSString*> *fakeResponse = @[
+            NSArray<NSString *> *fakeResponse = @[
                     @"wow",
                     @"amazing!",
                     @"lol",
@@ -322,8 +340,8 @@
                     @"no way!"
             ];
             NSString *response = fakeResponse[((NSUInteger) [NSDate date].timeIntervalSince1970) % fakeResponse.count];
-            
-            [self.messageThreadView appendMessage:[Message messageWithText:[[NSAttributedString alloc] initWithString:response]
+
+            [self.messageThreadView appendMessage:[Message messageWithText:response
                                                                     sender:NO]];
         }
     });
