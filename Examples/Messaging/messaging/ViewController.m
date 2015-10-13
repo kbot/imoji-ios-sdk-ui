@@ -146,6 +146,10 @@
 }
 
 - (void)showSuggestionsAnimated:(BOOL)animated {
+    if (self.isSuggestionViewDisplayed) {
+        return;
+    }
+
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@55);
@@ -165,6 +169,10 @@
 }
 
 - (void)hideSuggestionsAnimated:(BOOL)animated {
+    if (!self.isSuggestionViewDisplayed) {
+        return;
+    }
+
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@55);
@@ -182,6 +190,10 @@
                          } completion:nil];
 
     }
+}
+
+- (BOOL)isSuggestionViewDisplayed {
+    return self.imojiSuggestionView.frame.origin.y == self.inputFieldContainer.frame.origin.y;
 }
 
 #pragma mark Imoji Collection View Delegate
@@ -205,6 +217,10 @@
         make.height.equalTo(@50);
         make.bottom.equalTo(self.view).offset(-endRect.size.height);
     }];
+
+    if (self.inputField.text.length > 0 && !self.isSuggestionViewDisplayed) {
+        [self showSuggestionsAnimated:NO];
+    }
 
     [UIView animateWithDuration:animationDuration
                           delay:0.0
@@ -260,6 +276,17 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
+}
+
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.messageThreadView.collectionViewLayout invalidateLayout];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self.messageThreadView.collectionViewLayout invalidateLayout];
 }
 
 #pragma mark Sending Messages (Fake)
