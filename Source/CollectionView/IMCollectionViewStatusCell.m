@@ -32,41 +32,39 @@ NSString *const IMCollectionViewStatusCellReuseId = @"IMCollectionViewStatusCell
 
 }
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.title = [UILabel new];
+        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+
+        [self addSubview:self.title];
+        [self addSubview:self.activityIndicatorView];
+
+        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self);
+            make.centerY.equalTo(self).offset(-10.0f);
+        }];
+
+        [self.activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self);
+            make.top.equalTo(self.title.mas_bottom).offset(10.0f);
+        }];
+    }
+
+    return self;
+}
+
 - (void)showLoading {
-    [self setupViews];
     [self.activityIndicatorView startAnimating];
     self.title.text = @"Loading";
     self.activityIndicatorView.hidden = NO;
 }
 
 - (void)showNoResults {
-    [self setupViews];
+    [self.activityIndicatorView stopAnimating];
     self.title.text = @"No results found";
     self.activityIndicatorView.hidden = YES;
-}
-
-- (void)setupViews {
-    if (!self.title) {
-        self.title = [UILabel new];
-        [self addSubview:self.title];
-
-        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.centerY.equalTo(self).offset(-10.0f);
-        }];
-    }
-
-    if (!self.activityIndicatorView) {
-        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-
-        [self addSubview:self.activityIndicatorView];
-        [self.activityIndicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.top.equalTo(self.title.mas_bottom).offset(10.0f);
-        }];
-    } else {
-        [self.activityIndicatorView stopAnimating];
-    }
 }
 
 @end
