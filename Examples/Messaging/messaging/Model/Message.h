@@ -14,8 +14,8 @@
 @property(nonatomic, assign) BOOL sender;
 @property(nonatomic, strong, nullable) IMImojiObject *imoji;
 
-+ (instancetype)messageWithImoji:(IMImojiObject *)imoji sender:(BOOL)sender;
++ (nonnull instancetype)messageWithImoji:(nonnull IMImojiObject *)imoji sender:(BOOL)sender;
 
-+ (instancetype)messageWithText:(NSAttributedString *)text sender:(BOOL)sender;
++ (nonnull instancetype)messageWithText:(nonnull NSAttributedString *)text sender:(BOOL)sender;
 
 @end
