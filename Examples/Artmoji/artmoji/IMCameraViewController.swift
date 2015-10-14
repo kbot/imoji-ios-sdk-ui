@@ -25,13 +25,6 @@
 
 import UIKit
 
-struct IMArtmojiConstants {
-    static let NavigationBarHeight: CGFloat = 50.0
-    static let BottomBarHeight: CGFloat = 90.0
-    static let ButtonItemWidthHeight: CGFloat = 40.0
-    static let SliderWidth: CGFloat = 165.0
-}
-
 public class IMCameraViewController: UIViewController {
 
     // Required init variables
