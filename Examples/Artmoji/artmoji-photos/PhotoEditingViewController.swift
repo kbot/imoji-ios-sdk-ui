@@ -66,7 +66,7 @@ extension PhotoEditingViewController: PHContentEditingController {
             let output = PHContentEditingOutput(contentEditingInput: self.input!)
 
             // Provide new adjustments and render output to given location.
-            output.adjustmentData = PHAdjustmentData(formatIdentifier: self.formatIdentifier, formatVersion: self.formatVersion, data: NSKeyedArchiver.archivedDataWithRootObject([String:AnyObject]()))
+            output.adjustmentData = PHAdjustmentData(formatIdentifier: IMArtmojiConstants.FormatIdentifier, formatVersion: IMArtmojiConstants.FormatVersion, data: NSKeyedArchiver.archivedDataWithRootObject([String:AnyObject]()))
 
             let outputImage = self.createArtmojiView.drawCompositionImage()
             let renderedJPEGData = UIImageJPEGRepresentation(outputImage, 1.0)

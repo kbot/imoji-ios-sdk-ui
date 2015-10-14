@@ -136,6 +136,7 @@ public class IMCreateArtmojiView: UIView {
     public var photoExtension: Bool? {
         didSet {
             cancelButton.hidden = photoExtension ?? false
+            doneButton.hidden = photoExtension ?? false
         }
     }
 
