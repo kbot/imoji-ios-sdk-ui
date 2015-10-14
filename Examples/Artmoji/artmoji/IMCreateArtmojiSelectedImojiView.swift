@@ -53,13 +53,7 @@ public class IMCreateArtmojiSelectedImojiView: UIView {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        self.session = IMImojiSession()
-        renderingOptions = IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.FullResolution)
-        flipped = false
-
-        super.init(coder: aDecoder)
-
-        setup()
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - View lifecycle
