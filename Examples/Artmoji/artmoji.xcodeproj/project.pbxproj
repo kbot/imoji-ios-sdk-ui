@@ -12,7 +12,21 @@
 		2DBA174C3B2BDFF6D669D50A /* IMColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */; };
 		2DBA18BBB1EC663DAD7364DA /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DBA1D4338E5FEB319434489 /* frosty-dog.png */; };
 		2DBA1B9574F67B608A727854 /* IMCreateArtmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */; };
-		F557B8BA020CE6054A57C91C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83F4DEC2BC42F80CA06E5B8A /* libPods.a */; };
+		32C26D1AEB5A6EAB87EFC1D3 /* libPods-artmoji.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 879C07FF831CBA2CB32E8DB8 /* libPods-artmoji.a */; };
+		91EE0DB687A04E47F844D742 /* libPods-artmoji-photos.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8078CAEAF5A35B0AA9BDE4EA /* libPods-artmoji-photos.a */; };
+		FA1B01601BCCA8D1002B0B2E /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B015F1BCCA8D1002B0B2E /* PhotosUI.framework */; settings = {ASSET_TAGS = (); }; };
+		FA1B01621BCCA8D1002B0B2E /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B01611BCCA8D1002B0B2E /* Photos.framework */; settings = {ASSET_TAGS = (); }; };
+		FA1B01651BCCA8D1002B0B2E /* PhotoEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B01641BCCA8D1002B0B2E /* PhotoEditingViewController.swift */; };
+		FA1B01681BCCA8D1002B0B2E /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA1B01661BCCA8D1002B0B2E /* MainInterface.storyboard */; };
+		FA1B016C1BCCA8D1002B0B2E /* artmoji-photos.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA1B015E1BCCA8D1002B0B2E /* artmoji-photos.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA1B01761BCCAE03002B0B2E /* IMCreateArtmojiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B01781BCCAE12002B0B2E /* IMCreateArtmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B01791BCCAE15002B0B2E /* IMCreateArtmojiSelectedImojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B017A1BCCAE18002B0B2E /* IMColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B017C1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B017D1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */; settings = {ASSET_TAGS = (); }; };
+		FA1B017E1BCCB0D5002B0B2E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA9223101BB4B07A00366238 /* Images.xcassets */; settings = {ASSET_TAGS = (); }; };
+		FA1B017F1BCD9FF2002B0B2E /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DBA1D4338E5FEB319434489 /* frosty-dog.png */; settings = {ASSET_TAGS = (); }; };
 		FA5167C91BBE129800DC9274 /* IMCreateArtmojiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		FA92230A1BB4B07A00366238 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9223091BB4B07A00366238 /* AppDelegate.swift */; };
 		FA92230C1BB4B07A00366238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA92230B1BB4B07A00366238 /* ViewController.swift */; };
@@ -22,15 +36,50 @@
 		FA92232A1BB4B1E700366238 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = FA9223291BB4B1E700366238 /* Podfile */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		FA1B016A1BCCA8D1002B0B2E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA9222FC1BB4B07A00366238 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA1B015D1BCCA8D1002B0B2E;
+			remoteInfo = "artmoji-photos";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA1B01701BCCA8D1002B0B2E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FA1B016C1BCCA8D1002B0B2E /* artmoji-photos.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		164B7CDBC49B04C8935BE1D3 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiView.swift; sourceTree = "<group>"; };
 		2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiSelectedImojiView.swift; sourceTree = "<group>"; };
 		2DBA1D4338E5FEB319434489 /* frosty-dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frosty-dog.png"; sourceTree = "<group>"; };
 		2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMColorSlider.swift; sourceTree = "<group>"; };
 		2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCameraViewController.swift; sourceTree = "<group>"; };
+		626719D8FCBD0762727A593E /* Pods-artmoji-photos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-artmoji-photos.debug.xcconfig"; path = "Pods/Target Support Files/Pods-artmoji-photos/Pods-artmoji-photos.debug.xcconfig"; sourceTree = "<group>"; };
+		8078CAEAF5A35B0AA9BDE4EA /* libPods-artmoji-photos.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-artmoji-photos.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83F4DEC2BC42F80CA06E5B8A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		879C07FF831CBA2CB32E8DB8 /* libPods-artmoji.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-artmoji.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7347F054B320573ABF1DF9A /* Pods-artmoji.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-artmoji.release.xcconfig"; path = "Pods/Target Support Files/Pods-artmoji/Pods-artmoji.release.xcconfig"; sourceTree = "<group>"; };
+		E641346CA2C4C60D1B7E929B /* Pods-artmoji-photos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-artmoji-photos.release.xcconfig"; path = "Pods/Target Support Files/Pods-artmoji-photos/Pods-artmoji-photos.release.xcconfig"; sourceTree = "<group>"; };
+		FA1B015E1BCCA8D1002B0B2E /* artmoji-photos.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "artmoji-photos.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA1B015F1BCCA8D1002B0B2E /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		FA1B01611BCCA8D1002B0B2E /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		FA1B01641BCCA8D1002B0B2E /* PhotoEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditingViewController.swift; sourceTree = "<group>"; };
+		FA1B01671BCCA8D1002B0B2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		FA1B01691BCCA8D1002B0B2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA1B01711BCCA8FD002B0B2E /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/../build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
+		FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMArtmojiConstants.swift; sourceTree = "<group>"; };
 		FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiViewController.swift; sourceTree = "<group>"; };
 		FA7A37B81BB4C1B600A8FC2F /* Artmoji-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Artmoji-Bridging-Header.h"; sourceTree = "<group>"; };
 		FA9223041BB4B07A00366238 /* artmoji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = artmoji.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,14 +90,25 @@
 		FA9223101BB4B07A00366238 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FA9223131BB4B07A00366238 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		FA9223291BB4B1E700366238 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Artmoji/Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		FB1821ECD7F3DB2F40A962A5 /* Pods-artmoji.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-artmoji.debug.xcconfig"; path = "Pods/Target Support Files/Pods-artmoji/Pods-artmoji.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		FA1B015B1BCCA8D1002B0B2E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA1B01601BCCA8D1002B0B2E /* PhotosUI.framework in Frameworks */,
+				FA1B01621BCCA8D1002B0B2E /* Photos.framework in Frameworks */,
+				91EE0DB687A04E47F844D742 /* libPods-artmoji-photos.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA9223011BB4B07A00366238 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F557B8BA020CE6054A57C91C /* libPods.a in Frameworks */,
+				32C26D1AEB5A6EAB87EFC1D3 /* libPods-artmoji.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,7 +118,12 @@
 		60E24340947F5871CBF8ADEB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA1B01711BCCA8FD002B0B2E /* libPods.a */,
 				83F4DEC2BC42F80CA06E5B8A /* libPods.a */,
+				FA1B015F1BCCA8D1002B0B2E /* PhotosUI.framework */,
+				FA1B01611BCCA8D1002B0B2E /* Photos.framework */,
+				879C07FF831CBA2CB32E8DB8 /* libPods-artmoji.a */,
+				8078CAEAF5A35B0AA9BDE4EA /* libPods-artmoji-photos.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -66,10 +131,22 @@
 		B055C0C39C05BBD156F631DF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */,
-				164B7CDBC49B04C8935BE1D3 /* Pods.release.xcconfig */,
+				626719D8FCBD0762727A593E /* Pods-artmoji-photos.debug.xcconfig */,
+				E641346CA2C4C60D1B7E929B /* Pods-artmoji-photos.release.xcconfig */,
+				FB1821ECD7F3DB2F40A962A5 /* Pods-artmoji.debug.xcconfig */,
+				D7347F054B320573ABF1DF9A /* Pods-artmoji.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		FA1B01631BCCA8D1002B0B2E /* artmoji-photos */ = {
+			isa = PBXGroup;
+			children = (
+				FA1B01641BCCA8D1002B0B2E /* PhotoEditingViewController.swift */,
+				FA1B01661BCCA8D1002B0B2E /* MainInterface.storyboard */,
+				FA1B01691BCCA8D1002B0B2E /* Info.plist */,
+			);
+			path = "artmoji-photos";
 			sourceTree = "<group>";
 		};
 		FA9222FB1BB4B07A00366238 = {
@@ -78,6 +155,7 @@
 				FA7A37B81BB4C1B600A8FC2F /* Artmoji-Bridging-Header.h */,
 				FA9223291BB4B1E700366238 /* Podfile */,
 				FA9223061BB4B07A00366238 /* artmoji */,
+				FA1B01631BCCA8D1002B0B2E /* artmoji-photos */,
 				FA9223051BB4B07A00366238 /* Products */,
 				B055C0C39C05BBD156F631DF /* Pods */,
 				60E24340947F5871CBF8ADEB /* Frameworks */,
@@ -89,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				FA9223041BB4B07A00366238 /* artmoji.app */,
+				FA1B015E1BCCA8D1002B0B2E /* artmoji-photos.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,6 +182,7 @@
 				FA9223121BB4B07A00366238 /* LaunchScreen.xib */,
 				FA9223071BB4B07A00366238 /* Supporting Files */,
 				2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */,
+				FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */,
 				FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */,
 				2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */,
 				2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */,
@@ -122,6 +202,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		FA1B015D1BCCA8D1002B0B2E /* artmoji-photos */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA1B016F1BCCA8D1002B0B2E /* Build configuration list for PBXNativeTarget "artmoji-photos" */;
+			buildPhases = (
+				80A29B87CFA913DD73930CF4 /* Check Pods Manifest.lock */,
+				FA1B015A1BCCA8D1002B0B2E /* Sources */,
+				FA1B015B1BCCA8D1002B0B2E /* Frameworks */,
+				FA1B015C1BCCA8D1002B0B2E /* Resources */,
+				846F77240948B13521A2D739 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "artmoji-photos";
+			productName = "artmoji-photos";
+			productReference = FA1B015E1BCCA8D1002B0B2E /* artmoji-photos.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		FA9223031BB4B07A00366238 /* artmoji */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA9223231BB4B07A00366238 /* Build configuration list for PBXNativeTarget "artmoji" */;
@@ -131,10 +230,12 @@
 				FA9223011BB4B07A00366238 /* Frameworks */,
 				FA9223021BB4B07A00366238 /* Resources */,
 				63AF4392E6AC5A6A9E55EAC6 /* Copy Pods Resources */,
+				FA1B01701BCCA8D1002B0B2E /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FA1B016B1BCCA8D1002B0B2E /* PBXTargetDependency */,
 			);
 			name = artmoji;
 			productName = artmoji;
@@ -152,6 +253,9 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Imoji;
 				TargetAttributes = {
+					FA1B015D1BCCA8D1002B0B2E = {
+						CreatedOnToolsVersion = 7.0.1;
+					};
 					FA9223031BB4B07A00366238 = {
 						CreatedOnToolsVersion = 6.4;
 					};
@@ -171,11 +275,22 @@
 			projectRoot = "";
 			targets = (
 				FA9223031BB4B07A00366238 /* artmoji */,
+				FA1B015D1BCCA8D1002B0B2E /* artmoji-photos */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		FA1B015C1BCCA8D1002B0B2E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA1B01681BCCA8D1002B0B2E /* MainInterface.storyboard in Resources */,
+				FA1B017F1BCD9FF2002B0B2E /* frosty-dog.png in Resources */,
+				FA1B017E1BCCB0D5002B0B2E /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA9223021BB4B07A00366238 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -218,12 +333,55 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-artmoji/Pods-artmoji-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		80A29B87CFA913DD73930CF4 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		846F77240948B13521A2D739 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-artmoji-photos/Pods-artmoji-photos-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		FA1B015A1BCCA8D1002B0B2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA1B017D1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */,
+				FA1B017A1BCCAE18002B0B2E /* IMColorSlider.swift in Sources */,
+				FA1B01791BCCAE15002B0B2E /* IMCreateArtmojiSelectedImojiView.swift in Sources */,
+				FA1B01651BCCA8D1002B0B2E /* PhotoEditingViewController.swift in Sources */,
+				FA1B01761BCCAE03002B0B2E /* IMCreateArtmojiViewController.swift in Sources */,
+				FA1B01781BCCAE12002B0B2E /* IMCreateArtmojiView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA9223001BB4B07A00366238 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -232,6 +390,7 @@
 				FA5167C91BBE129800DC9274 /* IMCreateArtmojiViewController.swift in Sources */,
 				FA92230A1BB4B07A00366238 /* AppDelegate.swift in Sources */,
 				2DBA102E68C70FE6B7869573 /* IMCameraViewController.swift in Sources */,
+				FA1B017C1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */,
 				2DBA1B9574F67B608A727854 /* IMCreateArtmojiView.swift in Sources */,
 				2DBA147E7800A7B633E690CB /* IMCreateArtmojiSelectedImojiView.swift in Sources */,
 				2DBA174C3B2BDFF6D669D50A /* IMColorSlider.swift in Sources */,
@@ -240,7 +399,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		FA1B016B1BCCA8D1002B0B2E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA1B015D1BCCA8D1002B0B2E /* artmoji-photos */;
+			targetProxy = FA1B016A1BCCA8D1002B0B2E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		FA1B01661BCCA8D1002B0B2E /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA1B01671BCCA8D1002B0B2E /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 		FA92230D1BB4B07A00366238 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -260,6 +435,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		FA1B016D1BCCA8D1002B0B2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 626719D8FCBD0762727A593E /* Pods-artmoji-photos.debug.xcconfig */;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = "artmoji-photos/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.artmoji.artmoji-photos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		FA1B016E1BCCA8D1002B0B2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E641346CA2C4C60D1B7E929B /* Pods-artmoji-photos.release.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "artmoji-photos/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.artmoji.artmoji-photos";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+			};
+			name = Release;
+		};
 		FA9223211BB4B07A00366238 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -349,9 +562,10 @@
 		};
 		FA9223241BB4B07A00366238 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB5A51803D885D2D9D404A45 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = FB1821ECD7F3DB2F40A962A5 /* Pods-artmoji.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = artmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -367,9 +581,10 @@
 		};
 		FA9223251BB4B07A00366238 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 164B7CDBC49B04C8935BE1D3 /* Pods.release.xcconfig */;
+			baseConfigurationReference = D7347F054B320573ABF1DF9A /* Pods-artmoji.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = artmoji/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -386,6 +601,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		FA1B016F1BCCA8D1002B0B2E /* Build configuration list for PBXNativeTarget "artmoji-photos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA1B016D1BCCA8D1002B0B2E /* Debug */,
+				FA1B016E1BCCA8D1002B0B2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FA9222FF1BB4B07A00366238 /* Build configuration list for PBXProject "artmoji" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -132,6 +132,12 @@ public class IMCreateArtmojiView: UIView {
     private var imojiCollectionButton: UIButton!
     private var deleteImojiButton: UIButton!
     private var drawButton: UIButton!
+    
+    public var photoExtension: Bool? {
+        didSet {
+            cancelButton.hidden = photoExtension ?? false
+        }
+    }
 
     // Delegate object
     public var delegate: IMCreateArtmojiViewDelegate?
