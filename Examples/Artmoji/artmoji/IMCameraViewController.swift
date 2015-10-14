@@ -53,9 +53,7 @@ public class IMCameraViewController: UIViewController {
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        self.session = IMImojiSession()
-        self.imageBundle = IMResourceBundleUtil.assetsBundle()
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - View lifecycle
@@ -72,20 +70,21 @@ public class IMCameraViewController: UIViewController {
         navigationTitle.userInteractionEnabled = false
 
         // Set up toolbar buttons
+        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.ButtonItemWidthHeight, IMArtmojiConstants.ButtonItemWidthHeight)
         captureButton = UIButton(type: UIButtonType.Custom)
         captureButton.setImage(UIImage(named: "Artmoji-Camera-Capture"), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        captureButton.frame = CGRectMake(0, 0, 40.0, 40.0)
+        captureButton.frame = buttonItemFrame
 
         flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "Artmoji-Camera-Flip"), forState: UIControlState.Normal)
         flipButton.addTarget(self, action: "flipButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        flipButton.frame = CGRectMake(0, 0, 40.0, 40.0)
+        flipButton.frame = buttonItemFrame
 
         photoLibraryButton = UIButton(type: UIButtonType.Custom)
         photoLibraryButton.setImage(UIImage(named: "Artmoji-Photo-Library"), forState: UIControlState.Normal)
         photoLibraryButton.addTarget(self, action: "photoLibraryButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        photoLibraryButton.frame = CGRectMake(0, 0, 40.0, 40.0)
+        photoLibraryButton.frame = buttonItemFrame
 
         // Set up top nav bar
         navigationBar = UIToolbar()
@@ -136,14 +135,14 @@ public class IMCameraViewController: UIViewController {
             make.top.equalTo()(self.view)
             make.left.equalTo()(self.view)
             make.right.equalTo()(self.view)
-            make.height.equalTo()(50.0)
+            make.height.equalTo()(IMArtmojiConstants.NavigationBarHeight)
         }
 
         bottomBar.mas_makeConstraints { make in
             make.bottom.equalTo()(self.view)
             make.left.equalTo()(self.view)
             make.right.equalTo()(self.view)
-            make.height.equalTo()(90.0)
+            make.height.equalTo()(IMArtmojiConstants.BottomBarHeight)
         }
 
         // Start PBJVision's preview

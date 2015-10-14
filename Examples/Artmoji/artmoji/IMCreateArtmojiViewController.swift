@@ -30,13 +30,18 @@ public class IMCreateArtmojiViewController: UIViewController {
     // Required init variables
     private var session: IMImojiSession!
     public var imageBundle: NSBundle
-    public var sourceImage: UIImage!
+    public var sourceImage: UIImage?
 
     // Artmoji view
-    private var createArtmojiView: IMCreateArtmojiView!
+    private(set) public var createArtmojiView: IMCreateArtmojiView!
+
+    // Indicates if artmoji is launched from photos application
+    public var photoExtension: Bool
 
     // MARK: - Object lifecycle
-    public init(sourceImage: UIImage, session: IMImojiSession, imageBundle: NSBundle) {
+    public init(sourceImage: UIImage?, session: IMImojiSession, imageBundle: NSBundle) {
+        photoExtension = sourceImage == nil ? true : false
+        
         self.sourceImage = sourceImage
         self.session = session
         self.imageBundle = imageBundle
@@ -45,23 +50,25 @@ public class IMCreateArtmojiViewController: UIViewController {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        self.sourceImage = UIImage(named: "frosty-dog")
-        self.session = IMImojiSession()
-        self.imageBundle = IMResourceBundleUtil.assetsBundle()
-
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - View lifecycle
     override public func loadView() {
-        super.loadView()
-        createArtmojiView = IMCreateArtmojiView(session: self.session, sourceImage: self.sourceImage, imageBundle: self.imageBundle)
-        createArtmojiView.delegate = self
-
-        view.addSubview(createArtmojiView)
-
-        createArtmojiView.mas_makeConstraints { make in
-            make.edges.equalTo()(self.view)
+        if let _ = self.sourceImage {
+            super.loadView()
+            createArtmojiView = IMCreateArtmojiView(session: self.session, sourceImage: self.sourceImage!, imageBundle: self.imageBundle)
+            createArtmojiView.delegate = self
+            createArtmojiView.photoExtension = photoExtension
+            
+            view.addSubview(createArtmojiView)
+            
+            createArtmojiView.mas_makeConstraints { make in
+                make.top.equalTo()(self.mas_topLayoutGuideBottom)
+                make.left.equalTo()(self.view)
+                make.right.equalTo()(self.view)
+                make.bottom.equalTo()(self.mas_bottomLayoutGuideTop)
+            }
         }
     }
     
@@ -115,7 +122,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
 
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
-        collectionViewController.topToolbar.backgroundColor = UIColor.redColor()
+        collectionViewController.topToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
         collectionViewController.collectionView.collectionViewDelegate = self
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
         collectionViewController.backButton.addTarget(self, action: "collectionViewControllerBackButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
@@ -123,6 +130,16 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         collectionViewController.collectionViewControllerDelegate = self
 
         presentViewController(collectionViewController, animated: true) { finished in
+            if self.photoExtension {
+                collectionViewController.topToolbar.mas_makeConstraints { make in
+                    make.top.equalTo()(collectionViewController.view).offset()(50)
+                }
+                
+                collectionViewController.collectionView.mas_makeConstraints { make in
+                    make.top.equalTo()(collectionViewController.view).offset()(50)
+                }
+            }
+            
             collectionViewController.collectionView.loadFeaturedImojis()
         }
     }

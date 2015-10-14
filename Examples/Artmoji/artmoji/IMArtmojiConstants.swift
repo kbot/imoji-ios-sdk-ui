@@ -23,17 +23,11 @@
 //  IN THE SOFTWARE.
 //
 
-#ifndef artmoji_Artmoji_Bridging_Header_h
-#define artmoji_Artmoji_Bridging_Header_h
-
-#import "ImojiSDK.h"
-#import "IMImojiSession.h"
-#import "IMCollectionViewController.h"
-#import "IMCreateImojiViewController.h"
-#import "IMCreateImojiUITheme.h"
-#import "IMToolbar.h"
-#import "IMResourceBundleUtil.h"
-#import "Masonry/Masonry.h"
-#import "PBJVision/PBJVision.h"
-
-#endif
+struct IMArtmojiConstants {
+    static let NavigationBarHeight: CGFloat = 50.0
+    static let BottomBarHeight: CGFloat = 90.0
+    static let ButtonItemWidthHeight: CGFloat = 40.0
+    static let SliderWidth: CGFloat = 165.0
+    static let FormatIdentifier = "com.sopressata.artmoji.artmoji-photos"
+    static let FormatVersion = "1.0"
+}
