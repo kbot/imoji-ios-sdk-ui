@@ -45,8 +45,6 @@
 @property(nonatomic, readonly) UIBarButtonItem *finishTagButton;
 @property(nonatomic, readonly) UIBarButtonItem *navigationTitle;
 
-@property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
-
 @property(nonatomic, readonly) UIView *creationView;
 @property(nonatomic, readonly) UIView *tagView;
 

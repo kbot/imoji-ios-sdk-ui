@@ -26,7 +26,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol IMCreateImojiViewControllerDelegate;
-@class IMImojiObject, IMImojiSession;
+@class IMImojiObject, IMImojiSession, IMCreateImojiView;
 
 /**
 * A simple view controller to display an Imoji sticker creator along with a screen to add tags.
@@ -54,6 +54,11 @@
 * @abstract A delegate to receive events from the editor view controller
 */
 @property(nonatomic, strong, nullable) id <IMCreateImojiViewControllerDelegate> createDelegate;
+
+/**
+* @abstract The editor view attached to the view controller
+*/
+@property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
 
 /**
 * @abstract The current Imoji Session
