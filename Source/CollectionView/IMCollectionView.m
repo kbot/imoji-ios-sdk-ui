@@ -38,6 +38,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *content;
+@property(nonatomic, strong) NSMutableArray *pendingCollectionViewUpdates;
 @property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property(nonatomic, strong) NSObject *loadingIndicatorObject;
 @property(nonatomic, strong) NSOperation *imojiOperation;
@@ -71,6 +72,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 
         self.content = [NSMutableArray array];
         self.images = [NSMutableArray array];
+        self.pendingCollectionViewUpdates = [NSMutableArray array];
         self.renderCount = 0;
 
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -599,6 +601,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.renderCount = 0;
         [self.images removeAllObjects];
         [self.content removeAllObjects];
+        [self.pendingCollectionViewUpdates removeAllObjects];
+        
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         // loading indicator exists already for results with an offset
@@ -624,6 +628,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     if (offset == 0) {
         [self.content removeAllObjects];
         [self.images removeAllObjects];
+        [self.pendingCollectionViewUpdates removeAllObjects];
+        
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         if (resultCount.unsignedIntegerValue == 0) {
@@ -684,16 +690,28 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          }
 
                          if (!operation.isCancelled) {
-
-                             [self performBatchUpdates:^{
-                                         self.images[index + offset] = image ? image : [NSNull null];
-                                         [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:(index + offset) inSection:0]]];
-                                     }
-                                            completion:^(BOOL finished) {
-                                            }
-                             ];
+                             self.images[index + offset] = image ? image : [NSNull null];
+                             BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
+                             [self.pendingCollectionViewUpdates addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
+                             
+                             //
+                             if (doReload) {
+                                 [self reloadPendingUpdates];
+                             }
                          }
                      }];
+}
+
+- (void)reloadPendingUpdates {
+    if (self.pendingCollectionViewUpdates.count > 0) {
+        __block NSArray *updates = [NSArray arrayWithArray:self.pendingCollectionViewUpdates];
+        [self performBatchUpdates:^{
+            [self reloadItemsAtIndexPaths:updates];
+        } completion:^(BOOL finished) {
+            [self.pendingCollectionViewUpdates removeObjectsInArray:updates];
+            [self reloadPendingUpdates];
+        }];
+    }
 }
 
 - (void)userTappedSplashView:(UITapGestureRecognizer *)sender {

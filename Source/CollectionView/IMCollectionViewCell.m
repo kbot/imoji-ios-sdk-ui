@@ -81,8 +81,11 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 }
 
 - (void)performLoadedAnimation {
+    // animate immediately in iOS 7,
+    BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
+
     self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
-    dispatch_async(dispatch_get_main_queue(), ^{
+    void (^animationBlock)() = ^ {
         [UIView animateWithDuration:.5f
                               delay:0
              usingSpringWithDamping:1.0f
@@ -92,7 +95,13 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
                              self.imojiView.transform = CGAffineTransformIdentity;
                          }
                          completion:nil];
-    });
+    };
+    
+    if (animateImmediately) {
+        animationBlock();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), animationBlock);
+    }
 }
 
 - (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {
