@@ -113,7 +113,7 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
 - (void)loadSplashCellWithText:(NSAttributedString *)text
                      imageName:(NSString *)imageName
                 andImageBundle:(NSBundle *)imageBundle {
-    self.splashGraphic.image = [UIImage imageNamed:imageName inBundle:imageBundle compatibleWithTraitCollection:nil];
+    self.splashGraphic.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", imageBundle.bundlePath, imageName]];
     self.splashText.attributedText = text;
 
     [self.splashGraphic mas_remakeConstraints:^(MASConstraintMaker *make) {

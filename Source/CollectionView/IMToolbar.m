@@ -48,26 +48,26 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
     switch (buttonType) {
         case IMToolbarButtonSearch:
-            image = [UIImage imageNamed:@"toolbar_search" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_search.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonRecents:
-            image = [UIImage imageNamed:@"toolbar_recents" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_recents_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_recents.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_recents_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonReactions:
-            image = [UIImage imageNamed:@"toolbar_reactions" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_reactions_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_reactions.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_reactions_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonTrending:
-            image = [UIImage imageNamed:@"toolbar_trending" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_trending_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_trending.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_trending_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonCollection:
-            image = [UIImage imageNamed:@"toolbar_collection" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
-            activeImage = [UIImage imageNamed:@"toolbar_collection_on" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonBack:
-            image = [UIImage imageNamed:@"toolbar_back" inBundle:self.imageBundle compatibleWithTraitCollection:nil];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
             break;
         default:
             return nil;

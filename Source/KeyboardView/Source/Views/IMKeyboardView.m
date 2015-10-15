@@ -92,7 +92,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 
     // close button
     self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.closeButton setImage:[UIImage imageNamed:@"keyboard_search_clear" inBundle:self.imageBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.closeButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_search_clear.png", self.imageBundle.bundlePath]] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeCategory) forControlEvents:UIControlEventTouchUpInside];
     self.closeButton.hidden = YES;
     [self addSubview:self.closeButton];
@@ -103,9 +103,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     }];
 
     // heart
-    self.heartImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_favorited"
-                                                                        inBundle:self.imageBundle
-                                                   compatibleWithTraitCollection:nil]];
+    self.heartImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_favorited.png", self.imageBundle.bundlePath]]];
     [self addSubview:self.heartImageView];
     self.heartImageView.hidden = YES;
     [self.heartImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -115,9 +113,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     }];
 
     // copied
-    self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"keyboard_copied"
-                                                                         inBundle:self.imageBundle
-                                                    compatibleWithTraitCollection:nil]];
+    self.copiedImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_copied.png", self.imageBundle.bundlePath]]];
     [self addSubview:self.copiedImageView];
     self.copiedImageView.hidden = YES;
     [self.copiedImageView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -232,60 +228,37 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     }];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardNextKeyboard
-                                             image:[UIImage imageNamed:@"keyboard_globe"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_globe.png", self.imageBundle.bundlePath]]
                                        activeImage:nil];
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonSearch
-                                             image:[UIImage imageNamed:@"keyboard_search"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:[UIImage imageNamed:@"keyboard_search_active"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_search.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_search_active.png", self.imageBundle.bundlePath]]
     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonRecents
-                                             image:[UIImage imageNamed:@"keyboard_recents"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:[UIImage imageNamed:@"keyboard_recents_active"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_recents.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_recents_active.png", self.imageBundle.bundlePath]]
     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonReactions
-                                             image:[UIImage imageNamed:@"keyboard_reactions"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:[UIImage imageNamed:@"keyboard_reactions_active"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_reactions.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_reactions_active.png", self.imageBundle.bundlePath]]
     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonTrending
-                                             image:[UIImage imageNamed:@"keyboard_trending"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:[UIImage imageNamed:@"keyboard_trending_active"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-    ];
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending_active.png", self.imageBundle.bundlePath]]
+     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonCollection
-                                             image:[UIImage imageNamed:@"keyboard_collection"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:[UIImage imageNamed:@"keyboard_collection_active"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_collection.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_collection_active.png", self.imageBundle.bundlePath]]
     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardDelete
-                                             image:[UIImage imageNamed:@"keyboard_delete"
-                                                              inBundle:self.imageBundle
-                                         compatibleWithTraitCollection:nil]
-                                       activeImage:nil];
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_delete.png", self.imageBundle.bundlePath]]
+                                       activeImage:nil
+     ];
 
     if (!self.hasFullAccess) {
         for (UIBarButtonItem *item in self.keyboardToolbar.items) {
