@@ -694,7 +694,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
                              [self.pendingCollectionViewUpdates addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
                              
-                             //
+                             // if the pending collection view list was empty, go ahead and call the reload method, otherwise, allow
+                             // the method to perform the reload after the last batch update completes
                              if (doReload) {
                                  [self reloadPendingUpdates];
                              }
@@ -709,6 +710,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             [self reloadItemsAtIndexPaths:updates];
         } completion:^(BOOL finished) {
             [self.pendingCollectionViewUpdates removeObjectsInArray:updates];
+            // recurse in case there are new items to reload
             [self reloadPendingUpdates];
         }];
     }
