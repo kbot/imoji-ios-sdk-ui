@@ -7,10 +7,14 @@
 #import "MessageViewCell.h"
 #import "Message.h"
 #import "EmptyMessageViewCell.h"
+#import "AppDelegate.h"
+#import "IMImojiSession.h"
+#import "IMImojiObject.h"
 
 @interface MessageThreadView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property(nonatomic, strong) NSMutableArray *data;
+@property(nonatomic, strong) IMImojiSession *imojiSession;
 @end
 
 @implementation MessageThreadView {
@@ -23,6 +27,7 @@
         self.delegate = self;
         self.dataSource = self;
         self.data = [NSMutableArray new];
+        self.imojiSession = ((AppDelegate *)[UIApplication sharedApplication].delegate).session;
 
         self.backgroundColor = [UIColor whiteColor];
         [self registerClass:[MessageViewCell class] forCellWithReuseIdentifier:MessageViewCellReuseId];
@@ -104,5 +109,47 @@
                  atScrollPosition:UICollectionViewScrollPositionNone
                          animated:YES];
 }
+
+
+#pragma mark Sending Messages (Fake)
+
+- (void)sendMessageWithText:(nonnull NSString *)text {
+    [self appendMessage:[Message messageWithText:text sender:YES]];
+    [self sendFakeResponse];
+}
+
+- (void)sendMessageWithImoji:(nonnull IMImojiObject *)imoji {
+    [self appendMessage:[Message messageWithImoji:imoji sender:YES]];
+    [self sendFakeResponse];
+}
+
+- (void)sendFakeResponse {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 500), dispatch_get_main_queue(), ^{
+        if (((NSUInteger) [NSDate date].timeIntervalSince1970) % 2 == 0) {
+            [self.imojiSession getFeaturedImojisWithNumberOfResults:@1
+                                          resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+
+                                          }
+                                              imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                                  [self appendMessage:[Message messageWithImoji:imoji sender:NO]];
+                                              }];
+
+        } else {
+            NSArray<NSString *> *fakeResponse = @[
+                    @"wow",
+                    @"amazing!",
+                    @"lol",
+                    @"omg",
+                    @"I think so",
+                    @"no way!"
+            ];
+            NSString *response = fakeResponse[((NSUInteger) [NSDate date].timeIntervalSince1970) % fakeResponse.count];
+
+            [self appendMessage:[Message messageWithText:response
+                                                  sender:NO]];
+        }
+    });
+}
+
 
 @end

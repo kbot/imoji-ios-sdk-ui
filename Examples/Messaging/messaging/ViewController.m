@@ -10,11 +10,9 @@
 #import "MessageThreadView.h"
 #import "ImojiSuggestionView.h"
 #import "IMCollectionView.h"
-#import "Message.h"
 #import "View+MASAdditions.h"
 #import "ViewController+MASAdditions.h"
 #import "IMAttributeStringUtil.h"
-#import "AppDelegate.h"
 
 @interface ViewController () <UITextFieldDelegate, IMCollectionViewDelegate>
 
@@ -23,7 +21,6 @@
 @property(nonatomic, strong) UIView *inputFieldContainer;
 @property(nonatomic, strong) ImojiSuggestionView *imojiSuggestionView;
 
-@property(nonatomic, strong) IMImojiSession *imojiSession;
 @end
 
 @implementation ViewController
@@ -46,8 +43,6 @@
                                              selector:@selector(textFieldDidChange:)
                                                  name:UITextFieldTextDidChangeNotification
                                                object:nil];
-
-    self.imojiSession = ((AppDelegate *) [UIApplication sharedApplication].delegate).session;
 
     self.messageThreadView = [MessageThreadView new];
     self.inputField = [UITextField new];
@@ -127,7 +122,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField.text.length > 0) {
-        [self sendMessageWithText:textField.text];
+        [self.messageThreadView sendMessageWithText:textField.text];
     }
 
     textField.text = @"";
@@ -201,7 +196,7 @@
 #pragma mark Imoji Collection View Delegate
 
 - (void)userDidSelectImoji:(nonnull IMImojiObject *)imoji fromCollectionView:(nonnull IMCollectionView *)collectionView {
-    [self sendMessageWithImoji:imoji];
+    [self.messageThreadView sendMessageWithImoji:imoji];
 }
 
 #pragma mark Keyboard Handling
@@ -305,46 +300,6 @@
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [self.messageThreadView.collectionViewLayout invalidateLayout];
-}
-
-#pragma mark Sending Messages (Fake)
-
-- (void)sendMessageWithText:(nonnull NSString *)text {
-    [self.messageThreadView appendMessage:[Message messageWithText:text sender:YES]];
-    [self sendFakeResponse];
-}
-
-- (void)sendMessageWithImoji:(nonnull IMImojiObject *)imoji {
-    [self.messageThreadView appendMessage:[Message messageWithImoji:imoji sender:YES]];
-    [self sendFakeResponse];
-}
-
-- (void)sendFakeResponse {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 500), dispatch_get_main_queue(), ^{
-        if (((NSUInteger) [NSDate date].timeIntervalSince1970) % 2 == 0) {
-            [self.imojiSession getFeaturedImojisWithNumberOfResults:@1
-                                          resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
-
-                                          }
-                                              imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                                                  [self.messageThreadView appendMessage:[Message messageWithImoji:imoji sender:NO]];
-                                              }];
-
-        } else {
-            NSArray<NSString *> *fakeResponse = @[
-                    @"wow",
-                    @"amazing!",
-                    @"lol",
-                    @"omg",
-                    @"I think so",
-                    @"no way!"
-            ];
-            NSString *response = fakeResponse[((NSUInteger) [NSDate date].timeIntervalSince1970) % fakeResponse.count];
-
-            [self.messageThreadView appendMessage:[Message messageWithText:response
-                                                                    sender:NO]];
-        }
-    });
 }
 
 @end

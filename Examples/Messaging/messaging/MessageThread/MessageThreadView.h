@@ -4,12 +4,18 @@
 //
 
 @class Message;
+@class IMImojiSession;
+@class IMImojiObject;
 
 @interface MessageThreadView : UICollectionView
 
 - (void)appendMessage:(nonnull Message *)message;
 
 - (void)scrollToBottom;
+
+- (void)sendMessageWithText:(nonnull NSString *)text;
+
+- (void)sendMessageWithImoji:(nonnull IMImojiObject *)imoji;
 
 @property(nonatomic, readonly) BOOL empty;
 
