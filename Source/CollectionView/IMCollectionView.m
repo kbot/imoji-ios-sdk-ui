@@ -705,11 +705,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)reloadPendingUpdates {
     if (self.pendingCollectionViewUpdates.count > 0) {
-        __block NSArray *updates = [NSArray arrayWithArray:self.pendingCollectionViewUpdates];
+        __block NSOrderedSet *updates = [NSOrderedSet orderedSetWithArray:self.pendingCollectionViewUpdates];
         [self performBatchUpdates:^{
-            [self reloadItemsAtIndexPaths:updates];
+            [self reloadItemsAtIndexPaths:updates.array];
         } completion:^(BOOL finished) {
-            [self.pendingCollectionViewUpdates removeObjectsInArray:updates];
+            [self.pendingCollectionViewUpdates removeObjectsInArray:updates.array];
             // recurse in case there are new items to reload
             [self reloadPendingUpdates];
         }];
