@@ -58,7 +58,7 @@
 /**
 * @abstract The editor view attached to the view controller
 */
-@property(nonatomic, readonly) IMCreateImojiView *imojiEditor;
+@property(nonatomic, readonly, nonnull) IMCreateImojiView *imojiEditor;
 
 /**
 * @abstract The current Imoji Session
