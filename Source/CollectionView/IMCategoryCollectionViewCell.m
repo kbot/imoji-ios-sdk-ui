@@ -42,12 +42,6 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
 
         self.imojiView = [UIImageView new];
 
-        [self addSubview:self.imojiView];
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
-        }];
-
         self.titleView = [UILabel new];
         self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:14.0f];
         self.titleView.textColor = [UIColor colorWithWhite:.4f alpha:1.0f];
@@ -55,7 +49,14 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
         self.titleView.textAlignment = NSTextAlignmentCenter;
         self.titleView.lineBreakMode = NSLineBreakByWordWrapping;
 
+        [self addSubview:self.imojiView];
         [self addSubview:self.titleView];
+
+        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self);
+            make.centerX.equalTo(self);
+            make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
+        }];
 
         [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.equalTo(self).multipliedBy(.75f);
