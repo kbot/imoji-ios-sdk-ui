@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.16
+
+* Addresses build issues with Swift projects and ImojiGraphics when loading ImojiSDKUI as a framework
+
 ### Version 0.1.15
 
 * iOS 7 Fixes
