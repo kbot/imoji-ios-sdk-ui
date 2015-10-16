@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 // Define a vector type
 #define vectorDefine(vectorType, elementType) \

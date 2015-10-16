@@ -126,8 +126,10 @@ extern "C" {
         IGEditorSubstate substate;
 
         // Viewport state
-        IGfloat x, y, scale;
-        IGfloat startX, startY, startScale;
+        IGFPoint scroll, scrollStart;
+        IGfloat zoom, zoomStart;
+        IGFPoint * gravity;
+
         IGTouches * touches;
 
         IGfloat strokeWidth;
@@ -196,6 +198,13 @@ extern "C" {
     
     // Instantly center the viewport on the given image point. Call EditorDisplay() after this.
     IG_FUNCTION(void, EditorScrollTo, IGEditor * igEditor, IGfloat x, IGfloat y);
+    
+    // Instantly scrolls the viewport so the sides of the image line up with the sides of the viewport
+    // Examples:
+    // (-1, -1) scrolls to the top left
+    // (0, 1) centers the image horizontally and scroll to the bottom
+    // (1, 1) scrolls to the bottom right
+    IG_FUNCTION(void, EditorGravitateTo, IGEditor * igEditor, IGfloat x, IGfloat y);
     
     // Instantly zoom viewport to 'zoom' times, centered around the scroll point. Call EditorDisplay() after this.
     IG_FUNCTION(void, EditorZoomTo, IGEditor * igEditor, IGfloat zoom);
