@@ -42,6 +42,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 @property(nonatomic, strong) UIButton *closeButton;
 @property(nonatomic, strong) UIImageView *heartImageView;
 @property(nonatomic, strong) UIImageView *copiedImageView;
+@property(nonatomic) BOOL closeButtonIsHidden;
 
 // progress bar
 @property(nonatomic, strong) UIProgressView *progressView;
@@ -58,6 +59,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         self.session = session;
         self.imageBundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiKeyboardAssets" ofType:@"bundle"]];
         self.fontFamily = IMKeyboardViewDefaultFontFamily;
+        self.closeButtonIsHidden = NO;
 
         [self setup];
     }
@@ -308,6 +310,8 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 
 - (void)updateTitleWithText:(NSString *)text hideCloseButton:(BOOL)isHidden {
     self.closeButton.hidden = isHidden;
+    self.closeButtonIsHidden = isHidden;
+
     self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:[text uppercaseString]
                                                                     withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                        color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
@@ -324,7 +328,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     self.copiedImageView.hidden = YES;
     self.heartImageView.hidden = YES;
-    self.closeButton.hidden = NO;
+    self.closeButton.hidden = self.closeButtonIsHidden;
 }
 
 - (void)showDownloadingImojiIndicator {
