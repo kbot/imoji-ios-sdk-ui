@@ -36,6 +36,4 @@ typedef NS_ENUM(NSUInteger, IMPopInAnimatedTransitionDirection) {
 
 @property(nonatomic) IMPopInAnimatedTransitionDirection transitionDirection;
 
-@property(nonatomic) BOOL presenting;
-
 @end

@@ -111,7 +111,7 @@
     }];
 
     [self.tipImage mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.left.equalTo(self.tipsView);
+        make.left.width.left.equalTo(self.tipsView);
         make.top.equalTo(self.tipTitle.mas_bottom);
         make.bottom.equalTo(self.tipDescription.mas_top);
     }];
@@ -231,8 +231,10 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
 
-    self.tipDescription.font = self.tipTitle.font =
-            [IMAttributeStringUtil defaultFontWithSize:self.tipDescription.frame.size.height * .2f];
+    if (self.tipDescription.frame.size.height > 0) {
+        self.tipDescription.font = self.tipTitle.font =
+                [IMAttributeStringUtil defaultFontWithSize:self.tipDescription.frame.size.height * .2f];
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {

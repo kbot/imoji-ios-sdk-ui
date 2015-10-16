@@ -45,7 +45,7 @@
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
 
-    if (self.presenting) {
+    if (toViewController.isBeingPresented) {
         UIView *fromView = [fromViewController.view resizableSnapshotViewFromRect:fromViewController.view.frame
                                                                afterScreenUpdates:NO
                                                                     withCapInsets:UIEdgeInsetsZero];
@@ -152,7 +152,10 @@
 
         [UIView animateWithDuration:[self transitionDuration:transitionContext]
                          animations:^{
-                             blurredBackgroundView.layer.opacity = 0.0f;
+                             if (NSClassFromString(@"UIVisualEffectView")) {
+                                 blurredBackgroundView.layer.opacity = 0.0f;
+                             }
+
                              fromView.frame = endFrame;
                          }
                          completion:^(BOOL finished) {

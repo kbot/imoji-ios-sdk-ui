@@ -67,9 +67,9 @@
         _tagScreenBackButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_back"];
         _tagScreenFinishButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tag_done"];
 
-        _tagScreenHelpImageStep1 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_1"];
-        _tagScreenHelpImageStep2 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_2"];
-        _tagScreenHelpImageStep3 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_3"];
+        _tagScreenHelpImageStep1 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_1@3x"];
+        _tagScreenHelpImageStep2 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_2@3x"];
+        _tagScreenHelpImageStep3 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_3@3x"];
         _tagScreenHelpNextButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_proceed"];
         _tagScreenHelpDoneButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_done"];
 

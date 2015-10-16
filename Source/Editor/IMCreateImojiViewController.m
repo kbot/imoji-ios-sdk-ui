@@ -198,12 +198,12 @@
     }];
 
     [self.navigationToolbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.and.top.equalTo(view);
+        make.left.width.and.top.equalTo(view);
         make.height.equalTo(@50);
     }];
 
     [self.traceToolbar mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.and.bottom.equalTo(view);
+        make.left.width.and.bottom.equalTo(view);
         make.height.equalTo(@90);
     }];
 
@@ -388,9 +388,7 @@
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
                                                                    presentingController:(UIViewController *)presenting
                                                                        sourceController:(UIViewController *)source {
-    IMPopInAnimatedTransition *transition = [IMPopInAnimatedTransition new];
-    transition.presenting = YES;
-    return transition;
+    return [IMPopInAnimatedTransition new];
 }
 
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
