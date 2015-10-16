@@ -31,8 +31,6 @@
 #import "IMToolbar.h"
 #import "IMKeyboardView.h"
 
-NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyboard";
-
 @interface IMKeyboardViewController () <IMQwertyViewControllerDelegate, IMImojiSessionDelegate, IMKeyboardViewDelegate,
         IMKeyboardCollectionViewDelegate, IMToolbarDelegate>
 
@@ -51,33 +49,48 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 @end
 
 @implementation IMKeyboardViewController {
-    NSAttributedString *_previousTitle;
 }
 
-- (id)initWithImojiSession:(IMImojiSession *)session {
-    self = [super initWithNibName:nil bundle:nil];
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
     if (self) {
-        // Perform custom initialization work here
-        self.portraitHeight = IMKeyboardViewPortraitHeight;
-        self.landscapeHeight = IMKeyboardViewLandscapeHeight;
-        self.isViewingImojiCategory = NO;
-        self.currentToolbarButtonSelected = IMToolbarButtonReactions;
-
-        _appGroup = IMKeyboardViewControllerDefaultAppGroup;
-
-        _session = session;
-        _session.delegate = self;
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(deviceOrientationDidChange)
-                                                     name:UIDeviceOrientationDidChangeNotification
-                                                   object:nil];
+        [self setupKeyboardWithSession:[IMImojiSession imojiSession]];
     }
 
     return self;
 }
 
-- (void)deviceOrientationDidChange {
+- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self setupKeyboardWithSession:[IMImojiSession imojiSession]];
+    }
+
+    return self;
+}
+
+
+- (id)initWithImojiSession:(IMImojiSession *)session {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        [self setupKeyboardWithSession:session];
+    }
+
+    return self;
+}
+
+- (void)setupKeyboardWithSession:(IMImojiSession *)session {
+    self.portraitHeight = IMKeyboardViewPortraitHeight;
+    self.landscapeHeight = IMKeyboardViewLandscapeHeight;
+    self.isViewingImojiCategory = NO;
+    self.currentToolbarButtonSelected = IMToolbarButtonReactions;
+
+    _session = session;
+    _session.delegate = self;
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [self updateViewConstraints];
 }
 
@@ -134,11 +147,14 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
         // Assign qwerty controller to searchView
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"IMQwerty" bundle:[NSBundle mainBundle]];
-        IMQwertyViewController *vc = [storyboard instantiateInitialViewController];
+        IMQwertyViewController *vc = (IMQwertyViewController *) [storyboard instantiateInitialViewController];
+
         vc.searchField = self.keyboardView.searchField;
         vc.delegate = self;
+
         [self addChildViewController:vc];
         [self.keyboardView.searchView addSubview:vc.view];
+
         [vc didMoveToParentViewController:self];
         [vc.view mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.keyboardView.searchField.mas_bottom).with.offset(0);
@@ -147,13 +163,8 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
             make.bottom.equalTo(self.keyboardView.mas_bottom);
         }];
     }
-    
-    self.currentToolbarButtonSelected = IMToolbarButtonKeyboardNextKeyboard;
-    [self.keyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonReactions];
-}
 
-- (void)setAppGroup:(NSString *)appGroup {
-    _appGroup = appGroup;
+    [self.keyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonReactions];
 }
 
 #pragma mark IMQwertyViewControllerDelegate
@@ -189,7 +200,7 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 
     IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
     renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
-    renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(1000.0f, 1000.0f)];
+    renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(800.0f, 800.0f)];
 
     [self.session renderImoji:imoji
                       options:renderOptions
@@ -254,69 +265,55 @@ NSString *const IMKeyboardViewControllerDefaultAppGroup = @"group.com.imoji.keyb
 #pragma mark IMToolbarDelegate
 
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
-    BOOL sameButtonPressed = self.currentToolbarButtonSelected == buttonType;
+    switch (buttonType) {
+        case IMToolbarButtonKeyboardDelete:
+            [self.textDocumentProxy deleteBackward];
+            break;
 
-    if (sameButtonPressed
-            && buttonType != IMToolbarButtonReactions
-            && buttonType != IMToolbarButtonTrending
-            && buttonType != IMToolbarButtonSearch) {
-        return;
-    }
+        case IMToolbarButtonKeyboardNextKeyboard:
+            [self advanceToNextInputMode];
+            break;
 
-    if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
-        switch (buttonType) {
-            case IMToolbarButtonKeyboardDelete:
-                [self.textDocumentProxy deleteBackward];
-                break;
+        case IMToolbarButtonSearch:
+            self.keyboardView.searchView.hidden = NO;
+            [self.keyboardView updateProgressBarWithValue:0.f];
+            break;
+        case IMToolbarButtonRecents:
+            [self.keyboardView.collectionView loadRecentImojis:self.recentImojis];
+            [self.keyboardView updateTitleWithText:@"RECENTS" hideCloseButton:YES];
+            break;
+        case IMToolbarButtonReactions:
+            if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
+                self.isViewingImojiCategory = NO;
 
-            case IMToolbarButtonKeyboardNextKeyboard:
-                [self advanceToNextInputMode];
-                break;
+                // Set classification for use in returning user to Reactions when closing a category
+                self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
 
-            case IMToolbarButtonSearch:
-                self.keyboardView.searchView.hidden = NO;
-                [self.keyboardView updateProgressBarWithValue:0.f];
-                break;
-            case IMToolbarButtonRecents:
-                [self.keyboardView.collectionView loadRecentImojis:self.recentImojis];
-                [self.keyboardView updateTitleWithText:@"RECENTS" hideCloseButton:YES];
-                break;
-            case IMToolbarButtonReactions:
-                if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
-                    self.isViewingImojiCategory = NO;
-
-                    // Set classification for use in returning user to Reactions when closing a category
-                    self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
-
-                    [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
-                    [self.keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
-                }
-                break;
-            case IMToolbarButtonTrending:
-                if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
-                    self.isViewingImojiCategory = NO;
-
-                    // Set classification for use in returning user to Trending when closing a category
-                    self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
-
-                    [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
-                    [self.keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
-                }
-                break;
-            case IMToolbarButtonCollection: {
-                [self.keyboardView.collectionView loadFavoriteImojis:self.favoritedImojis];
-                [self.keyboardView updateTitleWithText:@"COLLECTION" hideCloseButton:YES];
-                break;
+                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                [self.keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
             }
-            default:
-                break;
-        }
+            break;
+        case IMToolbarButtonTrending:
+            if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
+                self.isViewingImojiCategory = NO;
 
-        self.currentToolbarButtonSelected = buttonType;
-    } else {
-        [self.keyboardView.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];
-        [self.keyboardView updateTitleWithText:@"NO NETWORK CONNECTION" hideCloseButton:YES];
+                // Set classification for use in returning user to Trending when closing a category
+                self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
+
+                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                [self.keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
+            }
+            break;
+        case IMToolbarButtonCollection: {
+            [self.keyboardView.collectionView loadFavoriteImojis:self.favoritedImojis];
+            [self.keyboardView updateTitleWithText:@"COLLECTION" hideCloseButton:YES];
+            break;
+        }
+        default:
+            break;
     }
+
+    self.currentToolbarButtonSelected = buttonType;
 }
 
 #pragma mark Recents/Favorites Logic

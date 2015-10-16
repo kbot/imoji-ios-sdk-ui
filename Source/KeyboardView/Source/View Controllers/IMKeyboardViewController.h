@@ -31,6 +31,6 @@
 @property(nonatomic, strong, readonly, nonnull) IMImojiSession *session;
 @property(nonatomic, strong, nonnull) NSString *appGroup;
 
-- (id __nonnull)initWithImojiSession:(IMImojiSession *__nonnull)session;
+- (nonnull id)initWithImojiSession:(nonnull IMImojiSession *)session;
 
 @end
