@@ -24,6 +24,7 @@
 //
 
 import UIKit
+import ImojiSDKUI
 
 @objc public protocol IMCameraViewControllerDelegate {
     optional func userDidCancelCameraViewController(viewController: IMCameraViewController)

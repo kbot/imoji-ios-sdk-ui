@@ -24,6 +24,7 @@
 //
 
 import UIKit
+import ImojiSDKUI
 
 class ViewController: IMCameraViewController {
     required init?(coder aDecoder: NSCoder) {

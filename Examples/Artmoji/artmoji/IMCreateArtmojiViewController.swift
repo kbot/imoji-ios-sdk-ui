@@ -24,6 +24,7 @@
 //
 
 import UIKit
+import ImojiSDKUI
 
 public class IMCreateArtmojiViewController: UIViewController {
 

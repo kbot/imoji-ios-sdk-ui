@@ -26,6 +26,7 @@
 import UIKit
 import Photos
 import PhotosUI
+import ImojiSDKUI
 
 class PhotoEditingViewController: IMCreateArtmojiViewController {
 

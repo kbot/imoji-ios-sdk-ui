@@ -24,6 +24,7 @@
 //
 
 import UIKit
+import ImojiSDKUI
 
 enum IMCreateArtmojiViewSliderType: Int {
     case Color
