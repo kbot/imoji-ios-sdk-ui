@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.17
+
+* Full support for loading ImojiSDKUI as a dynamic library
+* Bitcode support which now requires Xcode 7 for archiving your applications
+
 ### Version 0.1.16
 
 * Addresses build issues with Swift projects and ImojiGraphics when loading ImojiSDKUI as a framework
