@@ -45,6 +45,8 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        NSString *bundlePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ImojiEditorAssets" ofType:@"bundle"];
+        
         _tagScreenNavigationToolbarBarTintColor = [UIColor colorWithWhite:250.f / 255.f alpha:1.0f];
         _tagScreenTintColor = [UIColor colorWithWhite:122.f / 255.f alpha:1.0f];
         _tagScreenRemoveButtonDividerColor = [UIColor colorWithWhite:244.f / 255.f alpha:1.0f];
@@ -59,19 +61,19 @@
         _tagScreenNavigationBarFont = [IMAttributeStringUtil defaultFontWithSize:18.f];
         _trimScreenNavigationBarFont = [IMAttributeStringUtil defaultFontWithSize:18.f];
 
-        _trimScreenUndoButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_undo"];
-        _trimScreenHelpButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_hints"];
-        _trimScreenCancelButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_back"];
-        _trimScreenFinishTraceButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_trace_proceed"];
+        _trimScreenUndoButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_undo", bundlePath]];
+        _trimScreenHelpButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_hints", bundlePath]];
+        _trimScreenCancelButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
+        _trimScreenFinishTraceButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_proceed", bundlePath]];
 
-        _tagScreenBackButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_back"];
-        _tagScreenFinishButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tag_done"];
+        _tagScreenBackButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
+        _tagScreenFinishButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tag_done", bundlePath]];
 
-        _tagScreenHelpImageStep1 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_1@3x"];
-        _tagScreenHelpImageStep2 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_2@3x"];
-        _tagScreenHelpImageStep3 = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_3@3x"];
-        _tagScreenHelpNextButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_proceed"];
-        _tagScreenHelpDoneButtonImage = [UIImage imageNamed:@"ImojiEditorAssets.bundle/create_tips_done"];
+        _tagScreenHelpImageStep1 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_1@3x", bundlePath]];
+        _tagScreenHelpImageStep2 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_2@3x", bundlePath]];
+        _tagScreenHelpImageStep3 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_3@3x", bundlePath]];
+        _tagScreenHelpNextButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_proceed", bundlePath]];
+        _tagScreenHelpDoneButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_done", bundlePath]];
 
         _tagScreenRemoveTagIcon = [IMCreateImojiUITheme drawClearIconWithXColor:_tagScreenRemoveButtonColor
                                                                    dividerColor:_tagScreenRemoveButtonDividerColor];

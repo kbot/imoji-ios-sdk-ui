@@ -42,8 +42,8 @@
     static dispatch_once_t predicate;
 
     dispatch_once(&predicate, ^{
-        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiUIStrings"
-                                                                          ofType:@"bundle"]];
+        bundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"ImojiUIStrings"
+                                                                                           ofType:@"bundle"]];
     });
 
     return bundle;
@@ -54,8 +54,8 @@
     static dispatch_once_t predicate;
 
     dispatch_once(&predicate, ^{
-        bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ImojiUIAssets"
-                                                                          ofType:@"bundle"]];
+        bundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"ImojiUIAssets"
+                                                                                           ofType:@"bundle"]];
     });
 
     return bundle;
