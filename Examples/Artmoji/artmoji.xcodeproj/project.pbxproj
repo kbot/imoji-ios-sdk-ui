@@ -441,6 +441,7 @@
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "artmoji-photos/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -459,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E641346CA2C4C60D1B7E929B /* Pods-artmoji-photos.release.xcconfig */;
 			buildSettings = {
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "artmoji-photos/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -572,6 +574,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				OTHER_SWIFT_FLAGS = "-DNOT_PHOTO_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
@@ -591,6 +594,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				OTHER_SWIFT_FLAGS = "-DNOT_PHOTO_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";

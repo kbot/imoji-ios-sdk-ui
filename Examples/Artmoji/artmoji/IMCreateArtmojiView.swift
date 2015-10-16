@@ -76,7 +76,7 @@ public class IMCreateArtmojiView: UIView {
                 _selectedImojiView.showBorder = true
 
                 session.renderImoji(_selectedImojiView.imoji!,
-                        options: IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.Thumbnail)) { (image, error) -> Void in
+                        options: IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.Thumbnail)) { image, error in
                     if error == nil {
                         self.selectedImojiPreview.image = image
                         self.updateFlipImageButtonForSelectedImoji()
@@ -132,13 +132,6 @@ public class IMCreateArtmojiView: UIView {
     private var imojiCollectionButton: UIButton!
     private var deleteImojiButton: UIButton!
     private var drawButton: UIButton!
-    
-    public var photoExtension: Bool? {
-        didSet {
-            cancelButton.hidden = photoExtension ?? false
-            doneButton.hidden = photoExtension ?? false
-        }
-    }
 
     // Delegate object
     public var delegate: IMCreateArtmojiViewDelegate?
@@ -230,6 +223,11 @@ public class IMCreateArtmojiView: UIView {
         undoButton.frame = buttonItemFrame
 
         brushPreview = UIImageView(frame: buttonItemFrame)
+
+        #if !NOT_PHOTO_EXTENSION
+        cancelButton.hidden = true
+        doneButton.hidden = true
+        #endif
 
         // Set up navigationBar
         navigationBar = IMToolbar()
@@ -523,7 +521,7 @@ public class IMCreateArtmojiView: UIView {
     // MARK: - Gestures
     func imojiTapped(recognizer: UITapGestureRecognizer) {
         if recognizer.view!.isKindOfClass(IMCreateArtmojiSelectedImojiView) {
-            insertSubview(recognizer.view!, belowSubview: navigationBar)
+            insertSubview(recognizer.view!, belowSubview: drawingCanvasView)
             selectedImojiView = recognizer.view as! IMCreateArtmojiSelectedImojiView
         }
     }
@@ -531,7 +529,7 @@ public class IMCreateArtmojiView: UIView {
     func imojiPanned(recognizer: UIPanGestureRecognizer) {
         // when the user pans an imoji they are selecting it for editing
         if recognizer.view!.isKindOfClass(IMCreateArtmojiSelectedImojiView) {
-            insertSubview(recognizer.view!, belowSubview: navigationBar)
+            insertSubview(recognizer.view!, belowSubview: drawingCanvasView)
             selectedImojiView = recognizer.view as! IMCreateArtmojiSelectedImojiView
         }
 
@@ -613,7 +611,7 @@ public class IMCreateArtmojiView: UIView {
         selectedImojiView.addGestureRecognizer(tapGestureRecognizer)
 
         selectedImojis.append(selectedImojiView)
-
+        
         delegate?.artmojiView?(self, didFinishLoadingImoji: imoji)
     }
 
