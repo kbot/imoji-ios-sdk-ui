@@ -803,6 +803,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             case IMCollectionViewContentTypeNoResultsSplash:
 
                 // add a filler object for rendering splashes
+                [self.content removeAllObjects];
                 [self.content addObject:[NSNull null]];
                 break;
 
