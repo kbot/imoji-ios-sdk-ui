@@ -26,14 +26,13 @@
 #ifndef artmoji_Artmoji_Bridging_Header_h
 #define artmoji_Artmoji_Bridging_Header_h
 
-#import "ImojiSDK.h"
-#import "IMImojiSession.h"
-#import "IMCollectionViewController.h"
-#import "IMCreateImojiViewController.h"
-#import "IMCreateImojiView.h"
-#import "IMCreateImojiUITheme.h"
-#import "IMToolbar.h"
-#import "IMResourceBundleUtil.h"
+#import "ImojiSDK/ImojiSDK.h"
+#import "ImojiSDKUI/IMCollectionViewController.h"
+#import "ImojiSDKUI/IMCreateImojiViewController.h"
+#import "ImojiSDKUI/IMCreateImojiView.h"
+#import "ImojiSDKUI/IMCreateImojiUITheme.h"
+#import "ImojiSDKUI/IMToolbar.h"
+#import "ImojiSDKUI/IMResourceBundleUtil.h"
 #import "Masonry/Masonry.h"
 #import "PBJVision/PBJVision.h"
 
