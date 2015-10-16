@@ -1,5 +1,17 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.15
+
+* iOS 7 Fixes
+  * Addresses crashes with collection view assertions
+  * Fixed Tips in the Imoji creation view
+  * Fixed misaligned category collection view cells
+  * Stopped calling imageNamed:inBundle:compatibleWithTraitCollection which is not available on iOS 7
+* Functionality
+  * Add the ability to turn off selection animation for IMCollectionView
+  * Adds a Messaging App Example
+  * When saving a new Imoji, update the toolbar and show an activity indicator
+
 ### Version 0.1.14
 
 * Collection View fixes
