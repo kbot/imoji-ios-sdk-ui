@@ -25,6 +25,11 @@
 
 import UIKit
 
+@objc public protocol IMCameraViewControllerDelegate {
+    optional func userDidCancelCameraViewController(viewController: IMCameraViewController)
+    optional func userDidFinishCreatingImoji(imoji: IMImojiObject, fromCameraViewController viewController: IMCameraViewController)
+}
+
 public class IMCameraViewController: UIViewController {
 
     // Required init variables
@@ -38,6 +43,7 @@ public class IMCameraViewController: UIViewController {
     // Top toolbar
     private var navigationBar: UIToolbar!
     private var navigationTitle: UIButton!
+    private var cancelButton: UIBarButtonItem!
 
     // Bottom toolbar
     private var bottomBar: UIToolbar!
@@ -45,10 +51,17 @@ public class IMCameraViewController: UIViewController {
     private var flipButton: UIButton!
     private var photoLibraryButton: UIButton!
 
+    // Controller type to present when picture is taken or used from photo library
+    private var presentingViewControllerType: Int
+
+    // Delegate object
+    public var delegate: IMCameraViewControllerDelegate?
+
     // MARK: - Object lifecycle
-    public init(session: IMImojiSession, imageBundle: NSBundle) {
+    public init(session: IMImojiSession, imageBundle: NSBundle, controllerType: Int) {
         self.session = session
         self.imageBundle = imageBundle
+        presentingViewControllerType = controllerType
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -64,7 +77,7 @@ public class IMCameraViewController: UIViewController {
 
         // Set up title
         navigationTitle = UIButton(type: UIButtonType.Custom)
-        navigationTitle.setTitle("ARTMOJI", forState: UIControlState.Normal)
+        navigationTitle.setTitle(presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateArtmoji ? "ARTMOJI" : "CREATE STICKER", forState: UIControlState.Normal)
         navigationTitle.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 18.0)
         navigationTitle.sizeToFit()
         navigationTitle.userInteractionEnabled = false
@@ -75,6 +88,12 @@ public class IMCameraViewController: UIViewController {
         captureButton.setImage(UIImage(named: "Artmoji-Camera-Capture"), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         captureButton.frame = buttonItemFrame
+
+        let cancelButton = UIButton(type: UIButtonType.Custom)
+        cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
+        cancelButton.addTarget(self, action: "cancelButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.frame = buttonItemFrame
+        self.cancelButton = UIBarButtonItem(customView: cancelButton)
 
         flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "Artmoji-Camera-Flip"), forState: UIControlState.Normal)
@@ -96,6 +115,8 @@ public class IMCameraViewController: UIViewController {
                                UIBarButtonItem(customView: navigationTitle),
                                UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)]
 
+        determineCancelCameraButtonVisibility()
+
         // Set up bottom bar
         bottomBar = UIToolbar()
         bottomBar.clipsToBounds = true
@@ -109,24 +130,13 @@ public class IMCameraViewController: UIViewController {
 
         // Set up PBJVision
         let vision = PBJVision.sharedInstance()
-        vision.delegate = self
         vision.cameraDevice = PBJCameraDevice.Front
         vision.cameraMode = PBJCameraMode.Photo
         vision.previewOrientation = PBJCameraOrientation.Portrait
         vision.focusMode = PBJFocusMode.ContinuousAutoFocus
         vision.exposureMode = PBJExposureMode.ContinuousAutoExposure
 
-        previewView = UIView(frame: CGRectZero)
-        previewView.backgroundColor = view.backgroundColor
-        previewView.frame = view.frame
-
-        previewLayer = PBJVision.sharedInstance().previewLayer
-        previewLayer.frame = previewView.bounds
-        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        previewView.layer.addSublayer(previewLayer)
-
         // Add subviews
-        view.addSubview(previewView)
         view.addSubview(navigationBar)
         view.addSubview(bottomBar)
 
@@ -144,21 +154,47 @@ public class IMCameraViewController: UIViewController {
             make.right.equalTo()(self.view)
             make.height.equalTo()(IMArtmojiConstants.BottomBarHeight)
         }
+    }
 
+    override public func viewWillAppear(animated: Bool) {
+        // Set up delegate and preview with previewLayer
+        let vision = PBJVision.sharedInstance()
+        vision.delegate = self
+
+        previewView = UIView(frame: CGRectZero)
+        previewView.backgroundColor = view.backgroundColor
+        previewView.frame = view.frame
+        
+        previewLayer = PBJVision.sharedInstance().previewLayer
+        previewLayer.frame = previewView.bounds
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewView.layer.addSublayer(previewLayer)
+        
+        // Add preview
+        view.insertSubview(previewView, belowSubview: navigationBar)
+        
         // Start PBJVision's preview
         vision.startPreview()
     }
 
-    override public func viewDidAppear(animated: Bool) {
-        PBJVision.sharedInstance().startPreview()
-    }
-
-    override public func viewDidDisappear(animated: Bool) {
+    override public func viewWillDisappear(animated: Bool) {
+        previewLayer.removeFromSuperlayer()
+        previewView.removeFromSuperview()
         PBJVision.sharedInstance().stopPreview()
     }
 
     override public func prefersStatusBarHidden() -> Bool {
         return true
+    }
+
+    func determineCancelCameraButtonVisibility() {
+        if let index = navigationBar.items!.indexOf(cancelButton) {
+            navigationBar.items!.removeAtIndex(index)
+        }
+        
+        if delegate?.userDidCancelCameraViewController != nil {
+            navigationBar.items!.insert(cancelButton, atIndex: 0)
+        }
     }
 
     // MARK: - Camera button logic
@@ -185,6 +221,10 @@ public class IMCameraViewController: UIViewController {
         }
     }
 
+    func cancelButtonTapped() {
+        delegate?.userDidCancelCameraViewController?(self)
+    }
+
     func showCaptureErrorAlertTitle(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
@@ -198,9 +238,14 @@ extension IMCameraViewController: PBJVisionDelegate {
     public func vision(_: PBJVision, capturedPhoto photoDict: [NSObject:AnyObject]?, error: NSError?) {
         if error == nil {
             if let image = photoDict?[PBJVisionPhotoImageKey] as? UIImage {
-                let createArtmojiViewController = IMCreateArtmojiViewController(sourceImage: image, session: self.session, imageBundle: self.imageBundle)
-
-                presentViewController(createArtmojiViewController, animated: false, completion: nil)
+                if presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateArtmoji {
+                    let createArtmojiViewController = IMCreateArtmojiViewController(sourceImage: image, session: self.session, imageBundle: self.imageBundle)
+                    presentViewController(createArtmojiViewController, animated: false, completion: nil)
+                } else if presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateImoji {
+                    let createImojiViewController = IMCreateImojiViewController(sourceImage: image, session: self.session)
+                    createImojiViewController.createDelegate = self
+                    presentViewController(createImojiViewController, animated: false, completion: nil)
+                }
             } else {
                 showCaptureErrorAlertTitle("Problems", message: "Yikes! There was a problem taking the photo.")
             }
@@ -213,15 +258,35 @@ extension IMCameraViewController: PBJVisionDelegate {
 // MARK: - UIImagePickerControllerDelegate
 extension IMCameraViewController: UIImagePickerControllerDelegate {
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        let createArtmojiViewController = IMCreateArtmojiViewController(sourceImage: image, session: self.session, imageBundle: self.imageBundle)
-        createArtmojiViewController.modalPresentationStyle = UIModalPresentationStyle.FullScreen
-        createArtmojiViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
-
-        picker.presentViewController(createArtmojiViewController, animated: true, completion: nil)
+        if presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateArtmoji {
+            let createArtmojiViewController = IMCreateArtmojiViewController(sourceImage: image, session: self.session, imageBundle: self.imageBundle)
+            createArtmojiViewController.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+            createArtmojiViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            picker.presentViewController(createArtmojiViewController, animated: true, completion: nil)
+        } else if presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateImoji {
+            let createImojiViewController = IMCreateImojiViewController(sourceImage: image, session: self.session)
+            createImojiViewController.createDelegate = self
+            createImojiViewController.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+            createImojiViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+            picker.presentViewController(createImojiViewController, animated: true, completion: nil)
+        }
     }
 }
 
 // MARK: - UINavigationControllerDelegate
 extension IMCameraViewController: UINavigationControllerDelegate {
 
+}
+
+// MARK: - IMCreateImojiViewControllerDelegate
+extension IMCameraViewController: IMCreateImojiViewControllerDelegate {
+    public func userDidFinishCreatingImoji(imoji: IMImojiObject?, withError error: NSError?, fromViewController viewController: IMCreateImojiViewController) {
+        if error == nil {
+            delegate?.userDidFinishCreatingImoji?(imoji!, fromCameraViewController: self)
+        }
+    }
+
+    public func userDidCancelImageEdit(viewController: IMCreateImojiViewController) {
+        viewController.dismissViewControllerAnimated(false, completion: nil)
+    }
 }

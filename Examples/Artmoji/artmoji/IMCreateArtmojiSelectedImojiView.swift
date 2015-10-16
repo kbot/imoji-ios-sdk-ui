@@ -60,7 +60,7 @@ public class IMCreateArtmojiSelectedImojiView: UIView {
     func setup() {
         imojiView = UIImageView()
 
-        session.renderImoji(imoji!, options: renderingOptions, callback: { (image, error) -> Void in
+        session.renderImoji(imoji!, options: self.renderingOptions, callback: { image, error in
             if error == nil {
                 self.imojiView.image = image
                 self.frame.size.width = image!.size.width

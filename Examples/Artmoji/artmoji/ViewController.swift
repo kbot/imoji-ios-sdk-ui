@@ -27,6 +27,6 @@ import UIKit
 
 class ViewController: IMCameraViewController {
     required init?(coder aDecoder: NSCoder) {
-        super.init(session: IMImojiSession(), imageBundle: IMResourceBundleUtil.assetsBundle())
+        super.init(session: IMImojiSession(), imageBundle: IMResourceBundleUtil.assetsBundle(), controllerType: IMArtmojiConstants.PresentingViewControllerType.CreateArtmoji)
     }
 }

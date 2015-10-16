@@ -35,13 +35,8 @@ public class IMCreateArtmojiViewController: UIViewController {
     // Artmoji view
     private(set) public var createArtmojiView: IMCreateArtmojiView!
 
-    // Indicates if artmoji is launched from photos application
-    public var photoExtension: Bool
-
     // MARK: - Object lifecycle
     public init(sourceImage: UIImage?, session: IMImojiSession, imageBundle: NSBundle) {
-        photoExtension = sourceImage == nil ? true : false
-        
         self.sourceImage = sourceImage
         self.session = session
         self.imageBundle = imageBundle
@@ -59,8 +54,7 @@ public class IMCreateArtmojiViewController: UIViewController {
             super.loadView()
             createArtmojiView = IMCreateArtmojiView(session: self.session, sourceImage: self.sourceImage!, imageBundle: self.imageBundle)
             createArtmojiView.delegate = self
-            createArtmojiView.photoExtension = photoExtension
-            
+
             view.addSubview(createArtmojiView)
             
             createArtmojiView.mas_makeConstraints { make in
@@ -80,6 +74,16 @@ public class IMCreateArtmojiViewController: UIViewController {
     func collectionViewControllerBackButtonTapped() {
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    #if NOT_PHOTO_EXTENSION
+    func collectionViewControllerCreateImojiButtonTapped() {
+        let cameraViewController = IMCameraViewController(session: self.session, imageBundle: self.imageBundle, controllerType: IMArtmojiConstants.PresentingViewControllerType.CreateImoji)
+        cameraViewController.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+        cameraViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+        cameraViewController.delegate = self
+        presentedViewController!.presentViewController(cameraViewController, animated: true, completion: nil)
+    }
+    #endif
 
     // Mark: - UIKit.UIImagePickerController's completion selector
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<Void>) {
@@ -96,7 +100,6 @@ public class IMCreateArtmojiViewController: UIViewController {
             ]
             
             presentViewController(activityController, animated: true, completion: nil)
-
         } else {
             let alert = UIAlertController(title: "Yikes!", message: "There was a problem saving your Artmoji to your photos.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
@@ -109,7 +112,7 @@ public class IMCreateArtmojiViewController: UIViewController {
 // MARK: - IMCreateArtmojiViewDelegate
 extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
     public func artmojiView(view: IMCreateArtmojiView, didFinishLoadingImoji imoji: IMImojiObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(false, completion: nil)
     }
 
     public func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView) {
@@ -123,27 +126,48 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
         collectionViewController.topToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
-        collectionViewController.collectionView.collectionViewDelegate = self
-        collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+
         collectionViewController.backButton.addTarget(self, action: "collectionViewControllerBackButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         collectionViewController.backButton.hidden = false
+
+        #if NOT_PHOTO_EXTENSION
+        collectionViewController.bottomToolbar.addFlexibleSpace()
+        collectionViewController.bottomToolbar.addBarButton(UIBarButtonItem(title: "Create Sticker", style: UIBarButtonItemStyle.Plain, target: self, action: "collectionViewControllerCreateImojiButtonTapped"))
+        collectionViewController.bottomToolbar.addFlexibleSpace()
+        #endif
+
+        collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+        collectionViewController.collectionView.collectionViewDelegate = self
         collectionViewController.collectionViewControllerDelegate = self
 
         presentViewController(collectionViewController, animated: true) { finished in
-            if self.photoExtension {
-                collectionViewController.topToolbar.mas_makeConstraints { make in
-                    make.top.equalTo()(collectionViewController.view).offset()(50)
-                }
-                
-                collectionViewController.collectionView.mas_makeConstraints { make in
-                    make.top.equalTo()(collectionViewController.view).offset()(50)
-                }
+            #if !NOT_PHOTO_EXTENSION
+            collectionViewController.topToolbar.mas_makeConstraints { make in
+                make.top.equalTo()(collectionViewController.view).offset()(50)
             }
+
+            collectionViewController.collectionView.mas_makeConstraints { make in
+                make.top.equalTo()(collectionViewController.view).offset()(50)
+            }
+            #endif
             
             collectionViewController.collectionView.loadFeaturedImojis()
         }
     }
 }
+
+#if NOT_PHOTO_EXTENSION
+// MARK: - IMCameraViewControllerDelegate
+extension IMCreateArtmojiViewController: IMCameraViewControllerDelegate {
+    public func userDidCancelCameraViewController(viewController: IMCameraViewController) {
+        viewController.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    public func userDidFinishCreatingImoji(imoji: IMImojiObject, fromCameraViewController viewController: IMCameraViewController) {
+        createArtmojiView.addImoji(imoji)
+    }
+}
+#endif
 
 // MARK: - IMCollectionViewControllerDelegate
 extension IMCreateArtmojiViewController: IMCollectionViewControllerDelegate {
