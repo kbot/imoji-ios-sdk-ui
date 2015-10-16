@@ -44,6 +44,7 @@
 @property(nonatomic, readonly) UIBarButtonItem *finishTraceButton;
 @property(nonatomic, readonly) UIBarButtonItem *finishTagButton;
 @property(nonatomic, readonly) UIBarButtonItem *navigationTitle;
+@property(nonatomic, readonly) UIBarButtonItem *activityIndicator;
 
 @property(nonatomic, readonly) UIView *creationView;
 @property(nonatomic, readonly) UIView *tagView;
@@ -56,6 +57,7 @@
 
 @property(nonatomic, strong) NSMutableArray *traceViewButtons;
 @property(nonatomic, strong) NSArray *tagViewButtons;
+@property(nonatomic, strong) NSArray *completionButtons;
 @end
 
 @implementation IMCreateImojiViewController {
@@ -114,6 +116,8 @@
                                                        target:nil
                                                        action:nil];
 
+    _activityIndicator = [[UIBarButtonItem alloc] initWithCustomView:[UIActivityIndicatorView new]];
+
     [_navigationTitle setTitleTextAttributes:@{
                     NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenNavigationBarFont,
                     NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].trimScreenTintColor
@@ -128,6 +132,7 @@
 
     self.finishTagButton.enabled = YES;
     self.finishTraceButton.enabled = self.undoButton.enabled = NO;
+    ((UIActivityIndicatorView *)_activityIndicator.customView).activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
 
     _imojiEditor.backgroundColor = [UIColor clearColor];
     view.backgroundColor = [IMCreateImojiUITheme instance].createViewBackgroundColor;
@@ -171,6 +176,13 @@
             self.navigationTitle,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
             self.finishTagButton
+    ];
+
+    self.completionButtons = @[
+            [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+            self.navigationTitle,
+            [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+            self.activityIndicator
     ];
 
     self.navigationToolbar.items = self.traceViewButtons;
@@ -243,6 +255,11 @@
 
 - (void)finishEditing {
     if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:fromViewController:)]) {
+        self.navigationToolbar.items = self.completionButtons;
+        [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderSaving"]];
+
+        [((UIActivityIndicatorView *) self.activityIndicator.customView) startAnimating];
+
         [self.session createImojiWithImage:self.imojiEditor.outputImage
                                       tags:self.tagCollectionView.tags.array
                                   callback:^(IMImojiObject *imoji, NSError *error) {
