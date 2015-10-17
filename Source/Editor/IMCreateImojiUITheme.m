@@ -55,7 +55,7 @@
         _tagScreenRemoveButtonColor = [UIColor colorWithWhite:232.f / 255.f alpha:1.0f];
         _tagScreenTagItemBorderColor = [UIColor colorWithWhite:232.f / 255.f alpha:1.0f];
         _createViewBackgroundColor = [UIColor colorWithWhite:248.0f / 255.0f alpha:1];
-        _trimScreenTintColor = [UIColor colorWithWhite:105.f / 255.f alpha:1.0f];
+        _trimScreenTintColor = [UIColor whiteColor];
 
         _tagScreenTagFont = [IMAttributeStringUtil defaultFontWithSize:16.f];
         _tagScreenNavigationBarFont = [IMAttributeStringUtil defaultFontWithSize:18.f];
@@ -65,6 +65,15 @@
         _trimScreenHelpButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_hints", bundlePath]];
         _trimScreenCancelButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
         _trimScreenFinishTraceButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_proceed", bundlePath]];
+
+        _trimScreenTitleAttributes = @{
+                NSFontAttributeName : _trimScreenNavigationBarFont,
+                NSForegroundColorAttributeName : _trimScreenTintColor
+        };
+        _tagScreenTitleAttributes = @{
+                NSFontAttributeName : _tagScreenNavigationBarFont,
+                NSForegroundColorAttributeName : _tagScreenTintColor
+        };
 
         _tagScreenBackButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
         _tagScreenFinishButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tag_done", bundlePath]];

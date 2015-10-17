@@ -90,11 +90,11 @@
                                                    style:UIBarButtonItemStylePlain
                                                   target:self
                                                   action:@selector(performUndo)];
-    _helpButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenHelpButtonImage
+    _helpButton = [[UIBarButtonItem alloc] initWithImage:[[IMCreateImojiUITheme instance].trimScreenHelpButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                    style:UIBarButtonItemStyleDone
                                                   target:self
                                                   action:@selector(showHelpScreen)];
-    _cancelCreationButton = [[UIBarButtonItem alloc] initWithImage:[IMCreateImojiUITheme instance].trimScreenCancelButtonImage
+    _cancelCreationButton = [[UIBarButtonItem alloc] initWithImage:[[IMCreateImojiUITheme instance].trimScreenCancelButtonImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                              style:UIBarButtonItemStylePlain
                                                             target:self
                                                             action:@selector(cancelImageEdit)];
@@ -118,10 +118,7 @@
 
     _activityIndicator = [[UIBarButtonItem alloc] initWithCustomView:[UIActivityIndicatorView new]];
 
-    [_navigationTitle setTitleTextAttributes:@{
-                    NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenNavigationBarFont,
-                    NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].trimScreenTintColor
-            }
+    [_navigationTitle setTitleTextAttributes:[IMCreateImojiUITheme instance].trimScreenTitleAttributes
                                     forState:UIControlStateNormal];
 
     _imojiPreview = [UIImageView new];
@@ -132,7 +129,7 @@
 
     self.finishTagButton.enabled = YES;
     self.finishTraceButton.enabled = self.undoButton.enabled = NO;
-    ((UIActivityIndicatorView *)_activityIndicator.customView).activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+    ((UIActivityIndicatorView *) _activityIndicator.customView).activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
 
     _imojiEditor.backgroundColor = [UIColor clearColor];
     view.backgroundColor = [IMCreateImojiUITheme instance].createViewBackgroundColor;
@@ -288,24 +285,20 @@
                             forToolbarPosition:UIBarPositionTop
                                     barMetrics:UIBarMetricsDefault];
     self.navigationToolbar.barTintColor = [IMCreateImojiUITheme instance].tagScreenNavigationToolbarBarTintColor;
+    self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].tagScreenTintColor;
+
+    [_navigationTitle setTitleTextAttributes:[IMCreateImojiUITheme instance].tagScreenTitleAttributes
+                                    forState:UIControlStateNormal];
+    self.navigationToolbar.items = self.tagViewButtons;
+    [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTag"]];
 
     [UIView animateWithDuration:.5f
                      animations:^{
                          self.tagView.layer.opacity = 1.0f;
                          self.creationView.layer.opacity = 0.0f;
-                         self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].tagScreenTintColor;
-
-                         [_navigationTitle setTitleTextAttributes:@{
-                                         NSFontAttributeName : [IMCreateImojiUITheme instance].tagScreenNavigationBarFont,
-                                         NSForegroundColorAttributeName : self.navigationToolbar.tintColor
-                                 }
-                                                         forState:UIControlStateNormal];
                      }
                      completion:^(BOOL finished) {
                          self.creationView.hidden = YES;
-                         [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTag"]];
-                         self.navigationToolbar.items = self.tagViewButtons;
-
                          self.tagCollectionView.tagInputFieldShouldBeFirstResponder = YES;
                      }
     ];
@@ -323,21 +316,18 @@
                                 forToolbarPosition:UIBarPositionTop
                                         barMetrics:UIBarMetricsDefault];
 
+        self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
+        [_navigationTitle setTitleTextAttributes:[IMCreateImojiUITheme instance].trimScreenTitleAttributes
+                                        forState:UIControlStateNormal];
+        [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]];
+
         [UIView animateWithDuration:.5f
                          animations:^{
                              self.tagView.layer.opacity = 0.0f;
                              self.creationView.layer.opacity = 1.0f;
-                             self.navigationToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
-
-                             [_navigationTitle setTitleTextAttributes:@{
-                                             NSFontAttributeName : [IMCreateImojiUITheme instance].trimScreenNavigationBarFont,
-                                             NSForegroundColorAttributeName : [IMCreateImojiUITheme instance].trimScreenTintColor
-                                     }
-                                                             forState:UIControlStateNormal];
                          }
                          completion:^(BOOL finished) {
                              self.tagView.hidden = YES;
-                             [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderTrim"]];
                          }];
     }
 }
@@ -390,8 +380,18 @@
 }
 
 - (void)updateTrimButtonStates {
-    self.undoButton.enabled = self.imojiEditor.canUndo;
-    self.finishTraceButton.enabled = self.imojiEditor.hasOutputImage;
+    // for disabled states, let the UIBarButton tint set the look and feel to disabled
+    // for enable states, load the raw image without tints
+
+    if (self.undoButton.enabled != self.imojiEditor.canUndo) {
+        self.undoButton.enabled = self.imojiEditor.canUndo;
+        self.undoButton.image = [[IMCreateImojiUITheme instance].trimScreenUndoButtonImage imageWithRenderingMode:self.undoButton.enabled ? UIImageRenderingModeAlwaysOriginal : UIImageRenderingModeAlwaysTemplate];
+    }
+
+    if (self.finishTraceButton.enabled != self.imojiEditor.hasOutputImage) {
+        self.finishTraceButton.enabled = self.imojiEditor.hasOutputImage;
+        self.finishTraceButton.image = [[IMCreateImojiUITheme instance].trimScreenFinishTraceButtonImage imageWithRenderingMode:self.finishTraceButton.enabled ? UIImageRenderingModeAlwaysOriginal : UIImageRenderingModeAlwaysTemplate];
+    }
 }
 
 #pragma mark Navigation Toolbar Delegate

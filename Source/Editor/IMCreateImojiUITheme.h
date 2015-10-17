@@ -57,6 +57,9 @@
 @property(nonatomic, strong, nonnull) UIImage *tagScreenHelpNextButtonImage;
 @property(nonatomic, strong, nonnull) UIImage *tagScreenHelpDoneButtonImage;
 
+@property(nonatomic, strong, nonnull) NSDictionary *trimScreenTitleAttributes;
+@property(nonatomic, strong, nonnull) NSDictionary *tagScreenTitleAttributes;
+
 @property(nonatomic, nonnull) UIColor *tagScreenTagFieldBackgroundColor;
 @property(nonatomic) CGFloat tagScreenTagFieldBorderWidth;
 @property(nonatomic) CGFloat tagScreenTagFieldCornerRadius;
