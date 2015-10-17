@@ -92,6 +92,8 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
     _backButton = (UIButton *) [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
     _searchField = (UISearchBar *) [self.topToolbar addSearchBarItem].customView;
     _searchField.delegate = self;
+    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
+    _searchField.enablesReturnKeyAutomatically = NO;
     _bottomToolbar.delegate = _topToolbar.delegate = self;
 
     self.backButton.hidden = YES;
