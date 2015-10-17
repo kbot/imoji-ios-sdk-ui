@@ -85,8 +85,8 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
                                                object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardHiddenForSearchField:)
-                                                 name:UIKeyboardDidHideNotification
+                                             selector:@selector(keyboardWillHideForSearchField:)
+                                                 name:UIKeyboardWillHideNotification
                                                object:nil];
 
     _backButton = (UIButton *) [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
@@ -198,32 +198,26 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
 - (void)keyboardDisplayedForSearchField:(NSNotification *)notification {
     NSDictionary *keyboardInfo = [notification userInfo];
-    CGRect startRect = [[keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat occupiedHeight = startRect.origin.y - endRect.origin.y;
 
     // adjust the content size for the keyboard using the displaced height
-    if (occupiedHeight != 0) {
-        self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
-        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
-                self.collectionView.contentInset.top,
-                self.collectionView.contentInset.left,
-                occupiedHeight,
-                self.collectionView.contentInset.right
-        );
-    }
+    self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
+    self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
+            self.collectionView.contentInset.top,
+            self.collectionView.contentInset.left,
+            endRect.size.height,
+            self.collectionView.contentInset.right
+    );
 }
 
-- (void)keyboardHiddenForSearchField:(NSNotification *)notification {
-    NSDictionary *keyboardInfo = [notification userInfo];
-    CGRect startRect = [[keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGFloat occupiedHeight = endRect.origin.y - startRect.origin.y;
-
-    // restore the content size of the collection view
-    if (occupiedHeight != 0) {
-        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = self.preKeyboardDisplayedCollectionViewInsets;
-    }
+- (void)keyboardWillHideForSearchField:(NSNotification *)notification {
+    self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
+    self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
+            self.collectionView.contentInset.top,
+            self.collectionView.contentInset.left,
+            self.bottomToolbar.hidden ? 0 : self.bottomToolbar.frame.size.height,
+            self.collectionView.contentInset.right
+    );
 }
 
 #pragma mark Overrides
