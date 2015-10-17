@@ -72,10 +72,6 @@ public class IMCreateArtmojiViewController: UIViewController {
     }
     
     // Mark: - Buton action methods
-    func collectionViewControllerBackButtonTapped() {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
     #if NOT_PHOTO_EXTENSION
     func collectionViewControllerCreateImojiButtonTapped() {
         let cameraViewController = IMCameraViewController(session: self.session, imageBundle: self.imageBundle, controllerType: IMArtmojiConstants.PresentingViewControllerType.CreateImoji)
@@ -85,6 +81,51 @@ public class IMCreateArtmojiViewController: UIViewController {
         presentedViewController!.presentViewController(cameraViewController, animated: true, completion: nil)
     }
     #endif
+
+    // Mark: - Draw create imoji button
+    func drawCreateImojiButtonImage() -> UIImage {
+        let size = CGSizeMake(60.0, 41.0)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        let context = UIGraphicsGetCurrentContext()
+        
+        CGContextSetBlendMode(context, CGBlendMode.Normal)
+        
+        let shadowSize: CGFloat = 1.5
+        let cornerRadius: CGFloat = 2.5
+        let shapeLayer = CAShapeLayer()
+
+        let path = UIBezierPath(roundedRect: CGRectMake(shadowSize, shadowSize, size.width - (shadowSize * 2), size.height - (shadowSize * 2)), cornerRadius: cornerRadius)
+        
+        shapeLayer.path = path.CGPath
+        shapeLayer.fillColor = UIColor.whiteColor().CGColor
+        shapeLayer.strokeColor = UIColor(red: 35.0 / 255.0, green: 31.0 / 255.0, blue: 32.0 / 255.0, alpha: 0.12).CGColor
+        shapeLayer.shadowColor = UIColor.blackColor().CGColor
+        shapeLayer.shadowOpacity = 0.18
+        shapeLayer.shadowOffset = CGSizeZero
+        shapeLayer.shadowRadius = shadowSize
+        shapeLayer.cornerRadius = cornerRadius
+        shapeLayer.renderInContext(context!)
+        
+        let createImojiImage = UIImage(named: "Artmoji-Create-Imoji")
+        UIGraphicsBeginImageContextWithOptions(createImojiImage!.size, false, 0.0)
+        UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0).setFill()
+        let bounds = CGRectMake(0, 0, createImojiImage!.size.width, createImojiImage!.size.height)
+        UIRectFill(bounds)
+        createImojiImage!.drawInRect(bounds, blendMode: CGBlendMode.DestinationIn, alpha: 1.0)
+        let tintedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        tintedImage!.drawInRect(CGRectMake((size.width - tintedImage!.size.width) / 2.0,
+            (size.height - createImojiImage!.size.height) / 2.0,
+            tintedImage!.size.width,
+            tintedImage!.size.height))
+        
+        let layer = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return layer
+    }
+
 
     // Mark: - UIKit.UIImagePickerController's completion selector
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<Void>) {
@@ -127,15 +168,23 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
         collectionViewController.topToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
-
-        collectionViewController.backButton.addTarget(self, action: "collectionViewControllerBackButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
         collectionViewController.backButton.hidden = false
+        collectionViewController.topToolbar.delegate = self
 
-        #if NOT_PHOTO_EXTENSION
         collectionViewController.bottomToolbar.addFlexibleSpace()
-        collectionViewController.bottomToolbar.addBarButton(UIBarButtonItem(title: "Create Sticker", style: UIBarButtonItemStyle.Plain, target: self, action: "collectionViewControllerCreateImojiButtonTapped"))
+        collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Trending)
+        collectionViewController.bottomToolbar.addFlexibleSpace()
+        
+        #if NOT_PHOTO_EXTENSION
+        let createImojiImage = drawCreateImojiButtonImage().imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
+        collectionViewController.bottomToolbar.addBarButton(UIBarButtonItem(image: createImojiImage, style: UIBarButtonItemStyle.Plain, target: self, action: "collectionViewControllerCreateImojiButtonTapped"))
         collectionViewController.bottomToolbar.addFlexibleSpace()
         #endif
+        
+        collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Reactions)
+        collectionViewController.bottomToolbar.addFlexibleSpace()
+        collectionViewController.bottomToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
+        collectionViewController.bottomToolbar.delegate = self
 
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
         collectionViewController.collectionView.collectionViewDelegate = self
@@ -152,7 +201,32 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
             }
             #endif
             
-            collectionViewController.collectionView.loadFeaturedImojis()
+            collectionViewController.bottomToolbar.selectButtonOfType(IMToolbarButtonType.Trending)
+        }
+    }
+}
+
+// MARK: - IMToolbarDelegate
+extension IMCreateArtmojiViewController: IMToolbarDelegate {
+    public func userDidSelectCategory(category: IMImojiCategoryObject, fromCollectionView collectionView: IMCollectionView) {
+        collectionView.loadImojisFromCategory(category)
+    }
+    
+    public func userDidSelectToolbarButton(buttonType: IMToolbarButtonType) {
+        switch buttonType {
+            case IMToolbarButtonType.Trending:
+                let collectionViewController = presentedViewController as! IMCollectionViewController
+                collectionViewController.collectionView.loadImojiCategories(IMImojiSessionCategoryClassification.Trending)
+                break
+            case IMToolbarButtonType.Reactions:
+                let collectionViewController = presentedViewController as! IMCollectionViewController
+                collectionViewController.collectionView.loadImojiCategories(IMImojiSessionCategoryClassification.Generic)
+                break
+            case IMToolbarButtonType.Back:
+                dismissViewControllerAnimated(true, completion: nil)
+                break
+            default:
+                break
         }
     }
 }
