@@ -157,8 +157,17 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         dismissViewControllerAnimated(false, completion: nil)
     }
 
-    public func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView) {
-        dismissViewControllerAnimated(false, completion: nil)
+    public func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView, dirty: Bool) {
+        if dirty {
+            let alert = UIAlertController(title: "Start new artmoji?", message: "This will clear your current work.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Keep Editing", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "New", style: UIAlertActionStyle.Default) { alert in
+                self.dismissViewControllerAnimated(false, completion: nil)
+            })
+            presentViewController(alert, animated: true, completion: nil)
+        } else {
+            dismissViewControllerAnimated(false, completion: nil)
+        }
     }
 
     public func userDidFinishCreatingArtmoji(artmoji: UIImage, view: IMCreateArtmojiView) {

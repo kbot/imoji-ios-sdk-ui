@@ -43,7 +43,7 @@ enum IMCreateArtmojiViewButtonType: Int {
 }
 
 @objc public protocol IMCreateArtmojiViewDelegate {
-    optional func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView)
+    optional func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView, dirty: Bool)
     optional func userDidFinishCreatingArtmoji(artmoji: UIImage, view: IMCreateArtmojiView)
     optional func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView)
     optional func artmojiView(view: IMCreateArtmojiView, didFinishLoadingImoji imoji: IMImojiObject)
@@ -411,7 +411,7 @@ public class IMCreateArtmojiView: UIView {
                 }
                 break
             case IMCreateArtmojiViewButtonType.Cancel.rawValue:
-                delegate?.userDidCancelCreateArtmojiView?(self)
+                delegate?.userDidCancelCreateArtmojiView?(self, dirty: !selectedImojis.isEmpty || !drawnImages.isEmpty)
                 break
             case IMCreateArtmojiViewButtonType.Collection.rawValue:
                 delegate?.userDidSelectImojiCollectionButtonFromArtmojiView?(self)
