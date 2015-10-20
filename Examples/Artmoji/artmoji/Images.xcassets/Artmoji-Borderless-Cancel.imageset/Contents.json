@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "artmoji_pen.png",
+      "filename" : "artmoji_select_cancel.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "artmoji_pen@2x.png",
+      "filename" : "artmoji_select_cancel@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "artmoji_pen@3x.png",
+      "filename" : "artmoji_select_cancel@3x.png",
       "scale" : "3x"
     }
   ],

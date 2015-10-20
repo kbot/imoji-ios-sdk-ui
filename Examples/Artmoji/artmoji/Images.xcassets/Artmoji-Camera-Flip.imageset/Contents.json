@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "create_imoji_flipcam.png",
+      "filename" : "artmoji_flipcam.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "create_imoji_flipcam@2x.png",
+      "filename" : "artmoji_flipcam@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "create_imoji_flipcam@3x.png",
+      "filename" : "artmoji_flipcam@3x.png",
       "scale" : "3x"
     }
   ],
