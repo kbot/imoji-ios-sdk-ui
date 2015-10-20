@@ -329,39 +329,33 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.imojiOperation = operation =
             [self.session getImojiCategoriesWithClassification:classification
                                                       callback:^(NSArray *imojiCategories, NSError *error) {
-                                                          if (!operation.isCancelled) {
-                                                              [self performBatchUpdates:^{
-                                                                          // remove loading indicator
-                                                                          [self.content removeObject:self.loadingIndicatorObject];
-                                                                          [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]]];
+                                                          if (error) {
+                                                              return;
+                                                          }
 
-                                                                          [self.content addObjectsFromArray:imojiCategories];
-                                                                          __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:imojiCategories.count];
-                                                                          for (int i = 0; i < imojiCategories.count; ++i) {
-                                                                              [self.images addObject:[NSNull null]];
-                                                                              [insertedPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-                                                                          }
+                                                          [self.content removeAllObjects];
+                                                          [self.content addObjectsFromArray:imojiCategories];
+                                                          for (int i = 0; i < imojiCategories.count; ++i) {
+                                                              [self.images addObject:[NSNull null]];
+                                                          }
 
-                                                                          [self insertItemsAtIndexPaths:insertedPaths];
-                                                                      }
-                                                                             completion:^(BOOL finished) {
-                                                                                 for (IMImojiCategoryObject *category in imojiCategories) {
-                                                                                     if (operation.isCancelled) {
-                                                                                         break;
-                                                                                     }
+                                                          [self reloadData];
 
-                                                                                     NSUInteger index = [imojiCategories indexOfObject:category];
-                                                                                     [self renderImojiResult:category.previewImoji
-                                                                                                     content:category
-                                                                                                     atIndex:index
-                                                                                                      offset:0
-                                                                                                   operation:operation];
-                                                                                 }
-                                                                             }];
-
-                                                              if (self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
-                                                                  [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
+                                                          for (IMImojiCategoryObject *category in imojiCategories) {
+                                                              if (operation.isCancelled) {
+                                                                  break;
                                                               }
+
+                                                              NSUInteger index = [imojiCategories indexOfObject:category];
+                                                              [self renderImojiResult:category.previewImoji
+                                                                              content:category
+                                                                              atIndex:index
+                                                                               offset:0
+                                                                            operation:operation];
+                                                          }
+
+                                                          if (!operation.isCancelled && self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
+                                                              [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
                                                           }
                                                       }];
 }
@@ -602,7 +596,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self.images removeAllObjects];
         [self.content removeAllObjects];
         [self.pendingCollectionViewUpdates removeAllObjects];
-        
+
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         // loading indicator exists already for results with an offset
@@ -611,9 +605,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         }
     }
 
-    if (self.imojiOperation) {
+    if (self.imojiOperation && !self.imojiOperation.isCancelled) {
         [self.imojiOperation cancel];
-        self.imojiOperation = nil;
     }
 
     [self reloadData];
@@ -629,7 +622,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self.content removeAllObjects];
         [self.images removeAllObjects];
         [self.pendingCollectionViewUpdates removeAllObjects];
-        
+
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
         if (resultCount.unsignedIntegerValue == 0) {
@@ -691,27 +684,39 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                          if (!operation.isCancelled) {
                              self.images[index + offset] = image ? image : [NSNull null];
-                             BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
-                             [self.pendingCollectionViewUpdates addObject:[NSIndexPath indexPathForItem:(index + offset) inSection:0]];
-                             
-                             // if the pending collection view list was empty, go ahead and call the reload method, otherwise, allow
-                             // the method to perform the reload after the last batch update completes
-                             if (doReload) {
-                                 [self reloadPendingUpdates];
+                             NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:0];
+
+                             // immediately reload cells for iOS 8 and later, for iOS 7, we need to batch the updates
+                             if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
+                                 BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
+                                 [self.pendingCollectionViewUpdates addObject:newPath];
+
+                                 // if the pending collection view list was empty, go ahead and call the reload method, otherwise, allow
+                                 // the method to perform the reload after the last batch update completes
+                                 
+                                 if (doReload) {
+                                     [self reloadPendingUpdatesWithOperation:operation];
+                                 }
+                             } else {
+                                 [self performBatchUpdates:^{
+                                     [self reloadItemsAtIndexPaths:@[newPath]];
+                                 } completion:nil];
                              }
                          }
                      }];
 }
 
-- (void)reloadPendingUpdates {
+- (void)reloadPendingUpdatesWithOperation:(NSOperation *)operation {
     if (self.pendingCollectionViewUpdates.count > 0) {
         __block NSOrderedSet *updates = [NSOrderedSet orderedSetWithArray:self.pendingCollectionViewUpdates];
         [self performBatchUpdates:^{
-            [self reloadItemsAtIndexPaths:updates.array];
-        } completion:^(BOOL finished) {
+            if (!operation.isCancelled) {
+                [self reloadItemsAtIndexPaths:updates.array];
+            }
+        }              completion:^(BOOL finished) {
             [self.pendingCollectionViewUpdates removeObjectsInArray:updates.array];
             // recurse in case there are new items to reload
-            [self reloadPendingUpdates];
+            [self reloadPendingUpdatesWithOperation:operation];
         }];
     }
 }
