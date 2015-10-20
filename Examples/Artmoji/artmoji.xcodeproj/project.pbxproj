@@ -10,7 +10,6 @@
 		2DBA102E68C70FE6B7869573 /* IMCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */; };
 		2DBA147E7800A7B633E690CB /* IMCreateArtmojiSelectedImojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */; };
 		2DBA174C3B2BDFF6D669D50A /* IMColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */; };
-		2DBA18BBB1EC663DAD7364DA /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DBA1D4338E5FEB319434489 /* frosty-dog.png */; };
 		2DBA1B9574F67B608A727854 /* IMCreateArtmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */; };
 		A690BE85C07C2400D202B07B /* Pods_artmoji.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5691C1C0FB59F3D28DC32CF9 /* Pods_artmoji.framework */; };
 		F9676FB3333F954CE0A8F4EC /* Pods_artmoji_photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFEC4DC9ADDD28D8F5A04C2A /* Pods_artmoji_photos.framework */; };
@@ -26,7 +25,6 @@
 		FA1B017C1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */; settings = {ASSET_TAGS = (); }; };
 		FA1B017D1BCCAFE6002B0B2E /* IMArtmojiConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */; settings = {ASSET_TAGS = (); }; };
 		FA1B017E1BCCB0D5002B0B2E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA9223101BB4B07A00366238 /* Images.xcassets */; settings = {ASSET_TAGS = (); }; };
-		FA1B017F1BCD9FF2002B0B2E /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2DBA1D4338E5FEB319434489 /* frosty-dog.png */; settings = {ASSET_TAGS = (); }; };
 		FA5167C91BBE129800DC9274 /* IMCreateArtmojiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5167C81BBE129800DC9274 /* IMCreateArtmojiViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		FA92230A1BB4B07A00366238 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9223091BB4B07A00366238 /* AppDelegate.swift */; };
 		FA92230C1BB4B07A00366238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA92230B1BB4B07A00366238 /* ViewController.swift */; };
@@ -63,7 +61,6 @@
 /* Begin PBXFileReference section */
 		2DBA10D785FCCF1459E8B8C9 /* IMCreateArtmojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiView.swift; sourceTree = "<group>"; };
 		2DBA1483D66BCD5BEE847242 /* IMCreateArtmojiSelectedImojiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCreateArtmojiSelectedImojiView.swift; sourceTree = "<group>"; };
-		2DBA1D4338E5FEB319434489 /* frosty-dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frosty-dog.png"; sourceTree = "<group>"; };
 		2DBA1E3AA9F6388576E01269 /* IMColorSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMColorSlider.swift; sourceTree = "<group>"; };
 		2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IMCameraViewController.swift; sourceTree = "<group>"; };
 		5691C1C0FB59F3D28DC32CF9 /* Pods_artmoji.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_artmoji.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,7 +156,6 @@
 				FA9223051BB4B07A00366238 /* Products */,
 				B055C0C39C05BBD156F631DF /* Pods */,
 				60E24340947F5871CBF8ADEB /* Frameworks */,
-				2DBA1D4338E5FEB319434489 /* frosty-dog.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -288,7 +284,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA1B01681BCCA8D1002B0B2E /* MainInterface.storyboard in Resources */,
-				FA1B017F1BCD9FF2002B0B2E /* frosty-dog.png in Resources */,
 				FA1B017E1BCCB0D5002B0B2E /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,7 +296,6 @@
 				FA9223141BB4B07A00366238 /* LaunchScreen.xib in Resources */,
 				FA92232A1BB4B1E700366238 /* Podfile in Resources */,
 				FA9223111BB4B07A00366238 /* Images.xcassets in Resources */,
-				2DBA18BBB1EC663DAD7364DA /* frosty-dog.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

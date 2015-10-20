@@ -24,10 +24,16 @@
 //
 
 struct IMArtmojiConstants {
-    static let NavigationBarHeight: CGFloat = 50.0
-    static let BottomBarHeight: CGFloat = 90.0
-    static let ButtonItemWidthHeight: CGFloat = 40.0
+    static let NavigationBarHeight: CGFloat = 82.0
+    static let BottomBarHeight: CGFloat = 92.0
+    static let DefaultButtonItemWidthHeight: CGFloat = 40.0
     static let SliderWidth: CGFloat = 165.0
+    static let DefaultBarTintColor = UIColor(red: 10.0 / 255.0, green: 132.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
+    static let MinimumBrushSize: CGFloat = 1.0
+    static let MaximumBrushSize: CGFloat = 40.0
+    static let BrushColorPreviewWidthHeight: CGFloat = 52.0
+    static let BrushSizePreviewSize: CGFloat = 25.0
+    static let BrushSizeThumbWidthHeight: CGFloat = 30.0
     static let FormatIdentifier = "com.sopressata.artmoji.artmoji-photos"
     static let FormatVersion = "1.0"
 

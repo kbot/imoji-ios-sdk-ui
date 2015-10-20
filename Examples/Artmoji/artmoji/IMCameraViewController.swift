@@ -43,7 +43,6 @@ public class IMCameraViewController: UIViewController {
 
     // Top toolbar
     private var navigationBar: UIToolbar!
-    private var navigationTitle: UIButton!
     private var cancelButton: UIBarButtonItem!
 
     // Bottom toolbar
@@ -76,19 +75,12 @@ public class IMCameraViewController: UIViewController {
 
         view.backgroundColor = UIColor(red: 48.0 / 255.0, green: 48.0 / 255.0, blue: 48.0 / 255.0, alpha: 1.0)
 
-        // Set up title
-        navigationTitle = UIButton(type: UIButtonType.Custom)
-        navigationTitle.setTitle(presentingViewControllerType == IMArtmojiConstants.PresentingViewControllerType.CreateArtmoji ? "ARTMOJI" : "CREATE STICKER", forState: UIControlState.Normal)
-        navigationTitle.titleLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 18.0)
-        navigationTitle.sizeToFit()
-        navigationTitle.userInteractionEnabled = false
-
         // Set up toolbar buttons
-        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.ButtonItemWidthHeight, IMArtmojiConstants.ButtonItemWidthHeight)
+        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
         captureButton = UIButton(type: UIButtonType.Custom)
-        captureButton.setImage(UIImage(named: "Artmoji-Camera-Capture"), forState: UIControlState.Normal)
+        captureButton.setImage(UIImage(named: "Artmoji-Circle"), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        captureButton.frame = buttonItemFrame
+        captureButton.frame = CGRectMake(0, 0, 140.0, 140.0)
 
         let cancelButton = UIButton(type: UIButtonType.Custom)
         cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
@@ -112,9 +104,6 @@ public class IMCameraViewController: UIViewController {
         navigationBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
         navigationBar.tintColor = UIColor.whiteColor()
         navigationBar.barTintColor = UIColor.clearColor()
-        navigationBar.items = [UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil),
-                               UIBarButtonItem(customView: navigationTitle),
-                               UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)]
 
         determineCancelCameraButtonVisibility()
 
@@ -189,12 +178,12 @@ public class IMCameraViewController: UIViewController {
     }
 
     func determineCancelCameraButtonVisibility() {
-        if let index = navigationBar.items!.indexOf(cancelButton) {
+        if let _ = navigationBar.items, let index = navigationBar.items!.indexOf(cancelButton) {
             navigationBar.items!.removeAtIndex(index)
         }
         
         if delegate?.userDidCancelCameraViewController != nil {
-            navigationBar.items!.insert(cancelButton, atIndex: 0)
+            navigationBar.items = [cancelButton]
         }
     }
 

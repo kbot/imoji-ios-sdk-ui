@@ -94,7 +94,7 @@ public class IMColorSlider: UISlider {
             CGContextMoveToPoint(context, CGFloat(i), frame.size.height / 2.0)
             CGContextAddLineToPoint(context, CGFloat(i), frame.size.height / 2.0)
             CGContextSetLineCap(context, CGLineCap.Round)
-            CGContextSetLineWidth(context, 10.0)
+            CGContextSetLineWidth(context, 8.0)
             CGContextSetStrokeColorWithColor(context, UIColor(hue: CGFloat(i) / IMArtmojiConstants.SliderWidth, saturation: 1.0, brightness: 1.0, alpha: 1.0).CGColor)
             CGContextSetBlendMode(context, CGBlendMode.Normal)
             CGContextStrokePath(context)
@@ -107,11 +107,18 @@ public class IMColorSlider: UISlider {
             transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
         }
 
+        let outerLayer = CAGradientLayer()
+        outerLayer.frame = UIEdgeInsetsInsetRect(colorView.bounds, UIEdgeInsetsMake(8, -3, 7, -3))
+        colorView.layer.insertSublayer(outerLayer, atIndex: 0)
+        outerLayer.cornerRadius = 3.0
+        outerLayer.borderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8).CGColor
+        outerLayer.borderWidth = 1.0
+
         let innerLayer = CAGradientLayer()
-        innerLayer.frame = UIEdgeInsetsInsetRect(colorView.bounds, UIEdgeInsetsMake(8, -2, 7, -2))
-        colorView.layer.insertSublayer(innerLayer, atIndex: 0)
+        innerLayer.frame = UIEdgeInsetsInsetRect(colorView.bounds, UIEdgeInsetsMake(9, -2, 8, -2))
+        colorView.layer.insertSublayer(innerLayer, atIndex: 1)
         innerLayer.cornerRadius = 3.0
-        innerLayer.borderColor = UIColor.blackColor().CGColor
+        innerLayer.borderColor = UIColor.whiteColor().CGColor
         innerLayer.borderWidth = 2.0
     }
 

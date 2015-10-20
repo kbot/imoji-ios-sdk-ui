@@ -106,17 +106,17 @@ public class IMCreateArtmojiViewController: UIViewController {
         shapeLayer.cornerRadius = cornerRadius
         shapeLayer.renderInContext(context!)
         
-        let createImojiImage = UIImage(named: "Artmoji-Create-Imoji")
-        UIGraphicsBeginImageContextWithOptions(createImojiImage!.size, false, 0.0)
-        UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0).setFill()
-        let bounds = CGRectMake(0, 0, createImojiImage!.size.width, createImojiImage!.size.height)
+        let createImojiImage = UIImage(named: "Artmoji-Create-Imoji")!
+        UIGraphicsBeginImageContextWithOptions(createImojiImage.size, false, 0.0)
+        IMArtmojiConstants.DefaultBarTintColor.setFill()
+        let bounds = CGRectMake(0, 0, createImojiImage.size.width, createImojiImage.size.height)
         UIRectFill(bounds)
-        createImojiImage!.drawInRect(bounds, blendMode: CGBlendMode.DestinationIn, alpha: 1.0)
+        createImojiImage.drawInRect(bounds, blendMode: CGBlendMode.DestinationIn, alpha: 1.0)
         let tintedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         tintedImage!.drawInRect(CGRectMake((size.width - tintedImage!.size.width) / 2.0,
-            (size.height - createImojiImage!.size.height) / 2.0,
+            (size.height - createImojiImage.size.height) / 2.0,
             tintedImage!.size.width,
             tintedImage!.size.height))
         
@@ -157,8 +157,17 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         dismissViewControllerAnimated(false, completion: nil)
     }
 
-    public func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView) {
-        dismissViewControllerAnimated(false, completion: nil)
+    public func userDidCancelCreateArtmojiView(view: IMCreateArtmojiView, dirty: Bool) {
+        if dirty {
+            let alert = UIAlertController(title: "Start new artmoji?", message: "This will clear your current work.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Keep Editing", style: UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "New", style: UIAlertActionStyle.Default) { alert in
+                self.dismissViewControllerAnimated(false, completion: nil)
+            })
+            presentViewController(alert, animated: true, completion: nil)
+        } else {
+            dismissViewControllerAnimated(false, completion: nil)
+        }
     }
 
     public func userDidFinishCreatingArtmoji(artmoji: UIImage, view: IMCreateArtmojiView) {
@@ -167,7 +176,8 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
 
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
-        collectionViewController.topToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
+        collectionViewController.topToolbar.barTintColor = IMArtmojiConstants.DefaultBarTintColor
+        collectionViewController.backButton.setImage(UIImage(named: "Artmoji-Borderless-Cancel"), forState: UIControlState.Normal)
         collectionViewController.backButton.hidden = false
         collectionViewController.topToolbar.delegate = self
 
@@ -183,7 +193,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         
         collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Reactions)
         collectionViewController.bottomToolbar.addFlexibleSpace()
-        collectionViewController.bottomToolbar.barTintColor = UIColor(red: 55.0 / 255.0, green: 123.0 / 255.0, blue: 167.0 / 255.0, alpha: 1.0)
+        collectionViewController.bottomToolbar.barTintColor = IMArtmojiConstants.DefaultBarTintColor
         collectionViewController.bottomToolbar.delegate = self
 
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
@@ -246,7 +256,9 @@ extension IMCreateArtmojiViewController: IMCameraViewControllerDelegate {
 
 // MARK: - IMCollectionViewControllerDelegate
 extension IMCreateArtmojiViewController: IMCollectionViewControllerDelegate {
-
+    public func backgroundColorForCollectionViewController(collectionViewController: UIViewController) -> UIColor? {
+        return IMArtmojiConstants.DefaultBarTintColor
+    }
 }
 
 // MARK: - IMCollectionViewDelegate
