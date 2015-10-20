@@ -116,6 +116,10 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 }
 
 - (void)performGrowAnimation {
+    if (!self.hasImojiImage) {
+        return;
+    }
+
     [CATransaction begin];
     [self.imojiView.layer removeAllAnimations];
     [CATransaction commit];
@@ -140,6 +144,10 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 }
 
 - (void)performTranslucentAnimation {
+    if (!self.hasImojiImage) {
+        return;
+    }
+
     [UIView animateWithDuration:0.1 animations:^{
                 self.imojiView.alpha = 0.5;
             }
