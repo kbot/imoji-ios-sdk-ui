@@ -179,7 +179,6 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         collectionViewController.topToolbar.barTintColor = IMArtmojiConstants.DefaultBarTintColor
         collectionViewController.backButton.setImage(UIImage(named: "Artmoji-Borderless-Cancel"), forState: UIControlState.Normal)
         collectionViewController.backButton.hidden = false
-        collectionViewController.topToolbar.delegate = self
 
         collectionViewController.bottomToolbar.addFlexibleSpace()
         collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Trending)
