@@ -183,7 +183,7 @@ public class IMCameraViewController: UIViewController {
         }
         
         if delegate?.userDidCancelCameraViewController != nil {
-            navigationBar.items!.insert(cancelButton, atIndex: 0)
+            navigationBar.items = [cancelButton]
         }
     }
 

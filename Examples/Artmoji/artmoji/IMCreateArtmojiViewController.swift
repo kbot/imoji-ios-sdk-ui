@@ -247,7 +247,9 @@ extension IMCreateArtmojiViewController: IMCameraViewControllerDelegate {
 
 // MARK: - IMCollectionViewControllerDelegate
 extension IMCreateArtmojiViewController: IMCollectionViewControllerDelegate {
-
+    public func backgroundColorForCollectionViewController(collectionViewController: UIViewController) -> UIColor? {
+        return IMArtmojiConstants.DefaultBarTintColor
+    }
 }
 
 // MARK: - IMCollectionViewDelegate

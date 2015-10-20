@@ -86,6 +86,7 @@ public class IMCreateArtmojiView: UIView {
             }
 
             // Hide imoji edit buttons when there isn't a selectedImoji i.e. when selectedImojis.count is 0
+            deleteImojiButton.hidden = selectedImojiView == nil
             flipImojiButton.hidden = selectedImojiView == nil
             selectedImojiPreview.hidden = selectedImojiView == nil
         }
@@ -108,16 +109,18 @@ public class IMCreateArtmojiView: UIView {
     }
 
     // Drawing
-    private var brushPreview: UIImageView!
+    private var brushColorPreview: UIImageView!
     private var drawingCanvasView: UIImageView!
     private var drawingActionsBar: IMToolbar!
     private var backButton: UIButton!
     private var undoButton: UIButton!
-    private var brushSlider: UISlider!
+    private var brushSizeSlider: UISlider!
     private var colorSlider: IMColorSlider!
     private var drawnImages: [UIImage]
     private var hue: CGFloat
     private var brushWidth: CGFloat
+    private var roundedWhiteBorderSize: CGFloat
+    private var roundedBlackBorderSize: CGFloat
     private var drawing: Bool
     private var swiped: Bool
 
@@ -129,7 +132,7 @@ public class IMCreateArtmojiView: UIView {
 
     // Bottom toolbar
     private var bottomBar: IMToolbar!
-    private var doneButton: UIButton!
+    private var shareButton: UIButton!
     private var imojiCollectionButton: UIButton!
     private var deleteImojiButton: UIButton!
     private var drawButton: UIButton!
@@ -151,6 +154,8 @@ public class IMCreateArtmojiView: UIView {
         swiped = false
         hue = 0
         brushWidth = 10.0
+        roundedWhiteBorderSize = 4.0
+        roundedBlackBorderSize = 5.0
 
         super.init(frame: CGRectZero)
 
@@ -162,16 +167,17 @@ public class IMCreateArtmojiView: UIView {
     }
 
     // MARK: - View lifecycle
-    func setup() {
+    private func setup() {
         backgroundColor = UIColor(red: 48.0 / 255.0, green: 48.0 / 255.0, blue: 48.0 / 255.0, alpha: 1.0)
 
         // Set up navigationBar buttons
-        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.ButtonItemWidthHeight, IMArtmojiConstants.ButtonItemWidthHeight)
-        cancelButton = UIButton(type: UIButtonType.Custom)
-        cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
-        cancelButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.tag = IMCreateArtmojiViewButtonType.Cancel.rawValue
-        cancelButton.frame = buttonItemFrame
+        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
+        deleteImojiButton = UIButton(type: UIButtonType.Custom)
+        deleteImojiButton.setImage(UIImage(named: "Artmoji-Delete-Imoji"), forState: UIControlState.Normal)
+        deleteImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        deleteImojiButton.tag = IMCreateArtmojiViewButtonType.Delete.rawValue
+        deleteImojiButton.frame = buttonItemFrame
+        deleteImojiButton.hidden = true
 
         drawButton = UIButton(type: UIButtonType.Custom)
         drawButton.setImage(UIImage(named: "Artmoji-Draw"), forState: UIControlState.Normal)
@@ -192,42 +198,48 @@ public class IMCreateArtmojiView: UIView {
         selectedImojiPreview.hidden = true
 
         // Set up bottomBar buttons
-        deleteImojiButton = UIButton(type: UIButtonType.Custom)
-        deleteImojiButton.setImage(UIImage(named: "Artmoji-Delete-Imoji"), forState: UIControlState.Normal)
-        deleteImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-        deleteImojiButton.tag = IMCreateArtmojiViewButtonType.Delete.rawValue
-        deleteImojiButton.frame = buttonItemFrame
+        cancelButton = UIButton(type: UIButtonType.Custom)
+        cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
+        cancelButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.tag = IMCreateArtmojiViewButtonType.Cancel.rawValue
+        cancelButton.frame = buttonItemFrame
 
-        doneButton = UIButton(type: UIButtonType.Custom)
-        doneButton.setImage(IMCreateImojiUITheme().trimScreenFinishTraceButtonImage, forState: UIControlState.Normal)
-        doneButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-        doneButton.tag = IMCreateArtmojiViewButtonType.Done.rawValue
-        doneButton.frame = buttonItemFrame
+        shareButton = UIButton(type: UIButtonType.Custom)
+        shareButton.setImage(UIImage(named: "Artmoji-Share"), forState: UIControlState.Normal)
+        shareButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        shareButton.tag = IMCreateArtmojiViewButtonType.Done.rawValue
+        shareButton.frame = buttonItemFrame
 
+        // Draw the plus image on top of the circle image and center it horizontally and vertically
+        let circleImage = UIImage(named: "Artmoji-Circle")!
+        let plusImage = UIImage(named: "Artmoji-Add-Imoji")!
+        let imojiCollectionImage = drawImage(image: plusImage, withinImage: circleImage,
+            atPoint: CGPointMake((circleImage.size.width - plusImage.size.width) / 2.0, (circleImage.size.height - plusImage.size.height) / 2.0))
+        
         imojiCollectionButton = UIButton(type: UIButtonType.Custom)
-        imojiCollectionButton.setImage(UIImage(named: "toolbar_reactions_on", inBundle: imageBundle, compatibleWithTraitCollection: nil), forState: UIControlState.Normal)
+        imojiCollectionButton.setImage(imojiCollectionImage, forState: UIControlState.Normal)
         imojiCollectionButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         imojiCollectionButton.tag = IMCreateArtmojiViewButtonType.Collection.rawValue
-        imojiCollectionButton.frame = buttonItemFrame
+        imojiCollectionButton.frame = CGRectMake(0, 0, 140.0, 140.0)
 
         // Set up drawingActionsBar buttons
         backButton = UIButton(type: UIButtonType.Custom)
-        backButton.setImage(IMCreateImojiUITheme().tagScreenBackButtonImage, forState: UIControlState.Normal)
+        backButton.setImage(UIImage(named: "Artmoji-Draw-Back"), forState: UIControlState.Normal)
         backButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         backButton.tag = IMCreateArtmojiViewButtonType.Back.rawValue
         backButton.frame = buttonItemFrame
 
         undoButton = UIButton(type: UIButtonType.Custom)
-        undoButton.setImage(IMCreateImojiUITheme().trimScreenUndoButtonImage, forState: UIControlState.Normal)
+        undoButton.setImage(UIImage(named: "Artmoji-Draw-Undo"), forState: UIControlState.Normal)
         undoButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         undoButton.tag = IMCreateArtmojiViewButtonType.Undo.rawValue
         undoButton.frame = buttonItemFrame
 
-        brushPreview = UIImageView(frame: buttonItemFrame)
+        brushColorPreview = UIImageView(frame: CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight))
 
         #if !NOT_PHOTO_EXTENSION
         cancelButton.hidden = true
-        doneButton.hidden = true
+        shareButton.hidden = true
         #endif
 
         // Set up navigationBar
@@ -237,11 +249,9 @@ public class IMCreateArtmojiView: UIView {
         navigationBar.tintColor = UIColor.whiteColor()
         navigationBar.barTintColor = UIColor.clearColor()
 
-        navigationBar.addBarButton(UIBarButtonItem(customView: cancelButton))
-        navigationBar.addFlexibleSpace()
-        navigationBar.addBarButton(UIBarButtonItem(customView: flipImojiButton))
-        navigationBar.addFlexibleSpace()
+        navigationBar.addBarButton(UIBarButtonItem(customView: deleteImojiButton))
         navigationBar.addBarButton(UIBarButtonItem(customView: selectedImojiPreview))
+        navigationBar.addBarButton(UIBarButtonItem(customView: flipImojiButton))
         navigationBar.addFlexibleSpace()
         navigationBar.addBarButton(UIBarButtonItem(customView: drawButton))
 
@@ -251,11 +261,11 @@ public class IMCreateArtmojiView: UIView {
         bottomBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
         bottomBar.barTintColor = UIColor.clearColor()
 
-        bottomBar.addBarButton(UIBarButtonItem(customView: deleteImojiButton))
-        bottomBar.addFlexibleSpace()
-        bottomBar.addBarButton(UIBarButtonItem(customView: doneButton))
+        bottomBar.addBarButton(UIBarButtonItem(customView: cancelButton))
         bottomBar.addFlexibleSpace()
         bottomBar.addBarButton(UIBarButtonItem(customView: imojiCollectionButton))
+        bottomBar.addFlexibleSpace()
+        bottomBar.addBarButton(UIBarButtonItem(customView: shareButton))
 
         // Set up drawingActionsBar
         drawingActionsBar = IMToolbar()
@@ -266,7 +276,7 @@ public class IMCreateArtmojiView: UIView {
         drawingActionsBar.addBarButton(UIBarButtonItem(customView: backButton))
         drawingActionsBar.addFlexibleSpace()
         drawingActionsBar.addBarButton(UIBarButtonItem(customView: undoButton))
-        drawingActionsBar.addBarButton(UIBarButtonItem(customView: brushPreview))
+        drawingActionsBar.addBarButton(UIBarButtonItem(customView: brushColorPreview))
         drawingActionsBar.hidden = true
 
         // Artmoji view
@@ -281,14 +291,14 @@ public class IMCreateArtmojiView: UIView {
         // Drawing view
         drawingCanvasView = UIImageView()
 
-        brushSlider = UISlider()
-        brushSlider.minimumValue = 1.0
-        brushSlider.maximumValue = 40.0
-        brushSlider.value = Float(brushWidth)
-        brushSlider.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-        brushSlider.addTarget(self, action: "sliderValueChanged:", forControlEvents: UIControlEvents.ValueChanged)
-        brushSlider.tag = IMCreateArtmojiViewSliderType.BrushWidth.rawValue
-        brushSlider.hidden = true
+        brushSizeSlider = UISlider()
+        brushSizeSlider.minimumValue = Float(IMArtmojiConstants.MinimumBrushSize)
+        brushSizeSlider.maximumValue = Float(IMArtmojiConstants.MaximumBrushSize)
+        brushSizeSlider.value = Float(brushWidth)
+        brushSizeSlider.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
+        brushSizeSlider.addTarget(self, action: "sliderValueChanged:", forControlEvents: UIControlEvents.ValueChanged)
+        brushSizeSlider.tag = IMCreateArtmojiViewSliderType.BrushWidth.rawValue
+        brushSizeSlider.hidden = true
 
         colorSlider = IMColorSlider()
         colorSlider.addTarget(self, action: "sliderValueChanged:", forControlEvents: UIControlEvents.ValueChanged)
@@ -301,7 +311,7 @@ public class IMCreateArtmojiView: UIView {
         addSubview(backgroundGestureView)
         addSubview(drawingCanvasView)
         addSubview(drawingActionsBar)
-        addSubview(brushSlider)
+        addSubview(brushSizeSlider)
         addSubview(colorSlider)
         addSubview(navigationBar)
         addSubview(bottomBar)
@@ -346,7 +356,7 @@ public class IMCreateArtmojiView: UIView {
             make.width.equalTo()(IMArtmojiConstants.SliderWidth)
         }
 
-        brushSlider.mas_makeConstraints { make in
+        brushSizeSlider.mas_makeConstraints { make in
             make.top.equalTo()(self.colorSlider.mas_bottom).offset()(CGFloat(IMArtmojiConstants.SliderWidth))
             make.right.equalTo()(self).offset()(50)
             make.width.equalTo()(IMArtmojiConstants.SliderWidth)
@@ -355,7 +365,7 @@ public class IMCreateArtmojiView: UIView {
         setupGestureRecognizers()
     }
 
-    func setupGestureRecognizers() {
+    private func setupGestureRecognizers() {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: "imojiPanned:")
         panRecognizer.cancelsTouchesInView = false
         panRecognizer.delegate = self
@@ -383,7 +393,7 @@ public class IMCreateArtmojiView: UIView {
                 drawing = !drawing
 
                 // Show/Hide toolbars/sliders
-                brushSlider.hidden = !drawing
+                brushSizeSlider.hidden = !drawing
                 colorSlider.hidden = !drawing
                 drawingActionsBar.hidden = !drawing
                 navigationBar.hidden = drawing
@@ -396,8 +406,8 @@ public class IMCreateArtmojiView: UIView {
                     imoji.userInteractionEnabled = !drawing
                 }
 
-                if brushPreview.image == nil {
-                    drawBrushPreview()
+                if brushColorPreview.image == nil {
+                    renderBrushPreview()
                 }
                 break
             case IMCreateArtmojiViewButtonType.Cancel.rawValue:
@@ -464,7 +474,7 @@ public class IMCreateArtmojiView: UIView {
                 break
         }
 
-        drawBrushPreview()
+        renderBrushPreview()
     }
 
     // MARK: - Touch overrides
@@ -578,6 +588,7 @@ public class IMCreateArtmojiView: UIView {
     }
 
     // MARK: - Image & Imoji logic
+    // Renders the imoji and adds it onto the view with its gesture recognizers
     func addImoji(imoji: IMImojiObject) {
         let selectedImojiView = IMCreateArtmojiSelectedImojiView(imoji: imoji, session: self.session)
 
@@ -616,6 +627,7 @@ public class IMCreateArtmojiView: UIView {
         delegate?.artmojiView?(self, didFinishLoadingImoji: imoji)
     }
 
+    // Renders the artmoji and returns an image
     func drawCompositionImage() -> UIImage {
         let imageSize = CGSizeMake(backgroundView.bounds.size.width, backgroundView.bounds.size.height)
         UIGraphicsBeginImageContextWithOptions(imageSize, false, 0.0)
@@ -660,6 +672,37 @@ public class IMCreateArtmojiView: UIView {
         return img
     }
 
+    // Render the preview image for the brush upon entering drawing mode the first time or
+    // changing color/size of the brush
+    func renderBrushPreview() {
+        // Draw the color preview of the brush
+        brushColorPreview.image = drawRoundedPreviewImageInFrame(CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight),
+                lineWidth: IMArtmojiConstants.MaximumBrushSize, sizeRatio: 0)
+
+        // Draw the pencil on top of the preview and center it horizontally
+        let pencilImage = UIImage(named: "Artmoji-Draw")!
+        brushColorPreview.image = drawImage(image: pencilImage, withinImage: brushColorPreview.image!, atPoint: CGPointMake(brushColorPreview.image!.size.width / 2.0, 0))
+
+        // Draw thumb image used for brushSizeSlider
+        let brushSizeThumbImage = drawRoundedPreviewImageInFrame(CGRectMake(0, 0, IMArtmojiConstants.BrushSizeThumbWidthHeight, IMArtmojiConstants.BrushSizeThumbWidthHeight),
+                lineWidth: IMArtmojiConstants.BrushSizePreviewSize, sizeRatio: IMArtmojiConstants.BrushSizePreviewSize / IMArtmojiConstants.MaximumBrushSize)
+        brushSizeSlider.setThumbImage(brushSizeThumbImage, forState: UIControlState.Normal)
+        brushSizeSlider.setThumbImage(brushSizeThumbImage, forState: UIControlState.Highlighted)
+    }
+
+    // Render an image within an image at a specific point.
+    // Used for the Imoji Collection Button
+    func drawImage(image foreground: UIImage, withinImage background: UIImage, atPoint: CGPoint) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(background.size, false, 0.0)
+        background.drawInRect(CGRectMake(0, 0, background.size.width, background.size.height))
+        foreground.drawInRect(CGRectMake(atPoint.x, atPoint.y, foreground.size.width, foreground.size.height))
+        let combinedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return combinedImage
+    }
+
+    // Draws a line with color and size of the brush from point to point
     func drawLine(fromPoint: CGPoint, toPoint: CGPoint) {
         UIGraphicsBeginImageContext(frame.size)
         let context = UIGraphicsGetCurrentContext()
@@ -678,20 +721,41 @@ public class IMCreateArtmojiView: UIView {
         UIGraphicsEndImageContext()
     }
 
-    // Renders the current color and size of the brush
-    func drawBrushPreview() {
-        UIGraphicsBeginImageContext(brushPreview.frame.size)
+    // Renders a rounded preview image of the brush within a frame with a black/white border
+    // Preview changes color and size. Size changes happen within the border and uses a sizeRatio.
+    // If the sizeRatio is 0 then the preview image won't be scaled
+    func drawRoundedPreviewImageInFrame(frame: CGRect, lineWidth: CGFloat, sizeRatio: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, 0.0)
         let context = UIGraphicsGetCurrentContext()
 
-        CGContextMoveToPoint(context, 20.0, 20.0)
-        CGContextAddLineToPoint(context, 20.0, 20.0)
+        // Draw the black border
+        CGContextMoveToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
+        CGContextAddLineToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
         CGContextSetLineCap(context, CGLineCap.Round)
-        CGContextSetLineWidth(context, brushWidth)
+        CGContextSetLineWidth(context, lineWidth + roundedBlackBorderSize)
+        CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0.8).CGColor)
+        CGContextStrokePath(context)
+
+        // Draw the white border
+        CGContextMoveToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
+        CGContextAddLineToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
+        CGContextSetLineWidth(context, lineWidth + roundedWhiteBorderSize)
+        CGContextSetStrokeColorWithColor(context, UIColor.whiteColor().CGColor)
+        CGContextStrokePath(context)
+
+        // Draw the preview within the borders
+        CGContextMoveToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
+        CGContextAddLineToPoint(context, frame.size.width / 2.0, frame.size.height / 2.0)
+        // When sizeRatio is not 0, multiply the current brush width by the ratio
+        // Otherwise, set it to the provided lineWidth
+        CGContextSetLineWidth(context, sizeRatio == 0 ? lineWidth : brushWidth * sizeRatio)
         CGContextSetStrokeColorWithColor(context, UIColor(hue: self.hue, saturation: 1.0, brightness: 1.0, alpha: 1.0).CGColor)
         CGContextStrokePath(context)
 
-        brushPreview.image = UIGraphicsGetImageFromCurrentImageContext()
+        let previewImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+
+        return previewImage
     }
 }
 
