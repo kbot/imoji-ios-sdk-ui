@@ -595,6 +595,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Debug;
@@ -616,6 +617,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Artmoji-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "Pods/**";
 			};
 			name = Release;
