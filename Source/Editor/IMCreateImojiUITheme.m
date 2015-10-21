@@ -61,10 +61,10 @@
         _tagScreenNavigationBarFont = [IMAttributeStringUtil defaultFontWithSize:18.f];
         _trimScreenNavigationBarFont = [IMAttributeStringUtil defaultFontWithSize:18.f];
 
-        _trimScreenUndoButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_undo", bundlePath]];
-        _trimScreenHelpButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_hints", bundlePath]];
-        _trimScreenCancelButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
-        _trimScreenFinishTraceButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_proceed", bundlePath]];
+        _trimScreenUndoButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_undo.png", bundlePath]];
+        _trimScreenHelpButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_hints.png", bundlePath]];
+        _trimScreenCancelButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back.png", bundlePath]];
+        _trimScreenFinishTraceButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_trace_proceed.png", bundlePath]];
 
         _trimScreenTitleAttributes = @{
                 NSFontAttributeName : _trimScreenNavigationBarFont,
@@ -75,14 +75,14 @@
                 NSForegroundColorAttributeName : _tagScreenTintColor
         };
 
-        _tagScreenBackButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back", bundlePath]];
-        _tagScreenFinishButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tag_done", bundlePath]];
+        _tagScreenBackButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_back.png", bundlePath]];
+        _tagScreenFinishButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tag_done.png", bundlePath]];
 
-        _tagScreenHelpImageStep1 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_1@3x", bundlePath]];
-        _tagScreenHelpImageStep2 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_2@3x", bundlePath]];
-        _tagScreenHelpImageStep3 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_3@3x", bundlePath]];
-        _tagScreenHelpNextButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_proceed", bundlePath]];
-        _tagScreenHelpDoneButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_done", bundlePath]];
+        _tagScreenHelpImageStep1 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_1@3x.png", bundlePath]];
+        _tagScreenHelpImageStep2 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_2@3x.png", bundlePath]];
+        _tagScreenHelpImageStep3 = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_3@3x.png", bundlePath]];
+        _tagScreenHelpNextButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_proceed.png", bundlePath]];
+        _tagScreenHelpDoneButtonImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/create_tips_done.png", bundlePath]];
 
         _tagScreenRemoveTagIcon = [IMCreateImojiUITheme drawClearIconWithXColor:_tagScreenRemoveButtonColor
                                                                    dividerColor:_tagScreenRemoveButtonDividerColor];
