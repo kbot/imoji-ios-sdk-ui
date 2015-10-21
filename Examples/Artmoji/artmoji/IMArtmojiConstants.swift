@@ -26,7 +26,8 @@
 struct IMArtmojiConstants {
     static let NavigationBarHeight: CGFloat = 82.0
     static let BottomBarHeight: CGFloat = 92.0
-    static let DefaultButtonItemWidthHeight: CGFloat = 40.0
+    static let DefaultButtonItemWidthHeight: CGFloat = 50.0
+    static let DefaultButtonItemInset: CGFloat = DefaultButtonItemWidthHeight / 8.0
     static let SliderWidth: CGFloat = 165.0
     static let DefaultBarTintColor = UIColor(red: 10.0 / 255.0, green: 132.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
     static let MinimumBrushSize: CGFloat = 1.0

@@ -109,7 +109,7 @@ public class IMCreateArtmojiView: UIView {
     }
 
     // Drawing
-    private var brushColorPreview: UIImageView!
+    private var brushColorPreview: UIButton!
     private var drawingCanvasView: UIImageView!
     private var drawingActionsBar: IMToolbar!
     private var backButton: UIButton!
@@ -172,10 +172,12 @@ public class IMCreateArtmojiView: UIView {
 
         // Set up navigationBar buttons
         let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
+        let buttonItemInsets = UIEdgeInsetsMake(IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset)
         deleteImojiButton = UIButton(type: UIButtonType.Custom)
         deleteImojiButton.setImage(UIImage(named: "Artmoji-Delete-Imoji"), forState: UIControlState.Normal)
         deleteImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         deleteImojiButton.tag = IMCreateArtmojiViewButtonType.Delete.rawValue
+        deleteImojiButton.imageEdgeInsets = buttonItemInsets
         deleteImojiButton.frame = buttonItemFrame
         deleteImojiButton.hidden = true
 
@@ -183,12 +185,14 @@ public class IMCreateArtmojiView: UIView {
         drawButton.setImage(UIImage(named: "Artmoji-Draw"), forState: UIControlState.Normal)
         drawButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         drawButton.tag = IMCreateArtmojiViewButtonType.Draw.rawValue
+        drawButton.imageEdgeInsets = buttonItemInsets
         drawButton.frame = buttonItemFrame
 
         flipImojiButton = UIButton(type: UIButtonType.Custom)
         flipImojiButton.setImage(UIImage(named: "Artmoji-Flip-Imoji"), forState: UIControlState.Normal)
         flipImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         flipImojiButton.tag = IMCreateArtmojiViewButtonType.Flip.rawValue
+        flipImojiButton.imageEdgeInsets = buttonItemInsets
         flipImojiButton.frame = buttonItemFrame
         flipImojiButton.hidden = true
 
@@ -208,6 +212,7 @@ public class IMCreateArtmojiView: UIView {
         shareButton.setImage(UIImage(named: "Artmoji-Share"), forState: UIControlState.Normal)
         shareButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         shareButton.tag = IMCreateArtmojiViewButtonType.Done.rawValue
+        shareButton.imageEdgeInsets = buttonItemInsets
         shareButton.frame = buttonItemFrame
 
         // Draw the plus image on top of the circle image and center it horizontally and vertically
@@ -227,15 +232,20 @@ public class IMCreateArtmojiView: UIView {
         backButton.setImage(UIImage(named: "Artmoji-Draw-Back"), forState: UIControlState.Normal)
         backButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         backButton.tag = IMCreateArtmojiViewButtonType.Back.rawValue
+        backButton.imageEdgeInsets = buttonItemInsets
         backButton.frame = buttonItemFrame
 
         undoButton = UIButton(type: UIButtonType.Custom)
         undoButton.setImage(UIImage(named: "Artmoji-Draw-Undo"), forState: UIControlState.Normal)
         undoButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         undoButton.tag = IMCreateArtmojiViewButtonType.Undo.rawValue
+        undoButton.imageEdgeInsets = buttonItemInsets
         undoButton.frame = buttonItemFrame
 
-        brushColorPreview = UIImageView(frame: CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight))
+        brushColorPreview = UIButton(type: UIButtonType.Custom)
+        brushColorPreview.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        brushColorPreview.tag = IMCreateArtmojiViewButtonType.Draw.rawValue
+        brushColorPreview.frame = CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight)
 
         #if !NOT_PHOTO_EXTENSION
         cancelButton.hidden = true
@@ -406,7 +416,7 @@ public class IMCreateArtmojiView: UIView {
                     imoji.userInteractionEnabled = !drawing
                 }
 
-                if brushColorPreview.image == nil {
+                if brushColorPreview.imageForState(UIControlState.Normal) == nil {
                     renderBrushPreview()
                 }
                 break
@@ -676,12 +686,14 @@ public class IMCreateArtmojiView: UIView {
     // changing color/size of the brush
     func renderBrushPreview() {
         // Draw the color preview of the brush
-        brushColorPreview.image = drawRoundedPreviewImageInFrame(CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight),
-                lineWidth: IMArtmojiConstants.MaximumBrushSize, sizeRatio: 0)
+        brushColorPreview.setImage(drawRoundedPreviewImageInFrame(CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight),
+            lineWidth: IMArtmojiConstants.MaximumBrushSize, sizeRatio: 0), forState: UIControlState.Normal)
 
         // Draw the pencil on top of the preview and center it horizontally
         let pencilImage = UIImage(named: "Artmoji-Draw")!
-        brushColorPreview.image = drawImage(image: pencilImage, withinImage: brushColorPreview.image!, atPoint: CGPointMake(brushColorPreview.image!.size.width / 2.0, 0))
+        brushColorPreview.setImage(drawImage(image: pencilImage, withinImage: brushColorPreview.imageForState(UIControlState.Normal)!,
+            atPoint: CGPointMake(brushColorPreview.imageForState(UIControlState.Normal)!.size.width / 2.0, 0)),
+            forState: UIControlState.Normal)
 
         // Draw thumb image used for brushSizeSlider
         let brushSizeThumbImage = drawRoundedPreviewImageInFrame(CGRectMake(0, 0, IMArtmojiConstants.BrushSizeThumbWidthHeight, IMArtmojiConstants.BrushSizeThumbWidthHeight),

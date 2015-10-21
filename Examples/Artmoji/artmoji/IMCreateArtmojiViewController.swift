@@ -177,6 +177,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
     public func userDidSelectImojiCollectionButtonFromArtmojiView(view: IMCreateArtmojiView) {
         let collectionViewController = IMCollectionViewController(session: self.session)
         collectionViewController.topToolbar.barTintColor = IMArtmojiConstants.DefaultBarTintColor
+        collectionViewController.topToolbar.translucent = false
         collectionViewController.backButton.setImage(UIImage(named: "Artmoji-Borderless-Cancel"), forState: UIControlState.Normal)
         collectionViewController.backButton.hidden = false
 
@@ -193,6 +194,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Reactions)
         collectionViewController.bottomToolbar.addFlexibleSpace()
         collectionViewController.bottomToolbar.barTintColor = IMArtmojiConstants.DefaultBarTintColor
+        collectionViewController.bottomToolbar.translucent = false
         collectionViewController.bottomToolbar.delegate = self
 
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve

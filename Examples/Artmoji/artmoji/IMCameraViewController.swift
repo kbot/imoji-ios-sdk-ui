@@ -77,6 +77,7 @@ public class IMCameraViewController: UIViewController {
 
         // Set up toolbar buttons
         let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
+        let buttonItemInsets = UIEdgeInsetsMake(IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset)
         captureButton = UIButton(type: UIButtonType.Custom)
         captureButton.setImage(UIImage(named: "Artmoji-Circle"), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
@@ -85,17 +86,20 @@ public class IMCameraViewController: UIViewController {
         let cancelButton = UIButton(type: UIButtonType.Custom)
         cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: "cancelButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.imageEdgeInsets = buttonItemInsets
         cancelButton.frame = buttonItemFrame
         self.cancelButton = UIBarButtonItem(customView: cancelButton)
 
         flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "Artmoji-Camera-Flip"), forState: UIControlState.Normal)
         flipButton.addTarget(self, action: "flipButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+        flipButton.imageEdgeInsets = buttonItemInsets
         flipButton.frame = buttonItemFrame
 
         photoLibraryButton = UIButton(type: UIButtonType.Custom)
         photoLibraryButton.setImage(UIImage(named: "Artmoji-Photo-Library"), forState: UIControlState.Normal)
         photoLibraryButton.addTarget(self, action: "photoLibraryButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+        photoLibraryButton.imageEdgeInsets = buttonItemInsets
         photoLibraryButton.frame = buttonItemFrame
 
         // Set up top nav bar
