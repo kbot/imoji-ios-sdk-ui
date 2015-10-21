@@ -24,6 +24,7 @@
 //
 
 #import "IMPopInAnimatedTransition.h"
+#import "View+MASAdditions.h"
 
 @implementation IMPopInAnimatedTransition {
 
@@ -51,130 +52,109 @@
                                                                     withCapInsets:UIEdgeInsetsZero];
         UIView *toView = toViewController.view;
 
-        UIView *blurredView = [self generateViewControllerBackground:fromViewController];
+        UIView *blurredView = [self generateViewControllerBackground];
         [transitionContext.containerView addSubview:blurredView];
         [transitionContext.containerView addSubview:toView];
 
-        CGRect startFrame, endFrame = toView.frame;
+        [blurredView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(transitionContext.containerView);
+        }];
+        [toView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.height.width.equalTo(transitionContext.containerView);
 
-        switch (self.transitionDirection) {
-            case IMPopInAnimatedTransitionDirectionLeft:
-                startFrame = CGRectMake(
-                        -toView.frame.size.width, 0,
-                        toView.frame.size.width, toView.frame.size.height
-                );
+            switch (self.transitionDirection) {
+                case IMPopInAnimatedTransitionDirectionLeft:
+                    make.right.equalTo(blurredView.mas_left);
+                    make.top.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionRight:
+                    make.left.equalTo(blurredView.mas_right);
+                    make.top.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionUp:
+                    make.top.equalTo(blurredView.mas_bottom);
+                    make.left.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionDown:
+                    make.bottom.equalTo(blurredView.mas_top);
+                    make.left.equalTo(blurredView);
+                    break;
+            }
+        }];
 
-                break;
-
-            case IMPopInAnimatedTransitionDirectionRight:
-                startFrame = CGRectMake(
-                        toView.frame.size.width, 0,
-                        toView.frame.size.width, toView.frame.size.height
-                );
-
-                break;
-
-            case IMPopInAnimatedTransitionDirectionDown:
-                startFrame = CGRectMake(
-                        0, -toView.frame.size.height,
-                        toView.frame.size.width, toView.frame.size.height
-                );
-
-                break;
-
-            case IMPopInAnimatedTransitionDirectionUp:
-            default:
-                startFrame = CGRectMake(
-                        0, toView.frame.size.height,
-                        toView.frame.size.width, toView.frame.size.height
-                );
-
-                break;
-        }
-
-        toView.frame = startFrame;
         blurredView.layer.opacity = 0.0f;
 
-        [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                              delay:0.0f
-             usingSpringWithDamping:1.0f
-              initialSpringVelocity:1.0f
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             fromView.layer.opacity = 0.0f;
-                             blurredView.layer.opacity = 1.0f;
-                             toView.frame = endFrame;
-                         }
-                         completion:^(BOOL finished) {
-                             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-                         }];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [toView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.edges.equalTo(blurredView);
+            }];
+
+            [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                                  delay:0.0f
+                 usingSpringWithDamping:1.0f
+                  initialSpringVelocity:1.0f
+                                options:UIViewAnimationOptionCurveEaseIn
+                             animations:^{
+                                 fromView.layer.opacity = 0.0f;
+                                 blurredView.layer.opacity = 1.0f;
+                                 [toView layoutIfNeeded];
+                             }
+                             completion:^(BOOL finished) {
+                                 [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                             }];
+        });
     } else {
         UIView *fromView = fromViewController.view;
-        UIView *blurredBackgroundView = transitionContext.containerView.subviews.firstObject;
+        UIView *blurredView = transitionContext.containerView.subviews.firstObject;
 
         [transitionContext.containerView addSubview:fromView];
 
-        CGRect endFrame;
-        switch (self.transitionDirection) {
-            case IMPopInAnimatedTransitionDirectionLeft:
-                endFrame = CGRectMake(
-                        -fromView.frame.size.width, 0,
-                        fromView.frame.size.width, fromView.frame.size.height
-                );
+        [fromView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(transitionContext.containerView);
+        }];
 
-                break;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [fromView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.height.width.equalTo(transitionContext.containerView);
 
-            case IMPopInAnimatedTransitionDirectionRight:
-                endFrame = CGRectMake(
-                        fromView.frame.size.width, 0,
-                        fromView.frame.size.width, fromView.frame.size.height
-                );
+                switch (self.transitionDirection) {
+                    case IMPopInAnimatedTransitionDirectionLeft:
+                        make.right.equalTo(blurredView.mas_left);
+                        make.top.equalTo(blurredView);
+                        break;
+                    case IMPopInAnimatedTransitionDirectionRight:
+                        make.left.equalTo(blurredView.mas_right);
+                        make.top.equalTo(blurredView);
+                        break;
+                    case IMPopInAnimatedTransitionDirectionUp:
+                        make.top.equalTo(blurredView.mas_bottom);
+                        make.left.equalTo(blurredView);
+                        break;
+                    case IMPopInAnimatedTransitionDirectionDown:
+                        make.bottom.equalTo(blurredView.mas_top);
+                        make.left.equalTo(blurredView);
+                        break;
+                }
+            }];
 
-                break;
+            [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                             animations:^{
+                                 if (NSClassFromString(@"UIVisualEffectView")) {
+                                     blurredView.layer.opacity = 0.0f;
+                                 }
 
-            case IMPopInAnimatedTransitionDirectionDown:
-                endFrame = CGRectMake(
-                        0, -fromView.frame.size.height,
-                        fromView.frame.size.width, fromView.frame.size.height
-                );
-
-                break;
-
-            case IMPopInAnimatedTransitionDirectionUp:
-            default:
-                endFrame = CGRectMake(
-                        0, fromView.frame.size.height,
-                        fromView.frame.size.width, fromView.frame.size.height
-                );
-
-                break;
-        }
-
-        [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                         animations:^{
-                             if (NSClassFromString(@"UIVisualEffectView")) {
-                                 blurredBackgroundView.layer.opacity = 0.0f;
+                                 [fromView layoutIfNeeded];
                              }
-
-                             fromView.frame = endFrame;
-                         }
-                         completion:^(BOOL finished) {
-                             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-                         }
-        ];
+                             completion:^(BOOL finished) {
+                                 [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                             }
+            ];
+        });
     }
 }
 
-- (UIView *)generateViewControllerBackground:(UIViewController *)controller {
-    UIView *view = controller.view;
-    UIImageView *imageView = [UIImageView new];
+- (UIView *)generateViewControllerBackground {
     UIView *foregroundView;
-
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, [UIScreen mainScreen].scale);
-    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
-    imageView.image = UIGraphicsGetImageFromCurrentImageContext();
-
-    UIGraphicsEndImageContext();
 
     // show blurred background if available (iOS 8 and above)
     if (NSClassFromString(@"UIVisualEffectView")) {
@@ -185,12 +165,7 @@
         foregroundView.backgroundColor = [UIColor colorWithWhite:.2f alpha:.95f];
     }
 
-    [imageView addSubview:foregroundView];
-
-    foregroundView.frame = CGRectMake(0, 0, view.frame.size.width, view.frame.size.height);
-    imageView.frame = CGRectMake(0, 0, foregroundView.frame.size.width, foregroundView.frame.size.height);
-
-    return imageView;
+    return foregroundView;
 }
 
 @end
