@@ -30,8 +30,8 @@
 		FA92230C1BB4B07A00366238 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA92230B1BB4B07A00366238 /* ViewController.swift */; };
 		FA92230F1BB4B07A00366238 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA92230D1BB4B07A00366238 /* Main.storyboard */; };
 		FA9223111BB4B07A00366238 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA9223101BB4B07A00366238 /* Images.xcassets */; };
-		FA9223141BB4B07A00366238 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9223121BB4B07A00366238 /* LaunchScreen.xib */; };
 		FA92232A1BB4B1E700366238 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = FA9223291BB4B1E700366238 /* Podfile */; };
+		FACB2DC61BD731E300999340 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FACB2DC51BD731E300999340 /* Launch.storyboard */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,8 +85,8 @@
 		FA92230B1BB4B07A00366238 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FA92230E1BB4B07A00366238 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FA9223101BB4B07A00366238 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		FA9223131BB4B07A00366238 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		FA9223291BB4B1E700366238 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Artmoji/Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		FACB2DC51BD731E300999340 /* Launch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Launch.storyboard; sourceTree = "<group>"; };
 		FB1821ECD7F3DB2F40A962A5 /* Pods-artmoji.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-artmoji.debug.xcconfig"; path = "Pods/Target Support Files/Pods-artmoji/Pods-artmoji.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -174,8 +174,8 @@
 				FA9223091BB4B07A00366238 /* AppDelegate.swift */,
 				FA92230B1BB4B07A00366238 /* ViewController.swift */,
 				FA92230D1BB4B07A00366238 /* Main.storyboard */,
+				FACB2DC51BD731E300999340 /* Launch.storyboard */,
 				FA9223101BB4B07A00366238 /* Images.xcassets */,
-				FA9223121BB4B07A00366238 /* LaunchScreen.xib */,
 				FA9223071BB4B07A00366238 /* Supporting Files */,
 				2DBA1E914968982248EC96C8 /* IMCameraViewController.swift */,
 				FA1B017B1BCCAFE6002B0B2E /* IMArtmojiConstants.swift */,
@@ -293,7 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA92230F1BB4B07A00366238 /* Main.storyboard in Resources */,
-				FA9223141BB4B07A00366238 /* LaunchScreen.xib in Resources */,
+				FACB2DC61BD731E300999340 /* Launch.storyboard in Resources */,
 				FA92232A1BB4B1E700366238 /* Podfile in Resources */,
 				FA9223111BB4B07A00366238 /* Images.xcassets in Resources */,
 			);
@@ -448,14 +448,6 @@
 				FA92230E1BB4B07A00366238 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		FA9223121BB4B07A00366238 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FA9223131BB4B07A00366238 /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
