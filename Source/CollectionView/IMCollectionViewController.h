@@ -78,6 +78,11 @@
 @property(nonatomic) BOOL searchOnTextChanges;
 
 /**
+ * @abstract Configures the delay in milliseconds for performing subsequent searches when searchOnTextChanges is enabled.
+ */
+@property(nonatomic) NSUInteger autoSearchDelayTimeInMillis;
+
+/**
  * @abstract The search field component for the collection view. If you hiding this field, make sure to call
  * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.

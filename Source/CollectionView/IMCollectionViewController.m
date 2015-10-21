@@ -25,19 +25,16 @@
 
 #import <Masonry/Masonry.h>
 #import "IMCollectionViewController.h"
-#import "IMCollectionView.h"
-#import "IMAttributeStringUtil.h"
 #import "IMResourceBundleUtil.h"
-#import "IMToolbar.h"
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
 UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
+NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 
 @interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate>
 
-@property(nonatomic) UIEdgeInsets preKeyboardDisplayedCollectionViewInsets;
-
+@property(nonatomic, strong) NSOperation *pendingSearchOperation;
 @end
 
 @implementation IMCollectionViewController {
@@ -78,6 +75,7 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
     _topToolbar = [IMToolbar new];
     _collectionView = [self createCollectionViewWithSession:session];
     _searchOnTextChanges = YES;
+    _autoSearchDelayTimeInMillis = IMCollectionViewControllerDefaultSearchDelayInMillis;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardDisplayedForSearchField:)
@@ -203,7 +201,6 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
     CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
 
     // adjust the content size for the keyboard using the displaced height
-    self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
             self.collectionView.contentInset.top,
             self.collectionView.contentInset.left,
@@ -213,7 +210,6 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 }
 
 - (void)keyboardWillHideForSearchField:(NSNotification *)notification {
-    self.preKeyboardDisplayedCollectionViewInsets = self.collectionView.contentInset;
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
             self.collectionView.contentInset.top,
             self.collectionView.contentInset.left,
@@ -242,7 +238,18 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (self.searchOnTextChanges) {
-        [self performSearch];
+        if (self.pendingSearchOperation && !self.pendingSearchOperation.isCancelled) {
+            [self.pendingSearchOperation cancel];
+        }
+
+        __block NSOperation *pendingSearchOperation = [NSOperation new];
+        self.pendingSearchOperation = pendingSearchOperation;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * self.autoSearchDelayTimeInMillis), dispatch_get_main_queue(), ^{
+            if (!pendingSearchOperation.isCancelled) {
+                [self performSearch];
+            }
+        });
     }
 }
 
@@ -255,14 +262,10 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 }
 
 - (void)performSearch {
-    if (self.searchField.text.length > 0) {
-        if (self.sentenceParseEnabled) {
-            [self.collectionView loadImojisFromSentence:self.searchField.text];
-        } else {
-            [self.collectionView loadImojisFromSearch:self.searchField.text];
-        }
+    if (self.sentenceParseEnabled) {
+        [self.collectionView loadImojisFromSentence:self.searchField.text];
     } else {
-        [self.collectionView loadFeaturedImojis];
+        [self.collectionView loadImojisFromSearch:self.searchField.text];
     }
 }
 
@@ -274,8 +277,8 @@ UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 
 - (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
     if (![self conformsToProtocol:@protocol(IMCollectionViewControllerDelegate)] &&
-        self.collectionViewControllerDelegate &&
-        [self.collectionViewControllerDelegate respondsToSelector:@selector(positionForBar:)]) {
+            self.collectionViewControllerDelegate &&
+            [self.collectionViewControllerDelegate respondsToSelector:@selector(positionForBar:)]) {
         return [self.collectionViewControllerDelegate positionForBar:bar];
     }
 
