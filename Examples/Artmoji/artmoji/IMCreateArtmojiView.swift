@@ -413,7 +413,9 @@ public class IMCreateArtmojiView: UIView {
                 colorSlider.hidden = !drawing
                 drawingActionsBar.hidden = !drawing
                 navigationBar.hidden = drawing
+                #if NOT_PHOTO_EXTENSION
                 cancelButton.hidden = drawing
+                #endif
 
                 // Show/Hide the background gesture view to avoid manipulating both the brush and the imoji
                 backgroundGestureView.hidden = drawing
