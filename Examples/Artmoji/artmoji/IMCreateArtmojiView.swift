@@ -121,7 +121,6 @@ public class IMCreateArtmojiView: UIView {
     private var brushWidth: CGFloat
     private var roundedWhiteBorderSize: CGFloat
     private var roundedBlackBorderSize: CGFloat
-    private var drawing: Bool
     private var swiped: Bool
 
     // Top toolbar
@@ -150,7 +149,6 @@ public class IMCreateArtmojiView: UIView {
 
         // Drawing
         drawnImages = [UIImage]()
-        drawing = false
         swiped = false
         hue = 0
         brushWidth = 10.0
@@ -391,6 +389,13 @@ public class IMCreateArtmojiView: UIView {
         backgroundGestureView.addGestureRecognizer(panRecognizer)
         backgroundGestureView.addGestureRecognizer(rotationRecognizer)
         backgroundGestureView.addGestureRecognizer(pinchRecognizer)
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: "drawingCanvasLongPressed:")
+        longPressRecognizer.minimumPressDuration = 0.2
+        longPressRecognizer.cancelsTouchesInView = false
+        longPressRecognizer.delegate = self
+        
+        drawingCanvasView.addGestureRecognizer(longPressRecognizer)
     }
 
     // MARK: - Artmoji editor button logic
@@ -399,15 +404,16 @@ public class IMCreateArtmojiView: UIView {
             case IMCreateArtmojiViewButtonType.Back.rawValue, IMCreateArtmojiViewButtonType.Draw.rawValue:
                 lastPoint = CGPointZero
 
-                // Set to drawing mode
-                drawing = !drawing
+                // Set drawing state
+                let drawing = !drawingCanvasView.userInteractionEnabled
+                drawingCanvasView.userInteractionEnabled = drawing
 
                 // Show/Hide toolbars/sliders
                 brushSizeSlider.hidden = !drawing
                 colorSlider.hidden = !drawing
                 drawingActionsBar.hidden = !drawing
                 navigationBar.hidden = drawing
-                bottomBar.hidden = drawing
+                cancelButton.hidden = drawing
 
                 // Show/Hide the background gesture view to avoid manipulating both the brush and the imoji
                 backgroundGestureView.hidden = drawing
@@ -425,6 +431,9 @@ public class IMCreateArtmojiView: UIView {
                 break
             case IMCreateArtmojiViewButtonType.Collection.rawValue:
                 delegate?.userDidSelectImojiCollectionButtonFromArtmojiView?(self)
+                if drawingCanvasView.userInteractionEnabled {
+                    drawButton.sendActionsForControlEvents(UIControlEvents.TouchUpInside)
+                }
                 break
             case IMCreateArtmojiViewButtonType.Delete.rawValue:
                 if selectedImojiView != nil {
@@ -504,7 +513,7 @@ public class IMCreateArtmojiView: UIView {
     }
 
     override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if drawing {
+        if drawingCanvasView.userInteractionEnabled {
             swiped = false
             if let touch = touches.first {
                 lastPoint = touch.locationInView(self)
@@ -515,7 +524,11 @@ public class IMCreateArtmojiView: UIView {
     }
 
     override public func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if drawing {
+        if drawingCanvasView.userInteractionEnabled {
+            UIView.animateWithDuration(0.2, delay: 0.2, options: UIViewAnimationOptions.CurveEaseOut, animations: { animate in
+                self.bottomBar.alpha = 0
+                self.drawingActionsBar.alpha = 0
+            }, completion: nil)
             swiped = true
             if let touch = touches.first {
                 let currentPoint = touch.locationInView(self)
@@ -528,10 +541,15 @@ public class IMCreateArtmojiView: UIView {
     }
 
     override public func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if drawing {
+        if drawingCanvasView.userInteractionEnabled {
             if !swiped {
                 drawLine(lastPoint!, toPoint: lastPoint!)
             }
+
+            UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { animate in
+                self.bottomBar.alpha = 1.0
+                self.drawingActionsBar.alpha = 1.0
+            }, completion: nil)
 
             drawnImages.append(drawingCanvasView.image!)
         } else {
@@ -595,6 +613,13 @@ public class IMCreateArtmojiView: UIView {
 
             recognizer.scale = 1
         }
+    }
+    
+    func drawingCanvasLongPressed(recognizer: UILongPressGestureRecognizer) {
+        UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: { animate in
+            self.bottomBar.alpha = 0
+            self.drawingActionsBar.alpha = 0
+        }, completion: nil)
     }
 
     // MARK: - Image & Imoji logic
