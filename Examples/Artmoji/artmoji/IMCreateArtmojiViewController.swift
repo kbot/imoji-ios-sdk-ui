@@ -132,15 +132,11 @@ public class IMCreateArtmojiViewController: UIViewController {
         if error == nil {
             let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
             activityController.excludedActivityTypes = [
-                UIActivityTypePrint,
-                UIActivityTypeCopyToPasteboard,
-                UIActivityTypeAssignToContact,
-                UIActivityTypeSaveToCameraRoll,
                 UIActivityTypeAddToReadingList,
-                UIActivityTypePostToFlickr,
                 UIActivityTypePostToVimeo
             ]
             
+            activityController.popoverPresentationController?.sourceView = self.createArtmojiView.shareButton
             presentViewController(activityController, animated: true, completion: nil)
         } else {
             let alert = UIAlertController(title: "Yikes!", message: "There was a problem saving your Artmoji to your photos.", preferredStyle: UIAlertControllerStyle.Alert)

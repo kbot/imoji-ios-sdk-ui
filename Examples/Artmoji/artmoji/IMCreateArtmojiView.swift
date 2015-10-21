@@ -131,7 +131,7 @@ public class IMCreateArtmojiView: UIView {
 
     // Bottom toolbar
     private var bottomBar: IMToolbar!
-    private var shareButton: UIButton!
+    var shareButton: UIButton!
     private var imojiCollectionButton: UIButton!
     private var deleteImojiButton: UIButton!
     private var drawButton: UIButton!
