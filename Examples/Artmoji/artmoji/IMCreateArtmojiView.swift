@@ -564,6 +564,8 @@ public class IMCreateArtmojiView: UIView {
         if recognizer.view!.isKindOfClass(IMCreateArtmojiSelectedImojiView) {
             insertSubview(recognizer.view!, belowSubview: drawingCanvasView)
             selectedImojiView = recognizer.view as! IMCreateArtmojiSelectedImojiView
+            selectedImojis.removeAtIndex(selectedImojis.indexOf(selectedImojiView)!)
+            selectedImojis.append(selectedImojiView)
         }
     }
 
@@ -572,6 +574,8 @@ public class IMCreateArtmojiView: UIView {
         if recognizer.view!.isKindOfClass(IMCreateArtmojiSelectedImojiView) {
             insertSubview(recognizer.view!, belowSubview: drawingCanvasView)
             selectedImojiView = recognizer.view as! IMCreateArtmojiSelectedImojiView
+            selectedImojis.removeAtIndex(selectedImojis.indexOf(selectedImojiView)!)
+            selectedImojis.append(selectedImojiView)
         }
 
         if let viewForGesture = selectedImojiView {
