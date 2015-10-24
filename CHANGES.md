@@ -4,6 +4,11 @@
 
 * Full support for loading ImojiSDKUI as a dynamic library
 * Bitcode support which now requires Xcode 7 for archiving your applications
+* Fixes an issue with some images for the imoji editor not showing up on iOS 7
+* Fixes a crash when switching categories rapidly in IMCollectionView
+* Adds a delay setting for auto searching in IMCollectionViewController
+* Ensures that the Done button is displayed when the search bar text is empty in IMCollectionViewController
+* Completed Artmoji Sample!
 
 ### Version 0.1.16
 
