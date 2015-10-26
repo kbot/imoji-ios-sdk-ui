@@ -59,7 +59,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         _session = session;
         _loadingIndicatorObject = [NSObject new];
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
-        _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
+        _renderingOptions = session.fetchRenderingOptions;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
 

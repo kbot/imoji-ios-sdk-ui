@@ -85,7 +85,7 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
- * [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail]
+ * session.fetchRenderingOptions
 */
 @property(nonatomic, strong, nonnull) IMImojiObjectRenderingOptions *renderingOptions;
 
