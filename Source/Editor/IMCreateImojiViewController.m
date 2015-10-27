@@ -68,6 +68,7 @@
     if (self) {
         _sourceImage = sourceImage;
         _session = session;
+        _enableTagScreen = YES;
     }
 
     return self;
@@ -149,7 +150,7 @@
     self.traceToolbar.items = @[
             self.undoButton,
             [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
-            self.finishTraceButton
+            _enableTagScreen ? self.finishTraceButton : self.finishTagButton
     ];
     self.traceToolbar.tintColor = [IMCreateImojiUITheme instance].trimScreenTintColor;
 
@@ -251,18 +252,33 @@
 #pragma mark Delegate Dispatching
 
 - (void)finishEditing {
-    if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(userDidFinishCreatingImoji:withError:fromViewController:)]) {
-        self.navigationToolbar.items = self.completionButtons;
-        [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderSaving"]];
+    self.navigationToolbar.items = self.completionButtons;
+    [self.navigationTitle setTitle:[IMResourceBundleUtil localizedStringForKey:@"createImojiHeaderSaving"]];
 
-        [((UIActivityIndicatorView *) self.activityIndicator.customView) startAnimating];
+    [((UIActivityIndicatorView *) self.activityIndicator.customView) startAnimating];
+    __block IMImojiObject *temporaryImoji;
+    self.traceToolbar.hidden = YES;
 
-        [self.session createImojiWithImage:self.imojiEditor.outputImage
-                                      tags:self.tagCollectionView.tags.array
-                                  callback:^(IMImojiObject *imoji, NSError *error) {
-                                      [self.createDelegate userDidFinishCreatingImoji:imoji withError:error fromViewController:self];
-                                  }];
-    }
+    [self.session createImojiWithRawImage:self.imojiEditor.outputImage
+                            borderedImage:self.imojiEditor.borderedOutputImage
+                                     tags:self.tagCollectionView.tags.array
+                      beginUploadCallback:^(IMImojiObject *imoji, NSError *error) {
+                          temporaryImoji = imoji;
+                          if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(imojiUploadDidBegin:fromViewController:)]) {
+                              [self.createDelegate imojiUploadDidBegin:imoji
+                                                    fromViewController:self];
+                          }
+                      }
+                     finishUploadCallback:^(IMImojiObject *imoji, NSError *error) {
+                         if (self.createDelegate && [self.createDelegate respondsToSelector:@selector(imojiUploadDidComplete:persistentImoji:withError:fromViewController:)]) {
+                             [self.createDelegate imojiUploadDidComplete:temporaryImoji
+                                                         persistentImoji:imoji
+                                                               withError:error
+                                                      fromViewController:self];
+                         }
+
+                         self.traceToolbar.hidden = NO;
+                     }];
 }
 
 - (void)cancelImageEdit {
@@ -360,6 +376,18 @@
 
     if (changed && self.navigationToolbar) {
         [self determineCancelCreationButtonVisibility];
+    }
+}
+
+- (void)setEnableTagScreen:(BOOL)enableTagScreen {
+    _enableTagScreen = enableTagScreen;
+
+    if (self.traceToolbar) {
+        self.traceToolbar.items = @[
+                self.undoButton,
+                [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil],
+                enableTagScreen ? self.finishTraceButton : self.finishTagButton
+        ];
     }
 }
 

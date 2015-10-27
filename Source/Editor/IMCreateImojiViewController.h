@@ -38,12 +38,12 @@
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-- (nonnull instancetype)initWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
+- (nonnull instancetype)initWithSourceImage:(nonnull UIImage *)sourceImage session:(nonnull IMImojiSession *)session;
 
 /**
 * @abstract Creates a new editor view controller with a specified image
 */
-+ (nonnull instancetype)controllerWithSourceImage:(UIImage *__nonnull)sourceImage session:(IMImojiSession *__nonnull)session;
++ (nonnull instancetype)controllerWithSourceImage:(nonnull UIImage *)sourceImage session:(nonnull IMImojiSession *)session;
 
 /**
 * @abstract Clears all the edits and restores the original state of the editor
@@ -65,6 +65,11 @@
 */
 @property(nonatomic, strong, nonnull) IMImojiSession *session;
 
+/**
+* @abstract Whether or not to enable showing the tag screen
+*/
+@property(nonatomic) BOOL enableTagScreen;
+
 @end
 
 @protocol IMCreateImojiViewControllerDelegate <NSObject>
@@ -72,17 +77,26 @@
 @optional
 
 /**
-* @abstract Called by IMCreateImojiViewController once the user has completed the editing process. If any error occurred,
- * the imoji object will be nil and the error parameter will be specified.
+* @abstract Called by IMCreateImojiViewController once the user has completed the editing process and before uploading
+ * the contents to the server for persistence. A temporary, non server persisted Imoji object is passed back to the
+ * delegate method allowing the consumer to immediately display the Imoji.
 */
-- (void)userDidFinishCreatingImoji:(IMImojiObject *__nullable)imoji
-                         withError:(NSError *__nullable)error
-                fromViewController:(IMCreateImojiViewController *__nonnull)viewController;
+- (void)imojiUploadDidBegin:(nonnull IMImojiObject *)localImoji
+         fromViewController:(nonnull IMCreateImojiViewController *)viewController;
+
+/**
+* @abstract Called by IMCreateImojiViewController once the Imoji has been completely uploaded to the server. A fully
+ * persisted Imoji object is passed along with a local copy which was created prior to uploading. 
+*/
+- (void)imojiUploadDidComplete:(nonnull IMImojiObject *)localImoji
+               persistentImoji:(nullable IMImojiObject *)persistentImoji
+                     withError:(nullable NSError *)error
+            fromViewController:(nonnull IMCreateImojiViewController *)viewController;
 
 /**
 * @abstract Called by IMCreateImojiViewController when the user hits the back button. The caller should dismiss the view
  * controller accordingly
 */
-- (void)userDidCancelImageEdit:(IMCreateImojiViewController *__nonnull)viewController;
+- (void)userDidCancelImageEdit:(nonnull IMCreateImojiViewController *)viewController;
 
 @end
