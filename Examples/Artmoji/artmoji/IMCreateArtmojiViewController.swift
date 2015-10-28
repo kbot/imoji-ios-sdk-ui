@@ -32,13 +32,15 @@ public class IMCreateArtmojiViewController: UIViewController {
     private var session: IMImojiSession!
     public var imageBundle: NSBundle
     public var sourceImage: UIImage?
+    public var capturedImageOrientation: UIImageOrientation
 
     // Artmoji view
     private(set) public var createArtmojiView: IMCreateArtmojiView!
 
     // MARK: - Object lifecycle
-    public init(sourceImage: UIImage?, session: IMImojiSession, imageBundle: NSBundle) {
+    public init(sourceImage: UIImage?, capturedImageOrientation: UIImageOrientation?, session: IMImojiSession, imageBundle: NSBundle) {
         self.sourceImage = sourceImage
+        self.capturedImageOrientation = capturedImageOrientation ?? UIImageOrientation.Up
         self.session = session
         self.imageBundle = imageBundle
 
@@ -54,6 +56,7 @@ public class IMCreateArtmojiViewController: UIViewController {
         if let _ = self.sourceImage {
             super.loadView()
             createArtmojiView = IMCreateArtmojiView(session: self.session, sourceImage: self.sourceImage!, imageBundle: self.imageBundle)
+            createArtmojiView.capturedImageOrientation = self.capturedImageOrientation
             createArtmojiView.delegate = self
 
             view.addSubview(createArtmojiView)

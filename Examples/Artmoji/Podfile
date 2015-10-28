@@ -4,7 +4,6 @@ platform :ios, '8.0'
 use_frameworks!
 
 target "artmoji" do
-    pod 'PBJVision'
     pod 'ImojiSDKUI/CollectionView', :path => "../../"
     pod 'ImojiSDKUI/Editor', :path => "../../"
 end

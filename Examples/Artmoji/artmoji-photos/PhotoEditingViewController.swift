@@ -34,7 +34,7 @@ class PhotoEditingViewController: IMCreateArtmojiViewController {
 
     required init?(coder aDecoder: NSCoder) {
         ImojiSDK.sharedInstance().setClientId(NSUUID(UUIDString: "748cddd4-460d-420a-bd42-fcba7f6c031b")!, apiToken: "U2FsdGVkX1/yhkvIVfvMcPCALxJ1VHzTt8FPZdp1vj7GIb+fsdzOjyafu9MZRveo7ebjx1+SKdLUvz8aM6woAw==")
-        super.init(sourceImage: nil, session: IMImojiSession(), imageBundle: IMResourceBundleUtil.assetsBundle())
+        super.init(sourceImage: nil, capturedImageOrientation: nil, session: IMImojiSession(), imageBundle: IMResourceBundleUtil.assetsBundle())
     }
 }
 

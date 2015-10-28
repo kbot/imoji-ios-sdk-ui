@@ -45,7 +45,7 @@ public class IMCreateArtmojiSelectedImojiView: UIView {
     public init(imoji: IMImojiObject, session: IMImojiSession) {
         self.imoji = imoji
         self.session = session
-        renderingOptions = IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.FullResolution)
+        renderingOptions = IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.SizeFullResolution)
         flipped = false
 
         super.init(frame:CGRectZero)
@@ -88,14 +88,7 @@ public class IMCreateArtmojiSelectedImojiView: UIView {
         flipped = !flipped
 
         let image = imojiView.image!
-        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
-        let context = UIGraphicsGetCurrentContext()
-
-        CGContextTranslateCTM(context, image.size.width, 0)
-        CGContextScaleCTM(context, -1, 1)
-        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
-
-        imojiView.image = UIGraphicsGetImageFromCurrentImageContext()
+        imojiView.image = IMDrawingUtils().flipImage(image)
         UIGraphicsEndImageContext()
     }
 

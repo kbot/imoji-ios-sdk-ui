@@ -77,7 +77,7 @@ public class IMCreateArtmojiView: UIView {
                 _selectedImojiView.showBorder = true
 
                 session.renderImoji(_selectedImojiView.imoji!,
-                        options: IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.Thumbnail)) { image, error in
+                        options: IMImojiObjectRenderingOptions(renderSize: IMImojiObjectRenderSize.SizeThumbnail)) { image, error in
                     if error == nil {
                         self.selectedImojiPreview.image = image
                         self.updateFlipImageButtonForSelectedImoji()
@@ -122,6 +122,7 @@ public class IMCreateArtmojiView: UIView {
     private var roundedWhiteBorderSize: CGFloat
     private var roundedBlackBorderSize: CGFloat
     private var swiped: Bool
+    var capturedImageOrientation: UIImageOrientation
 
     // Top toolbar
     private var navigationBar: IMToolbar!
@@ -154,6 +155,8 @@ public class IMCreateArtmojiView: UIView {
         brushWidth = 10.0
         roundedWhiteBorderSize = 4.0
         roundedBlackBorderSize = 5.0
+        
+        capturedImageOrientation = UIImageOrientation.Up
 
         super.init(frame: CGRectZero)
 
@@ -216,7 +219,7 @@ public class IMCreateArtmojiView: UIView {
         // Draw the plus image on top of the circle image and center it horizontally and vertically
         let circleImage = UIImage(named: "Artmoji-Circle")!
         let plusImage = UIImage(named: "Artmoji-Add-Imoji")!
-        let imojiCollectionImage = drawImage(image: plusImage, withinImage: circleImage,
+        let imojiCollectionImage = IMDrawingUtils().drawImage(image: plusImage, withinImage: circleImage,
             atPoint: CGPointMake((circleImage.size.width - plusImage.size.width) / 2.0, (circleImage.size.height - plusImage.size.height) / 2.0))
         
         imojiCollectionButton = UIButton(type: UIButtonType.Custom)
@@ -704,11 +707,27 @@ public class IMCreateArtmojiView: UIView {
         drawingCanvasView.layer.renderInContext(context!)
         CGContextRestoreGState(context)
 
-
         let watermarkImage = UIImage(named:"Artmoji-Share-Watermark")!
-        watermarkImage.drawInRect(CGRectMake(imageSize.width - watermarkImage.size.width, imageSize.height - watermarkImage.size.height, watermarkImage.size.width, watermarkImage.size.height))
+        switch capturedImageOrientation {
+            case UIImageOrientation.Left:
+                let orientatedImage = UIImage(CGImage: watermarkImage.CGImage!, scale: 2.5, orientation: UIImageOrientation.Right)
+                orientatedImage.drawInRect(CGRectMake(0, imageSize.height - orientatedImage.size.height, orientatedImage.size.width, orientatedImage.size.height))
+                break
+            case UIImageOrientation.Right:
+                let orientatedImage = UIImage(CGImage: watermarkImage.CGImage!, scale: 2.5, orientation: UIImageOrientation.Left)
+                orientatedImage.drawInRect(CGRectMake(imageSize.width - orientatedImage.size.width, 0, orientatedImage.size.width, orientatedImage.size.height))
+                break
+            case UIImageOrientation.Down:
+                let orientatedImage = UIImage(CGImage: watermarkImage.CGImage!, scale: 2.5, orientation: capturedImageOrientation)
+                orientatedImage.drawInRect(CGRectMake(0, 0, orientatedImage.size.width, orientatedImage.size.height))
+                break
+            default:
+                watermarkImage.drawInRect(CGRectMake(imageSize.width - watermarkImage.size.width, imageSize.height - watermarkImage.size.height, watermarkImage.size.width, watermarkImage.size.height))
+                break
+        }
 
-        let img = UIGraphicsGetImageFromCurrentImageContext()
+        let img = capturedImageOrientation == UIImageOrientation.Up ? UIGraphicsGetImageFromCurrentImageContext()
+                                                                    : UIImage(CGImage: UIGraphicsGetImageFromCurrentImageContext().CGImage!, scale: 1.0, orientation: capturedImageOrientation)
         UIGraphicsEndImageContext()
         return img
     }
@@ -722,7 +741,7 @@ public class IMCreateArtmojiView: UIView {
 
         // Draw the pencil on top of the preview and center it horizontally
         let pencilImage = UIImage(named: "Artmoji-Draw")!
-        brushColorPreview.setImage(drawImage(image: pencilImage, withinImage: brushColorPreview.imageForState(UIControlState.Normal)!,
+        brushColorPreview.setImage(IMDrawingUtils().drawImage(image: pencilImage, withinImage: brushColorPreview.imageForState(UIControlState.Normal)!,
             atPoint: CGPointMake(brushColorPreview.imageForState(UIControlState.Normal)!.size.width / 2.0, 0)),
             forState: UIControlState.Normal)
 
@@ -731,18 +750,6 @@ public class IMCreateArtmojiView: UIView {
                 lineWidth: IMArtmojiConstants.BrushSizePreviewSize, sizeRatio: IMArtmojiConstants.BrushSizePreviewSize / IMArtmojiConstants.MaximumBrushSize)
         brushSizeSlider.setThumbImage(brushSizeThumbImage, forState: UIControlState.Normal)
         brushSizeSlider.setThumbImage(brushSizeThumbImage, forState: UIControlState.Highlighted)
-    }
-
-    // Render an image within an image at a specific point.
-    // Used for the Imoji Collection Button
-    func drawImage(image foreground: UIImage, withinImage background: UIImage, atPoint: CGPoint) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(background.size, false, 0.0)
-        background.drawInRect(CGRectMake(0, 0, background.size.width, background.size.height))
-        foreground.drawInRect(CGRectMake(atPoint.x, atPoint.y, foreground.size.width, foreground.size.height))
-        let combinedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        return combinedImage
     }
 
     // Draws a line with color and size of the brush from point to point
