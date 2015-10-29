@@ -34,6 +34,5 @@
 #import "ImojiSDKUI/IMToolbar.h"
 #import "ImojiSDKUI/IMResourceBundleUtil.h"
 #import "Masonry/Masonry.h"
-#import "PBJVision/PBJVision.h"
 
 #endif
