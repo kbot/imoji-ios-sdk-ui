@@ -86,7 +86,7 @@
 
 /**
 * @abstract Called by IMCreateImojiViewController once the Imoji has been completely uploaded to the server. A fully
- * persisted Imoji object is passed along with a local copy which was created prior to uploading. 
+ * persisted Imoji object is passed along with a local copy which was created prior to uploading.
 */
 - (void)imojiUploadDidComplete:(nonnull IMImojiObject *)localImoji
                persistentImoji:(nullable IMImojiObject *)persistentImoji
