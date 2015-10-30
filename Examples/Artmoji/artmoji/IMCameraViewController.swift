@@ -54,8 +54,7 @@ public class IMCameraViewController: UIViewController {
     private var navigationBar: UIToolbar!
     private var cancelButton: UIBarButtonItem!
 
-    // Bottom toolbar
-    private var bottomBar: UIToolbar!
+    // Bottom buttons
     private var captureButton: UIButton!
     private var flipButton: UIButton!
     private var photoLibraryButton: UIButton!
@@ -88,31 +87,24 @@ public class IMCameraViewController: UIViewController {
         view.backgroundColor = UIColor(red: 48.0 / 255.0, green: 48.0 / 255.0, blue: 48.0 / 255.0, alpha: 1.0)
 
         // Set up toolbar buttons
-        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
-        let buttonItemInsets = UIEdgeInsetsMake(IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset)
         captureButton = UIButton(type: UIButtonType.Custom)
         captureButton.setImage(UIImage(named: "Artmoji-Circle"), forState: UIControlState.Normal)
         captureButton.addTarget(self, action: "captureButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        captureButton.frame = CGRectMake(0, 0, 140.0, 140.0)
 
         let cancelButton = UIButton(type: UIButtonType.Custom)
         cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
         cancelButton.addTarget(self, action: "cancelButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        cancelButton.imageEdgeInsets = buttonItemInsets
-        cancelButton.frame = buttonItemFrame
+        cancelButton.imageEdgeInsets = UIEdgeInsetsMake(IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset)
+        cancelButton.frame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
         self.cancelButton = UIBarButtonItem(customView: cancelButton)
 
         flipButton = UIButton(type: UIButtonType.Custom)
         flipButton.setImage(UIImage(named: "Artmoji-Camera-Flip"), forState: UIControlState.Normal)
         flipButton.addTarget(self, action: "flipButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        flipButton.imageEdgeInsets = buttonItemInsets
-        flipButton.frame = buttonItemFrame
 
         photoLibraryButton = UIButton(type: UIButtonType.Custom)
         photoLibraryButton.setImage(UIImage(named: "Artmoji-Photo-Library"), forState: UIControlState.Normal)
         photoLibraryButton.addTarget(self, action: "photoLibraryButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-        photoLibraryButton.imageEdgeInsets = buttonItemInsets
-        photoLibraryButton.frame = buttonItemFrame
 
         // Set up top nav bar
         navigationBar = UIToolbar()
@@ -122,17 +114,6 @@ public class IMCameraViewController: UIViewController {
         navigationBar.barTintColor = UIColor.clearColor()
 
         determineCancelCameraButtonVisibility()
-
-        // Set up bottom bar
-        bottomBar = UIToolbar()
-        bottomBar.clipsToBounds = true
-        bottomBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        bottomBar.barTintColor = UIColor.clearColor()
-        bottomBar.items = [UIBarButtonItem(customView: photoLibraryButton),
-                           UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: ""),
-                           UIBarButtonItem(customView: captureButton),
-                           UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: ""),
-                           UIBarButtonItem(customView: flipButton)]
 
         // Setup AVCaptureSession
         captureSession = AVCaptureSession()
@@ -184,7 +165,9 @@ public class IMCameraViewController: UIViewController {
 
         // Add subviews
         view.addSubview(navigationBar)
-        view.addSubview(bottomBar)
+        view.addSubview(photoLibraryButton)
+        view.addSubview(flipButton)
+        view.addSubview(captureButton)
 
         // Constraints
         navigationBar.mas_makeConstraints { make in
@@ -194,11 +177,19 @@ public class IMCameraViewController: UIViewController {
             make.height.equalTo()(IMArtmojiConstants.NavigationBarHeight)
         }
 
-        bottomBar.mas_makeConstraints { make in
-            make.bottom.equalTo()(self.view)
-            make.left.equalTo()(self.view)
-            make.right.equalTo()(self.view)
-            make.height.equalTo()(IMArtmojiConstants.BottomBarHeight)
+        photoLibraryButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self.view).offset()(-IMArtmojiConstants.CameraViewBottomButtonBottomOffset)
+            make.left.equalTo()(self.view).offset()(34)
+        }
+        
+        flipButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self.view).offset()(-IMArtmojiConstants.CameraViewBottomButtonBottomOffset)
+            make.right.equalTo()(self.view).offset()(-30)
+        }
+        
+        captureButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self.view).offset()(-IMArtmojiConstants.CaptureButtonBottomOffset)
+            make.centerX.equalTo()(self.view)
         }
     }
 

@@ -108,10 +108,9 @@ public class IMCreateArtmojiView: UIView {
         }
     }
 
-    // Drawing
+    // Drawing mode
     private var brushColorPreview: UIButton!
     private var drawingCanvasView: UIImageView!
-    private var drawingActionsBar: IMToolbar!
     private var backButton: UIButton!
     private var undoButton: UIButton!
     private var brushSizeSlider: UISlider!
@@ -124,14 +123,11 @@ public class IMCreateArtmojiView: UIView {
     private var swiped: Bool
     var capturedImageOrientation: UIImageOrientation
 
-    // Top toolbar
-    private var navigationBar: IMToolbar!
-    private var navigationTitle: UIButton!
+    // Top buttons
     private var cancelButton: UIButton!
     private var flipImojiButton: UIButton!
 
-    // Bottom toolbar
-    private var bottomBar: IMToolbar!
+    // Bottom buttons
     var shareButton: UIButton!
     private var imojiCollectionButton: UIButton!
     private var deleteImojiButton: UIButton!
@@ -171,50 +167,39 @@ public class IMCreateArtmojiView: UIView {
     private func setup() {
         backgroundColor = UIColor(red: 48.0 / 255.0, green: 48.0 / 255.0, blue: 48.0 / 255.0, alpha: 1.0)
 
-        // Set up navigationBar buttons
-        let buttonItemFrame = CGRectMake(0, 0, IMArtmojiConstants.DefaultButtonItemWidthHeight, IMArtmojiConstants.DefaultButtonItemWidthHeight)
-        let buttonItemInsets = UIEdgeInsetsMake(IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset, IMArtmojiConstants.DefaultButtonItemInset)
+        // Set up top buttons
         deleteImojiButton = UIButton(type: UIButtonType.Custom)
         deleteImojiButton.setImage(UIImage(named: "Artmoji-Delete-Imoji"), forState: UIControlState.Normal)
-        deleteImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        deleteImojiButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         deleteImojiButton.tag = IMCreateArtmojiViewButtonType.Delete.rawValue
-        deleteImojiButton.imageEdgeInsets = buttonItemInsets
-        deleteImojiButton.frame = buttonItemFrame
         deleteImojiButton.hidden = true
 
         drawButton = UIButton(type: UIButtonType.Custom)
         drawButton.setImage(UIImage(named: "Artmoji-Draw"), forState: UIControlState.Normal)
-        drawButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        drawButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         drawButton.tag = IMCreateArtmojiViewButtonType.Draw.rawValue
-        drawButton.imageEdgeInsets = buttonItemInsets
-        drawButton.frame = buttonItemFrame
 
         flipImojiButton = UIButton(type: UIButtonType.Custom)
         flipImojiButton.setImage(UIImage(named: "Artmoji-Flip-Imoji"), forState: UIControlState.Normal)
-        flipImojiButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        flipImojiButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         flipImojiButton.tag = IMCreateArtmojiViewButtonType.Flip.rawValue
-        flipImojiButton.imageEdgeInsets = buttonItemInsets
-        flipImojiButton.frame = buttonItemFrame
         flipImojiButton.hidden = true
 
         // Preview of currently selected imoji
-        selectedImojiPreview = UIImageView(frame: buttonItemFrame)
+        selectedImojiPreview = UIImageView()
         selectedImojiPreview.contentMode = UIViewContentMode.ScaleAspectFit
         selectedImojiPreview.hidden = true
 
-        // Set up bottomBar buttons
+        // Set up bottom buttons
         cancelButton = UIButton(type: UIButtonType.Custom)
         cancelButton.setImage(UIImage(named: "Artmoji-Cancel"), forState: UIControlState.Normal)
-        cancelButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        cancelButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         cancelButton.tag = IMCreateArtmojiViewButtonType.Cancel.rawValue
-        cancelButton.frame = buttonItemFrame
 
         shareButton = UIButton(type: UIButtonType.Custom)
         shareButton.setImage(UIImage(named: "Artmoji-Share"), forState: UIControlState.Normal)
-        shareButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        shareButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         shareButton.tag = IMCreateArtmojiViewButtonType.Done.rawValue
-        shareButton.imageEdgeInsets = buttonItemInsets
-        shareButton.frame = buttonItemFrame
 
         // Draw the plus image on top of the circle image and center it horizontally and vertically
         let circleImage = UIImage(named: "Artmoji-Circle")!
@@ -224,71 +209,32 @@ public class IMCreateArtmojiView: UIView {
         
         imojiCollectionButton = UIButton(type: UIButtonType.Custom)
         imojiCollectionButton.setImage(imojiCollectionImage, forState: UIControlState.Normal)
-        imojiCollectionButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        imojiCollectionButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         imojiCollectionButton.tag = IMCreateArtmojiViewButtonType.Collection.rawValue
-        imojiCollectionButton.frame = CGRectMake(0, 0, 140.0, 140.0)
 
-        // Set up drawingActionsBar buttons
+        // Set up drawing mode buttons
         backButton = UIButton(type: UIButtonType.Custom)
         backButton.setImage(UIImage(named: "Artmoji-Draw-Back"), forState: UIControlState.Normal)
-        backButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        backButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         backButton.tag = IMCreateArtmojiViewButtonType.Back.rawValue
-        backButton.imageEdgeInsets = buttonItemInsets
-        backButton.frame = buttonItemFrame
+        backButton.hidden = true
 
         undoButton = UIButton(type: UIButtonType.Custom)
         undoButton.setImage(UIImage(named: "Artmoji-Draw-Undo"), forState: UIControlState.Normal)
-        undoButton.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        undoButton.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         undoButton.tag = IMCreateArtmojiViewButtonType.Undo.rawValue
-        undoButton.imageEdgeInsets = buttonItemInsets
-        undoButton.frame = buttonItemFrame
+        undoButton.hidden = true
 
         brushColorPreview = UIButton(type: UIButtonType.Custom)
-        brushColorPreview.addTarget(self, action: "toolbarButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        brushColorPreview.addTarget(self, action: "buttonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         brushColorPreview.tag = IMCreateArtmojiViewButtonType.Draw.rawValue
         brushColorPreview.frame = CGRectMake(0, 0, IMArtmojiConstants.BrushColorPreviewWidthHeight, IMArtmojiConstants.BrushColorPreviewWidthHeight)
+        brushColorPreview.hidden = true
 
         #if !NOT_PHOTO_EXTENSION
         cancelButton.hidden = true
         shareButton.hidden = true
         #endif
-
-        // Set up navigationBar
-        navigationBar = IMToolbar()
-        navigationBar.clipsToBounds = true
-        navigationBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        navigationBar.tintColor = UIColor.whiteColor()
-        navigationBar.barTintColor = UIColor.clearColor()
-
-        navigationBar.addBarButton(UIBarButtonItem(customView: deleteImojiButton))
-        navigationBar.addBarButton(UIBarButtonItem(customView: selectedImojiPreview))
-        navigationBar.addBarButton(UIBarButtonItem(customView: flipImojiButton))
-        navigationBar.addFlexibleSpace()
-        navigationBar.addBarButton(UIBarButtonItem(customView: drawButton))
-
-        // Set up bottomBar
-        bottomBar = IMToolbar()
-        bottomBar.clipsToBounds = true
-        bottomBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        bottomBar.barTintColor = UIColor.clearColor()
-
-        bottomBar.addBarButton(UIBarButtonItem(customView: cancelButton))
-        bottomBar.addFlexibleSpace()
-        bottomBar.addBarButton(UIBarButtonItem(customView: imojiCollectionButton))
-        bottomBar.addFlexibleSpace()
-        bottomBar.addBarButton(UIBarButtonItem(customView: shareButton))
-
-        // Set up drawingActionsBar
-        drawingActionsBar = IMToolbar()
-        drawingActionsBar.clipsToBounds = true
-        drawingActionsBar.setBackgroundImage(UIImage(), forToolbarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
-        drawingActionsBar.barTintColor = UIColor.clearColor()
-
-        drawingActionsBar.addBarButton(UIBarButtonItem(customView: backButton))
-        drawingActionsBar.addFlexibleSpace()
-        drawingActionsBar.addBarButton(UIBarButtonItem(customView: undoButton))
-        drawingActionsBar.addBarButton(UIBarButtonItem(customView: brushColorPreview))
-        drawingActionsBar.hidden = true
 
         // Artmoji view
         backgroundView = UIImageView(image: sourceImage)
@@ -321,13 +267,26 @@ public class IMCreateArtmojiView: UIView {
         addSubview(backgroundView)
         addSubview(backgroundGestureView)
         addSubview(drawingCanvasView)
-        addSubview(drawingActionsBar)
+
+        // draw
+        addSubview(backButton)
+        addSubview(undoButton)
+        addSubview(brushColorPreview)
         addSubview(brushSizeSlider)
         addSubview(colorSlider)
-        addSubview(navigationBar)
-        addSubview(bottomBar)
 
-        // Constraints
+        // top
+        addSubview(deleteImojiButton)
+        addSubview(selectedImojiPreview)
+        addSubview(flipImojiButton)
+        addSubview(drawButton)
+
+        // bottom
+        addSubview(cancelButton)
+        addSubview(shareButton)
+        addSubview(imojiCollectionButton)
+
+        // View constraints
         backgroundView.mas_makeConstraints { make in
             make.edges.equalTo()(self)
         }
@@ -340,29 +299,63 @@ public class IMCreateArtmojiView: UIView {
             make.edges.equalTo()(self)
         }
 
-        navigationBar.mas_makeConstraints { make in
-            make.top.equalTo()(self)
-            make.left.equalTo()(self)
-            make.right.equalTo()(self)
-            make.height.equalTo()(IMArtmojiConstants.NavigationBarHeight)
+        // top button constraints
+        deleteImojiButton.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.DefaultButtonTopOffset)
+            make.left.equalTo()(self).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonEdgeOffset)
+        }
+        
+        selectedImojiPreview.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(23)
+            make.left.equalTo()(self.deleteImojiButton.mas_right).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonSpacing)
+            make.height.equalTo()(IMArtmojiConstants.DefaultButtonItemWidthHeight)
+            make.width.equalTo()(IMArtmojiConstants.DefaultButtonItemWidthHeight)
+        }
+        
+        flipImojiButton.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.DefaultButtonTopOffset)
+            make.left.equalTo()(self.selectedImojiPreview.mas_right).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonSpacing)
+        }
+        
+        drawButton.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.DefaultButtonTopOffset)
+            make.right.equalTo()(self).offset()(-IMArtmojiConstants.CreateArtmojiViewTopButtonEdgeOffset)
         }
 
-        bottomBar.mas_makeConstraints { make in
-            make.bottom.equalTo()(self)
-            make.left.equalTo()(self)
-            make.right.equalTo()(self)
-            make.height.equalTo()(IMArtmojiConstants.BottomBarHeight)
+        // bottom button constraints
+        cancelButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self).offset()(-36)
+            make.left.equalTo()(self).offset()(IMArtmojiConstants.CreateArtmojiViewBottomButtonEdgeOffset)
+        }
+        
+        shareButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self).offset()(-34)
+            make.right.equalTo()(self).offset()(-IMArtmojiConstants.CreateArtmojiViewBottomButtonEdgeOffset)
+        }
+        
+        imojiCollectionButton.mas_makeConstraints { make in
+            make.bottom.equalTo()(self).offset()(-IMArtmojiConstants.CaptureButtonBottomOffset)
+            make.centerX.equalTo()(self)
         }
 
-        drawingActionsBar.mas_makeConstraints { make in
-            make.top.equalTo()(self)
-            make.left.equalTo()(self)
-            make.right.equalTo()(self)
-            make.height.equalTo()(IMArtmojiConstants.NavigationBarHeight)
+        // Drawing mode constraints
+        backButton.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonTopOffset)
+            make.left.equalTo()(self).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonEdgeOffset)
+        }
+        
+        brushColorPreview.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.DefaultButtonTopOffset)
+            make.right.equalTo()(self).offset()(-IMArtmojiConstants.CreateArtmojiViewTopButtonEdgeOffset)
+        }
+        
+        undoButton.mas_makeConstraints { make in
+            make.top.equalTo()(self).offset()(IMArtmojiConstants.CreateArtmojiViewTopButtonTopOffset)
+            make.right.equalTo()(self.brushColorPreview.mas_left).offset()(-30)
         }
 
         colorSlider.mas_makeConstraints { make in
-            make.top.equalTo()(self.drawingActionsBar.mas_bottom).offset()(75)
+            make.top.equalTo()(self.brushColorPreview.mas_bottom).offset()(75)
             make.right.equalTo()(self).offset()(50)
             make.width.equalTo()(IMArtmojiConstants.SliderWidth)
         }
@@ -402,7 +395,7 @@ public class IMCreateArtmojiView: UIView {
     }
 
     // MARK: - Artmoji editor button logic
-    func toolbarButtonTapped(sender: UIButton) {
+    func buttonTapped(sender: UIButton) {
         switch sender.tag {
             case IMCreateArtmojiViewButtonType.Back.rawValue, IMCreateArtmojiViewButtonType.Draw.rawValue:
                 lastPoint = CGPointZero
@@ -411,11 +404,21 @@ public class IMCreateArtmojiView: UIView {
                 let drawing = !drawingCanvasView.userInteractionEnabled
                 drawingCanvasView.userInteractionEnabled = drawing
 
-                // Show/Hide toolbars/sliders
+                // Show/Hide buttons/sliders
                 brushSizeSlider.hidden = !drawing
                 colorSlider.hidden = !drawing
-                drawingActionsBar.hidden = !drawing
-                navigationBar.hidden = drawing
+                backButton.hidden = !drawing
+                undoButton.hidden = !drawing
+                brushColorPreview.hidden = !drawing
+
+                // Toggle only when there is a selected imoji
+                if selectedImojiView != nil {
+                    deleteImojiButton.hidden = drawing
+                    selectedImojiPreview.hidden = drawing
+                    flipImojiButton.hidden = drawing
+                }
+                
+                drawButton.hidden = drawing
                 #if NOT_PHOTO_EXTENSION
                 cancelButton.hidden = drawing
                 #endif
@@ -531,8 +534,12 @@ public class IMCreateArtmojiView: UIView {
     override public func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if drawingCanvasView.userInteractionEnabled {
             UIView.animateWithDuration(0.2, delay: 0.2, options: UIViewAnimationOptions.CurveEaseOut, animations: { animate in
-                self.bottomBar.alpha = 0
-                self.drawingActionsBar.alpha = 0
+                // Fade out top and bottom buttons
+                self.imojiCollectionButton.alpha = 0
+                self.shareButton.alpha = 0
+                self.backButton.alpha = 0
+                self.undoButton.alpha = 0
+                self.brushColorPreview.alpha = 0
             }, completion: nil)
             swiped = true
             if let touch = touches.first {
@@ -552,8 +559,12 @@ public class IMCreateArtmojiView: UIView {
             }
 
             UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: { animate in
-                self.bottomBar.alpha = 1.0
-                self.drawingActionsBar.alpha = 1.0
+                // Fade in top and bottom buttons
+                self.imojiCollectionButton.alpha = 1.0
+                self.shareButton.alpha = 1.0
+                self.backButton.alpha = 1.0
+                self.undoButton.alpha = 1.0
+                self.brushColorPreview.alpha = 1.0
             }, completion: nil)
 
             drawnImages.append(drawingCanvasView.image!)
@@ -626,8 +637,12 @@ public class IMCreateArtmojiView: UIView {
     
     func drawingCanvasLongPressed(recognizer: UILongPressGestureRecognizer) {
         UIView.animateWithDuration(0.2, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: { animate in
-            self.bottomBar.alpha = 0
-            self.drawingActionsBar.alpha = 0
+            // Fade out top and bottom buttons
+            self.imojiCollectionButton.alpha = 0
+            self.shareButton.alpha = 0
+            self.backButton.alpha = 0
+            self.undoButton.alpha = 0
+            self.brushColorPreview.alpha = 0
         }, completion: nil)
     }
 

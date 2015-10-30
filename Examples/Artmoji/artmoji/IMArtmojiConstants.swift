@@ -25,8 +25,16 @@
 
 struct IMArtmojiConstants {
     static let NavigationBarHeight: CGFloat = 82.0
-    static let BottomBarHeight: CGFloat = 92.0
+    static let DefaultButtonTopOffset: CGFloat = 30.0
+    static let CaptureButtonBottomOffset: CGFloat = 20.0
+    static let CameraViewBottomButtonBottomOffset: CGFloat = 28.0
+
+    static let CreateArtmojiViewTopButtonTopOffset: CGFloat = 42.0
+    static let CreateArtmojiViewTopButtonEdgeOffset: CGFloat = 26.0
+    static let CreateArtmojiViewTopButtonSpacing: CGFloat = 20.0
+    static let CreateArtmojiViewBottomButtonEdgeOffset: CGFloat = 38.0
     static let DefaultButtonItemWidthHeight: CGFloat = 50.0
+
     static let DefaultButtonItemInset: CGFloat = DefaultButtonItemWidthHeight / 8.0
     static let SliderWidth: CGFloat = 165.0
     static let DefaultBarTintColor = UIColor(red: 10.0 / 255.0, green: 132.0 / 255.0, blue: 255.0 / 255.0, alpha: 1.0)
