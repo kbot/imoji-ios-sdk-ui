@@ -8,6 +8,7 @@
 #import "ImojiSuggestionSplashViewCell.h"
 #import "IMCollectionViewCell.h"
 #import "ImojiSuggestionViewCell.h"
+#import "ImojiSuggestionCategoryViewCell.h"
 
 
 @implementation ImojiSuggestionCollectionView {
@@ -20,6 +21,7 @@
         [self registerClass:[ImojiSuggestionLoadingViewCell class] forCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId];
         [self registerClass:[ImojiSuggestionSplashViewCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
         [self registerClass:[ImojiSuggestionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
+        [self registerClass:[ImojiSuggestionCategoryViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
 
         self.scrollsToTop = NO;
     }

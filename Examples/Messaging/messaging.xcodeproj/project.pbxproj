@@ -16,6 +16,7 @@
 		5E3B09AD99285AB025809E10 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F80CC316180C8F13E0FE572B /* libPods.a */; };
 		61FCE34CA8B0F7D3E89A7CCB /* MessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE24F4283CF09D9D1C60B /* MessageViewCell.m */; };
 		61FCE7A10A685E6B72E526E5 /* EmptyMessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEE68E399A943AAE2A84D /* EmptyMessageViewCell.m */; };
+		61FCE937EB0D1BC9E72B3912 /* ImojiSuggestionCategoryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */; };
 		61FCEC7941F345FEB8F3C8D8 /* MessageThreadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE146DDBDF3992D096B23 /* MessageThreadView.m */; };
 		61FCECAD858D73B41703C66C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE5186D0DB2291906CD5D /* Message.m */; };
 		61FCEDC227316C69DCD2F0DB /* ImojiSuggestionLoadingViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE7A56BA3FAE7FFE37E49 /* ImojiSuggestionLoadingViewCell.m */; };
@@ -50,11 +51,13 @@
 		61FCE7A56BA3FAE7FFE37E49 /* ImojiSuggestionLoadingViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionLoadingViewCell.m; sourceTree = "<group>"; };
 		61FCE9EAE3C21BA55BE2C986 /* ImojiSuggestionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionViewCell.h; sourceTree = "<group>"; };
 		61FCEAC15BFDEC117FC30D5B /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		61FCEB523421F1B689764526 /* ImojiSuggestionCategoryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionCategoryViewCell.h; sourceTree = "<group>"; };
 		61FCEC41C64E6653DA3E6122 /* ImojiSuggestionSplashViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionSplashViewCell.m; sourceTree = "<group>"; };
 		61FCED367836432A553D8E7D /* ImojiSuggestionLoadingViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionLoadingViewCell.h; sourceTree = "<group>"; };
 		61FCEE654D090F19016983C5 /* ImojiSuggestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionView.m; sourceTree = "<group>"; };
 		61FCEE68E399A943AAE2A84D /* EmptyMessageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmptyMessageViewCell.m; sourceTree = "<group>"; };
 		61FCEF655FF6BDA13F7AEFE8 /* ImojiSuggestionCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionCollectionView.h; sourceTree = "<group>"; };
+		61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionCategoryViewCell.m; sourceTree = "<group>"; };
 		64ABB880D1FBEBC2A8DE6286 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		6BF112AD289425F24049E399 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F80CC316180C8F13E0FE572B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +147,8 @@
 				61FCE046445F68632281F140 /* ImojiSuggestionSplashViewCell.h */,
 				61FCE783DB7E7EAF3EA064C3 /* ImojiSuggestionViewCell.m */,
 				61FCE9EAE3C21BA55BE2C986 /* ImojiSuggestionViewCell.h */,
+				61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */,
+				61FCEB523421F1B689764526 /* ImojiSuggestionCategoryViewCell.h */,
 			);
 			path = Suggestions;
 			sourceTree = "<group>";
@@ -307,6 +312,7 @@
 				61FCEEC9CD5F017965AEF12B /* ImojiSuggestionSplashViewCell.m in Sources */,
 				61FCEEA90A42F74E7C6F6C48 /* ImojiSuggestionViewCell.m in Sources */,
 				61FCE7A10A685E6B72E526E5 /* EmptyMessageViewCell.m in Sources */,
+				61FCE937EB0D1BC9E72B3912 /* ImojiSuggestionCategoryViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
