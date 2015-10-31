@@ -16,12 +16,18 @@
 		5E3B09AD99285AB025809E10 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F80CC316180C8F13E0FE572B /* libPods.a */; };
 		61FCE34CA8B0F7D3E89A7CCB /* MessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE24F4283CF09D9D1C60B /* MessageViewCell.m */; };
 		61FCE7A10A685E6B72E526E5 /* EmptyMessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEE68E399A943AAE2A84D /* EmptyMessageViewCell.m */; };
+		61FCE937EB0D1BC9E72B3912 /* ImojiSuggestionCategoryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */; };
 		61FCEC7941F345FEB8F3C8D8 /* MessageThreadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE146DDBDF3992D096B23 /* MessageThreadView.m */; };
 		61FCECAD858D73B41703C66C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE5186D0DB2291906CD5D /* Message.m */; };
+		61FCEDC227316C69DCD2F0DB /* ImojiSuggestionLoadingViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE7A56BA3FAE7FFE37E49 /* ImojiSuggestionLoadingViewCell.m */; };
+		61FCEEA90A42F74E7C6F6C48 /* ImojiSuggestionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE783DB7E7EAF3EA064C3 /* ImojiSuggestionViewCell.m */; };
+		61FCEEC9CD5F017965AEF12B /* ImojiSuggestionSplashViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEC41C64E6653DA3E6122 /* ImojiSuggestionSplashViewCell.m */; };
+		61FCEEFFC6EE43190B04138C /* ImojiSuggestionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCEE654D090F19016983C5 /* ImojiSuggestionView.m */; };
+		61FCEFA3B8A9FB91AE330D9B /* ImojiSuggestionCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61FCE51F9C7FED9324D68733 /* ImojiSuggestionCollectionView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A4752741BC8604B005A28E9 /* messaging.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = messaging.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A4752741BC8604B005A28E9 /* prompts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = prompts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A4752781BC8604B005A28E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1A47527A1BC8604B005A28E9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1A47527B1BC8604B005A28E9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -31,15 +37,27 @@
 		1A4752831BC8604B005A28E9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A4752861BC8604B005A28E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1A4752881BC8604B005A28E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A96EEFA1BC864C700193168 /* messaging.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = messaging.pch; sourceTree = SOURCE_ROOT; };
+		1A96EEFA1BC864C700193168 /* prompts.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = prompts.pch; sourceTree = SOURCE_ROOT; };
+		61FCE046445F68632281F140 /* ImojiSuggestionSplashViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionSplashViewCell.h; sourceTree = "<group>"; };
 		61FCE146DDBDF3992D096B23 /* MessageThreadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageThreadView.m; sourceTree = "<group>"; };
 		61FCE24F4283CF09D9D1C60B /* MessageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewCell.m; sourceTree = "<group>"; };
 		61FCE27BC4C7D94EF9EE0A3B /* MessageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewCell.h; sourceTree = "<group>"; };
+		61FCE3FD6CA6531BC036577E /* ImojiSuggestionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionView.h; sourceTree = "<group>"; };
 		61FCE5186D0DB2291906CD5D /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		61FCE51F9C7FED9324D68733 /* ImojiSuggestionCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionCollectionView.m; sourceTree = "<group>"; };
 		61FCE670599CB26E620AD420 /* MessageThreadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageThreadView.h; sourceTree = "<group>"; };
 		61FCE775CC68397E421E67FC /* EmptyMessageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmptyMessageViewCell.h; sourceTree = "<group>"; };
+		61FCE783DB7E7EAF3EA064C3 /* ImojiSuggestionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionViewCell.m; sourceTree = "<group>"; };
+		61FCE7A56BA3FAE7FFE37E49 /* ImojiSuggestionLoadingViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionLoadingViewCell.m; sourceTree = "<group>"; };
+		61FCE9EAE3C21BA55BE2C986 /* ImojiSuggestionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionViewCell.h; sourceTree = "<group>"; };
 		61FCEAC15BFDEC117FC30D5B /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		61FCEB523421F1B689764526 /* ImojiSuggestionCategoryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionCategoryViewCell.h; sourceTree = "<group>"; };
+		61FCEC41C64E6653DA3E6122 /* ImojiSuggestionSplashViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionSplashViewCell.m; sourceTree = "<group>"; };
+		61FCED367836432A553D8E7D /* ImojiSuggestionLoadingViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionLoadingViewCell.h; sourceTree = "<group>"; };
+		61FCEE654D090F19016983C5 /* ImojiSuggestionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionView.m; sourceTree = "<group>"; };
 		61FCEE68E399A943AAE2A84D /* EmptyMessageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmptyMessageViewCell.m; sourceTree = "<group>"; };
+		61FCEF655FF6BDA13F7AEFE8 /* ImojiSuggestionCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImojiSuggestionCollectionView.h; sourceTree = "<group>"; };
+		61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImojiSuggestionCategoryViewCell.m; sourceTree = "<group>"; };
 		64ABB880D1FBEBC2A8DE6286 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		6BF112AD289425F24049E399 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		F80CC316180C8F13E0FE572B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,7 +78,7 @@
 		1A47526B1BC8604B005A28E9 = {
 			isa = PBXGroup;
 			children = (
-				1A4752761BC8604B005A28E9 /* messaging */,
+				1A4752761BC8604B005A28E9 /* prompts */,
 				1A4752751BC8604B005A28E9 /* Products */,
 				65EE72418C628A20D669046B /* Pods */,
 				E4D9EA4B64ACB3159E61E081 /* Frameworks */,
@@ -70,12 +88,12 @@
 		1A4752751BC8604B005A28E9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1A4752741BC8604B005A28E9 /* messaging.app */,
+				1A4752741BC8604B005A28E9 /* prompts.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1A4752761BC8604B005A28E9 /* messaging */ = {
+		1A4752761BC8604B005A28E9 /* prompts */ = {
 			isa = PBXGroup;
 			children = (
 				1A47527A1BC8604B005A28E9 /* AppDelegate.h */,
@@ -89,14 +107,15 @@
 				1A4752771BC8604B005A28E9 /* Supporting Files */,
 				61FCE4E36F8548616AE7C7FA /* MessageThread */,
 				61FCEED1D062AD3EDA2239F9 /* Model */,
+				61FCEAEE8E85E78EA3608FF8 /* Suggestions */,
 			);
-			path = messaging;
+			path = prompts;
 			sourceTree = "<group>";
 		};
 		1A4752771BC8604B005A28E9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1A96EEFA1BC864C700193168 /* messaging.pch */,
+				1A96EEFA1BC864C700193168 /* prompts.pch */,
 				1A4752781BC8604B005A28E9 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -113,6 +132,25 @@
 				61FCE775CC68397E421E67FC /* EmptyMessageViewCell.h */,
 			);
 			path = MessageThread;
+			sourceTree = "<group>";
+		};
+		61FCEAEE8E85E78EA3608FF8 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				61FCEE654D090F19016983C5 /* ImojiSuggestionView.m */,
+				61FCE3FD6CA6531BC036577E /* ImojiSuggestionView.h */,
+				61FCE51F9C7FED9324D68733 /* ImojiSuggestionCollectionView.m */,
+				61FCEF655FF6BDA13F7AEFE8 /* ImojiSuggestionCollectionView.h */,
+				61FCE7A56BA3FAE7FFE37E49 /* ImojiSuggestionLoadingViewCell.m */,
+				61FCED367836432A553D8E7D /* ImojiSuggestionLoadingViewCell.h */,
+				61FCEC41C64E6653DA3E6122 /* ImojiSuggestionSplashViewCell.m */,
+				61FCE046445F68632281F140 /* ImojiSuggestionSplashViewCell.h */,
+				61FCE783DB7E7EAF3EA064C3 /* ImojiSuggestionViewCell.m */,
+				61FCE9EAE3C21BA55BE2C986 /* ImojiSuggestionViewCell.h */,
+				61FCEF6979088512D4CFB9DC /* ImojiSuggestionCategoryViewCell.m */,
+				61FCEB523421F1B689764526 /* ImojiSuggestionCategoryViewCell.h */,
+			);
+			path = Suggestions;
 			sourceTree = "<group>";
 		};
 		61FCEED1D062AD3EDA2239F9 /* Model */ = {
@@ -144,9 +182,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1A4752731BC8604B005A28E9 /* messaging */ = {
+		1A4752731BC8604B005A28E9 /* prompts */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1A47528B1BC8604B005A28E9 /* Build configuration list for PBXNativeTarget "messaging" */;
+			buildConfigurationList = 1A47528B1BC8604B005A28E9 /* Build configuration list for PBXNativeTarget "prompts" */;
 			buildPhases = (
 				F232B58E0F1C18060D1598B1 /* Check Pods Manifest.lock */,
 				1A4752701BC8604B005A28E9 /* Sources */,
@@ -159,9 +197,9 @@
 			);
 			dependencies = (
 			);
-			name = messaging;
+			name = prompts;
 			productName = messaging;
-			productReference = 1A4752741BC8604B005A28E9 /* messaging.app */;
+			productReference = 1A4752741BC8604B005A28E9 /* prompts.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -178,7 +216,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1A47526F1BC8604B005A28E9 /* Build configuration list for PBXProject "messaging" */;
+			buildConfigurationList = 1A47526F1BC8604B005A28E9 /* Build configuration list for PBXProject "prompts" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -191,7 +229,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1A4752731BC8604B005A28E9 /* messaging */,
+				1A4752731BC8604B005A28E9 /* prompts */,
 			);
 		};
 /* End PBXProject section */
@@ -268,7 +306,13 @@
 				61FCEC7941F345FEB8F3C8D8 /* MessageThreadView.m in Sources */,
 				61FCE34CA8B0F7D3E89A7CCB /* MessageViewCell.m in Sources */,
 				61FCECAD858D73B41703C66C /* Message.m in Sources */,
+				61FCEEFFC6EE43190B04138C /* ImojiSuggestionView.m in Sources */,
+				61FCEFA3B8A9FB91AE330D9B /* ImojiSuggestionCollectionView.m in Sources */,
+				61FCEDC227316C69DCD2F0DB /* ImojiSuggestionLoadingViewCell.m in Sources */,
+				61FCEEC9CD5F017965AEF12B /* ImojiSuggestionSplashViewCell.m in Sources */,
+				61FCEEA90A42F74E7C6F6C48 /* ImojiSuggestionViewCell.m in Sources */,
 				61FCE7A10A685E6B72E526E5 /* EmptyMessageViewCell.m in Sources */,
+				61FCE937EB0D1BC9E72B3912 /* ImojiSuggestionCategoryViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,12 +425,12 @@
 			baseConfigurationReference = 6BF112AD289425F24049E399 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				GCC_PREFIX_HEADER = messaging.pch;
-				INFOPLIST_FILE = messaging/Info.plist;
+				GCC_PREFIX_HEADER = prompts.pch;
+				INFOPLIST_FILE = "$(SRCROOT)/prompts/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sopressata.messaging;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sopressata.prompts;
+				PRODUCT_NAME = prompts;
 			};
 			name = Debug;
 		};
@@ -395,19 +439,19 @@
 			baseConfigurationReference = 64ABB880D1FBEBC2A8DE6286 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				GCC_PREFIX_HEADER = messaging.pch;
-				INFOPLIST_FILE = messaging/Info.plist;
+				GCC_PREFIX_HEADER = prompts.pch;
+				INFOPLIST_FILE = "$(SRCROOT)/prompts/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sopressata.messaging;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sopressata.prompts;
+				PRODUCT_NAME = prompts;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A47526F1BC8604B005A28E9 /* Build configuration list for PBXProject "messaging" */ = {
+		1A47526F1BC8604B005A28E9 /* Build configuration list for PBXProject "prompts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A4752891BC8604B005A28E9 /* Debug */,
@@ -416,7 +460,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1A47528B1BC8604B005A28E9 /* Build configuration list for PBXNativeTarget "messaging" */ = {
+		1A47528B1BC8604B005A28E9 /* Build configuration list for PBXNativeTarget "prompts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1A47528C1BC8604B005A28E9 /* Debug */,

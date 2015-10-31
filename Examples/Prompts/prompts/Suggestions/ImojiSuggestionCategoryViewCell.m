@@ -44,7 +44,8 @@
         }];
 
         [self.titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.height.right.equalTo(titleContainer);
+            make.right.equalTo(titleContainer).offset(-10.f);
+            make.top.height.equalTo(titleContainer);
             make.left.equalTo(titleContainer).offset(trendingImage.image.size.width);
         }];
     }
