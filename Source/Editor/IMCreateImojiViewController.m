@@ -32,6 +32,7 @@
 #import "IMCreateImojiAssistantViewController.h"
 #import "IMPopInAnimatedTransition.h"
 #import "IMCreateImojiUITheme.h"
+#import "UIImage+Extensions.h"
 #import <Masonry/Masonry.h>
 
 
@@ -125,6 +126,15 @@
     _imojiPreview = [UIImageView new];
 
     _imojiEditor.editorDelegate = self;
+
+    // resize image to not exceed twice the screen size and scale
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat maxBoundary = (screenSize.height > screenSize.width ? screenSize.height : screenSize.width) *  [UIScreen mainScreen].scale;
+    CGSize maximumSize = CGSizeMake(maxBoundary, maxBoundary);
+
+    if (_sourceImage.size.width > maximumSize.width || _sourceImage.size.height > maximumSize.height) {
+        _sourceImage = [_sourceImage im_resizedImageToFitInSize:maximumSize scaleIfSmaller:NO];
+    }
 
     [self.imojiEditor loadImage:self.sourceImage];
 
