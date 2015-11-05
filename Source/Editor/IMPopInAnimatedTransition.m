@@ -81,28 +81,26 @@
                     break;
             }
         }];
+        [toView layoutIfNeeded];
 
         blurredView.layer.opacity = 0.0f;
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [toView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.edges.equalTo(blurredView);
-            }];
-
-            [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                                  delay:0.0f
-                 usingSpringWithDamping:1.0f
-                  initialSpringVelocity:1.0f
-                                options:UIViewAnimationOptionCurveEaseIn
-                             animations:^{
-                                 fromView.layer.opacity = 0.0f;
-                                 blurredView.layer.opacity = 1.0f;
-                                 [toView layoutIfNeeded];
-                             }
-                             completion:^(BOOL finished) {
-                                 [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-                             }];
-        });
+        [toView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(blurredView);
+        }];
+        [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                              delay:0.0f
+             usingSpringWithDamping:1.0f
+              initialSpringVelocity:1.0f
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             fromView.layer.opacity = 0.0f;
+                             blurredView.layer.opacity = 1.0f;
+                             [toView layoutIfNeeded];
+                         }
+                         completion:^(BOOL finished) {
+                             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                         }];
     } else {
         UIView *fromView = fromViewController.view;
         UIView *blurredView = transitionContext.containerView.subviews.firstObject;
@@ -112,44 +110,43 @@
         [fromView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.edges.equalTo(transitionContext.containerView);
         }];
+        [fromView layoutIfNeeded];
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [fromView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.height.width.equalTo(transitionContext.containerView);
+        [fromView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.height.width.equalTo(transitionContext.containerView);
 
-                switch (self.transitionDirection) {
-                    case IMPopInAnimatedTransitionDirectionLeft:
-                        make.right.equalTo(blurredView.mas_left);
-                        make.top.equalTo(blurredView);
-                        break;
-                    case IMPopInAnimatedTransitionDirectionRight:
-                        make.left.equalTo(blurredView.mas_right);
-                        make.top.equalTo(blurredView);
-                        break;
-                    case IMPopInAnimatedTransitionDirectionUp:
-                        make.top.equalTo(blurredView.mas_bottom);
-                        make.left.equalTo(blurredView);
-                        break;
-                    case IMPopInAnimatedTransitionDirectionDown:
-                        make.bottom.equalTo(blurredView.mas_top);
-                        make.left.equalTo(blurredView);
-                        break;
-                }
-            }];
+            switch (self.transitionDirection) {
+                case IMPopInAnimatedTransitionDirectionLeft:
+                    make.right.equalTo(blurredView.mas_left);
+                    make.top.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionRight:
+                    make.left.equalTo(blurredView.mas_right);
+                    make.top.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionUp:
+                    make.top.equalTo(blurredView.mas_bottom);
+                    make.left.equalTo(blurredView);
+                    break;
+                case IMPopInAnimatedTransitionDirectionDown:
+                    make.bottom.equalTo(blurredView.mas_top);
+                    make.left.equalTo(blurredView);
+                    break;
+            }
+        }];
 
-            [UIView animateWithDuration:[self transitionDuration:transitionContext]
-                             animations:^{
-                                 if (NSClassFromString(@"UIVisualEffectView")) {
-                                     blurredView.layer.opacity = 0.0f;
-                                 }
-
-                                 [fromView layoutIfNeeded];
+        [UIView animateWithDuration:[self transitionDuration:transitionContext]
+                         animations:^{
+                             if (NSClassFromString(@"UIVisualEffectView")) {
+                                 blurredView.layer.opacity = 0.0f;
                              }
-                             completion:^(BOOL finished) {
-                                 [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-                             }
-            ];
-        });
+
+                             [fromView layoutIfNeeded];
+                         }
+                         completion:^(BOOL finished) {
+                             [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+                         }
+        ];
     }
 }
 
