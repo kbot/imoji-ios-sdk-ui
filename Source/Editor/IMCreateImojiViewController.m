@@ -129,7 +129,8 @@
 
     // resize image to not exceed twice the screen size and scale
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    CGFloat maxBoundary = (screenSize.height > screenSize.width ? screenSize.height : screenSize.width) *  [UIScreen mainScreen].scale;
+    CGFloat maxBoundary = (screenSize.height > screenSize.width ? screenSize.height : screenSize.width) *
+            [UIScreen mainScreen].scale * 2.f;
     CGSize maximumSize = CGSizeMake(maxBoundary, maxBoundary);
 
     if (_sourceImage.size.width > maximumSize.width || _sourceImage.size.height > maximumSize.height) {
