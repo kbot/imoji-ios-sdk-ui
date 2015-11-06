@@ -1,5 +1,11 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.18
+
+* Using fetchRenderingOptions from IMImojiSession for the default size to render Imoji's in the collection views
+* Updated Imoji creation to trigger callbacks before and after uploading
+* Fixes a bug in which the Imoji Editor would crash loading large images.
+
 ### Version 0.1.17
 
 * Full support for loading ImojiSDKUI as a dynamic library
