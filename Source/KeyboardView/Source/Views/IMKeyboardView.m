@@ -250,7 +250,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonTrending
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending.png", self.imageBundle.bundlePath]]
                                        activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending_active.png", self.imageBundle.bundlePath]]
-     ];
+    ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonCollection
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_collection.png", self.imageBundle.bundlePath]]
@@ -260,17 +260,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardDelete
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_delete.png", self.imageBundle.bundlePath]]
                                        activeImage:nil
-     ];
-
-    if (!self.hasFullAccess) {
-        for (UIBarButtonItem *item in self.keyboardToolbar.items) {
-            if (item.customView.tag == IMToolbarButtonKeyboardNextKeyboard) {
-                [(UIButton *) item.customView setAlpha:0.5f];
-            } else {
-                [(UIButton *) item.customView setEnabled:NO];
-            }
-        }
-    }
+    ];
 }
 
 - (void)closeCategory {

@@ -51,6 +51,11 @@
 - (void)reset;
 
 /**
+* @abstract Displays the help screen to the user
+*/
+- (void)showHelpScreen;
+
+/**
 * @abstract A delegate to receive events from the editor view controller
 */
 @property(nonatomic, strong, nullable) id <IMCreateImojiViewControllerDelegate> createDelegate;

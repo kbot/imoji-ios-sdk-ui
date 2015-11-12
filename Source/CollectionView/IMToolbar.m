@@ -163,7 +163,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 - (void)appendBarButtonItem:(UIBarButtonItem *)barButtonItem withPrependedFlexibleSpace:(BOOL)withSpace {
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
-    if (withSpace && items.count > 0 && ((UIBarButtonItem *) items.lastObject).customView.tag > IMToolbarButtonSearch) {
+    if (withSpace && items.count > 0) {
         [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
     }
 
