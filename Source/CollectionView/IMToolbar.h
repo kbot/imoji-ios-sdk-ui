@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, IMToolbarButtonType) {
     IMToolbarButtonRecents,
     IMToolbarButtonReactions,
     IMToolbarButtonTrending,
+    IMToolbarButtonArtist,
     IMToolbarButtonCollection,
     IMToolbarButtonBack,
 

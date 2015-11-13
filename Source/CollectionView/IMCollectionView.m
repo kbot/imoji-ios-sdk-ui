@@ -31,6 +31,9 @@
 #import "IMCollectionViewSplashCell.h"
 #import "IMResourceBundleUtil.h"
 #import "IMConnectivityUtil.h"
+#import "IMCollectionFooterView.h"
+#import "IMArtistObject.h"
+#import "IMCollectionHeaderView.h"
 
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 
@@ -44,6 +47,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 @property(nonatomic, strong) NSOperation *imojiOperation;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
+@property(nonatomic, copy) NSString *currentHeader;
+@property(nonatomic, strong) UIImage *artistPicture;
 
 @property(nonatomic) NSUInteger renderCount;
 
@@ -62,6 +67,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         _renderingOptions = session.fetchRenderingOptions;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
+        _isArtist = NO;
 
         self.dataSource = self;
         self.delegate = self;
@@ -85,6 +91,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMCollectionViewStatusCell class] forCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId];
         [self registerClass:[IMCollectionViewSplashCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
+        [self registerClass:[IMCollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:IMCollectionHeaderViewReuseId];
+        [self registerClass:[IMCollectionFooterView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:IMCollectionFooterViewReuseId];
     }
 
     return self;
@@ -94,6 +102,43 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.content.count;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if(kind == UICollectionElementKindSectionHeader) {
+        IMCollectionHeaderView *headerView = (IMCollectionHeaderView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                 withReuseIdentifier:IMCollectionHeaderViewReuseId
+                                                                                                        forIndexPath:indexPath];
+
+        [headerView setupWithText:self.currentHeader];
+
+        return headerView;
+    } else if(kind == UICollectionElementKindSectionFooter) {
+        IMCollectionFooterView *footerView = (IMCollectionFooterView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                                                                                                 withReuseIdentifier:IMCollectionFooterViewReuseId
+                                                                                                        forIndexPath:indexPath];
+
+        [footerView setup];
+        footerView.artistPicture.image = self.artistPicture;
+
+        return footerView;
+    }
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    if(self.currentSearchTerm && self.contentType == IMCollectionViewContentTypeImojis) {
+        return CGSizeMake(self.frame.size.width, 49.0f);
+    }
+
+    return CGSizeZero;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    if (self.isArtist) {
+        return CGSizeMake(self.frame.size.width, 120.0f);
+    }
+
+    return CGSizeZero;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -397,6 +442,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         return;
     }
 
+    self.currentHeader = self.isCategory ? self.currentHeader : searchTerm;
     self.currentSearchTerm = searchTerm;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
@@ -497,6 +543,15 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
+    self.isArtist = NO;
+    self.isCategory = YES;
+    if(category) {//.artist) {
+        self.isArtist = YES;
+    }
+
+    self.artistPicture = self.images[[self.content indexOfObject:category]];
+    self.currentHeader = category.title;
+
     [self loadImojisFromSearch:category.identifier];
 }
 

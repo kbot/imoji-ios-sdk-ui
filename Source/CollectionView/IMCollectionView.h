@@ -83,6 +83,9 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 */
 @property(nonatomic) BOOL animateSelection;
 
+@property(nonatomic) BOOL isArtist;
+@property(nonatomic) BOOL isCategory;
+
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
  * session.fetchRenderingOptions

@@ -138,6 +138,7 @@
 }
 
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
+    ((IMCollectionViewController *) self.presentedViewController).collectionView.isArtist = NO;
     switch (buttonType) {
         case IMToolbarButtonReactions:
             [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
@@ -147,6 +148,9 @@
             [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
             break;
 
+        case IMToolbarButtonArtist:
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+            break;
 
         case IMToolbarButtonBack:
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -166,6 +170,7 @@
     [viewController.bottomToolbar addFlexibleSpace];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonTrending];
+    [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonArtist];
     [viewController.bottomToolbar addFlexibleSpace];
 
     viewController.topToolbar.barTintColor =
@@ -181,6 +186,9 @@
                 break;
             case IMImojiSessionCategoryClassificationGeneric:
                 [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonReactions];
+                break;
+            case IMImojiSessionCategoryClassificationArtist:
+                [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonArtist];
                 break;
             default:
                 break;
