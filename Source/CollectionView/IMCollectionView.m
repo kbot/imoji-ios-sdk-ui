@@ -68,6 +68,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
         _isArtist = NO;
+        _currentHeader = @"";
 
         self.dataSource = self;
         self.delegate = self;
@@ -126,7 +127,7 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    if(self.currentSearchTerm && self.contentType == IMCollectionViewContentTypeImojis) {
+    if(self.currentHeader.length > 0) {
         return CGSizeMake(self.frame.size.width, 49.0f);
     }
 
@@ -362,6 +363,20 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
+    switch(classification) {
+        case IMImojiSessionCategoryClassificationTrending:
+            self.currentHeader = @"Trending";
+            break;
+        case IMImojiSessionCategoryClassificationGeneric:
+            self.currentHeader = @"Reactions";
+            break;
+        case IMImojiSessionCategoryClassificationArtist:
+            self.currentHeader = @"Artist";
+            break;
+        default:
+            break;
+    }
+
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;

@@ -168,7 +168,9 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
     if (withSpace && items.count > 0) {
-        [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        if((items.count == 1 && ((UIBarButtonItem *)items.firstObject).tag) || items.count > 1) {
+            [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        }
     }
 
     [items addObject:barButtonItem];
