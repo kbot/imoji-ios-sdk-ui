@@ -183,6 +183,10 @@
     }
 }
 
+- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionView:(IMCollectionView *)collectionView {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:packURL]];
+}
+
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
     IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
     viewController.collectionView.collectionViewDelegate = self;

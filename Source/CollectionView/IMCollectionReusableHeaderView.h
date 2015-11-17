@@ -25,20 +25,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class IMArtistObject;
+@interface IMCollectionReusableHeaderView : UICollectionReusableView
 
-@interface IMCollectionFooterView : UICollectionReusableView
+extern NSString *__nonnull const IMCollectionReusableHeaderViewReuseId;
 
-extern NSString *__nonnull const IMCollectionFooterViewReuseId;
+@property(nonatomic, strong) UILabel *title;
 
-@property(nonatomic, strong) UIView *container;
-@property(nonatomic, strong) UIImageView *artistPicture;
-@property(nonatomic, strong) UILabel *artistName;
-@property(nonatomic, strong) UILabel *artistDescription;
-@property(nonatomic, strong) UILabel *artistHeader;
-@property(nonatomic, strong) NSBundle *imageBundle;
-
-- (void)setup;
-- (void)setupWithArtist:(IMArtistObject *)artist;
+- (void)setupWithText:(NSString *)header;
 
 @end

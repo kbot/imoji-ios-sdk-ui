@@ -23,14 +23,34 @@
 //  IN THE SOFTWARE.
 //
 
-#import <UIKit/UIKit.h>
+#import "IMCollectionReusableHeaderView.h"
+#import "IMAttributeStringUtil.h"
+#import "View+MASAdditions.h"
 
-@interface IMCollectionHeaderView : UICollectionReusableView
+NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHeaderViewReuseId";
 
-extern NSString *__nonnull const IMCollectionHeaderViewReuseId;
+@implementation IMCollectionReusableHeaderView {
 
-@property(nonatomic, strong) UILabel *title;
+}
 
-- (void)setupWithText:(NSString *)header;
+- (void)setupWithText:(NSString *)header {
+    if(!self.title) {
+        self.title = [[UILabel alloc] init];
+
+        [self addSubview:self.title];
+
+        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(self);
+            make.height.equalTo(@49.0f);
+        }];
+    } else {
+        self.title = self.subviews.firstObject;
+    }
+
+    self.title.attributedText = [IMAttributeStringUtil attributedString:[header uppercaseString]
+                                                               withFont:[IMAttributeStringUtil imojiRegularFontWithSize:22.0f]
+                                                                  color:[UIColor colorWithRed:188.0f / 255.0f green:190.0f / 255.0f blue:192.0f / 255.0f alpha:1.0f]
+                                                           andAlignment:NSTextAlignmentCenter];
+}
 
 @end

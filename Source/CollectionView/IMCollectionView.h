@@ -188,4 +188,6 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 - (void)imojiCollectionViewDidScroll:(nonnull IMCollectionView *)collectionView;
 
+- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionView:(nonnull IMCollectionView *)collectionView;
+
 @end

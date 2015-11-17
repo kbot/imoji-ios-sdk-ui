@@ -23,34 +23,36 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMCollectionHeaderView.h"
-#import "IMAttributeStringUtil.h"
-#import "View+MASAdditions.h"
+#import <UIKit/UIKit.h>
+#import "IMCollectionView.h"
 
-NSString *const IMCollectionHeaderViewReuseId = @"IMCollectionHeaderViewReuseId";
+@class IMArtistObject;
 
-@implementation IMCollectionHeaderView {
+@protocol IMCollectionReusableAttributionViewDelegate;
 
-}
+@interface IMCollectionReusableAttributionView : UICollectionReusableView
 
-- (void)setupWithText:(NSString *)header {
-    if(!self.title) {
-        self.title = [[UILabel alloc] init];
+extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
-        [self addSubview:self.title];
+@property(nonatomic, strong) UIImageView *artistPicture;
+@property(nonatomic, strong) UIImageView *artistLinkImage;
+@property(nonatomic, strong) UILabel *artistName;
+@property(nonatomic, strong) UILabel *artistDescription;
+@property(nonatomic, strong) UILabel *artistHeader;
+@property(nonatomic, strong) UILabel *artistLink;
 
-        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self);
-            make.height.equalTo(@49.0f);
-        }];
-    } else {
-        self.title = self.subviews.firstObject;
-    }
+@property(nonatomic, strong) NSBundle *imageBundle;
 
-    self.title.attributedText = [IMAttributeStringUtil attributedString:[header uppercaseString]
-                                                               withFont:[IMAttributeStringUtil imojiRegularFontWithSize:22.0f]
-                                                                  color:[UIColor colorWithRed:188.0f / 255.0f green:190.0f / 255.0f blue:192.0f / 255.0f alpha:1.0f]
-                                                           andAlignment:NSTextAlignmentCenter];
-}
+@property(nonatomic, weak, nullable) id <IMCollectionReusableAttributionViewDelegate> attributionViewDelegate;
+
+- (void)setupWithArtist:(IMArtistObject *)artist;
+
+@end
+
+@protocol IMCollectionReusableAttributionViewDelegate <NSObject>
+
+@optional
+
+- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView;
 
 @end
