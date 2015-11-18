@@ -66,6 +66,10 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection.png", self.imageBundle.bundlePath]];
             activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection_on.png", self.imageBundle.bundlePath]];
             break;
+        case IMToolbarButtonArtist:
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection_on.png", self.imageBundle.bundlePath]];
+            break;
         case IMToolbarButtonBack:
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
             break;
@@ -164,7 +168,9 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
     NSMutableArray *items = [NSMutableArray arrayWithArray:self.items];
 
     if (withSpace && items.count > 0) {
-        [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        if((items.count == 1 && ((UIBarButtonItem *)items.firstObject).tag) || items.count > 1) {
+            [items addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
+        }
     }
 
     [items addObject:barButtonItem];

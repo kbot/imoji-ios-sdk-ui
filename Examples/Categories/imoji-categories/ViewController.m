@@ -19,6 +19,7 @@
 
 @property(nonatomic, strong) UIButton *reactionsButton;
 @property(nonatomic, strong) UIButton *trendingButton;
+@property(nonatomic, strong) UIButton *artistButton;
 @property(nonatomic, strong) IMImojiSession *imojiSession;
 
 @end
@@ -34,6 +35,7 @@
     UILabel *title = [UILabel new];
     self.reactionsButton = [UIButton new];
     self.trendingButton = [UIButton new];
+    self.artistButton = [UIButton new];
 
     self.view.backgroundColor = [UIColor colorWithRed:249.0f / 255.0f
                                                 green:249.0f / 255.0f
@@ -42,12 +44,13 @@
 
     self.reactionsButton.backgroundColor =
             self.trendingButton.backgroundColor =
-                    [UIColor colorWithRed:44.0f / 255.0f
-                                    green:168.0f / 255.0f
-                                     blue:224.0f / 255.0f
-                                    alpha:1.0f];
+                    self.artistButton.backgroundColor =
+                            [UIColor colorWithRed:44.0f / 255.0f
+                                            green:168.0f / 255.0f
+                                             blue:224.0f / 255.0f
+                                            alpha:1.0f];
 
-    self.reactionsButton.layer.cornerRadius = self.trendingButton.layer.cornerRadius = 5.0f;
+    self.reactionsButton.layer.cornerRadius = self.trendingButton.layer.cornerRadius = self.artistButton.layer.cornerRadius = 5.0f;
 
     title.attributedText = [IMAttributeStringUtil attributedString:@"Imoji Categories"
                                                           withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
@@ -60,6 +63,7 @@
 
     [self.reactionsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.trendingButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.artistButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 
     [self.reactionsButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Reactions"
                                                                             withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
@@ -76,12 +80,22 @@
                                    forState:UIControlStateNormal
     ];
 
+    [self.artistButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Artist"
+                                                                           withFont:[IMAttributeStringUtil defaultFontWithSize:20.0f]
+                                                                              color:[UIColor whiteColor]
+                                                                       andAlignment:NSTextAlignmentLeft]
+
+                                   forState:UIControlStateNormal
+    ];
+
     [self.reactionsButton addTarget:self action:@selector(displayReactions) forControlEvents:UIControlEventTouchUpInside];
     [self.trendingButton addTarget:self action:@selector(displayTrending) forControlEvents:UIControlEventTouchUpInside];
+    [self.artistButton addTarget:self action:@selector(displayArtist) forControlEvents:UIControlEventTouchUpInside];
 
     [self.view addSubview:title];
     [self.view addSubview:self.reactionsButton];
     [self.view addSubview:self.trendingButton];
+    [self.view addSubview:self.artistButton];
 
     [self.reactionsButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.width.height.equalTo(self.trendingButton);
@@ -91,6 +105,10 @@
         make.center.equalTo(self.view);
         make.width.equalTo(self.view).multipliedBy(.65f);
         make.height.equalTo(self.view.mas_width).multipliedBy(.65f / 4.0f);
+    }];
+    [self.artistButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.width.height.equalTo(self.trendingButton);
+        make.top.equalTo(self.trendingButton.mas_bottom).offset(20.0f);
     }];
     [title mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
@@ -106,6 +124,10 @@
 
 - (void)displayTrending {
     [self displayCollectionViewControllerWithCategory:IMImojiSessionCategoryClassificationTrending];
+}
+
+- (void)displayArtist {
+    [self displayCollectionViewControllerWithCategory:IMImojiSessionCategoryClassificationArtist];
 }
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
@@ -147,6 +169,9 @@
             [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
             break;
 
+        case IMToolbarButtonArtist:
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+            break;
 
         case IMToolbarButtonBack:
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -155,6 +180,10 @@
         default:
             break;
     }
+}
+
+- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:attributionLink]];
 }
 
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
@@ -166,6 +195,7 @@
     [viewController.bottomToolbar addFlexibleSpace];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonTrending];
+    [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonArtist];
     [viewController.bottomToolbar addFlexibleSpace];
 
     viewController.topToolbar.barTintColor =
@@ -181,6 +211,9 @@
                 break;
             case IMImojiSessionCategoryClassificationGeneric:
                 [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonReactions];
+                break;
+            case IMImojiSessionCategoryClassificationArtist:
+                [viewController.bottomToolbar selectButtonOfType:IMToolbarButtonArtist];
                 break;
             default:
                 break;

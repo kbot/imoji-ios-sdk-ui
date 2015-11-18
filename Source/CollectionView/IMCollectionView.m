@@ -31,10 +31,16 @@
 #import "IMCollectionViewSplashCell.h"
 #import "IMResourceBundleUtil.h"
 #import "IMConnectivityUtil.h"
+#import "IMCollectionReusableAttributionView.h"
+#import "IMArtist.h"
+#import "IMCollectionReusableHeaderView.h"
+#import "IMCategoryAttribution.h"
 
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
+CGFloat const IMCollectionReusableHeaderViewDefaultHeight = 49.0f;
+CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
-@interface IMCollectionView ()
+@interface IMCollectionView () <IMCollectionReusableAttributionViewDelegate>
 
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *content;
@@ -44,6 +50,11 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 @property(nonatomic, strong) NSOperation *imojiOperation;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
+@property(nonatomic, copy) NSString *currentHeader;
+@property(nonatomic, strong) IMCategoryAttribution *currentAttribution;
+@property(nonatomic, strong) UIImage *artistPicture;
+
+@property(nonatomic) BOOL shouldShowAttribution;
 
 @property(nonatomic) NSUInteger renderCount;
 
@@ -62,6 +73,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         _renderingOptions = session.fetchRenderingOptions;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
+        _shouldShowAttribution = NO;
+        _currentHeader = @"";
 
         self.dataSource = self;
         self.delegate = self;
@@ -85,6 +98,8 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMCollectionViewStatusCell class] forCellWithReuseIdentifier:IMCollectionViewStatusCellReuseId];
         [self registerClass:[IMCollectionViewSplashCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
+        [self registerClass:[IMCollectionReusableHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:IMCollectionReusableHeaderViewReuseId];
+        [self registerClass:[IMCollectionReusableAttributionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:IMCollectionReusableAttributionViewReuseId];
     }
 
     return self;
@@ -94,6 +109,46 @@ NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.content.count;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if (kind == UICollectionElementKindSectionHeader) {
+        IMCollectionReusableHeaderView *headerView = (IMCollectionReusableHeaderView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                                 withReuseIdentifier:IMCollectionReusableHeaderViewReuseId
+                                                                                                                        forIndexPath:indexPath];
+
+        [headerView setupWithText:self.currentHeader];
+
+        return headerView;
+    } else if (kind == UICollectionElementKindSectionFooter) {
+        IMCollectionReusableAttributionView *attributionView = (IMCollectionReusableAttributionView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                                                                                                                                withReuseIdentifier:IMCollectionReusableAttributionViewReuseId
+                                                                                                                                       forIndexPath:indexPath];
+
+        [attributionView setupWithAttribution:self.currentAttribution];
+        attributionView.artistPicture.image = self.artistPicture;
+        attributionView.attributionViewDelegate = self;
+
+        return attributionView;
+    }
+
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    if(self.currentHeader.length > 0) {
+        return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight);
+    }
+
+    return CGSizeZero;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    if (self.shouldShowAttribution) {
+        return CGSizeMake(self.frame.size.width, IMCollectionReusableAttributionViewDefaultHeight);
+    }
+
+    return CGSizeZero;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -314,9 +369,32 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     return 0;
 }
 
+#pragma mark Supplementary View Delegates
+
+- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView {
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink: fromCollectionView:)]) {
+        [self.collectionViewDelegate userDidSelectAttributionLink:attributionLink fromCollectionView:self];
+    }
+}
+
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
+    self.shouldShowAttribution = NO;
+    switch(classification) {
+        case IMImojiSessionCategoryClassificationTrending:
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewTrending"];
+            break;
+        case IMImojiSessionCategoryClassificationGeneric:
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewReactions"];
+            break;
+        case IMImojiSessionCategoryClassificationArtist:
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewArtist"];
+            break;
+        default:
+            break;
+    }
+
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -347,7 +425,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                               }
 
                                                               NSUInteger index = [imojiCategories indexOfObject:category];
-                                                              [self renderImojiResult:category.previewImoji
+                                                              [self renderImojiResult:category.previewImojis ? category.previewImojis[arc4random() % category.previewImojis.count] : category.previewImoji
                                                                               content:category
                                                                               atIndex:index
                                                                                offset:0
@@ -392,12 +470,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm {
-    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
-        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
-        return;
-    }
-
-    self.currentSearchTerm = searchTerm;
+    self.shouldShowAttribution = NO;
+    self.currentHeader = searchTerm;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
@@ -497,7 +571,24 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
-    [self loadImojisFromSearch:category.identifier];
+    self.shouldShowAttribution = NO;
+    self.currentHeader = category.title;
+
+    if(category.attribution) {
+        self.shouldShowAttribution = YES;
+
+        [self.session renderImoji:category.attribution.artist.previewImoji
+                          options:self.renderingOptions
+                         callback:^(UIImage *image, NSError *renderError) {
+                             if(renderError == nil) {
+                                 self.artistPicture = image;
+                             }
+                         }];
+
+        self.currentAttribution = category.attribution;
+    }
+
+    [self loadImojisFromSearch:category.identifier offset:nil];
 }
 
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
@@ -530,6 +621,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Private Imoji Loading Methods
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.currentSearchTerm = searchTerm;
+
     NSUInteger offsetValue = offset ? offset.unsignedIntegerValue - 1 : 0;
 
     if (!offset) {
