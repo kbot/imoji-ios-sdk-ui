@@ -26,9 +26,10 @@
 #import <UIKit/UIKit.h>
 #import "IMCollectionView.h"
 
-@class IMArtistObject;
+@class IMArtist;
 
 @protocol IMCollectionReusableAttributionViewDelegate;
+@class IMCategoryAttribution;
 
 @interface IMCollectionReusableAttributionView : UICollectionReusableView
 
@@ -45,7 +46,7 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
 @property(nonatomic, weak, nullable) id <IMCollectionReusableAttributionViewDelegate> attributionViewDelegate;
 
-- (void)setupWithArtist:(nonnull IMArtistObject *)artist;
+- (void)setupWithArtist:(nonnull IMArtist *)artist attribution:(nonnull IMCategoryAttribution *)attribution;
 
 @end
 

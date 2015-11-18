@@ -27,7 +27,8 @@
 #import "IMResourceBundleUtil.h"
 #import "IMAttributeStringUtil.h"
 #import "View+MASAdditions.h"
-#import "IMArtistObject.h"
+#import "IMArtist.h"
+#import "IMCategoryAttribution.h"
 
 NSString *const IMCollectionReusableAttributionViewReuseId = @"IMCollectionReusableAttributionViewReuseId";
 CGFloat const IMCollectionReusableAttributionViewArtistContainerOffset = 30.0f;
@@ -58,7 +59,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
     return self;
 }
 
-- (void)setupWithArtist:(IMArtistObject *)artist {
+- (void)setupWithArtist:(IMArtist *)artist attribution:(IMCategoryAttribution *)attribution {
     if(!self.footerView) {
         // Setup views
         self.footerView = [[UIView alloc] init];
@@ -71,7 +72,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 
         // URL Container view
         self.artistLink = [[UILabel alloc] init];
-        self.artistLink.attributedText = [IMAttributeStringUtil attributedString:artist.packURL
+        self.artistLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL
                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                     andAlignment:NSTextAlignmentLeft];

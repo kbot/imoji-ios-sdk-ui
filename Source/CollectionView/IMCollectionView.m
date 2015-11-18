@@ -32,8 +32,9 @@
 #import "IMResourceBundleUtil.h"
 #import "IMConnectivityUtil.h"
 #import "IMCollectionReusableAttributionView.h"
-#import "IMArtistObject.h"
+#import "IMArtist.h"
 #import "IMCollectionReusableHeaderView.h"
+#import "IMCategoryAttribution.h"
 
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 CGFloat const IMCollectionReusableHeaderViewDefaultHeight = 49.0f;
@@ -50,7 +51,8 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 @property(nonatomic, copy) NSString *currentHeader;
-@property(nonatomic, strong) IMArtistObject *currentArtist;
+@property(nonatomic, strong) IMArtist *currentArtist;
+@property(nonatomic, strong) IMCategoryAttribution *currentAttribution;
 @property(nonatomic, strong) UIImage *artistPicture;
 
 @property(nonatomic) BOOL shouldShowAttribution;
@@ -124,7 +126,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
                                                                                                                            withReuseIdentifier:IMCollectionReusableAttributionViewReuseId
                                                                                                                                   forIndexPath:indexPath];
 
-        [attributionView setupWithArtist:self.currentArtist];
+        [attributionView setupWithArtist:self.currentArtist attribution:self.currentAttribution];
         attributionView.artistPicture.image = self.artistPicture;
         attributionView.attributionViewDelegate = self;
 
@@ -585,6 +587,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                          }];
 
         self.currentArtist = category.artist;
+        self.currentAttribution = category.attribution;
     }
 
     [self loadImojisFromSearch:category.identifier offset:nil];
