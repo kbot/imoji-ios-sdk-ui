@@ -50,7 +50,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
 }
 
 - (void)setupWithText:(NSString *)header {
-    if(!self.title) {
+    if (!self.title) {
         self.title = [[UILabel alloc] init];
 
         [self addSubview:self.title];

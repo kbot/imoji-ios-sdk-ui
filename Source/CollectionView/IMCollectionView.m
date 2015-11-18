@@ -51,7 +51,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 @property(nonatomic, copy) NSString *currentHeader;
-@property(nonatomic, strong) IMArtist *currentArtist;
 @property(nonatomic, strong) IMCategoryAttribution *currentAttribution;
 @property(nonatomic, strong) UIImage *artistPicture;
 
@@ -113,7 +112,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    if(kind == UICollectionElementKindSectionHeader) {
+    if (kind == UICollectionElementKindSectionHeader) {
         IMCollectionReusableHeaderView *headerView = (IMCollectionReusableHeaderView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                  withReuseIdentifier:IMCollectionReusableHeaderViewReuseId
                                                                                                                         forIndexPath:indexPath];
@@ -121,18 +120,18 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         [headerView setupWithText:self.currentHeader];
 
         return headerView;
-    } else if(kind == UICollectionElementKindSectionFooter) {
+    } else if (kind == UICollectionElementKindSectionFooter) {
         IMCollectionReusableAttributionView *attributionView = (IMCollectionReusableAttributionView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter
-                                                                                                                           withReuseIdentifier:IMCollectionReusableAttributionViewReuseId
-                                                                                                                                  forIndexPath:indexPath];
+                                                                                                                                withReuseIdentifier:IMCollectionReusableAttributionViewReuseId
+                                                                                                                                       forIndexPath:indexPath];
 
-        [attributionView setupWithArtist:self.currentArtist attribution:self.currentAttribution];
+        [attributionView setupWithAttribution:self.currentAttribution];
         attributionView.artistPicture.image = self.artistPicture;
         attributionView.attributionViewDelegate = self;
 
         return attributionView;
     }
-    
+
     return nil;
 }
 
@@ -372,9 +371,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 #pragma mark Supplementary View Delegates
 
-- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView {
-    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectArtistLink: fromCollectionView:)]) {
-        [self.collectionViewDelegate userDidSelectArtistLink:packURL fromCollectionView:self];
+- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView {
+    if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink: fromCollectionView:)]) {
+        [self.collectionViewDelegate userDidSelectAttributionLink:attributionLink fromCollectionView:self];
     }
 }
 
@@ -384,13 +383,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.shouldShowAttribution = NO;
     switch(classification) {
         case IMImojiSessionCategoryClassificationTrending:
-            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderTrending"];
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewTrending"];
             break;
         case IMImojiSessionCategoryClassificationGeneric:
-            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderReactions"];
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewReactions"];
             break;
         case IMImojiSessionCategoryClassificationArtist:
-            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderArtist"];
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewArtist"];
             break;
         default:
             break;
@@ -575,10 +574,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.shouldShowAttribution = NO;
     self.currentHeader = category.title;
 
-    if(category.artist) {
+    if(category.attribution) {
         self.shouldShowAttribution = YES;
 
-        [self.session renderImoji:category.artist.previewImoji
+        [self.session renderImoji:category.attribution.artist.previewImoji
                           options:self.renderingOptions
                          callback:^(UIImage *image, NSError *renderError) {
                              if(renderError == nil) {
@@ -586,7 +585,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              }
                          }];
 
-        self.currentArtist = category.artist;
         self.currentAttribution = category.attribution;
     }
 

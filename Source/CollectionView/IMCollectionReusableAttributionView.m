@@ -60,7 +60,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
     return self;
 }
 
-- (void)setupWithArtist:(IMArtist *)artist attribution:(IMCategoryAttribution *)attribution {
+- (void)setupWithAttribution:(IMCategoryAttribution *)attribution {
     if(!self.footerView) {
         // Setup views
         self.footerView = [[UIView alloc] init];
@@ -72,36 +72,36 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         self.artistContainer = [[UIView alloc] init];
 
         // URL Container view
-        self.artistLink = [[UILabel alloc] init];
-        self.artistLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL
+        self.attributionLink = [[UILabel alloc] init];
+        self.attributionLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                     andAlignment:NSTextAlignmentLeft];
 
-        self.artistLinkImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/attribution_link_website.png", self.imageBundle.bundlePath]]];
+        self.attributionLinkImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/attribution_link_website.png", self.imageBundle.bundlePath]]];
 
         // Artist Container View
         self.artistPicture = [[UIImageView alloc] init];
 
         self.artistHeader = [[UILabel alloc] init];
-        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:@"About the Artist"
+        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
                                                                           withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                              color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
                                                                       andAlignment:NSTextAlignmentLeft];
 
         self.artistName = [[UILabel alloc] init];
-        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[artist.name uppercaseString]
+        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
                                                                         withFont:[IMAttributeStringUtil imojiRegularFontWithSize:19.0f]
                                                                            color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
                                                                     andAlignment:NSTextAlignmentLeft];
 
-        self.artistDescription = [[UILabel alloc] init];
-        self.artistDescription.attributedText = [IMAttributeStringUtil attributedString:artist.description
+        self.artistSummary = [[UILabel alloc] init];
+        self.artistSummary.attributedText = [IMAttributeStringUtil attributedString:attribution.artist.summary
                                                                                withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:12.0f]
                                                                                   color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.5f]
                                                                            andAlignment:NSTextAlignmentNatural];
-        self.artistDescription.lineBreakMode = NSLineBreakByWordWrapping;
-        self.artistDescription.numberOfLines = 2;
+        self.artistSummary.lineBreakMode = NSLineBreakByWordWrapping;
+        self.artistSummary.numberOfLines = 2;
 
         // Add subviews
         [self addSubview:self.footerView];
@@ -109,13 +109,13 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         [self.footerView addSubview:self.urlContainer];
         [self.footerView addSubview:self.artistContainer];
 
-        [self.urlContainer addSubview:self.artistLink];
-        [self.urlContainer addSubview:self.artistLinkImage];
+        [self.urlContainer addSubview:self.attributionLink];
+        [self.urlContainer addSubview:self.attributionLinkImage];
 
         [self.artistContainer addSubview:self.artistPicture];
         [self.artistContainer addSubview:self.artistHeader];
         [self.artistContainer addSubview:self.artistName];
-        [self.artistContainer addSubview:self.artistDescription];
+        [self.artistContainer addSubview:self.artistSummary];
 
         // View Constraints
         [self.footerView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -135,14 +135,14 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         }];
 
         // URL container subview constraints
-        [self.artistLink mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.attributionLink mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.urlContainer).offset(18.0f);
             make.centerY.equalTo(self.urlContainer);
         }];
 
-        [self.artistLinkImage mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.attributionLinkImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.urlContainer);
-            make.right.equalTo(self.artistLink.mas_left).offset(-9.0f);
+            make.right.equalTo(self.attributionLink.mas_left).offset(-9.0f);
         }];
 
         // Artist container subview constraints
@@ -162,7 +162,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
             make.left.equalTo(self.artistPicture.mas_right).offset(11.0f);
         }];
 
-        [self.artistDescription mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.artistSummary mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.artistPicture.mas_bottom).offset(12.0f);
             make.bottom.equalTo(self.artistContainer).offset(-15.0f);
             make.left.and.right.equalTo(self.artistContainer);
@@ -171,8 +171,8 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 }
 
 - (void)urlContainerTapped {
-    if(self.attributionViewDelegate && [self.attributionViewDelegate respondsToSelector:@selector(userDidSelectArtistLink:fromCollectionReusableView:)]) {
-        [self.attributionViewDelegate userDidSelectArtistLink:self.artistLink.attributedText.string fromCollectionReusableView:self];
+    if(self.attributionViewDelegate && [self.attributionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink:fromCollectionReusableView:)]) {
+        [self.attributionViewDelegate userDidSelectAttributionLink:self.attributionLink.attributedText.string fromCollectionReusableView:self];
     }
 }
 

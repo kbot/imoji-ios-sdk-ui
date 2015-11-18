@@ -36,17 +36,17 @@
 extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
 @property(nonatomic, strong, nullable) UIImageView *artistPicture;
-@property(nonatomic, strong, nullable) UIImageView *artistLinkImage;
+@property(nonatomic, strong, nullable) UIImageView *attributionLinkImage;
 @property(nonatomic, strong, nullable) UILabel *artistName;
-@property(nonatomic, strong, nullable) UILabel *artistDescription;
+@property(nonatomic, strong, nullable) UILabel *artistSummary;
 @property(nonatomic, strong, nullable) UILabel *artistHeader;
-@property(nonatomic, strong, nullable) UILabel *artistLink;
+@property(nonatomic, strong, nullable) UILabel *attributionLink;
 
 @property(nonatomic, strong, nonnull) NSBundle *imageBundle;
 
 @property(nonatomic, weak, nullable) id <IMCollectionReusableAttributionViewDelegate> attributionViewDelegate;
 
-- (void)setupWithArtist:(nonnull IMArtist *)artist attribution:(nonnull IMCategoryAttribution *)attribution;
+- (void)setupWithAttribution:(nonnull IMCategoryAttribution *)attribution;
 
 @end
 
@@ -54,6 +54,6 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
 @optional
 
-- (void)userDidSelectArtistLink:(nonnull NSString *)packURL fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
+- (void)userDidSelectAttributionLink:(nonnull NSString *)attributionLink fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
 
 @end

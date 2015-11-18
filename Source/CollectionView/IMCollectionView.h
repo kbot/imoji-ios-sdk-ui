@@ -185,6 +185,9 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 - (void)imojiCollectionViewDidScroll:(nonnull IMCollectionView *)collectionView;
 
-- (void)userDidSelectArtistLink:(nonnull NSString *)packURL fromCollectionView:(nonnull IMCollectionView *)collectionView;
+/**
+ * @abstract Notified when a user selected an attribution link
+ */
+- (void)userDidSelectAttributionLink:(nonnull NSString *)attributionLink fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
 @end

@@ -182,8 +182,8 @@
     }
 }
 
-- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionView:(IMCollectionView *)collectionView {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:packURL]];
+- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:attributionLink]];
 }
 
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
