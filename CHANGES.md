@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 0.1.19
+
+* Support for displaying attributed artist categories!
+
 ### Version 0.1.18
 
 * Using fetchRenderingOptions from IMImojiSession for the default size to render Imoji's in the collection views
