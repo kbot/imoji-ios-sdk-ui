@@ -160,7 +160,6 @@
 }
 
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
-    ((IMCollectionViewController *) self.presentedViewController).collectionView.isArtist = NO;
     switch (buttonType) {
         case IMToolbarButtonReactions:
             [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];

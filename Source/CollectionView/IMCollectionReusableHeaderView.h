@@ -29,8 +29,6 @@
 
 extern NSString *__nonnull const IMCollectionReusableHeaderViewReuseId;
 
-@property(nonatomic, strong) UILabel *title;
-
-- (void)setupWithText:(NSString *)header;
+- (void)setupWithText:(nonnull NSString *)header;
 
 @end

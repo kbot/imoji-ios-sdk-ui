@@ -262,8 +262,6 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 }
 
 - (void)performSearch {
-    self.collectionView.isArtist = NO;
-    self.collectionView.isCategory = NO;
     if (self.sentenceParseEnabled) {
         [self.collectionView loadImojisFromSentence:self.searchField.text];
     } else {

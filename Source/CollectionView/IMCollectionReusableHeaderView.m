@@ -29,6 +29,12 @@
 
 NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHeaderViewReuseId";
 
+@interface IMCollectionReusableHeaderView ()
+
+@property(nonatomic, strong) UILabel *title;
+
+@end
+
 @implementation IMCollectionReusableHeaderView {
 
 }
@@ -40,8 +46,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
         [self addSubview:self.title];
 
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self);
-            make.height.equalTo(@49.0f);
+            make.width.and.height.equalTo(self);
         }];
     } else {
         self.title = self.subviews.firstObject;

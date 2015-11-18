@@ -83,9 +83,6 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 */
 @property(nonatomic) BOOL animateSelection;
 
-@property(nonatomic) BOOL isArtist;
-@property(nonatomic) BOOL isCategory;
-
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
  * session.fetchRenderingOptions
@@ -188,6 +185,6 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 - (void)imojiCollectionViewDidScroll:(nonnull IMCollectionView *)collectionView;
 
-- (void)userDidSelectArtistLink:(NSString *)packURL fromCollectionView:(nonnull IMCollectionView *)collectionView;
+- (void)userDidSelectArtistLink:(nonnull NSString *)packURL fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
 @end

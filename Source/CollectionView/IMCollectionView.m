@@ -53,6 +53,8 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 @property(nonatomic, strong) IMArtistObject *currentArtist;
 @property(nonatomic, strong) UIImage *artistPicture;
 
+@property(nonatomic) BOOL shouldShowAttribution;
+
 @property(nonatomic) NSUInteger renderCount;
 
 @end
@@ -70,7 +72,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         _renderingOptions = session.fetchRenderingOptions;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
-        _isArtist = NO;
+        _shouldShowAttribution = NO;
         _currentHeader = @"";
 
         self.dataSource = self;
@@ -128,6 +130,8 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
         return attributionView;
     }
+    
+    return nil;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
@@ -139,7 +143,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
-    if (self.isArtist) {
+    if (self.shouldShowAttribution) {
         return CGSizeMake(self.frame.size.width, IMCollectionReusableAttributionViewDefaultHeight);
     }
 
@@ -375,15 +379,16 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
+    self.shouldShowAttribution = NO;
     switch(classification) {
         case IMImojiSessionCategoryClassificationTrending:
-            self.currentHeader = @"Trending";
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderTrending"];
             break;
         case IMImojiSessionCategoryClassificationGeneric:
-            self.currentHeader = @"Reactions";
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderReactions"];
             break;
         case IMImojiSessionCategoryClassificationArtist:
-            self.currentHeader = @"Artist";
+            self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionViewHeaderArtist"];
             break;
         default:
             break;
@@ -464,13 +469,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm {
-    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
-        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
-        return;
-    }
-
-    self.currentHeader = self.isCategory ? self.currentHeader : searchTerm;
-    self.currentSearchTerm = searchTerm;
+    self.shouldShowAttribution = NO;
+    self.currentHeader = searchTerm;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
@@ -570,12 +570,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
-    self.isArtist = NO;
-    self.isCategory = YES;
+    self.shouldShowAttribution = NO;
     self.currentHeader = category.title;
 
     if(category.artist) {
-        self.isArtist = YES;
+        self.shouldShowAttribution = YES;
 
         [self.session renderImoji:category.artist.previewImoji
                           options:self.renderingOptions
@@ -588,7 +587,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.currentArtist = category.artist;
     }
 
-    [self loadImojisFromSearch:category.identifier];
+    [self loadImojisFromSearch:category.identifier offset:nil];
 }
 
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
@@ -621,6 +620,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Private Imoji Loading Methods
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.currentSearchTerm = searchTerm;
+
     NSUInteger offsetValue = offset ? offset.unsignedIntegerValue - 1 : 0;
 
     if (!offset) {
