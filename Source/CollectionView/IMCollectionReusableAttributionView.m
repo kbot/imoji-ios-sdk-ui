@@ -54,6 +54,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
     if (self) {
         self.opaque = NO;
         self.imageBundle = [IMResourceBundleUtil assetsBundle];
+        self.footerView = self.subviews.firstObject;
     }
 
     return self;
@@ -166,8 +167,6 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
             make.bottom.equalTo(self.artistContainer).offset(-15.0f);
             make.left.and.right.equalTo(self.artistContainer);
         }];
-    } else {
-        self.footerView = self.subviews.firstObject;
     }
 }
 

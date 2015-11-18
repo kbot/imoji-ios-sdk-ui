@@ -39,6 +39,16 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
 
 }
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:CGRectZero];
+
+    if (self) {
+        self.title = self.subviews.firstObject;
+    }
+
+    return self;
+}
+
 - (void)setupWithText:(NSString *)header {
     if(!self.title) {
         self.title = [[UILabel alloc] init];
@@ -48,8 +58,6 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(self);
         }];
-    } else {
-        self.title = self.subviews.firstObject;
     }
 
     self.title.attributedText = [IMAttributeStringUtil attributedString:[header uppercaseString]
