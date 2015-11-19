@@ -40,7 +40,7 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 @property(nonatomic, strong, nullable) UILabel *artistName;
 @property(nonatomic, strong, nullable) UILabel *artistSummary;
 @property(nonatomic, strong, nullable) UILabel *artistHeader;
-@property(nonatomic, strong, nullable) UILabel *attributionLink;
+@property(nonatomic, strong, nullable) UILabel *attributionLabel;
 
 @property(nonatomic, strong, nonnull) NSBundle *imageBundle;
 

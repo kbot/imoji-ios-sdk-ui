@@ -41,6 +41,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 @property(nonatomic, strong) UIView *footerView;
 @property(nonatomic, strong) UIView *urlContainer;
 @property(nonatomic, strong) UIView *artistContainer;
+@property(nonatomic, strong) NSURL *attributionLink;
 
 @end
 
@@ -72,7 +73,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         self.artistContainer = [[UIView alloc] init];
 
         // URL Container view
-        self.attributionLink = [[UILabel alloc] init];
+        self.attributionLabel = [[UILabel alloc] init];
 
         self.attributionLinkImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/attribution_link_website.png", self.imageBundle.bundlePath]]];
 
@@ -93,7 +94,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         [self.footerView addSubview:self.urlContainer];
         [self.footerView addSubview:self.artistContainer];
 
-        [self.urlContainer addSubview:self.attributionLink];
+        [self.urlContainer addSubview:self.attributionLabel];
         [self.urlContainer addSubview:self.attributionLinkImage];
 
         [self.artistContainer addSubview:self.artistPicture];
@@ -119,14 +120,14 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         }];
 
         // URL container subview constraints
-        [self.attributionLink mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.attributionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.urlContainer).offset(18.0f);
             make.centerY.equalTo(self.urlContainer);
         }];
 
         [self.attributionLinkImage mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.urlContainer);
-            make.right.equalTo(self.attributionLink.mas_left).offset(-9.0f);
+            make.right.equalTo(self.attributionLabel.mas_left).offset(-9.0f);
         }];
 
         // Artist container subview constraints
@@ -153,7 +154,9 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         }];
     }
 
-    self.attributionLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
+    self.attributionLink = attribution.URL;
+
+    self.attributionLabel.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
                                                                             color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                      andAlignment:NSTextAlignmentLeft];
@@ -176,7 +179,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 
 - (void)urlContainerTapped {
     if(self.attributionViewDelegate && [self.attributionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink:fromCollectionReusableView:)]) {
-        [self.attributionViewDelegate userDidSelectAttributionLink:[NSURL URLWithString:self.attributionLink.attributedText.string]
+        [self.attributionViewDelegate userDidSelectAttributionLink:self.attributionLink
                                         fromCollectionReusableView:self];
     }
 }
