@@ -36,6 +36,8 @@
 
 + (nonnull UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size;
 
++ (nonnull UIFont *)sfUITextBoldFontWithSize:(CGFloat)size;
+
 + (nonnull UIFont *)imojiRegularFontWithSize:(CGFloat)size;
 
 + (nonnull NSAttributedString *)attributedString:(nonnull NSString *)text

@@ -182,8 +182,8 @@
     }
 }
 
-- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:attributionLink]];
+- (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
+    [[UIApplication sharedApplication] openURL:attributionLink];
 }
 
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {

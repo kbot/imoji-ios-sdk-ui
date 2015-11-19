@@ -29,6 +29,7 @@ NSString *const IMAttributeStringUtilDefaultFont = @"HelveticaNeue-Medium";
 NSString *const IMAttributeStringUtilSFLightFont = @"SFUIDisplay-Light";
 NSString *const IMAttributeStringUtilSFRegularFont = @"SFUIDisplay-Regular";
 NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
+NSString *const IMAttributeStringUtilSFTextBoldFont = @"SFUIText-Bold";
 NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 @implementation IMAttributeStringUtil {
@@ -49,6 +50,10 @@ NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 + (UIFont *)sfUIDisplayMediumFontWithSize:(CGFloat)size {
     return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFMediumFont andSize:size];
+}
+
++ (UIFont *)sfUITextBoldFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFTextBoldFont andSize:size];
 }
 
 + (UIFont *)imojiRegularFontWithSize:(CGFloat)size {

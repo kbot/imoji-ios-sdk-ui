@@ -164,7 +164,7 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
                                                                   andAlignment:NSTextAlignmentLeft];
 
     self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
-                                                                    withFont:[IMAttributeStringUtil imojiRegularFontWithSize:19.0f]
+                                                                    withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:19.0f]
                                                                        color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
                                                                 andAlignment:NSTextAlignmentLeft];
 
