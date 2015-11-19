@@ -188,6 +188,6 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 /**
  * @abstract Notified when a user selected an attribution link
  */
-- (void)userDidSelectAttributionLink:(nonnull NSString *)attributionLink fromCollectionView:(nonnull IMCollectionView *)collectionView;
+- (void)userDidSelectAttributionLink:(nonnull NSURL *)attributionLink fromCollectionView:(nonnull IMCollectionView *)collectionView;
 
 @end

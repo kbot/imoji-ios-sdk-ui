@@ -371,7 +371,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 #pragma mark Supplementary View Delegates
 
-- (void)userDidSelectAttributionLink:(NSString *)attributionLink fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView {
+- (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionReusableView:(IMCollectionReusableAttributionView *)footerView {
     if(self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink: fromCollectionView:)]) {
         [self.collectionViewDelegate userDidSelectAttributionLink:attributionLink fromCollectionView:self];
     }
@@ -439,6 +439,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadFeaturedImojis {
+    self.shouldShowAttribution = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -476,6 +477,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromSentence:(NSString *)sentence {
+    self.shouldShowAttribution = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -509,6 +511,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
+    self.shouldShowAttribution = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -541,6 +544,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadUserCollectionImojis {
+    self.shouldShowAttribution = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;

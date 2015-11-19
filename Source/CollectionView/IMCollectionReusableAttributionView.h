@@ -40,7 +40,7 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 @property(nonatomic, strong, nullable) UILabel *artistName;
 @property(nonatomic, strong, nullable) UILabel *artistSummary;
 @property(nonatomic, strong, nullable) UILabel *artistHeader;
-@property(nonatomic, strong, nullable) UILabel *attributionLink;
+@property(nonatomic, strong, nullable) UILabel *attributionLabel;
 
 @property(nonatomic, strong, nonnull) NSBundle *imageBundle;
 
@@ -54,6 +54,6 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
 @optional
 
-- (void)userDidSelectAttributionLink:(nonnull NSString *)attributionLink fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
+- (void)userDidSelectAttributionLink:(nonnull NSURL *)attributionLink fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
 
 @end
