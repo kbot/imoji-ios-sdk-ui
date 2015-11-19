@@ -73,10 +73,6 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 
         // URL Container view
         self.attributionLink = [[UILabel alloc] init];
-        self.attributionLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
-                                                                        withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
-                                                                           color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
-                                                                    andAlignment:NSTextAlignmentLeft];
 
         self.attributionLinkImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/attribution_link_website.png", self.imageBundle.bundlePath]]];
 
@@ -84,22 +80,10 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
         self.artistPicture = [[UIImageView alloc] init];
 
         self.artistHeader = [[UILabel alloc] init];
-        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
-                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
-                                                                             color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
-                                                                      andAlignment:NSTextAlignmentLeft];
 
         self.artistName = [[UILabel alloc] init];
-        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
-                                                                        withFont:[IMAttributeStringUtil imojiRegularFontWithSize:19.0f]
-                                                                           color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
-                                                                    andAlignment:NSTextAlignmentLeft];
 
         self.artistSummary = [[UILabel alloc] init];
-        self.artistSummary.attributedText = [IMAttributeStringUtil attributedString:attribution.artist.summary
-                                                                               withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:12.0f]
-                                                                                  color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.5f]
-                                                                           andAlignment:NSTextAlignmentNatural];
         self.artistSummary.lineBreakMode = NSLineBreakByWordWrapping;
         self.artistSummary.numberOfLines = 2;
 
@@ -168,11 +152,32 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
             make.left.and.right.equalTo(self.artistContainer);
         }];
     }
+
+    self.attributionLink.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
+                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
+                                                                            color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
+                                                                     andAlignment:NSTextAlignmentLeft];
+
+    self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
+                                                                      withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
+                                                                         color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
+                                                                  andAlignment:NSTextAlignmentLeft];
+
+    self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
+                                                                    withFont:[IMAttributeStringUtil imojiRegularFontWithSize:19.0f]
+                                                                       color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
+                                                                andAlignment:NSTextAlignmentLeft];
+
+    self.artistSummary.attributedText = [IMAttributeStringUtil attributedString:attribution.artist.summary
+                                                                       withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:12.0f]
+                                                                          color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.5f]
+                                                                   andAlignment:NSTextAlignmentNatural];
 }
 
 - (void)urlContainerTapped {
     if(self.attributionViewDelegate && [self.attributionViewDelegate respondsToSelector:@selector(userDidSelectAttributionLink:fromCollectionReusableView:)]) {
-        [self.attributionViewDelegate userDidSelectAttributionLink:self.attributionLink.attributedText.string fromCollectionReusableView:self];
+        [self.attributionViewDelegate userDidSelectAttributionLink:[NSURL URLWithString:self.attributionLink.attributedText.string]
+                                        fromCollectionReusableView:self];
     }
 }
 

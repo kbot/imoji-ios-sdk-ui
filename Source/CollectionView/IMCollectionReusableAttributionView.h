@@ -54,6 +54,6 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
 @optional
 
-- (void)userDidSelectAttributionLink:(nonnull NSString *)attributionLink fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
+- (void)userDidSelectAttributionLink:(nonnull NSURL *)attributionLink fromCollectionReusableView:(nonnull IMCollectionReusableAttributionView *)footerView;
 
 @end
