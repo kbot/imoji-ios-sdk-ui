@@ -596,6 +596,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
+    self.shouldShowAttribution = NO;
     switch (splashType) {
         case IMCollectionViewSplashCellNoConnection:
             self.contentType = IMCollectionViewContentTypeNoConnectionSplash;

@@ -29,6 +29,7 @@
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
 #import "IMKeyboardView.h"
+#import "IMKeyboardCollectionReusableAttributionView.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -58,9 +59,14 @@
 
         [self registerClass:[IMKeyboardCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMKeyboardCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
+        [self registerClass:[IMKeyboardCollectionReusableAttributionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:IMCollectionReusableAttributionViewReuseId];
     }
 
     return self;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeZero;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {

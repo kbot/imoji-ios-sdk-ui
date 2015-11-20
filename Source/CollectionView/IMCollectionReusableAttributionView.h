@@ -35,6 +35,14 @@
 
 extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 
+extern CGFloat const IMCollectionReusableAttributionViewContainerOffset;
+extern CGFloat const IMCollectionReusableAttributionViewSeparatorSize;
+extern CGFloat const IMCollectionReusableAttributionViewArtistPictureWidthHeight;
+extern CGFloat const IMCollectionReusableAttributionViewURLContainerHeight;
+
+@property(nonatomic, strong, readonly, nullable) UIView *footerView;
+@property(nonatomic, strong, readonly, nullable) UIView *urlContainer;
+@property(nonatomic, strong, readonly, nullable) UIView *artistContainer;
 @property(nonatomic, strong, nullable) UIImageView *artistPicture;
 @property(nonatomic, strong, nullable) UIImageView *attributionLinkImage;
 @property(nonatomic, strong, nullable) UILabel *artistName;
@@ -47,6 +55,12 @@ extern NSString *__nonnull const IMCollectionReusableAttributionViewReuseId;
 @property(nonatomic, weak, nullable) id <IMCollectionReusableAttributionViewDelegate> attributionViewDelegate;
 
 - (void)setupWithAttribution:(nonnull IMCategoryAttribution *)attribution;
+
+- (nonnull UIView *)footerView;
+
+- (nonnull UIView *)urlContainer;
+
+- (nonnull UIView *)artistContainer;
 
 @end
 
