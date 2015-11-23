@@ -69,6 +69,26 @@
     return CGSizeZero;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    CGSize footerSize = [super collectionView:collectionView layout:collectionViewLayout referenceSizeForFooterInSection:section];
+
+    // Check if shouldShowAttribution by checking footerSize is equal to CGSizeZero
+    if(footerSize.width == CGSizeZero.width && footerSize.height == CGSizeZero.height) {
+        return CGSizeZero;
+    } else {
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        CGFloat screenH = screenSize.height;
+        CGFloat screenW = screenSize.width;
+        BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
+
+        if(isLandscape) {
+            return CGSizeMake(self.frame.size.width, self.frame.size.height);
+        } else {
+            return footerSize;
+        }
+    }
+}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if ([self isPathShowingLoadingIndicator:indexPath]) {
         IMCollectionViewStatusCell *cell = (IMCollectionViewStatusCell *) [super collectionView:collectionView cellForItemAtIndexPath:indexPath];

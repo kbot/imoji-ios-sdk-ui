@@ -24,40 +24,58 @@
 //
 
 #import "IMKeyboardCollectionReusableAttributionView.h"
+#import "IMAttributeStringUtil.h"
 #import "View+MASAdditions.h"
+#import "IMResourceBundleUtil.h"
+#import "IMCategoryAttribution.h"
+#import "IMArtist.h"
 
 CGFloat const IMKeyboardCollectionReusableAttributionViewOffsetFromHeader = 10.0f;
+CGFloat const IMKeyboardCollectionReusableAttributionViewLandscapeRatio = 0.8f;
+CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 29.0f;
 
 @implementation IMKeyboardCollectionReusableAttributionView
 
 - (void)setupWithAttribution:(IMCategoryAttribution *)attribution {
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat screenH = screenSize.height;
+    CGFloat screenW = screenSize.width;
+    BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
+
     if(!self.footerView) {
         [super setupWithAttribution:attribution];
+    }
+
+    if(self.footerView.frame.size.height != self.frame.size.height) {
+        [self.footerView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.width.and.height.equalTo(self);
+        }];
 
         [self.artistContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self);
+            make.top.and.bottom.equalTo(self);
             make.left.equalTo(self).offset(IMCollectionReusableAttributionViewContainerOffset);
             make.right.equalTo(self).offset(-IMCollectionReusableAttributionViewContainerOffset);
-            make.height.equalTo(@(self.frame.size.height - IMCollectionReusableAttributionViewURLContainerHeight));
         }];
 
         [self.urlContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistContainer.mas_bottom).offset(12.0f);
+            make.top.equalTo(self.artistSummary.mas_bottom).offset(11.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
             make.left.equalTo(self).offset(IMCollectionReusableAttributionViewContainerOffset);
             make.right.equalTo(self).offset(-IMCollectionReusableAttributionViewContainerOffset);
-            make.bottom.equalTo(self);
         }];
 
         [self.artistPicture mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + 14.0f);
+            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 0 : 14.0f));
+            make.width.and.height.equalTo(@(IMCollectionReusableAttributionViewArtistPictureWidthHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
         }];
 
         [self.artistHeader mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + 23.0f);
+            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 9.0f / 1.2f : 23.0f));
         }];
 
-        [self.artistSummary mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(self.artistContainer);
+        [self.artistSummary mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.artistPicture.mas_bottom).offset(12.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
+            make.left.and.right.equalTo(self.artistContainer);
+            make.height.equalTo(@(IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight));
         }];
 
         [self.attributionLinkImage mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -68,6 +86,16 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewOffsetFromHeader = 10.0
             make.left.equalTo(self.attributionLinkImage.mas_right).offset(9.0f);
             make.centerY.equalTo(self.attributionLinkImage);
         }];
+
+        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
+                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                             color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
+                                                                      andAlignment:NSTextAlignmentLeft];
+
+        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
+                                                                        withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:IMCollectionReusableAttributionViewArtistNameFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                           color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
+                                                                    andAlignment:NSTextAlignmentLeft];
     }
 }
 

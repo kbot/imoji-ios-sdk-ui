@@ -35,6 +35,9 @@ CGFloat const IMCollectionReusableAttributionViewContainerOffset = 30.0f;
 CGFloat const IMCollectionReusableAttributionViewSeparatorSize = 2.0f;
 CGFloat const IMCollectionReusableAttributionViewArtistPictureWidthHeight = 60.0f;
 CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
+CGFloat const IMCollectionReusableAttributionViewDefaultFontSize = 14.0f;
+CGFloat const IMCollectionReusableAttributionViewArtistNameFontSize = 19.0f;
+CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
 
 @interface IMCollectionReusableAttributionView ()
 
@@ -154,22 +157,22 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
     self.attributionLink = attribution.URL;
 
     self.attributionLabel.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
-                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
+                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize]
                                                                             color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                      andAlignment:NSTextAlignmentLeft];
 
     self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
-                                                                      withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:14.0f]
+                                                                      withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize]
                                                                          color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
                                                                   andAlignment:NSTextAlignmentLeft];
 
     self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
-                                                                    withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:19.0f]
+                                                                    withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:IMCollectionReusableAttributionViewArtistNameFontSize]
                                                                        color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
                                                                 andAlignment:NSTextAlignmentLeft];
 
     self.artistSummary.attributedText = [IMAttributeStringUtil attributedString:attribution.artist.summary
-                                                                       withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:12.0f]
+                                                                       withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:IMCollectionReusableAttributionViewArtistSummaryFontSize]
                                                                           color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.5f]
                                                                    andAlignment:NSTextAlignmentNatural];
 }
