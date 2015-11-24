@@ -192,7 +192,8 @@
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
     self.isViewingImojiCategory = YES;
     [self.keyboardView updateTitleWithText:category.title hideCloseButton:NO];
-    [self.keyboardView.collectionView loadImojisFromSearch:category.identifier];
+//    [self.keyboardView.collectionView loadImojisFromSearch:category.identifier];
+    [self.keyboardView.collectionView loadImojisFromCategory:category];
 }
 
 - (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
@@ -262,6 +263,16 @@
     }
 }
 
+- (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
+    UIResponder* responder = self;
+    while ((responder = [responder nextResponder]) != nil) {
+        if ([responder respondsToSelector:@selector(openURL:)] == YES) {
+            [responder performSelector:@selector(openURL:)
+                            withObject:attributionLink];
+        }
+    }
+}
+
 #pragma mark IMToolbarDelegate
 
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
@@ -302,6 +313,17 @@
 
                 [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
                 [self.keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
+            }
+            break;
+        case IMToolbarButtonArtist:
+            if (self.isViewingImojiCategory || buttonType != self.currentToolbarButtonSelected) {
+                self.isViewingImojiCategory = NO;
+
+                // Set classification for use in returning user to Trending when closing a category
+                self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationArtist;
+
+                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+                [self.keyboardView updateTitleWithText:@"ARTIST" hideCloseButton:YES];
             }
             break;
         case IMToolbarButtonCollection: {

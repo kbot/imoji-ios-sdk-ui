@@ -228,10 +228,11 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         make.height.equalTo(@(IMToolbarDefaultButtonItemWidthAndHeight));
         make.top.equalTo(self.collectionView.mas_bottom);
     }];
-
+    
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonKeyboardNextKeyboard
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_globe.png", self.imageBundle.bundlePath]]
                                        activeImage:nil];
+
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonSearch
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_search.png", self.imageBundle.bundlePath]]
                                        activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_search_active.png", self.imageBundle.bundlePath]]
@@ -242,14 +243,19 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
                                        activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_recents_active.png", self.imageBundle.bundlePath]]
     ];
 
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonTrending
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending_active.png", self.imageBundle.bundlePath]]
+    ];
+
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonReactions
                                              image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_reactions.png", self.imageBundle.bundlePath]]
                                        activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_reactions_active.png", self.imageBundle.bundlePath]]
     ];
 
-    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonTrending
-                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending.png", self.imageBundle.bundlePath]]
-                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_trending_active.png", self.imageBundle.bundlePath]]
+    [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonArtist
+                                             image:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_artist.png", self.imageBundle.bundlePath]]
+                                       activeImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/keyboard_artist_active.png", self.imageBundle.bundlePath]]
     ];
 
     [self.keyboardToolbar addToolbarButtonWithType:IMToolbarButtonCollection
@@ -280,6 +286,12 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 
     if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationGeneric) {
         self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
+                                                                        withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
+                                                                           color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
+                                                                    andAlignment:NSTextAlignmentLeft];
+        self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
+    } else if (self.currentCategoryClassification == IMImojiSessionCategoryClassificationArtist) {
+        self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"ARTIST"
                                                                         withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                            color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                     andAlignment:NSTextAlignmentLeft];

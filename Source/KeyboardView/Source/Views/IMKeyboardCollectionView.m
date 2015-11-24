@@ -29,6 +29,7 @@
 #import "IMCollectionViewStatusCell.h"
 #import "IMCollectionViewSplashCell.h"
 #import "IMKeyboardView.h"
+#import "IMKeyboardCollectionReusableAttributionView.h"
 
 @interface IMKeyboardCollectionView ()
 
@@ -58,9 +59,34 @@
 
         [self registerClass:[IMKeyboardCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMKeyboardCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
+        [self registerClass:[IMKeyboardCollectionReusableAttributionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:IMCollectionReusableAttributionViewReuseId];
     }
 
     return self;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeZero;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    CGSize footerSize = [super collectionView:collectionView layout:collectionViewLayout referenceSizeForFooterInSection:section];
+
+    // Check if shouldShowAttribution by checking footerSize is equal to CGSizeZero
+    if(footerSize.width == CGSizeZero.width && footerSize.height == CGSizeZero.height) {
+        return CGSizeZero;
+    } else {
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        CGFloat screenH = screenSize.height;
+        CGFloat screenW = screenSize.width;
+        BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
+
+        if(isLandscape) {
+            return CGSizeMake(self.frame.size.width, self.frame.size.height);
+        } else {
+            return footerSize;
+        }
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
