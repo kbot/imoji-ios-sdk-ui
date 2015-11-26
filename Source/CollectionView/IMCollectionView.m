@@ -51,10 +51,12 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 @property(nonatomic, copy) NSString *currentHeader;
+@property(nonatomic, copy) NSString *followUpSearchTerm;
 @property(nonatomic, strong) IMCategoryAttribution *currentAttribution;
 @property(nonatomic, strong) UIImage *artistPicture;
 
 @property(nonatomic) BOOL shouldShowAttribution;
+@property(nonatomic) BOOL shouldLoadNewSection;
 
 @property(nonatomic) NSUInteger renderCount;
 
@@ -92,7 +94,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
                                                                   action:@selector(userTappedSplashView:)];
         self.tapGesture.enabled = NO;
         [self addGestureRecognizer:self.tapGesture];
-
 
         [self registerClass:[IMCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
@@ -156,7 +157,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
-    if (self.shouldShowAttribution) {
+    if (self.shouldShowAttribution && section == 0) {
         return CGSizeMake(self.frame.size.width, IMCollectionReusableAttributionViewDefaultHeight);
     }
 
@@ -166,7 +167,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     self.tapGesture.enabled = NO;
 
-//    id cellContent = self.content[(NSUInteger) indexPath.row];
     id cellContent = self.content[(NSUInteger) indexPath.section][(NSUInteger) indexPath.row];
 
     if (cellContent == self.loadingIndicatorObject) {
@@ -239,13 +239,11 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 #pragma mark UICollectionViewDelegate
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    id cellContent = self.content[(NSUInteger) indexPath.row];
     id cellContent = self.content[(NSUInteger) indexPath.section][(NSUInteger) indexPath.row];
     return cellContent && ![cellContent isKindOfClass:[NSNull class]];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    id cellContent = self.content[(NSUInteger) indexPath.row];
     id cellContent = self.content[(NSUInteger) indexPath.section][(NSUInteger) indexPath.row];
 
     if ([cellContent isKindOfClass:[IMImojiObject class]]) {
@@ -276,8 +274,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
     // check to see if the user is at the end of the scrollview
     // this is a iOS 7 safe approach since collectionView:willDisplayCell:forItemAtIndexPath:indexPath
     // is not supported`
-    if ([self numberOfSections] > 0 /*&& [self.content[0] count] > 1*/ && [self.collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]]) {
-//        NSUInteger loadingPosition = [self.content[0] indexOfObject:self.loadingIndicatorObject];
+    if ([self numberOfSections] > 0 && [self.collectionViewLayout isKindOfClass:[UICollectionViewFlowLayout class]]) {
         NSUInteger loadingPosition = [self.content[(NSUInteger)self.numberOfSections - 1] indexOfObject:self.loadingIndicatorObject];
 
         if (loadingPosition != NSNotFound) {
@@ -334,7 +331,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
         default: {
             if ([self isPathShowingLoadingIndicator:indexPath]) {
-                if ([self.content[0] count] == 1) {
+                if ([self numberOfItemsInSection:indexPath.section] == 1) {
                     return availableSize;
                 } else {
                     return CGSizeMake(availableSize.width, self.preferredImojiDisplaySize.height);
@@ -396,7 +393,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     switch(classification) {
         case IMImojiSessionCategoryClassificationTrending:
             self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewTrending"];
@@ -427,16 +424,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                               return;
                                                           }
 
-//                                                          [self.content removeAllObjects];
-//                                                          [self.content addObjectsFromArray:imojiCategories];
-//                                                          [self.content addObject:imojiCategories];
-//                                                          [self.images addObject:[@[[NSNull null]] mutableCopy]];
-//                                                          for (int i = 1; i < imojiCategories.count; ++i) {
-//                                                              [self.images[0] addObject:[NSNull null]];
-//                                                          }
-
-//                                                          [self reloadData];
-
                                                           [self prepareViewForImojiResultSet:@([imojiCategories count])
                                                                                       offset:0
                                                                                        error:error
@@ -450,7 +437,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                               NSUInteger index = [imojiCategories indexOfObject:category];
                                                               [self renderImojiResult:category.previewImojis ? category.previewImojis[arc4random() % category.previewImojis.count] : category.previewImoji
                                                                               content:category
-                                                                            atSection:0
+                                                                            atSection:(NSUInteger)self.numberOfSections - 1
                                                                               atIndex:index
                                                                                offset:0
                                                                             operation:operation];
@@ -463,7 +450,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadFeaturedImojis {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -475,7 +462,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     __block NSOperation *operation;
     self.imojiOperation = operation =
             [self.session getFeaturedImojisWithNumberOfResults:@(self.numberOfImojisToLoad)
-                                     resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                                     resultSetResponseCallback:^(NSNumber *resultCount, NSString *followUpSearchTerm, NSError *error) {
                                          if (!operation.isCancelled) {
                                              [self prepareViewForImojiResultSet:resultCount
                                                                          offset:0
@@ -487,7 +474,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                              if (!operation.isCancelled && !error) {
                                                  [self renderImojiResult:imoji
                                                                  content:imoji
-                                                               atSection:0
+                                                               atSection:(NSUInteger)self.numberOfSections - 1
                                                                  atIndex:index
                                                                   offset:0
                                                                operation:operation];
@@ -496,13 +483,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromSearch:(NSString *)searchTerm {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     self.currentHeader = searchTerm;
     [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
 - (void)loadImojisFromSentence:(NSString *)sentence {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -516,7 +503,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.imojiOperation = operation =
             [self.session searchImojisWithSentence:sentence
                                    numberOfResults:@(self.numberOfImojisToLoad)
-                         resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                         resultSetResponseCallback:^(NSNumber *resultCount, NSString *followUpSearchTerm, NSError *error) {
                              if (!operation.isCancelled) {
                                  [self prepareViewForImojiResultSet:resultCount
                                                              offset:0
@@ -528,7 +515,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                  if (!operation.isCancelled && !error) {
                                      [self renderImojiResult:imoji
                                                      content:imoji
-                                                   atSection:0
+                                                   atSection:(NSUInteger)self.numberOfSections - 1
                                                      atIndex:index
                                                       offset:0
                                                    operation:operation];
@@ -537,7 +524,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromIdentifiers:(NSArray *)imojiIdentifiers {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -561,7 +548,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                    if (!operation.isCancelled && !error) {
                                        [self renderImojiResult:imoji
                                                        content:imoji
-                                                     atSection:0
+                                                     atSection:(NSUInteger)self.numberOfSections - 1
                                                        atIndex:index
                                                         offset:0
                                                      operation:operation];
@@ -571,7 +558,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadUserCollectionImojis {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -582,7 +569,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     __block NSOperation *operation;
     self.imojiOperation = operation =
-            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, NSString *followUpSearchTerm, NSError *error) {
                         if (!operation.isCancelled) {
                             [self prepareViewForImojiResultSet:resultCount
                                                         offset:0
@@ -594,7 +581,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                                    if (!operation.isCancelled && !error) {
                                                                        [self renderImojiResult:imoji
                                                                                        content:imoji
-                                                                                     atSection:0
+                                                                                     atSection:(NSUInteger)self.numberOfSections - 1
                                                                                        atIndex:index
                                                                                         offset:0
                                                                                      operation:operation];
@@ -603,7 +590,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     self.currentHeader = category.title;
 
     if(category.attribution) {
@@ -624,7 +611,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
-    self.shouldShowAttribution = NO;
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     switch (splashType) {
         case IMCollectionViewSplashCellNoConnection:
             self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
@@ -668,41 +655,68 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self generateNewResultSetOperationWithSearchOffset:offset];
     }
 
+    self.shouldLoadNewSection = NO;
     __block NSOperation *operation;
     self.imojiOperation = operation =
             [self.session searchImojisWithTerm:searchTerm
                                         offset:offset
                                numberOfResults:@(self.numberOfImojisToLoad)
-                     resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                     resultSetResponseCallback:^(NSNumber *resultCount, NSString *followUpSearchTerm, NSError *error) {
                          if (!operation.isCancelled) {
+                             // if the resultCount is 0 then followUpSearchTerm returns nil
+                             // avoid that case by setting the followUpSearchTerm whenever resultCount is above 0
+                             if (resultCount.unsignedIntegerValue > 0) {
+                                 self.followUpSearchTerm = followUpSearchTerm;
+                             }
+
                              [self prepareViewForImojiResultSet:resultCount
                                                          offset:offsetValue
                                                           error:error
                                         emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
-                         }
-                     }
-                         imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                             if (!operation.isCancelled && !error) {
-                                 [self renderImojiResult:imoji
-                                                 content:imoji
-                                               atSection:0
-                                                 atIndex:index
-                                                  offset:offsetValue
-                                               operation:operation];
-                             }
 
-                             // append the loading indicator to the content to fetch the next set of results
-                             if (index + 1 == self.numberOfImojisToLoad) {
-                                 [self performBatchUpdates:^{
-                                             [self.content[0] addObject:self.loadingIndicatorObject];
-                                             [self insertItemsAtIndexPaths:@[
-                                                     [NSIndexPath indexPathForItem:[self.content[0] count] - 1
-                                                                         inSection:0]
-                                             ]];
-                                         }
-                                                completion:nil];
+                             // Prepare to load new section
+                             if (resultCount.unsignedIntegerValue < 60) {
+                                 self.currentSearchTerm = self.followUpSearchTerm;
+                                 self.shouldLoadNewSection = YES;
+
+                                 // Only append a loading indicator to the next section when resultCount is 0
+                                 // Otherwise, proceed to next callback
+                                 if (resultCount.unsignedIntegerValue == 0) {
+                                     self.currentHeader = self.currentSearchTerm;
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         [self prepareViewForNextSection];
+                                     });
+                                 }
                              }
-                         }];
+                         }
+                     } imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                        if (!operation.isCancelled && !error) {
+                            [self renderImojiResult:imoji
+                                            content:imoji
+                                          atSection:(NSUInteger) self.numberOfSections - 1
+                                            atIndex:index
+                                             offset:offsetValue
+                                          operation:operation];
+                        }
+
+                        // append the loading indicator to the content to fetch the next set of results
+                        if (index + 1 == self.numberOfImojisToLoad) {
+                            [self performBatchUpdates:^{
+                                [self.content[(NSUInteger) self.numberOfSections - 1] addObject:self.loadingIndicatorObject];
+                                [self insertItemsAtIndexPaths:@[
+                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:self.numberOfSections - 1] - 1
+                                                            inSection:(NSUInteger) self.numberOfSections - 1]
+                                ]];
+                            } completion:nil];
+                        } else if (self.shouldLoadNewSection && index + 1 == [self numberOfItemsInSection:self.numberOfSections - 1] % self.numberOfImojisToLoad) {
+                            // append the loading indicator to the next section if
+                            // a new section should be loaded.
+                            // and the index + 1 is equal to the number of items to be
+                            //   loaded in a section (modulo the numberOfImojisToLoad)
+                            self.currentHeader = self.currentSearchTerm;
+                            [self prepareViewForNextSection];
+                        }
+                    }];
 }
 
 - (void)loadNextPageOfImojisFromSearch {
@@ -710,20 +724,33 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     // mutating the data model while the collection view is reloading
     if (self.currentSearchTerm != nil && self.renderCount == 0) {
         [self performBatchUpdates:^{
-                    [self.content[0] removeObject:self.loadingIndicatorObject];
+            [self.content[(NSUInteger) self.numberOfSections - 1] removeObject:self.loadingIndicatorObject];
 
-                    [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.content[0] count] inSection:0]]];
-                }
-                       completion:^(BOOL finished) {
-                           [self loadImojisFromSearch:self.currentSearchTerm offset:@([self.content[0] count] + 1)];
-                       }];
-
-
+            if ([self numberOfItemsInSection:self.numberOfSections - 1] == 0) {
+                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:(NSUInteger) self.numberOfSections - 1]]];
+            } else {
+                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self numberOfItemsInSection:self.numberOfSections - 1] inSection:(NSUInteger) self.numberOfSections - 1]]];
+            }
+        } completion:^(BOOL finished) {
+            [self loadImojisFromSearch:self.currentSearchTerm offset:@([self numberOfItemsInSection:self.numberOfSections - 1] + 1)];
+        }];
     }
 }
 
+- (void)prepareViewForNextSection {
+    [self performBatchUpdates:^{
+        [self.content addObject:[@[self.loadingIndicatorObject] mutableCopy]];
+        [self.images addObject:[@[] mutableCopy]];
+        [self insertItemsAtIndexPaths:@[
+                [NSIndexPath indexPathForItem:0
+                                    inSection:(NSUInteger) self.numberOfSections - 1]
+        ]];
+        [self insertSections:[NSIndexSet indexSetWithIndex:(NSUInteger) self.numberOfSections - 1]];
+    } completion:nil];
+}
+
 - (void)generateNewResultSetOperationWithSearchOffset:(NSNumber *)searchOffset {
-    if (!searchOffset) {
+    if (!searchOffset && !self.shouldLoadNewSection) {
         self.renderCount = 0;
         [self.images removeAllObjects];
         [self.content removeAllObjects];
@@ -733,7 +760,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
         // loading indicator exists already for results with an offset
         if (self.contentType == IMCollectionViewContentTypeImojis || self.contentType == IMCollectionViewContentTypeImojiCategories) {
-//            [self.content addObject:self.loadingIndicatorObject];
             [self.content addObject:[@[self.loadingIndicatorObject] mutableCopy]];
         }
     }
@@ -749,9 +775,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                               offset:(NSUInteger)offset
                                error:(NSError *)error
              emptyResultsContentType:(IMCollectionViewContentType)emptyResultsContentType {
-    __block NSUInteger loadingOffset = [self.content[0] indexOfObject:self.loadingIndicatorObject];
+    __block NSUInteger loadingOffset = [self.content[(NSUInteger)self.numberOfSections - 1] indexOfObject:self.loadingIndicatorObject];
 
-    if (offset == 0) {
+    if (offset == 0 && self.numberOfSections < 2) {
         [self.content removeAllObjects];
         [self.images removeAllObjects];
         [self.pendingCollectionViewUpdates removeAllObjects];
@@ -768,21 +794,21 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         __block NSMutableArray *insertedPaths = [NSMutableArray arrayWithCapacity:MAX(resultCount.unsignedIntegerValue, 1)];
         if (resultCount.unsignedIntegerValue > 0) {
             if(self.numberOfSections > 0) {
-                [self.content[0] removeObject:self.loadingIndicatorObject];
+                [self.content[(NSUInteger)self.numberOfSections - 1] removeObject:self.loadingIndicatorObject];
             } else {
                 [self.content removeObject:self.loadingIndicatorObject];
             }
 
             for (NSUInteger i = 0; i < resultCount.unsignedIntValue; ++i) {
                 if(self.numberOfSections > 0) {
-                    [self.content[0] addObject:[NSNull null]];
-                    [self.images[0] addObject:[NSNull null]];
+                    [self.content[(NSUInteger)self.numberOfSections - 1] addObject:[NSNull null]];
+                    [self.images[(NSUInteger)self.numberOfSections - 1] addObject:[NSNull null]];
                 } else {
                     [self.content addObject:[@[[NSNull null]] mutableCopy]];
                     [self.images addObject:[@[[NSNull null]] mutableCopy]];
                 }
 
-                [insertedPaths addObject:[NSIndexPath indexPathForRow:i + offset inSection:0]];
+                [insertedPaths addObject:[NSIndexPath indexPathForRow:i + offset inSection:self.numberOfSections - 1]];
             }
         }
 
@@ -793,7 +819,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             } else {
                 [self performBatchUpdates:^{
                             if (loadingOffset != NSNotFound) {
-                                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:0]]];
+                                [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:loadingOffset inSection:self.numberOfSections - 1]]];
                             }
 
                             if (insertedPaths.count > 0) {
@@ -827,7 +853,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                          if (!operation.isCancelled) {
                              self.images[section][index + offset] = image ? image : [NSNull null];
-//                             NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:0];
                              NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:section];
 
                              // immediately reload cells for iOS 8 and later, for iOS 7, we need to batch the updates
@@ -909,7 +934,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (id)contentForIndexPath:(NSIndexPath *)path {
-    return path.row > [self.content[(NSUInteger) path.section] count] ? nil : self.content[(NSUInteger) path.section][(NSUInteger) path.row];
+    return path.row > [self numberOfItemsInSection:path.section] ? nil : self.content[(NSUInteger) path.section][(NSUInteger) path.row];
 }
 
 - (BOOL)isPathShowingLoadingIndicator:(NSIndexPath *)indexPath {
