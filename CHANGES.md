@@ -1,8 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
-### Version 0.1.19
+### Version 2.0.0
 
-* Support for displaying attributed artist categories!
+* Support for displaying attributed artist categories! Artist categories are displayed just like normal categories however they will have attribution with detailed profile info for the artist as well as attribution links.
+* Bug fix for client keyboard buttons not being actionable when network is unreachable
+* Use proper semantic versioning for ImojiSDK and ImojiSDKUI
 
 ### Version 0.1.18
 
