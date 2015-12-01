@@ -84,6 +84,11 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 @property(nonatomic) BOOL animateSelection;
 
 /**
+ * @abstract Whether or not infinite scrolling of content is enabled. Defaults to NO.
+*/
+@property(nonatomic) BOOL infiniteScroll;
+
+/**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to
  * session.fetchRenderingOptions
 */
