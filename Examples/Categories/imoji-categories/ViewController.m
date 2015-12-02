@@ -189,6 +189,7 @@
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
     IMCollectionViewController *viewController = [IMCollectionViewController collectionViewControllerWithSession:self.imojiSession];
     viewController.collectionView.collectionViewDelegate = self;
+    viewController.collectionView.infiniteScroll = YES;
     viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     viewController.backButton.hidden = NO;
 
