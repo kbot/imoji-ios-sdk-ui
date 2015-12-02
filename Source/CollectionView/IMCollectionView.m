@@ -187,11 +187,16 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         IMCategoryCollectionViewCell *cell =
                 (IMCategoryCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
 
-        [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
+        // category hasn't loaded yet
+        if ([cellContent isKindOfClass:[NSNull class]]) {
+            [cell loadImojiCategory:@"" imojiImojiImage:nil];
+        } else {
+            [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
 
-        id image = self.images[(NSUInteger) indexPath.section][(NSUInteger) indexPath.item];
-        if ([image isKindOfClass:[UIImage class]]) {
-            [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
+            id image = self.images[(NSUInteger) indexPath.section][(NSUInteger) indexPath.item];
+            if ([image isKindOfClass:[UIImage class]]) {
+                [cell loadImojiCategory:categoryObject.title imojiImojiImage:image];
+            }
         }
 
         return cell;
@@ -658,6 +663,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     self.shouldLoadNewSection = NO;
     __block NSOperation *operation;
+    __block NSUInteger currentSection = (NSUInteger) self.numberOfSections - 1;
     self.imojiOperation = operation =
             [self.session searchImojisWithTerm:searchTerm
                                         offset:offset
@@ -695,7 +701,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                         if (!operation.isCancelled && !error) {
                             [self renderImojiResult:imoji
                                             content:imoji
-                                          atSection:(NSUInteger) self.numberOfSections - 1
+                                          atSection:currentSection
                                             atIndex:index
                                              offset:offsetValue
                                           operation:operation];
@@ -704,14 +710,14 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                         // append the loading indicator to the content to fetch the next set of results
                         if (index + 1 == self.numberOfImojisToLoad) {
                             [self performBatchUpdates:^{
-                                [self.content[(NSUInteger) self.numberOfSections - 1][@"imojis"] addObject:self.loadingIndicatorObject];
+                                [self.content[currentSection][@"imojis"] addObject:self.loadingIndicatorObject];
                                 [self insertItemsAtIndexPaths:@[
-                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:self.numberOfSections - 1] - 1
-                                                            inSection:(NSUInteger) self.numberOfSections - 1]
+                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
+                                                            inSection:currentSection]
                                 ]];
                             } completion:nil];
                         } else if (self.infiniteScroll && self.shouldLoadNewSection &&
-                                   index + 1 == [self numberOfItemsInSection:self.numberOfSections - 1] % self.numberOfImojisToLoad) {
+                                   index + 1 == [self numberOfItemsInSection:currentSection] % self.numberOfImojisToLoad) {
                             // append the loading indicator to the next section if
                             // a new section should be loaded.
                             // and the index + 1 is equal to the number of items to be
@@ -943,10 +949,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     for (UICollectionViewCell *cell in self.visibleCells) {
         NSIndexPath *indexPath = [self indexPathForCell:cell];
 
-        if (currentIndexPath.row == indexPath.row) {
-            [(IMCollectionViewCell *) cell performGrowAnimation];
-        } else {
-            [(IMCollectionViewCell *) cell performTranslucentAnimation];
+        if ([cell respondsToSelector:@selector(performGrowAnimation)] &&
+                [cell respondsToSelector:@selector(performTranslucentAnimation)]) {
+            if (currentIndexPath.row == indexPath.row) {
+                [(IMCollectionViewCell *) cell performGrowAnimation];
+            } else {
+                [(IMCollectionViewCell *) cell performTranslucentAnimation];
+            }
         }
     }
 }
