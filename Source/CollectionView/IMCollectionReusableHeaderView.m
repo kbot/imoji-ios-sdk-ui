@@ -31,7 +31,6 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
 
 @interface IMCollectionReusableHeaderView ()
 
-@property(nonatomic, strong) UILabel *title;
 
 @end
 
@@ -43,7 +42,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
     self = [super initWithFrame:CGRectZero];
 
     if (self) {
-        self.title = self.subviews.firstObject;
+        _title = self.subviews.firstObject;
     }
 
     return self;
@@ -51,7 +50,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
 
 - (void)setupWithText:(NSString *)header {
     if (!self.title) {
-        self.title = [[UILabel alloc] init];
+        _title = [[UILabel alloc] init];
 
         [self addSubview:self.title];
 
