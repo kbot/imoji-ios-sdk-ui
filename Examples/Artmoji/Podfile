@@ -4,11 +4,11 @@ platform :ios, '8.0'
 use_frameworks!
 
 target "artmoji" do
-    pod 'ImojiSDKUI/CollectionView', :path => "../../"
-    pod 'ImojiSDKUI/Editor', :path => "../../"
+    pod 'ImojiSDKUI/CollectionView'
+    pod 'ImojiSDKUI/Editor'
 end
 
 target "artmoji-photos" do
-    pod 'ImojiSDKUI/CollectionView', :path => "../../"
-    pod 'ImojiSDKUI/Editor', :path => "../../"
+    pod 'ImojiSDKUI/CollectionView'
+    pod 'ImojiSDKUI/Editor'
 end
