@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.1
+
+* Adds support for infinite scroll to IMCollectionView. When a result set reaches the end, the collection view will load a relevant followup term and continue to display Imojis to the user.
+* Adds support for showing headers in IMCollectionView. The section headers describe what is being displayed (a category, search term, etc.)
+
 ### Version 2.0.0
 
 * Support for displaying attributed artist categories! Artist categories are displayed just like normal categories however they will have attribution with detailed profile info for the artist as well as attribution links.
