@@ -104,7 +104,7 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
 
         // View Constraints
         [self.footerView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(self);
+            make.edges.equalTo(self);
         }];
 
         [self.urlContainer mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -157,9 +157,9 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
     self.attributionLink = attribution.URL;
 
     self.attributionLabel.attributedText = [IMAttributeStringUtil attributedString:attribution.URL.absoluteString
-                                                                         withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize]
-                                                                            color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
-                                                                     andAlignment:NSTextAlignmentLeft];
+                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize]
+                                                                             color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
+                                                                      andAlignment:NSTextAlignmentLeft];
 
     self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
                                                                       withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize]
@@ -197,7 +197,7 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
     CGContextFillRect(context, CGRectMake(0, IMCollectionReusableAttributionViewURLContainerHeight, self.frame.size.width, IMCollectionReusableAttributionViewSeparatorSize));
 
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:255.0f / 255.0f green:255.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f].CGColor);
-    CGContextFillRect(context, CGRectMake(0, self.frame.size.height - 2.0f, self.frame.size.width, IMCollectionReusableAttributionViewSeparatorSize));
+    CGContextFillRect(context, CGRectMake(0, self.frame.size.height - IMCollectionReusableAttributionViewSeparatorSize, self.frame.size.width, IMCollectionReusableAttributionViewSeparatorSize));
 }
 
 @end

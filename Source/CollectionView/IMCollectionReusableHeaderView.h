@@ -29,6 +29,11 @@
 
 extern NSString *__nonnull const IMCollectionReusableHeaderViewReuseId;
 
-- (void)setupWithText:(nonnull NSString *)header;
+@property(nonatomic, strong, readonly, nullable) UIView *headerView;
+@property(nonatomic, strong, readonly, nullable) UIView *separatorView;
+@property(nonatomic, strong, readonly, nonnull) UILabel *title;
+@property(nonatomic, strong, readonly, nonnull) UILabel *contextLabel;
+
+- (void)setupWithText:(nonnull NSString *)header multipleSections:(BOOL)multipleSections separator:(BOOL)separator;
 
 @end
