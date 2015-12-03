@@ -781,6 +781,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         [self.images removeAllObjects];
         [self.content removeAllObjects];
         [self.pendingCollectionViewUpdates removeAllObjects];
+        self.currentSearchTerm = nil;
 
         self.contentOffset = CGPointMake(-self.contentInset.left, -self.contentInset.top);
 
