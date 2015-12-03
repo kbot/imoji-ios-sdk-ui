@@ -26,11 +26,11 @@
 #import "IMCollectionReusableHeaderView.h"
 #import "IMAttributeStringUtil.h"
 #import "View+MASAdditions.h"
+#import "IMResourceBundleUtil.h"
 
 NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHeaderViewReuseId";
 
 @interface IMCollectionReusableHeaderView ()
-
 
 @end
 
@@ -42,26 +42,111 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
     self = [super initWithFrame:CGRectZero];
 
     if (self) {
-        _title = self.subviews.firstObject;
+        _headerView = self.subviews.firstObject;
     }
 
     return self;
 }
 
-- (void)setupWithText:(NSString *)header {
-    if (!self.title) {
+- (void)setupWithText:(NSString *)header multipleSections:(BOOL)multipleSections separator:(BOOL)separator {
+    if (!self.headerView) {
+        _headerView = [[UIView alloc] init];
+
         _title = [[UILabel alloc] init];
 
-        [self addSubview:self.title];
+        _separatorView = [[UIView alloc] initWithFrame:CGRectZero];
+
+        UIView *graySeparator = [[UIView alloc] initWithFrame:CGRectZero];
+        graySeparator.backgroundColor = [UIColor colorWithRed:0 / 255.0f green:0 / 255.0f blue:0 / 255.0f alpha:0.08f];
+
+        UIView *grayBackground = [[UIView alloc] initWithFrame:CGRectZero];
+        grayBackground.backgroundColor = [UIColor colorWithRed:242.0f / 255.0f green:242.0f / 255.0f blue:242.0f / 255.0f alpha:1.0f];
+
+        UIView *whiteSeparator = [[UIView alloc] initWithFrame:CGRectZero];
+        whiteSeparator.backgroundColor = [UIColor colorWithRed:255.0f / 255.0f green:255.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f];
+
+        _contextLabel = [[UILabel alloc] init];
+        self.contextLabel.attributedText = [IMAttributeStringUtil attributedString:[[IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewContext"] uppercaseString]
+                                                                          withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:12.0f]
+                                                                             color:[UIColor colorWithRed:196.0f / 255.0f green:200.0f / 255.0f blue:204.0f / 255.0f alpha:1.0f]
+                                                                      andAlignment:NSTextAlignmentCenter];
+
+        [self addSubview:self.headerView];
+
+        [self.separatorView addSubview:graySeparator];
+        [self.separatorView addSubview:grayBackground];
+        [self.separatorView addSubview:whiteSeparator];
+
+        [self.headerView addSubview:self.title];
+
+        [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
 
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(self);
+            make.center.equalTo(self.headerView);
+        }];
+
+        [graySeparator mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.and.left.and.right.equalTo(self.separatorView);
+            make.height.equalTo(@2.0f);
+        }];
+
+        [grayBackground mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(graySeparator.mas_bottom);
+            make.left.and.right.equalTo(self.separatorView);
+            make.height.equalTo(@14.0f);
+        }];
+
+        [whiteSeparator mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(grayBackground.mas_bottom);
+            make.left.and.right.equalTo(self.separatorView);
+            make.height.equalTo(@2.0f);
+        }];
+    }
+
+    [self.separatorView removeFromSuperview];
+    [self.contextLabel removeFromSuperview];
+
+    if(separator) {
+        [self.headerView addSubview:self.separatorView];
+        [self.headerView addSubview:self.contextLabel];
+
+        [self.separatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.and.left.and.right.equalTo(self.headerView);
+            make.height.equalTo(@18.0f);
+        }];
+
+        [self.contextLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.separatorView.mas_bottom).offset(16.0f);
+            make.centerX.equalTo(self.headerView);
+        }];
+
+        [self.title mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.contextLabel.mas_bottom);
+            make.centerX.equalTo(self.contextLabel);
+        }];
+    } else if(multipleSections) {
+        [self.headerView addSubview:self.contextLabel];
+
+        [self.contextLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.headerView).offset(16.0f);
+            make.centerX.equalTo(self.headerView);
+        }];
+
+        [self.title mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.contextLabel.mas_bottom);
+            make.centerX.equalTo(self.contextLabel);
+        }];
+    } else {
+        [self.title mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.headerView);
         }];
     }
 
     self.title.attributedText = [IMAttributeStringUtil attributedString:[header uppercaseString]
-                                                               withFont:[IMAttributeStringUtil imojiRegularFontWithSize:22.0f]
-                                                                  color:[UIColor colorWithRed:188.0f / 255.0f green:190.0f / 255.0f blue:192.0f / 255.0f alpha:1.0f]
+                                                               withFont:[IMAttributeStringUtil sfUIDisplayMediumFontWithSize:22.0f]
+                                                                  color:[UIColor colorWithRed:92.0f / 255.0f green:97.0f / 255.0f blue:102.0f / 255.0f alpha:1.0f]
                                                            andAlignment:NSTextAlignmentCenter];
 }
 

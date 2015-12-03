@@ -130,8 +130,12 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         IMCollectionReusableHeaderView *headerView = (IMCollectionReusableHeaderView *) [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                  withReuseIdentifier:IMCollectionReusableHeaderViewReuseId
                                                                                                                         forIndexPath:indexPath];
-
-        [headerView setupWithText:self.content[(NSUInteger)indexPath.section][@"title"]];
+        if(indexPath.section == 0) {
+            [headerView setupWithText:self.content[(NSUInteger) indexPath.section][@"title"] multipleSections:NO separator:NO];
+        }
+        else {
+            [headerView setupWithText:self.content[(NSUInteger) indexPath.section][@"title"] multipleSections:YES separator:![self.content[(NSUInteger) indexPath.section - 1][@"showAttribution"] boolValue]];
+        }
 
         return headerView;
     } else if (kind == UICollectionElementKindSectionFooter) {
@@ -151,7 +155,13 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if(self.currentHeader.length > 0) {
-        return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight);
+        if(section == 0) {
+            return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight);
+        } else if(([self.content[(NSUInteger)section][@"showAttribution"] boolValue])) {
+            return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight + 12.0f);
+        }
+
+        return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight + 30.0f);
     }
 
     return CGSizeZero;
