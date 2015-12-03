@@ -46,8 +46,12 @@ extern CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize;
 @property(nonatomic, strong, readonly, nullable) UIView *footerView;
 @property(nonatomic, strong, readonly, nullable) UIView *urlContainer;
 @property(nonatomic, strong, readonly, nullable) UIView *artistContainer;
+
 @property(nonatomic, strong, nullable) UIImageView *artistPicture;
 @property(nonatomic, strong, nullable) UIImageView *attributionLinkImage;
+
+@property(nonatomic, strong, nullable) UIButton *attributionButton;
+
 @property(nonatomic, strong, nullable) UILabel *artistName;
 @property(nonatomic, strong, nullable) UILabel *artistSummary;
 @property(nonatomic, strong, nullable) UILabel *artistHeader;
