@@ -692,7 +692,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                         emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
 
                              // Prepare to load new section
-                             if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad) {
+                             if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad && self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
                                  self.currentSearchTerm = self.followUpSearchTerm;
                                  self.shouldLoadNewSection = YES;
 
