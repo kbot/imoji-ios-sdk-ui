@@ -157,7 +157,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
     if(self.currentHeader.length > 0) {
         if(section == 0) {
             return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight);
-        } else if(([self.content[(NSUInteger)section][@"showAttribution"] boolValue])) {
+        } else if(([self.content[(NSUInteger)section - 1][@"showAttribution"] boolValue])) {
             return CGSizeMake(self.frame.size.width, IMCollectionReusableHeaderViewDefaultHeight + 12.0f);
         }
 
@@ -347,7 +347,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
         default: {
             if ([self isPathShowingLoadingIndicator:indexPath]) {
-                if ([self numberOfItemsInSection:indexPath.section] == 1) {
+                if (indexPath.section == 0 && [self numberOfItemsInSection:indexPath.section] == 1) {
                     return availableSize;
                 } else {
                     return CGSizeMake(availableSize.width, self.preferredImojiDisplaySize.height);
@@ -692,7 +692,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                         emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
 
                              // Prepare to load new section
-                             if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad) {
+                             if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad && self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
                                  self.currentSearchTerm = self.followUpSearchTerm;
                                  self.shouldLoadNewSection = YES;
 
