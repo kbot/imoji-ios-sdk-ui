@@ -38,6 +38,10 @@ CGFloat const IMCollectionReusableAttributionViewURLContainerHeight = 55.0f;
 CGFloat const IMCollectionReusableAttributionViewDefaultFontSize = 14.0f;
 CGFloat const IMCollectionReusableAttributionViewArtistNameFontSize = 19.0f;
 CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
+CGFloat const IMCollectionReusableAttributionViewAttributionFontSize = 11.0f;
+CGFloat const IMCollectionReusableAttributionViewAttributionButtonHeight = 28.0f;
+CGFloat const IMCollectionReusableAttributionViewAttributionButtonWidth = 107.0f;
+CGFloat const IMCollectionReusableAttributionViewAttributionCornerRadius = 13.5f;
 
 @interface IMCollectionReusableAttributionView ()
 
@@ -75,7 +79,7 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
         // URL Container view
         self.attributionLabel = [[UILabel alloc] init];
         self.attributionLabel.attributedText = [IMAttributeStringUtil attributedString:[[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAttributionLink"] uppercaseString]
-                                                                              withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:11.0f]
+                                                                              withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:IMCollectionReusableAttributionViewAttributionFontSize]
                                                                                  color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                           andAlignment:NSTextAlignmentLeft];
 
@@ -84,11 +88,11 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
         self.attributionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.attributionButton.backgroundColor = [UIColor clearColor];
         self.attributionButton.layer.borderWidth = 1.0f;
-        self.attributionButton.layer.cornerRadius = 13.5f;
+        self.attributionButton.layer.cornerRadius = IMCollectionReusableAttributionViewAttributionCornerRadius;
         self.attributionButton.layer.borderColor = [UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f].CGColor;
 
         [self.attributionButton setAttributedTitle:[IMAttributeStringUtil attributedString:[[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAttributionButton"] uppercaseString]
-                                                                                  withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:11.0f]
+                                                                                  withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:IMCollectionReusableAttributionViewAttributionFontSize]
                                                                                      color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
                                                                               andAlignment:NSTextAlignmentCenter]
                                           forState:UIControlStateNormal];
@@ -156,8 +160,8 @@ CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize = 12.0f;
         [self.attributionButton mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self.urlContainer).offset(-12.0f);
             make.centerY.equalTo(self.urlContainer);
-            make.width.equalTo(@107.0f);
-            make.height.equalTo(@28.0f);
+            make.width.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonWidth));
+            make.height.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonHeight));
         }];
 
         // Artist container subview constraints

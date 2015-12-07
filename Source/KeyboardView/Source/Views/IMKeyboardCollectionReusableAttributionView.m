@@ -31,10 +31,13 @@
 #import "IMArtist.h"
 
 CGFloat const IMKeyboardCollectionReusableAttributionViewOffsetFromHeader = 10.0f;
-CGFloat const IMKeyboardCollectionReusableAttributionViewLandscapeRatio = 0.8f;
+CGFloat const IMKeyboardCollectionReusableAttributionViewLandscapeRatio = 0.875f;
 CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 29.0f;
 
-@implementation IMKeyboardCollectionReusableAttributionView
+@implementation IMKeyboardCollectionReusableAttributionView {
+
+}
+
 
 - (void)setupWithAttribution:(IMCategoryAttribution *)attribution {
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
@@ -42,13 +45,33 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 2
     CGFloat screenW = screenSize.width;
     BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
 
-    if(!self.footerView) {
-        [super setupWithAttribution:attribution];
-    }
+    [super setupWithAttribution:attribution];
 
     if(self.footerView.frame.size.height != self.frame.size.height) {
+        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
+                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                             color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
+                                                                      andAlignment:NSTextAlignmentLeft];
+
+        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
+                                                                        withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:IMCollectionReusableAttributionViewArtistNameFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                           color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
+                                                                    andAlignment:NSTextAlignmentLeft];
+
+        self.attributionLabel.attributedText = [IMAttributeStringUtil attributedString:[[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAttributionLink"] uppercaseString]
+                                                                              withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:IMCollectionReusableAttributionViewAttributionFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                                 color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
+                                                                          andAlignment:NSTextAlignmentLeft];
+
+        self.attributionButton.layer.cornerRadius = IMCollectionReusableAttributionViewAttributionCornerRadius * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f);
+        [self.attributionButton setAttributedTitle:[IMAttributeStringUtil attributedString:[[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAttributionButton"] uppercaseString]
+                                                                                  withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:IMCollectionReusableAttributionViewAttributionFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
+                                                                                     color:[UIColor colorWithRed:10.0f / 255.0f green:149.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
+                                                                              andAlignment:NSTextAlignmentCenter]
+                                          forState:UIControlStateNormal];
+
         [self.footerView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(self);
+            make.edges.equalTo(self);
         }];
 
         [self.artistContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -80,6 +103,8 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 2
 
         [self.attributionLinkImage mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.and.left.equalTo(self.urlContainer);
+            make.width.equalTo(@(self.attributionLinkImage.image.size.width * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+            make.height.equalTo(@(self.attributionLinkImage.image.size.height * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
         }];
 
         [self.attributionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -87,18 +112,14 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 2
             make.centerY.equalTo(self.attributionLinkImage);
         }];
 
-        self.artistHeader.attributedText = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionReusableAttributionViewAbout"]
-                                                                          withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:IMCollectionReusableAttributionViewDefaultFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
-                                                                             color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.6f]
-                                                                      andAlignment:NSTextAlignmentLeft];
-
-        self.artistName.attributedText = [IMAttributeStringUtil attributedString:[attribution.artist.name uppercaseString]
-                                                                        withFont:[IMAttributeStringUtil sfUITextBoldFontWithSize:IMCollectionReusableAttributionViewArtistNameFontSize * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)]
-                                                                           color:[UIColor colorWithRed:35.0f / 255.0f green:31.0f / 255.0f blue:32.0f / 255.0f alpha:0.8f]
-                                                                    andAlignment:NSTextAlignmentLeft];
+        [self.attributionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(self.urlContainer);
+            make.centerY.equalTo(self.attributionLinkImage);
+            make.width.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonWidth * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+            make.height.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+        }];
     }
 }
-
 
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
