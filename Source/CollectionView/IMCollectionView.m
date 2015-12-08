@@ -479,9 +479,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     __block NSOperation *operation;
     self.imojiOperation = operation =
             [self.session getFeaturedImojisWithNumberOfResults:@(self.numberOfImojisToLoad)
-                                     resultSetResponseCallback:^(NSNumber *resultCount, IMImojiResultSetMetadata *metadata, NSError *error) {
+                                     resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
                                          if (!operation.isCancelled) {
-                                             [self prepareViewForImojiResultSet:resultCount
+                                             [self prepareViewForImojiResultSet:metadata.resultCount
                                                                          offset:0
                                                                           error:error
                                                         emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
@@ -520,9 +520,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.imojiOperation = operation =
             [self.session searchImojisWithSentence:sentence
                                    numberOfResults:@(self.numberOfImojisToLoad)
-                         resultSetResponseCallback:^(NSNumber *resultCount, IMImojiResultSetMetadata *metadata, NSError *error) {
+                         resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
                              if (!operation.isCancelled) {
-                                 [self prepareViewForImojiResultSet:resultCount
+                                 [self prepareViewForImojiResultSet:metadata.resultCount
                                                              offset:0
                                                               error:error
                                             emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
@@ -586,9 +586,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     __block NSOperation *operation;
     self.imojiOperation = operation =
-            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(NSNumber *resultCount, IMImojiResultSetMetadata *metadata, NSError *error) {
+            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
                         if (!operation.isCancelled) {
-                            [self prepareViewForImojiResultSet:resultCount
+                            [self prepareViewForImojiResultSet:metadata.resultCount
                                                         offset:0
                                                          error:error
                                        emptyResultsContentType:IMCollectionViewContentTypeCollectionSplash];
@@ -679,8 +679,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             [self.session searchImojisWithTerm:searchTerm
                                         offset:offset
                                numberOfResults:@(self.numberOfImojisToLoad)
-                     resultSetResponseCallback:^(NSNumber *resultCount, IMImojiResultSetMetadata *metadata, NSError *error) {
+                     resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
                          if (!operation.isCancelled) {
+                             NSNumber *resultCount = metadata.resultCount;
                              // if the resultCount is 0 then followUpSearchTerm returns nil
                              // avoid that case by setting the followUpSearchTerm whenever resultCount is above 0
                              if (self.infiniteScroll && resultCount.unsignedIntegerValue > 0) {
