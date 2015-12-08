@@ -188,6 +188,7 @@
 				1F20FDEC1B1594CD002C4896 /* Resources */,
 				1F20FE2B1B159C91002C4896 /* Embed App Extensions */,
 				1A5642391B91118C00C90891 /* Copy Pods Resources */,
+				9318F63615CA0361DEC01DF8 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -208,6 +209,7 @@
 				1F20FE1B1B159C91002C4896 /* Frameworks */,
 				1F20FE1C1B159C91002C4896 /* Resources */,
 				EBD0756EDBA3C51C51E8D890 /* Copy Pods Resources */,
+				8A4E0B2E3B9E24500A0E2AB1 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -313,6 +315,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8A4E0B2E3B9E24500A0E2AB1 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-keyboard/Pods-keyboard-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9318F63615CA0361DEC01DF8 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-keyboard/Pods-imoji-keyboard-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A81D16F7BA4FC8E0C16C9727 /* Check Pods Manifest.lock */ = {
