@@ -80,9 +80,9 @@
                 isConnected = YES;
             }
         }
-    }
 
-    CFRelease(reachability);
+        CFRelease(reachability);
+    }
 
     if(isConnected) {
         return isConnected;
