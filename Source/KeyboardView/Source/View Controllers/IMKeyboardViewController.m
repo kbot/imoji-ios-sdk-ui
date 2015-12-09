@@ -192,7 +192,6 @@
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
     self.isViewingImojiCategory = YES;
     [self.keyboardView updateTitleWithText:category.title hideCloseButton:NO];
-//    [self.keyboardView.collectionView loadImojisFromSearch:category.identifier];
     [self.keyboardView.collectionView loadImojisFromCategory:category];
 }
 

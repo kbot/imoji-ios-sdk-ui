@@ -42,6 +42,10 @@ extern CGFloat const IMCollectionReusableAttributionViewURLContainerHeight;
 extern CGFloat const IMCollectionReusableAttributionViewDefaultFontSize;
 extern CGFloat const IMCollectionReusableAttributionViewArtistNameFontSize;
 extern CGFloat const IMCollectionReusableAttributionViewArtistSummaryFontSize;
+extern CGFloat const IMCollectionReusableAttributionViewAttributionFontSize;
+extern CGFloat const IMCollectionReusableAttributionViewAttributionButtonHeight;
+extern CGFloat const IMCollectionReusableAttributionViewAttributionButtonWidth;
+extern CGFloat const IMCollectionReusableAttributionViewAttributionCornerRadius;
 
 @property(nonatomic, strong, readonly, nullable) UIView *footerView;
 @property(nonatomic, strong, readonly, nullable) UIView *urlContainer;
