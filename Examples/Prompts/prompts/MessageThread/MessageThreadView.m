@@ -127,7 +127,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 500), dispatch_get_main_queue(), ^{
         if (((NSUInteger) [NSDate date].timeIntervalSince1970) % 2 == 0) {
             [self.imojiSession getFeaturedImojisWithNumberOfResults:@1
-                                          resultSetResponseCallback:^(NSNumber *resultCount, NSError *error) {
+                                          resultSetResponseCallback:^(IMImojiResultSetMetadata *resultSetMetada, NSError *error) {
 
                                           }
                                               imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
