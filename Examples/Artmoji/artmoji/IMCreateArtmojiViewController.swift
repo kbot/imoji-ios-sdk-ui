@@ -187,7 +187,6 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         #if NOT_PHOTO_EXTENSION
         let createImojiImage = drawCreateImojiButtonImage().imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
         collectionViewController.bottomToolbar.addBarButton(UIBarButtonItem(image: createImojiImage, style: UIBarButtonItemStyle.Plain, target: self, action: "collectionViewControllerCreateImojiButtonTapped"))
-        collectionViewController.bottomToolbar.addFlexibleSpace()
         #endif
         
         collectionViewController.bottomToolbar.addToolbarButtonWithType(IMToolbarButtonType.Reactions)
@@ -197,6 +196,7 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
         collectionViewController.bottomToolbar.delegate = self
 
         collectionViewController.modalTransitionStyle = UIModalTransitionStyle.CrossDissolve
+        collectionViewController.collectionView.infiniteScroll = true
         collectionViewController.collectionView.collectionViewDelegate = self
         collectionViewController.collectionViewControllerDelegate = self
 
