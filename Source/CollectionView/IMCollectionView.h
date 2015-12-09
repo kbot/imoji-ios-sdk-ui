@@ -40,7 +40,7 @@ typedef NS_ENUM(NSUInteger, IMCollectionViewContentType) {
 
 extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
-@class IMImojiSession, IMImojiCategoryObject, IMImojiObject;
+@class IMImojiSession, IMImojiCategoryObject, IMImojiObject, IMCollectionLoadingView;
 
 @protocol IMCollectionViewDelegate;
 
@@ -87,6 +87,13 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  * @abstract Whether or not infinite scrolling of content is enabled. Defaults to NO.
 */
 @property(nonatomic) BOOL infiniteScroll;
+
+/**
+ * @abstract Indicates that the current view is loading. Only for the initial view.
+ * Subsequent loading views, such as loading the next page of results within a category,
+ * are handled by IMCollectionViewStatusCell.
+ */
+@property(nonatomic, strong, nullable) IMCollectionLoadingView *loadingView;
 
 /**
  * @abstract The default rendering options to use for displaying the stickers. Defaults to

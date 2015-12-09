@@ -30,6 +30,7 @@
 #import "IMAttributeStringUtil.h"
 #import "IMConnectivityUtil.h"
 #import "IMKeyboardSearchTextField.h"
+#import "IMCollectionLoadingView.h"
 
 NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 
@@ -128,6 +129,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     _collectionView = [IMKeyboardCollectionView imojiCollectionViewWithSession:self.session];
     self.collectionView.clipsToBounds = YES;
     [self.collectionView setShowsHorizontalScrollIndicator:NO];
+    self.collectionView.loadingView.backgroundColor = self.backgroundColor;
 
     [self addSubview:self.collectionView];
 
@@ -136,6 +138,10 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
         make.centerX.equalTo(self);
         make.right.equalTo(self.mas_right);
         make.left.equalTo(self.mas_left);
+    }];
+
+    [self.collectionView.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.collectionView);
     }];
 
     // toolbar
