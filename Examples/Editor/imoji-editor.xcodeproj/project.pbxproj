@@ -13,7 +13,7 @@
 		1A1767871B9A690B000F6907 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A1767851B9A690B000F6907 /* Main.storyboard */; };
 		1A1767891B9A690B000F6907 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A1767881B9A690B000F6907 /* Images.xcassets */; };
 		1A17678C1B9A690B000F6907 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A17678A1B9A690B000F6907 /* LaunchScreen.xib */; };
-		1A23768B1BBCC7F4007E1CA5 /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A23768A1BBCC7F4007E1CA5 /* frosty-dog.png */; settings = {ASSET_TAGS = (); }; };
+		1A23768B1BBCC7F4007E1CA5 /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A23768A1BBCC7F4007E1CA5 /* frosty-dog.png */; };
 		1A3B03E81B9A7386004084E1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B03E71B9A7386004084E1 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -143,7 +143,7 @@
 		1A1767701B9A690B000F6907 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Imoji;
 				TargetAttributes = {
 					1A1767771B9A690B000F6907 = {
@@ -285,6 +285,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -359,6 +360,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -376,6 +378,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sopressata.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

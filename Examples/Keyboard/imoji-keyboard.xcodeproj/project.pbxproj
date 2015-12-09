@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1F20FDF21B1594CD002C4896 /* Info.plist */; };
 		1A2ED8EB1B9508DB008D7555 /* IMSampleKeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2ED8EA1B9508DB008D7555 /* IMSampleKeyboardViewController.m */; };
 		1F20FDF41B1594CD002C4896 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF31B1594CD002C4896 /* main.m */; };
 		1F20FDF71B1594CD002C4896 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F20FDF61B1594CD002C4896 /* AppDelegate.m */; };
@@ -226,7 +225,7 @@
 		1F20FDE61B1594CD002C4896 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Jeff;
 				TargetAttributes = {
 					1F20FDED1B1594CD002C4896 = {
@@ -272,7 +271,6 @@
 			files = (
 				1F20FE001B1594CD002C4896 /* Main.storyboard in Resources */,
 				1F20FE051B1594CD002C4896 /* LaunchScreen.xib in Resources */,
-				1A032CD51B910EEB00CC92A3 /* Info.plist in Resources */,
 				1F20FE021B1594CD002C4896 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
