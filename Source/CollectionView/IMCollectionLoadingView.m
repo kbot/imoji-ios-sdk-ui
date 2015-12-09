@@ -26,7 +26,9 @@
 #import "IMCollectionLoadingView.h"
 #import "View+MASAdditions.h"
 
-@implementation IMCollectionLoadingView
+@implementation IMCollectionLoadingView {
+
+}
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];

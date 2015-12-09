@@ -62,7 +62,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 @property(nonatomic) BOOL shouldLoadNewSection;
 
 @property(nonatomic) NSUInteger renderCount;
-@property(nonatomic, strong) IMCollectionLoadingView *loadingView;
 
 @end
 
@@ -100,14 +99,16 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         self.tapGesture.enabled = NO;
         [self addGestureRecognizer:self.tapGesture];
 
-        self.loadingView = [[IMCollectionLoadingView alloc] initWithFrame:CGRectZero];
-        self.loadingView.backgroundColor = [UIColor whiteColor];
+        if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+            self.loadingView = [[IMCollectionLoadingView alloc] initWithFrame:CGRectZero];
+            self.loadingView.backgroundColor = self.backgroundColor;
 
-        [self addSubview:self.loadingView];
+            [self addSubview:self.loadingView];
 
-        [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(self);
-        }];
+            [self.loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.width.and.height.equalTo(self);
+            }];
+        }
 
         [self registerClass:[IMCollectionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMCategoryCollectionViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
