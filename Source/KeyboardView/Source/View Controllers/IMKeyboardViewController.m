@@ -265,7 +265,7 @@
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
     UIResponder* responder = self;
     while ((responder = [responder nextResponder]) != nil) {
-        if ([responder respondsToSelector:@selector(openURL:)] == YES) {
+        if ([responder respondsToSelector:@selector(openURL:)]) {
             [responder performSelector:@selector(openURL:)
                             withObject:attributionLink];
         }
