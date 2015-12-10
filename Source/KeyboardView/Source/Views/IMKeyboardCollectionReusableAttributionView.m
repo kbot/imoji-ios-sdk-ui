@@ -38,6 +38,9 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 2
 
 }
 
++ (BOOL)requiresConstraintBasedLayout {
+    return YES;
+}
 
 - (void)setupWithAttribution:(IMCategoryAttribution *)attribution {
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
@@ -70,55 +73,63 @@ CGFloat const IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight = 2
                                                                               andAlignment:NSTextAlignmentCenter]
                                           forState:UIControlStateNormal];
 
-        [self.footerView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self);
-        }];
-
-        [self.artistContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.bottom.equalTo(self);
-            make.left.equalTo(self).offset(IMCollectionReusableAttributionViewContainerOffset);
-            make.right.equalTo(self).offset(-IMCollectionReusableAttributionViewContainerOffset);
-        }];
-
-        [self.urlContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistSummary.mas_bottom).offset(11.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
-            make.left.equalTo(self).offset(IMCollectionReusableAttributionViewContainerOffset);
-            make.right.equalTo(self).offset(-IMCollectionReusableAttributionViewContainerOffset);
-        }];
-
-        [self.artistPicture mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 0 : 14.0f));
-            make.width.and.height.equalTo(@(IMCollectionReusableAttributionViewArtistPictureWidthHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
-        }];
-
-        [self.artistHeader mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 9.0f / 1.2f : 23.0f));
-        }];
-
-        [self.artistSummary mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.artistPicture.mas_bottom).offset(12.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
-            make.left.and.right.equalTo(self.artistContainer);
-            make.height.equalTo(@(IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight));
-        }];
-
-        [self.attributionLinkImage mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.left.equalTo(self.urlContainer);
-            make.width.equalTo(@(self.attributionLinkImage.image.size.width * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
-            make.height.equalTo(@(self.attributionLinkImage.image.size.height * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
-        }];
-
-        [self.attributionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.attributionLinkImage.mas_right).offset(9.0f);
-            make.centerY.equalTo(self.attributionLinkImage);
-        }];
-
-        [self.attributionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(self.urlContainer);
-            make.centerY.equalTo(self.attributionLinkImage);
-            make.width.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonWidth * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
-            make.height.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
-        }];
+        [self setNeedsUpdateConstraints];
     }
+}
+
+- (void)updateConstraints {
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat screenH = screenSize.height;
+    CGFloat screenW = screenSize.width;
+    BOOL isLandscape = self.frame.size.width != (screenW * (screenW < screenH)) + (screenH * (screenW > screenH));
+
+    [self.artistContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.footerView);
+        make.left.equalTo(self.footerView).offset(IMCollectionReusableAttributionViewContainerOffset);
+        make.right.equalTo(self.footerView).offset(-IMCollectionReusableAttributionViewContainerOffset);
+    }];
+
+    [self.urlContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.artistSummary.mas_bottom).offset(11.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
+        make.left.equalTo(self.footerView).offset(IMCollectionReusableAttributionViewContainerOffset);
+        make.right.equalTo(self.footerView).offset(-IMCollectionReusableAttributionViewContainerOffset);
+        make.height.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonHeight));
+    }];
+
+    [self.artistPicture mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 0 : 14.0f));
+        make.width.and.height.equalTo(@(IMCollectionReusableAttributionViewArtistPictureWidthHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+    }];
+
+    [self.artistHeader mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.artistContainer).offset(IMKeyboardCollectionReusableAttributionViewOffsetFromHeader + (isLandscape ? 9.0f / 1.2f : 23.0f));
+    }];
+
+    [self.artistSummary mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.artistPicture.mas_bottom).offset(12.0f * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f));
+        make.left.and.right.equalTo(self.artistContainer);
+        make.height.equalTo(@(IMKeyboardCollectionReusableAttributionViewArtistSummaryHeight));
+    }];
+
+    [self.attributionLinkImage mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.and.left.equalTo(self.urlContainer);
+        make.width.equalTo(@(self.attributionLinkImage.image.size.width * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+        make.height.equalTo(@(self.attributionLinkImage.image.size.height * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+    }];
+
+    [self.attributionLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.attributionLinkImage.mas_right).offset(9.0f);
+        make.centerY.equalTo(self.attributionLinkImage);
+    }];
+
+    [self.attributionButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.urlContainer);
+        make.centerY.equalTo(self.attributionLinkImage);
+        make.width.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonWidth * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+        make.height.equalTo(@(IMCollectionReusableAttributionViewAttributionButtonHeight * (isLandscape ? IMKeyboardCollectionReusableAttributionViewLandscapeRatio : 1.0f)));
+    }];
+
+    [super updateConstraints];
 }
 
 - (void)drawRect:(CGRect)rect {
