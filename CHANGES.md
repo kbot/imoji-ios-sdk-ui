@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.3
+
+* Fixes that pesky 'pcm: No such file or directory' warning from ImojiGraphics
+
 ### Version 2.0.2
 
 * Switched to YYAnimatedImage and YYImage for rendering animated images
