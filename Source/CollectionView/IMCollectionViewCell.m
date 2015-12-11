@@ -25,8 +25,8 @@
 
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
+#import <ImojiSDK/YYAnimatedImageView.h>
 #import "IMCollectionViewCell.h"
-#import "IMCollectionView.h"
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
@@ -45,7 +45,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 
-        self.imojiView = [UIImageView new];
+        self.imojiView = [YYAnimatedImageView new];
 
         [self addSubview:self.imojiView];
         [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -128,12 +128,8 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     // grow image
     [UIView animateWithDuration:0.1 animations:^{
                 self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-
             }
                      completion:^(BOOL finished) {
-                         if (!finished) {
-                             return;
-                         }
                          [UIView animateWithDuration:0.1f
                                                delay:1.2f
                                              options:UIViewAnimationOptionCurveLinear
@@ -152,9 +148,6 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
                 self.imojiView.alpha = 0.5;
             }
                      completion:^(BOOL finished) {
-                         if (!finished) {
-                             return;
-                         }
                          [UIView animateWithDuration:0.1f
                                                delay:1.2f
                                              options:UIViewAnimationOptionCurveLinear

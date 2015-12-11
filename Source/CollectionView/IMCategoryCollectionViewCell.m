@@ -25,7 +25,7 @@
 
 #import "IMCategoryCollectionViewCell.h"
 #import <Masonry/View+MASAdditions.h>
-#import "IMCollectionView.h"
+#import <ImojiSDK/YYAnimatedImageView.h>
 #import "IMResourceBundleUtil.h"
 #import "IMAttributeStringUtil.h"
 
@@ -40,7 +40,7 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 
-        self.imojiView = [UIImageView new];
+        self.imojiView = [YYAnimatedImageView new];
 
         self.titleView = [UILabel new];
         self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:14.0f];
