@@ -24,6 +24,8 @@
 //
 
 #import <Masonry/Masonry.h>
+#import <ImojiSDK/YYImage.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "IMKeyboardViewController.h"
 #import "IMKeyboardCollectionView.h"
 #import "IMQwertyViewController.h"
@@ -198,14 +200,15 @@
 - (void)userDidSelectImoji:(IMImojiObject *)imoji fromCollectionView:(IMCollectionView *)collectionView {
     [self.keyboardView showDownloadingImojiIndicator];
 
-    IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
-    renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+    IMImojiObjectRenderingOptions *renderOptions;
 
     if (imoji.supportsAnimation) {
-        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(150.0f, 150.0f)];
+        renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
     } else {
+        renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
         renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(800.0f, 800.0f)];
     }
+    renderOptions.renderAnimatedIfSupported = YES;
 
     [self.session renderImoji:imoji
                       options:renderOptions
@@ -216,7 +219,18 @@
                          } else {
                              UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                              pasteboard.persistent = YES;
-                             [pasteboard setImage:image];
+                             
+                             NSData *attachmentData;
+                             NSString* typeIdentifier;
+                             if ([image isKindOfClass:[YYImage class]] && imoji.supportsAnimation) {
+                                 attachmentData = ((YYImage *) image).animatedImageData;
+                                 typeIdentifier = (NSString *) kUTTypeGIF;
+                             } else {
+                                 attachmentData = UIImagePNGRepresentation(image);
+                                 typeIdentifier = (NSString *) kUTTypePNG;
+                             }
+                             
+                             [pasteboard setData:attachmentData forPasteboardType:typeIdentifier];
 
                              [self.keyboardView showFinishedDownloadedWithMessage:@"COPIED TO CLIPBOARD"];
                          }
