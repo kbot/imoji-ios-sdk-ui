@@ -206,6 +206,7 @@
         renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
     } else {
         renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+        renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
         renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(800.0f, 800.0f)];
     }
     renderOptions.renderAnimatedIfSupported = YES;
