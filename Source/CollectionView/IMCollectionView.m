@@ -61,8 +61,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 @property(nonatomic) BOOL shouldShowAttribution;
 @property(nonatomic) BOOL shouldLoadNewSection;
 
-@property(nonatomic) NSUInteger renderCount;
-
 @end
 
 @implementation IMCollectionView {
@@ -92,7 +90,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         self.content = [NSMutableArray array];
         self.images = [NSMutableArray array];
         self.pendingCollectionViewUpdates = [NSMutableArray array];
-        self.renderCount = 0;
 
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                   action:@selector(userTappedSplashView:)];
@@ -777,9 +774,14 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 - (void)loadNextPageOfImojisFromSearch {
     // do not append the next set of imojis until the current set of them has completely rendered to avoid
     // mutating the data model while the collection view is reloading
-    if (self.currentSearchTerm != nil && self.renderCount == 0) {
+    if (self.currentSearchTerm != nil) {
+        __block NSMutableArray *imojis = self.content[(NSUInteger) self.numberOfSections - 1][@"imojis"];
+        if (![imojis containsObject:self.loadingIndicatorObject]) {
+            return;
+        }
+
         [self performBatchUpdates:^{
-            [self.content[(NSUInteger) self.numberOfSections - 1][@"imojis"] removeObject:self.loadingIndicatorObject];
+            [imojis removeObject:self.loadingIndicatorObject];
 
             // Remove the first item in the indexPaths when there are no items in the content array
             if ([self numberOfItemsInSection:self.numberOfSections - 1] == 0) {
@@ -812,7 +814,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)generateNewResultSetOperationWithSearchOffset:(NSNumber *)searchOffset {
     if (!searchOffset && !self.shouldLoadNewSection) {
-        self.renderCount = 0;
         [self.images removeAllObjects];
         [self.content removeAllObjects];
         [self.pendingCollectionViewUpdates removeAllObjects];
@@ -915,15 +916,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                   atIndex:(NSUInteger)index
                    offset:(NSUInteger)offset
                 operation:(NSOperation *)operation {
-    self.renderCount++;
     self.content[section][@"imojis"][index + offset] = content;
     [self.session renderImoji:imoji
                       options:self.renderingOptions
                      callback:^(UIImage *image, NSError *renderError) {
-                         if (self.renderCount > 0) {
-                             self.renderCount--;
-                         }
-
                          if (!operation.isCancelled) {
                              self.images[section][index + offset] = image ? image : [NSNull null];
                              NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:section];
