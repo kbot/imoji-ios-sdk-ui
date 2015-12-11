@@ -200,7 +200,12 @@
 
     IMImojiObjectRenderingOptions *renderOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
     renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
-    renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(800.0f, 800.0f)];
+
+    if (imoji.supportsAnimation) {
+        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(150.0f, 150.0f)];
+    } else {
+        renderOptions.maximumRenderSize = [NSValue valueWithCGSize:CGSizeMake(800.0f, 800.0f)];
+    }
 
     [self.session renderImoji:imoji
                       options:renderOptions
