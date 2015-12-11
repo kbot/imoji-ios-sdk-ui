@@ -1,5 +1,12 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.2
+
+* Switched to YYAnimatedImage and YYImage for rendering animated images
+* Cleanup with renderCount on IMImojiCollectionView, fixes issues with infinite scroll where the next page would never load sometimes
+* Addresses an issue where sometimes scrolling to the next page would case a problem since the loading indicator was already removed
+* Support animated stickers in the keyboard sources
+
 ### Version 2.0.1
 
 * Adds support for infinite scroll to IMCollectionView. When a result set reaches the end, the collection view will load a relevant followup term and continue to display Imojis to the user.
