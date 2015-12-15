@@ -68,7 +68,9 @@ viewController.searchField.hidden = YES;
 ## Animated Stickers!!
 ![alt tag](https://compass.imoji.io/10e/10ee60f8-6c68-43f8-9e2c-fca6e2b285ed-thumb.gif)
 
-Animated stickers loaded by default in versions 2.0.2 and higher. You're application will need to either use YYAnimatedImageView instead of UIImageView's or extract the contents of the animated gif into your own view (ex: FLAnimatedImage). 
+Animated stickers are loaded by default in versions 2.0.2 and higher. The ImojiSDK uses [YYImage](https://github.com/ibireme/YYImage) to load and display animated content for efficient loading.
+
+Your application will need to either use YYAnimatedImageView (bundled in ImojiSDK) instead of UIImageView's or extract the contents of the animated gif into your own view (ex: FLAnimatedImage). 
 
 To extract animated content, you can perform the following:
 
