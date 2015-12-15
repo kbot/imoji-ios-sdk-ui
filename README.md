@@ -65,6 +65,31 @@ viewController.searchField.hidden = YES;
 ![alt tag](https://s3.amazonaws.com/imoji-external/imoji-trending-ios.gif)
 
 
+## Animated Stickers!!
+![alt tag](https://compass.imoji.io/10e/10ee60f8-6c68-43f8-9e2c-fca6e2b285ed-thumb.gif)
+
+Animated stickers loaded by default in versions 2.0.2 and higher. You're application will need to either use YYAnimatedImageView instead of UIImageView's or extract the contents of the animated gif into your own view (ex: FLAnimatedImage). 
+
+To extract animated content, you can perform the following:
+
+```objective-c
+IMImojiObject *imoji;
+IMImojiObjectRenderingOptions *options = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
+options.renderAnimatedIfSupported = YES;
+
+[imojiSession renderImoji:imoji
+                  options:options
+                 callback:^(UIImage *image, NSError *renderError) {
+                     if (imoji.supportsAnimation && [image isKindOfClass:[YYImage class]]) {
+                         YYImage *yyImage = (YYImage *) image;
+                         NSData *animatedImageData = yyImage.animatedImageData;
+                         // load animated data into view
+                     }
+                 }
+];
+
+```
+
 ## Samples 
 
 Check out the sample apps to get up to speed on the services!
