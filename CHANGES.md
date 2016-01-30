@@ -1,11 +1,14 @@
 # Imoji iOS UI Widgets Changes
 
-### Version 2.0.3
+### Version 2.0.4
 
-* Fixes that pesky 'pcm: No such file or directory' warning from ImojiGraphics
 * Ensure all imoji reloads happen with queued operations, regardless of iOS versions helps address the cases in which reloads case assertion failures caused by new search results clearing out previous ones.
 * Update Keyboard VC to use the new renderImojiForExport: method.
 * Fix bitcode woes with ImojiGraphics
+
+### Version 2.0.3
+
+* Fixes that pesky 'pcm: No such file or directory' warning from ImojiGraphics
 
 ### Version 2.0.2
 
