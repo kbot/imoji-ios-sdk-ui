@@ -211,31 +211,20 @@
     }
     renderOptions.renderAnimatedIfSupported = YES;
 
-    [self.session renderImoji:imoji
-                      options:renderOptions
-                     callback:^(UIImage *image, NSError *error) {
-                         if (error) {
-                             NSLog(@"Error: %@", error);
-                             [self.keyboardView showFinishedDownloadedWithMessage:@"UNABLE TO DOWNLOAD IMOJI"];
-                         } else {
-                             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-                             pasteboard.persistent = YES;
-                             
-                             NSData *attachmentData;
-                             NSString* typeIdentifier;
-                             if ([image isKindOfClass:[YYImage class]] && imoji.supportsAnimation) {
-                                 attachmentData = ((YYImage *) image).animatedImageData;
-                                 typeIdentifier = (NSString *) kUTTypeGIF;
-                             } else {
-                                 attachmentData = UIImagePNGRepresentation(image);
-                                 typeIdentifier = (NSString *) kUTTypePNG;
-                             }
-                             
-                             [pasteboard setData:attachmentData forPasteboardType:typeIdentifier];
+    [self.session renderImojiForExport:imoji
+                               options:renderOptions
+                              callback:^(UIImage *image, NSData *data, NSString *typeIdentifier, NSError *error) {
+                                  if (error || !data) {
+                                      NSLog(@"Error: %@", error);
+                                      [self.keyboardView showFinishedDownloadedWithMessage:@"UNABLE TO DOWNLOAD IMOJI"];
+                                  } else {
+                                      UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                                      pasteboard.persistent = YES;
+                                      [pasteboard setData:data forPasteboardType:typeIdentifier];
+                                      [self.keyboardView showFinishedDownloadedWithMessage:@"COPIED TO CLIPBOARD"];
+                                  }
 
-                             [self.keyboardView showFinishedDownloadedWithMessage:@"COPIED TO CLIPBOARD"];
-                         }
-                     }];
+                              }];
 
     // save to recents
     [self saveToRecents:imoji];
@@ -283,7 +272,7 @@
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
-    UIResponder* responder = self;
+    UIResponder *responder = self;
     while ((responder = [responder nextResponder]) != nil) {
         if ([responder respondsToSelector:@selector(openURL:)]) {
             [responder performSelector:@selector(openURL:)
