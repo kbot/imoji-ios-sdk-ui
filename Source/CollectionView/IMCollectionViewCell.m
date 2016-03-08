@@ -71,6 +71,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
         _hasImojiImage = YES;
     } else {
         self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:30];
+        self.imojiView.highlightedImage = self.imojiView.image;
         self.imojiView.contentMode = UIViewContentModeCenter;
         _hasImojiImage = NO;
     }
