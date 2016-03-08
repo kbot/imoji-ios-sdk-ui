@@ -24,12 +24,9 @@
 //
 
 #import <Masonry/Masonry.h>
-#import <ImojiSDK/YYImage.h>
-#import <MobileCoreServices/MobileCoreServices.h>
 #import "IMKeyboardViewController.h"
 #import "IMKeyboardCollectionView.h"
 #import "IMQwertyViewController.h"
-#import "IMConnectivityUtil.h"
 #import "IMToolbar.h"
 #import "IMKeyboardView.h"
 

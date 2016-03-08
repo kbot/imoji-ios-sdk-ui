@@ -25,7 +25,7 @@
 
 #import "IMCategoryCollectionViewCell.h"
 #import <Masonry/View+MASAdditions.h>
-#import <ImojiSDK/YYAnimatedImageView.h>
+#import <YYImage/YYAnimatedImageView.h>
 #import "IMResourceBundleUtil.h"
 #import "IMAttributeStringUtil.h"
 

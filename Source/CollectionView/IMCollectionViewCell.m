@@ -25,7 +25,7 @@
 
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
-#import <ImojiSDK/YYAnimatedImageView.h>
+#import <YYImage/YYAnimatedImageView.h>
 #import "IMCollectionViewCell.h"
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";

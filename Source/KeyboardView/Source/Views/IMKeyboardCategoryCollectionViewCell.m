@@ -24,7 +24,7 @@
 //
 
 #import <Masonry/Masonry.h>
-#import <ImojiSDK/YYAnimatedImageView.h>
+#import <YYImage/YYAnimatedImageView.h>
 #import "IMKeyboardCategoryCollectionViewCell.h"
 #import "IMAttributeStringUtil.h"
 
