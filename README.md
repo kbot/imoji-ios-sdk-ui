@@ -70,7 +70,8 @@ viewController.searchField.hidden = YES;
 
 
 ## Animated Stickers!!
-![alt tag](https://compass.imoji.io/10e/10ee60f8-6c68-43f8-9e2c-fca6e2b285ed-thumb.gif)
+![alt tag](https://media.imoji.io/10e/10ee60f8-6c68-43f8-9e2c-fca6e2b285ed/animated-150.gif)
+<sup>Courtesy of [Iconka](https://artists.imoji.io/pack/70f52120552ad2830f67b0ddcb764277ra1721)!</sup>
 
 Animated stickers are loaded by default in versions 2.0.2 and higher. The ImojiSDK uses [YYImage](https://github.com/ibireme/YYImage) to load and display animated content for efficient loading.
 
