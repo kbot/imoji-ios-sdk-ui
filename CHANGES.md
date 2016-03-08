@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.5
+
+* Fixed an issue when sometimes a ghosted image would show up when a user tapped a collection view cell before the image had been downloaded
+
 ### Version 2.0.4
 
 * Ensure all imoji reloads happen with queued operations, regardless of iOS versions helps address the cases in which reloads case assertion failures caused by new search results clearing out previous ones.
