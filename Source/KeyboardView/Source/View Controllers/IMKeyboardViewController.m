@@ -163,7 +163,7 @@
         }];
     }
 
-    [self.keyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonReactions];
+    [self.keyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonTrending];
 }
 
 #pragma mark IMQwertyViewControllerDelegate
