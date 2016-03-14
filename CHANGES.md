@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.6
+
+* Avoid annoying pcm bugs with ImojiGraphics
+* Added explicit dependency to YYImage in CollectionView submodule
+
 ### Version 2.0.5
 
 * Fixed an issue when sometimes a ghosted image would show up when a user tapped a collection view cell before the image had been downloaded
