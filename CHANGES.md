@@ -3,6 +3,7 @@
 ### Version 2.0.5
 
 * Fixed an issue when sometimes a ghosted image would show up when a user tapped a collection view cell before the image had been downloaded
+* Change YYImage references to not be bundled references
 
 ### Version 2.0.4
 
