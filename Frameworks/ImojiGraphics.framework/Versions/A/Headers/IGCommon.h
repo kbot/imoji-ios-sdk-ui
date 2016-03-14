@@ -88,9 +88,9 @@ typedef jdouble IGdouble;
 #define IG_USE_RGBA
 #define IG_USE_PLAIN_TEXTURES
 
-#define IG_FUNCTION(return_type, name, ...) return_type Java_com_imojiapp_imojigraphics_IG_ ## name(JNIEnv *env, jclass clazz, ##__VA_ARGS__)
+#define IG_FUNCTION(return_type, name, ...) return_type Java_io_imoji_sdk_graphics_IG_ ## name(JNIEnv *env, jclass clazz, ##__VA_ARGS__)
 
-#define IG_CALL(name, ...) Java_com_imojiapp_imojigraphics_IG_ ## name(NULL, NULL, ##__VA_ARGS__)
+#define IG_CALL(name, ...) Java_io_imoji_sdk_graphics_IG_ ## name(NULL, NULL, ##__VA_ARGS__)
 
 #define printf(...) __android_log_print(ANDROID_LOG_INFO, "ImojiGraphics", ##__VA_ARGS__)
 #define fprintf(file, ...) ((file) == stderr ? __android_log_print(ANDROID_LOG_ERROR, "ImojiGraphics", ##__VA_ARGS__) : fprintf(file, ##__VA_ARGS__))
