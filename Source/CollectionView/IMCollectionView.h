@@ -96,8 +96,7 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 @property(nonatomic, strong, nullable) IMCollectionLoadingView *loadingView;
 
 /**
- * @abstract The default rendering options to use for displaying the stickers. Defaults to
- * session.fetchRenderingOptions
+ * @abstract The default rendering options to use for displaying the stickers.
 */
 @property(nonatomic, strong, nonnull) IMImojiObjectRenderingOptions *renderingOptions;
 
