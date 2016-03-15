@@ -1,5 +1,11 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.7
+
+* Prevented the share button in Artmoji example from saving multiple images before completion.
+* Deprecated fetchRenderingOptions because it is no longer being used.
+* Made tapping on the no results splash view focus on the search bar SDK wide.
+
 ### Version 2.0.6
 
 * Avoid annoying pcm bugs with ImojiGraphics
