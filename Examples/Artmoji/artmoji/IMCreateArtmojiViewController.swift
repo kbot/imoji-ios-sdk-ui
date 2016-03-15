@@ -146,6 +146,9 @@ public class IMCreateArtmojiViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
             presentViewController(alert, animated: true, completion: nil)
         }
+        
+        // Allow images to be saved again
+        self.createArtmojiView.shareButton.userInteractionEnabled = true;
     }
 
 }
@@ -170,6 +173,9 @@ extension IMCreateArtmojiViewController: IMCreateArtmojiViewDelegate {
     }
 
     public func userDidFinishCreatingArtmoji(artmoji: UIImage, view: IMCreateArtmojiView) {
+        // Prevent multiple saves of the same image
+        self.createArtmojiView.shareButton.userInteractionEnabled = false;
+        
         UIImageWriteToSavedPhotosAlbum(artmoji, self, "image:didFinishSavingWithError:contextInfo:", nil)
     }
 
@@ -258,6 +264,17 @@ extension IMCreateArtmojiViewController: IMCameraViewControllerDelegate {
 extension IMCreateArtmojiViewController: IMCollectionViewControllerDelegate {
     public func backgroundColorForCollectionViewController(collectionViewController: UIViewController) -> UIColor? {
         return IMArtmojiConstants.DefaultBarTintColor
+    }
+    
+    public func userDidSelectSplash(splashType: IMCollectionViewSplashCellType, fromCollectionView collectionView: IMCollectionView) {
+        switch splashType {
+            case IMCollectionViewSplashCellType.NoResults:
+                let collectionViewController = presentedViewController as! IMCollectionViewController
+                collectionViewController.searchField.becomeFirstResponder();
+                break;
+            default:
+                break;
+        }
     }
 }
 

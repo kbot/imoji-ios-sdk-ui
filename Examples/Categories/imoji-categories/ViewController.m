@@ -159,6 +159,12 @@
                           }];
 }
 
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
+    if (splashType == IMCollectionViewSplashCellNoResults) {
+        [((IMCollectionViewController *) self.presentedViewController).searchField becomeFirstResponder];
+    }
+}
+
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
     switch (buttonType) {
         case IMToolbarButtonReactions:
