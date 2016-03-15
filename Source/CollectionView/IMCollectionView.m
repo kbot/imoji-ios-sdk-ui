@@ -71,7 +71,10 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         _session = session;
         _loadingIndicatorObject = [NSObject new];
         _imagesBundle = [IMResourceBundleUtil assetsBundle];
-        _renderingOptions = session.fetchRenderingOptions;
+        _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
+                                                                     borderStyle:IMImojiObjectBorderStyleSticker
+                                                                     imageFormat:IMImojiObjectImageFormatWebP];
+        _renderingOptions.renderAnimatedIfSupported = YES;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
         _animateSelection = YES;
         _shouldShowAttribution = NO;

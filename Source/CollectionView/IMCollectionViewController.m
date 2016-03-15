@@ -32,7 +32,7 @@ UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
 UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 
-@interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate>
+@interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate>
 
 @property(nonatomic, strong) NSOperation *pendingSearchOperation;
 @end
@@ -96,9 +96,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 
     self.backButton.hidden = YES;
 
-    if (self.collectionViewControllerDelegate) {
-        _collectionView.collectionViewDelegate = self.collectionViewControllerDelegate;
-    }
+    self.collectionViewControllerDelegate = self;
 }
 
 - (void)dealloc {
@@ -106,7 +104,6 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 }
 
 - (void)loadView {
-
     self.view = [UIView new];
 
     [self.view addSubview:self.collectionView];
@@ -232,6 +229,23 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
 - (void)setCollectionViewControllerDelegate:(id)collectionViewControllerDelegate {
     _collectionViewControllerDelegate = collectionViewControllerDelegate;
     _collectionView.collectionViewDelegate = collectionViewControllerDelegate;
+}
+
+#pragma mark CollectionViewDelegate
+
+- (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
+    switch (splashType) {
+        case IMCollectionViewSplashCellRecents:
+        case IMCollectionViewSplashCellCollection:
+            break;
+
+        case IMCollectionViewSplashCellNoResults:
+            [self.searchField becomeFirstResponder];
+            break;
+
+        default:
+            break;
+    }
 }
 
 #pragma mark Search field delegates
