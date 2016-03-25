@@ -5,6 +5,7 @@
 * Prevented the share button in Artmoji example from saving multiple images before completion.
 * Deprecated fetchRenderingOptions because it is no longer being used.
 * Made tapping on the no results splash view focus on the search bar SDK wide.
+* Pull in WebP libraries from YYImage to avoid issues for some developers where WebP files are not found
 
 ### Version 2.0.6
 
