@@ -127,6 +127,13 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
 
 /**
+ * @abstract Loads Imoji categories into the collection view using getImojiCategoriesWithClassification from IMImojiSession
+ * @param classification Type of category classification to retrieve
+ * @param contextualSearchPhrase When set, instructs the server to return categories relevant to the search phrase.
+ */
+- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextSearchPhrase:(nullable NSString *)contextualSearchPhrase;
+
+/**
  * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
  * The collection view will automatically scroll through multiple pages of stickers if they exist
  */

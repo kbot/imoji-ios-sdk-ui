@@ -432,6 +432,10 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
+    [self loadImojiCategories:classification withContextSearchPhrase:nil];
+}
+
+- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextSearchPhrase:(nullable NSString *)contextualSearchPhrase {
     self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     switch (classification) {
         case IMImojiSessionCategoryClassificationTrending:
@@ -458,6 +462,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     __block NSOperation *operation;
     self.imojiOperation = operation =
             [self.session getImojiCategoriesWithClassification:classification
+                                        contextualSearchPhrase:contextualSearchPhrase
                                                       callback:^(NSArray *imojiCategories, NSError *error) {
                                                           if (error) {
                                                               return;
