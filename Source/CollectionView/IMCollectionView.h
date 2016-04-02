@@ -131,7 +131,7 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
  * @param classification Type of category classification to retrieve
  * @param contextualSearchPhrase When set, instructs the server to return categories relevant to the search phrase.
  */
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextSearchPhrase:(nullable NSString *)contextualSearchPhrase;
+- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextualSearchPhrase:(nullable NSString *)contextualSearchPhrase;
 
 /**
  * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
