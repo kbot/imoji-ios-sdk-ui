@@ -432,12 +432,12 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 #pragma mark Imoji Loading
 
 - (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification {
-    [self loadImojiCategories:classification withContextualSearchPhrase:nil];
+    [self loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:classification]];
 }
 
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextualSearchPhrase:(nullable NSString *)contextualSearchPhrase {
+- (void)loadImojiCategoriesWithOptions:(nullable IMCategoryFetchOptions *)categoryFetchOptions {
     self.shouldShowAttribution = self.shouldLoadNewSection = NO;
-    switch (classification) {
+    switch (categoryFetchOptions.classification) {
         case IMImojiSessionCategoryClassificationTrending:
             self.currentHeader = [IMResourceBundleUtil localizedStringForKey:@"collectionReusableHeaderViewTrending"];
             break;
@@ -461,36 +461,35 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     __block NSOperation *operation;
     self.imojiOperation = operation =
-            [self.session getImojiCategoriesWithClassification:classification
-                                        contextualSearchPhrase:contextualSearchPhrase
-                                                      callback:^(NSArray *imojiCategories, NSError *error) {
-                                                          if (error) {
-                                                              return;
-                                                          }
+            [self.session getImojiCategoriesWithOptions:categoryFetchOptions
+                                               callback:^(NSArray *imojiCategories, NSError *error) {
+                                                   if (error) {
+                                                       return;
+                                                   }
 
-                                                          [self prepareViewForImojiResultSet:@([imojiCategories count])
-                                                                                      offset:0
-                                                                                       error:error
-                                                                     emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
-
-                                                          for (IMImojiCategoryObject *category in imojiCategories) {
-                                                              if (operation.isCancelled) {
-                                                                  break;
-                                                              }
-
-                                                              NSUInteger index = [imojiCategories indexOfObject:category];
-                                                              [self renderImojiResult:category.previewImojis ? category.previewImojis[arc4random() % category.previewImojis.count] : category.previewImoji
-                                                                              content:category
-                                                                            atSection:(NSUInteger) self.numberOfSections - 1
-                                                                              atIndex:index
+                                                   [self prepareViewForImojiResultSet:@([imojiCategories count])
                                                                                offset:0
-                                                                            operation:operation];
-                                                          }
+                                                                                error:error
+                                                              emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
 
-                                                          if (!operation.isCancelled && self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
-                                                              [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
-                                                          }
-                                                      }];
+                                                   for (IMImojiCategoryObject *category in imojiCategories) {
+                                                       if (operation.isCancelled) {
+                                                           break;
+                                                       }
+
+                                                       NSUInteger index = [imojiCategories indexOfObject:category];
+                                                       [self renderImojiResult:category.previewImojis ? category.previewImojis[arc4random() % category.previewImojis.count] : category.previewImoji
+                                                                       content:category
+                                                                     atSection:(NSUInteger) self.numberOfSections - 1
+                                                                       atIndex:index
+                                                                        offset:0
+                                                                     operation:operation];
+                                                   }
+
+                                                   if (!operation.isCancelled && self.collectionViewDelegate && [self.collectionViewDelegate respondsToSelector:@selector(imojiCollectionView:didFinishLoadingContentType:)]) {
+                                                       [self.collectionViewDelegate imojiCollectionView:self didFinishLoadingContentType:self.contentType];
+                                                   }
+                                               }];
 }
 
 - (void)loadFeaturedImojis {

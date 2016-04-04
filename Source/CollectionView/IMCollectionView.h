@@ -26,6 +26,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <ImojiSDK/IMImojiSession.h>
+#import <ImojiSDK/IMCategoryFetchOptions.h>
 #import "IMCollectionViewSplashCell.h"
 
 typedef NS_ENUM(NSUInteger, IMCollectionViewContentType) {
@@ -123,15 +124,16 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 
 /**
  * @abstract Loads Imoji categories into the collection view using getImojiCategoriesWithClassification from IMImojiSession
+ * DEPRECATED: Use loadImojiCategoriesWithOptions instead
  */
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification;
+- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification DEPRECATED_ATTRIBUTE;
 
 /**
- * @abstract Loads Imoji categories into the collection view using getImojiCategoriesWithClassification from IMImojiSession
- * @param classification Type of category classification to retrieve
+ * @abstract Loads Imoji categories into the collection view using getImojiCategoriesWithOptions from IMImojiSession
+ * @param categoryFetchOptions A set of options for category retrieval.
  * @param contextualSearchPhrase When set, instructs the server to return categories relevant to the search phrase.
  */
-- (void)loadImojiCategories:(IMImojiSessionCategoryClassification)classification withContextualSearchPhrase:(nullable NSString *)contextualSearchPhrase;
+- (void)loadImojiCategoriesWithOptions:(nullable IMCategoryFetchOptions *)categoryFetchOptions;
 
 /**
  * @abstract Loads Imoji from a given search term into the collection view using searchImojisWithTerm from IMImojiSession
