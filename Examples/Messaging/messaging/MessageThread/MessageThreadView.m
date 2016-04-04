@@ -95,7 +95,7 @@
             [self deleteItemsAtIndexPaths:@[newPath]];
         }
         [self insertItemsAtIndexPaths:@[newPath]];
-    }              completion:^(BOOL finished) {
+    } completion:^(BOOL finished) {
         [self scrollToBottom];
     }];
 }
