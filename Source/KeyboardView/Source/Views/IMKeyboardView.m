@@ -159,7 +159,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
     } else if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.collectionView loadImojiCategories:self.currentCategoryClassification];
+            [self.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:self.currentCategoryClassification]];
         });
     } else {
         [self.collectionView displaySplashOfType:IMCollectionViewSplashCellNoConnection];

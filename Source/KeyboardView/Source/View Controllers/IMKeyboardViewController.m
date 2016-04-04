@@ -183,7 +183,7 @@
     self.isViewingImojiCategory = NO;
 
     // Display previous category
-    [view.collectionView loadImojiCategories:view.currentCategoryClassification];
+    [view.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:view.currentCategoryClassification]];
 }
 
 #pragma mark IMKeyboardCollectionViewDelegate
@@ -305,7 +305,7 @@
                 // Set classification for use in returning user to Reactions when closing a category
                 self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
 
-                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+                [self.keyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationGeneric]];
                 [self.keyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
             }
             break;
@@ -316,7 +316,7 @@
                 // Set classification for use in returning user to Trending when closing a category
                 self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
 
-                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                [self.keyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
                 [self.keyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
             }
             break;
@@ -327,7 +327,7 @@
                 // Set classification for use in returning user to Trending when closing a category
                 self.keyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationArtist;
 
-                [self.keyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+                [self.keyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationArtist]];
                 [self.keyboardView updateTitleWithText:@"ARTIST" hideCloseButton:YES];
             }
             break;
