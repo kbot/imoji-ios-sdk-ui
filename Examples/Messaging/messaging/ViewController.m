@@ -107,7 +107,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.actionButton.backgroundColor = [UIColor colorWithRed:22.0f / 255.0f green:137.0f / 255.0f blue:251.0f / 255.0f alpha:1.0f];
     self.actionButton.layer.cornerRadius = buttonWidthHeight / 2.0f;
     [self.actionButton setImage:image forState:UIControlStateNormal];
-    [self.actionButton addTarget:self action:@selector(toggleImojiKeyboard) forControlEvents:UIControlEventTouchUpInside];
+    [self.actionButton addTarget:self action:@selector(toggleImojiMessagingDisplay) forControlEvents:UIControlEventTouchUpInside];
     [rightView addSubview:self.actionButton];
 
     [self.actionButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -157,6 +157,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
     self.imojiSuggestionView.backgroundColor = self.view.backgroundColor;
     self.imojiSuggestionView.clipsToBounds = NO;
+    self.imojiSuggestionView.hidden = YES;
     self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
     self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(80.f, 80.f);
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
@@ -284,7 +285,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.inputField.text = @"";
 }
 
-- (void)toggleImojiKeyboard {
+- (void)toggleImojiMessagingDisplay {
     if (self.isSuggestionViewDisplayed) {
         if(self.inputField.text.length > 0) {
             self.inputField.text = @"";
@@ -298,10 +299,11 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
             [self hideImojiKeyboardAnimated];
         } else {
             self.actionButton.selected = YES;
-            [self showImojiKeyboardAnimated];
             [self hideSuggestionsAnimated:YES];
+            [self showImojiKeyboardAnimated];
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self.imojiKeyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
                 [self.imojiKeyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
             });
         }
@@ -312,6 +314,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     if (self.isImojiKeyboardViewDisplayed) {
         return;
     }
+
+    [self.view layoutIfNeeded];
 
     BOOL shouldMoveInputField = self.inputFieldContainer.frame.size.height + self.inputFieldContainer.frame.origin.y == self.view.frame.size.height;
     if (shouldMoveInputField) {
@@ -337,17 +341,20 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
               initialSpringVelocity:1.2f
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
-                             [self.imojiKeyboardView layoutIfNeeded];
-                             [self.inputFieldContainer layoutIfNeeded];
+                             [self.view layoutIfNeeded];
                          } completion:^(BOOL finished) {
-                    self.messageThreadView.scrollIndicatorInsets =
-                            self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
-                                    InitialImojiKeyboardViewHeight + self.inputFieldContainer.frame.size.height,
-                                    0
-                            );
-                }];
+                             self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0,
+                                InitialImojiKeyboardViewHeight + self.inputFieldContainer.frame.size.height,
+                                0
+                             );
+                             self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
+                                InitialImojiKeyboardViewHeight + self.inputFieldContainer.frame.size.height,
+                                0
+                             );
+                         }
+        ];
     } else {
-        [self.imojiKeyboardView layoutIfNeeded];
+        [self.view layoutIfNeeded];
         [self.inputField resignFirstResponder];
     }
 }
@@ -357,6 +364,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         return;
     }
 
+    [self.view layoutIfNeeded];
+
     [self.imojiKeyboardView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.top.equalTo(self.mas_bottomLayoutGuideTop);
@@ -364,7 +373,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.actionButton setImage:[UIImage imageNamed:@"SearchBarOn"] forState:UIControlStateNormal];
 
-    [self.imojiKeyboardView layoutIfNeeded];
+    [self.imojiKeyboardView.collectionView.collectionViewLayout invalidateLayout];
+    [self.view layoutIfNeeded];
     [self.inputField becomeFirstResponder];
 }
 
@@ -376,22 +386,14 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     return self.imojiKeyboardView.frame.size.height == InitialImojiKeyboardViewHeight;
 }
 
-#pragma mark Suggestions View
-//- (void)toggleSuggestions {
-//    if (self.isSuggestionViewDisplayed) {
-//        self.actionButton.selected = NO;
-//        [self hideSuggestionsAnimated:YES];
-//    } else {
-//        self.actionButton.selected = YES;
-//        [self.imojiSuggestionView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
-//        [self showSuggestionsAnimated:YES];
-//    }
-//}
+#pragma mark Suggestion View
 
 - (void)showSuggestionsAnimated:(BOOL)animated {
     if (self.isSuggestionViewDisplayed) {
         return;
     }
+
+    [self.view layoutIfNeeded];
 
     self.imojiSuggestionView.hidden = NO;
 
@@ -410,7 +412,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
               initialSpringVelocity:1.2f
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             [self.imojiSuggestionView layoutIfNeeded];
+                             [self.view layoutIfNeeded];
                          } completion:nil];
     }
 }
@@ -419,6 +421,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     if (!self.isSuggestionViewDisplayed) {
         return;
     }
+
+    [self.view layoutIfNeeded];
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
@@ -435,12 +439,16 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
               initialSpringVelocity:1.2f
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^{
-                             [self.imojiSuggestionView layoutIfNeeded];
+                             [self.view layoutIfNeeded];
                          } completion:^(BOOL finished) {
                              self.imojiSuggestionView.hidden = YES;
                          }];
 
+    } else {
+        self.imojiSuggestionView.hidden = YES;
     }
+
+    [self.imojiSuggestionView.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (BOOL)isSuggestionViewDisplayed {
@@ -460,8 +468,11 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 }
 
 - (void)userDidSelectCategory:(nonnull IMImojiCategoryObject *)category fromCollectionView:(nonnull IMCollectionView *)collectionView {
-    [self.imojiKeyboardView updateTitleWithText:category.title hideCloseButton:NO];
-    [self.imojiKeyboardView.collectionView loadImojisFromCategory:category];
+    if (self.isImojiKeyboardViewDisplayed) {
+        [self.imojiKeyboardView updateTitleWithText:category.title hideCloseButton:NO];
+    }
+
+    [collectionView loadImojisFromCategory:category];
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
@@ -508,18 +519,16 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
                           delay:0.0
                         options:animationCurve
                      animations:^{
-                         [self.inputFieldContainer layoutIfNeeded];
-                         [self.imojiKeyboardView layoutIfNeeded];
-                         [self.imojiSuggestionView layoutIfNeeded];
+                         [self.view layoutIfNeeded];
                      } completion:^(BOOL finished) {
-                self.messageThreadView.scrollIndicatorInsets =
-                        self.messageThreadView.contentInset =
-                                UIEdgeInsetsMake(0, 0,
-                                        endRect.size.height +
-//                                                self.inputFieldContainer.frame.size.height,
-                                                self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
-                                        0
-                                );
+                         self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0,
+                            endRect.size.height + self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                            0
+                         );
+                         self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
+                            endRect.size.height + self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                            0
+                         );
 
 
                 if (self.messageThreadView.empty) {
@@ -553,22 +562,23 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
                           delay:0.0
                         options:animationCurve
                      animations:^{
-                         [self.inputFieldContainer layoutIfNeeded];
-                         [self.imojiKeyboardView layoutIfNeeded];
-                         [self.imojiSuggestionView layoutIfNeeded];
+                         [self.view layoutIfNeeded];
                      } completion:^(BOOL finished) {
-                self.messageThreadView.scrollIndicatorInsets =
-                        self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
-//                                self.inputFieldContainer.frame.size.height,
-                                self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
-                                0
-                        );
+                         self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0,
+                            self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                            0
+                         );
 
+                         self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
+                            self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                            0
+                         );
 
-                if (self.messageThreadView.empty) {
-                    [self.messageThreadView.collectionViewLayout invalidateLayout];
-                }
-            }];
+                         if (self.messageThreadView.empty) {
+                             [self.messageThreadView.collectionViewLayout invalidateLayout];
+                         }
+                     }
+    ];
 }
 
 #pragma mark IMToolBarDelegate
