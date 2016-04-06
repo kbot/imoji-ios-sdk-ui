@@ -283,9 +283,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
                                          fromCollectionView:self];
         }
 
-        IMCollectionViewCell *cell = (IMCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-        cell.imojiView.highlighted = NO;
-
         if (self.animateSelection) {
             [self processCellAnimations:indexPath];
         }
@@ -295,10 +292,9 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
             [self.collectionViewDelegate userDidSelectCategory:cellContent
                                             fromCollectionView:self];
         }
-
-        IMCategoryCollectionViewCell *cell = (IMCategoryCollectionViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-        cell.imojiView.highlighted = NO;
     }
+
+    [collectionView deselectItemAtIndexPath:indexPath animated:NO];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
