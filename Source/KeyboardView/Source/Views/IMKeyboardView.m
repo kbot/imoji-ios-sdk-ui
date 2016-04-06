@@ -86,7 +86,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
 
     // title
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, 44)];
-    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"REACTIONS"
+    self.titleLabel.attributedText = [IMAttributeStringUtil attributedString:@"TRENDING"
                                                                     withFont:[IMAttributeStringUtil defaultFontWithSize:14.0f]
                                                                        color:[UIColor colorWithRed:51.0f / 255.0f green:51.0f / 255.0f blue:51.0f / 255.0f alpha:1]
                                                                 andAlignment:NSTextAlignmentLeft];
@@ -157,7 +157,7 @@ NSString *const IMKeyboardViewDefaultFontFamily = @"Imoji-Regular";
                                                                     andAlignment:NSTextAlignmentLeft];
         self.titleLabel.font = [UIFont fontWithName:self.fontFamily size:14.f];
     } else if ([IMConnectivityUtil sharedInstance].hasConnectivity) {
-        self.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
+        self.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:self.currentCategoryClassification]];
         });
