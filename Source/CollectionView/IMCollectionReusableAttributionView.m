@@ -109,6 +109,7 @@ CGFloat const IMCollectionReusableAttributionViewAttributionCornerRadius = 13.5f
                                                                       andAlignment:NSTextAlignmentLeft];
 
         self.artistName = [[UILabel alloc] init];
+        self.artistName.adjustsFontSizeToFitWidth = YES;
 
         self.artistSummary = [[UILabel alloc] init];
         self.artistSummary.lineBreakMode = NSLineBreakByWordWrapping;
@@ -179,6 +180,7 @@ CGFloat const IMCollectionReusableAttributionViewAttributionCornerRadius = 13.5f
         [self.artistName mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.artistHeader.mas_bottom).offset(2.0f);
             make.left.equalTo(self.artistPicture.mas_right).offset(11.0f);
+            make.right.equalTo(self.artistContainer);
         }];
 
         [self.artistSummary mas_makeConstraints:^(MASConstraintMaker *make) {

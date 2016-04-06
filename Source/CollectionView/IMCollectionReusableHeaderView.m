@@ -70,6 +70,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
                                                                           withFont:[IMAttributeStringUtil sfUITextMediumFontWithSize:12.0f]
                                                                              color:[UIColor colorWithRed:196.0f / 255.0f green:200.0f / 255.0f blue:204.0f / 255.0f alpha:1.0f]
                                                                       andAlignment:NSTextAlignmentCenter];
+        self.title.adjustsFontSizeToFitWidth = YES;
 
         [self addSubview:self.headerView];
 
@@ -84,7 +85,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
         }];
 
         [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self.headerView);
+            make.edges.equalTo(self.headerView).insets(UIEdgeInsetsMake(0, 10, 0, 10));
         }];
 
         [graySeparator mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -140,7 +141,7 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
         }];
     } else {
         [self.title mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self.headerView);
+            make.edges.equalTo(self.headerView).insets(UIEdgeInsetsMake(0, 10, 0, 10));
         }];
     }
 
