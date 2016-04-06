@@ -47,6 +47,13 @@ Pod::Spec.new do |s|
 
   end
 
+  s.subspec 'SuggestionView' do |ss|
+    ss.dependency "ImojiSDKUI/CollectionView"
+
+    ss.ios.source_files = 'Source/SuggestionView/**/*.{h,m}'
+    ss.ios.public_header_files = 'Source/SuggestionView/*.h'
+  end
+
   s.subspec 'Common' do |ss|
     ss.ios.source_files = 'Source/Common/Source/**/*.{h,m}'
     ss.ios.resources = ["Source/Common/Resources/Fonts/*.otf"]

@@ -82,7 +82,7 @@
     self.portraitHeight = IMKeyboardViewPortraitHeight;
     self.landscapeHeight = IMKeyboardViewLandscapeHeight;
     self.isViewingImojiCategory = NO;
-    self.currentToolbarButtonSelected = IMToolbarButtonReactions;
+    self.currentToolbarButtonSelected = IMToolbarButtonTrending;
 
     _session = session;
     _session.delegate = self;
