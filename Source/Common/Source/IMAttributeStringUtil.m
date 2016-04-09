@@ -30,7 +30,9 @@ NSString *const IMAttributeStringUtilSFLightFont = @"SFUIDisplay-Light";
 NSString *const IMAttributeStringUtilSFRegularFont = @"SFUIDisplay-Regular";
 NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
 NSString *const IMAttributeStringUtilSFTextBoldFont = @"SFUIText-Bold";
+NSString *const IMAttributeStringUtilSFTextSemiBoldFont = @"SFUIText-SemiBold";
 NSString *const IMAttributeStringUtilSFTextMediumFont = @"SFUIText-Medium";
+NSString *const IMAttributeStringUtilSFTextRegularFont = @"SFUIText-Regular";
 NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 @implementation IMAttributeStringUtil {
@@ -57,8 +59,16 @@ NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
     return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFTextBoldFont andSize:size];
 }
 
++ (UIFont *)sfUITextSemiBoldFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFTextSemiBoldFont andSize:size];
+}
+
 + (UIFont *)sfUITextMediumFontWithSize:(CGFloat)size {
     return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFTextMediumFont andSize:size];
+}
+
++ (UIFont *)sfUITextRegularFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilSFTextRegularFont andSize:size];
 }
 
 + (UIFont *)imojiRegularFontWithSize:(CGFloat)size {
