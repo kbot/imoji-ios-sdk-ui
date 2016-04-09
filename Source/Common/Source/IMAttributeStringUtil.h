@@ -38,7 +38,11 @@
 
 + (nonnull UIFont *)sfUITextBoldFontWithSize:(CGFloat)size;
 
++ (nonnull UIFont *)sfUITextSemiBoldFontWithSize:(CGFloat)size;
+
 + (nonnull UIFont *)sfUITextMediumFontWithSize:(CGFloat)size;
+
++ (nonnull UIFont *)sfUITextRegularFontWithSize:(CGFloat)size;
 
 + (nonnull UIFont *)imojiRegularFontWithSize:(CGFloat)size;
 
