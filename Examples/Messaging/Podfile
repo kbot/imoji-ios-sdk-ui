@@ -4,3 +4,4 @@ platform :ios, "7.0"
 
 pod 'ImojiSDKUI/CollectionView'
 pod 'ImojiSDKUI/KeyboardView'
+pod 'ImojiSDKUI/SuggestionView'
