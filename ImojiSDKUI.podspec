@@ -13,6 +13,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.subspec 'CollectionView' do |ss|
+    ss.dependency "YYImage/WebP", "~> 1.0"
     ss.dependency "ImojiSDK/Core"
     ss.dependency "ImojiSDKUI/Common"
     ss.dependency "Masonry"
