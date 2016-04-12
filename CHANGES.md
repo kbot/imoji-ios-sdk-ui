@@ -3,9 +3,11 @@
 ### Version 2.0.7
 
 * Adds the ability for developers to send contextual search phrases to category fetching in order to retrieve results relevant to the search phrase
+* Adds SuggestionView component to the UI project. Developers can use this to display Imoji stickers in small size format above input bars.
 * Prevented the share button in Artmoji example from saving multiple images before completion.
 * Deprecated fetchRenderingOptions because it is no longer being used.
 * Made tapping on the no results splash view focus on the search bar SDK wide.
+* Bring in webp depedency from YYImage
 
 ### Version 2.0.6
 
