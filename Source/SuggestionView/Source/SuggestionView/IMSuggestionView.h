@@ -31,7 +31,7 @@
 
 @interface IMSuggestionView : UIView
 
-@property(nonatomic, strong, readonly) IMCollectionView *collectionView;
+@property(nonatomic, strong, readonly, nonnull) IMCollectionView *collectionView;
 
 /**
  * @abstract Creates a collection view with the specified Imoji session
