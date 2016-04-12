@@ -52,7 +52,7 @@ Pod::Spec.new do |s|
     ss.dependency "ImojiSDKUI/CollectionView"
 
     ss.ios.source_files = 'Source/SuggestionView/**/*.{h,m}'
-    ss.ios.public_header_files = 'Source/SuggestionView/*.h'
+    ss.ios.public_header_files = 'Source/SuggestionView/**/*.h'
   end
 
   s.subspec 'Common' do |ss|
