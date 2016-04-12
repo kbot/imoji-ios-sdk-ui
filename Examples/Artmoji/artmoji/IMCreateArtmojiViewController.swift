@@ -232,11 +232,11 @@ extension IMCreateArtmojiViewController: IMToolbarDelegate {
         switch buttonType {
             case IMToolbarButtonType.Trending:
                 let collectionViewController = presentedViewController as! IMCollectionViewController
-                collectionViewController.collectionView.loadImojiCategories(IMImojiSessionCategoryClassification.Trending)
+                collectionViewController.collectionView.loadImojiCategoriesWithOptions(IMCategoryFetchOptions.init(classification: IMImojiSessionCategoryClassification.Trending))
                 break
             case IMToolbarButtonType.Reactions:
                 let collectionViewController = presentedViewController as! IMCollectionViewController
-                collectionViewController.collectionView.loadImojiCategories(IMImojiSessionCategoryClassification.Generic)
+                collectionViewController.collectionView.loadImojiCategoriesWithOptions(IMCategoryFetchOptions.init(classification: IMImojiSessionCategoryClassification.Generic))
                 break
             case IMToolbarButtonType.Back:
                 dismissViewControllerAnimated(true, completion: nil)

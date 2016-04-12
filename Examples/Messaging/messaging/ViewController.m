@@ -278,7 +278,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     [self showSuggestionsAnimated:YES];
 
     if (!hasText) {
-        [self.imojiSuggestionView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
     }
 }
 
@@ -297,7 +297,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     } else if (self.isSuggestionViewDisplayed) {
         if(self.inputField.text.length > 0) {
             self.inputField.text = @"";
-            [self.imojiSuggestionView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
         } else {
             [self hideSuggestionsAnimated:YES];
         }
@@ -312,7 +312,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.imojiKeyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
-                [self.imojiKeyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+                [self.imojiKeyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
             });
         }
     }
@@ -490,7 +490,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 #pragma mark IMKeyboardViewDelegate
 
 - (void)userDidCloseCategoryFromView:(IMKeyboardView *)view {
-    [view.collectionView loadImojiCategories:view.currentCategoryClassification];
+    [view.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:view.currentCategoryClassification]];
 }
 
 #pragma mark Imoji Collection View Delegate
@@ -622,21 +622,21 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
             // Set classification for use in returning user to Reactions when closing a category
             self.imojiKeyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationGeneric;
 
-            [self.imojiKeyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            [self.imojiKeyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationGeneric]];
             [self.imojiKeyboardView updateTitleWithText:@"REACTIONS" hideCloseButton:YES];
             break;
         case IMToolbarButtonTrending:
             // Set classification for use in returning user to Trending when closing a category
             self.imojiKeyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationTrending;
 
-            [self.imojiKeyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            [self.imojiKeyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
             [self.imojiKeyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
             break;
         case IMToolbarButtonArtist:
             // Set classification for use in returning user to Artist when closing a category
             self.imojiKeyboardView.currentCategoryClassification = IMImojiSessionCategoryClassificationArtist;
 
-            [self.imojiKeyboardView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+            [self.imojiKeyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationArtist]];
             [self.imojiKeyboardView updateTitleWithText:@"ARTIST" hideCloseButton:YES];
             break;
 

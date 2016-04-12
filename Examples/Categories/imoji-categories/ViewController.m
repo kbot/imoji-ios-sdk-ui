@@ -11,9 +11,9 @@
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
 #import <ImojiSDKUI/IMCollectionView.h>
+#import <ImojiSDKUI/IMToolbar.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "ViewController.h"
-#import "IMToolbar.h"
-#import "IMResourceBundleUtil.h"
 
 @interface ViewController () <IMCollectionViewControllerDelegate>
 
@@ -168,15 +168,15 @@
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
     switch (buttonType) {
         case IMToolbarButtonReactions:
-            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationGeneric];
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationGeneric]];
             break;
 
         case IMToolbarButtonTrending:
-            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
             break;
 
         case IMToolbarButtonArtist:
-            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategories:IMImojiSessionCategoryClassificationArtist];
+            [((IMCollectionViewController *) self.presentedViewController).collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationArtist]];
             break;
 
         case IMToolbarButtonBack:

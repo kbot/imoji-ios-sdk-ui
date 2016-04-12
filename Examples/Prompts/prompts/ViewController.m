@@ -199,7 +199,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     [self showSuggestionsAnimated:YES];
 
     if (!hasText) {
-        [self.imojiSuggestionView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
     }
 }
 
@@ -217,7 +217,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         [self hideSuggestionsAnimated:YES];
     } else {
         self.actionButton.selected = YES;
-        [self.imojiSuggestionView.collectionView loadImojiCategories:IMImojiSessionCategoryClassificationTrending];
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
         [self showSuggestionsAnimated:YES];
     }
 }
