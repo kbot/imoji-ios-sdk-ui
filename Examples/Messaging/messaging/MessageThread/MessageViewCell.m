@@ -4,11 +4,11 @@
 //
 
 #import "MessageViewCell.h"
-#import "View+MASAdditions.h"
+#import <Masonry/Masonry.h>
+#import <ImojiSDK/IMImojiSession.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import "Message.h"
 #import "AppDelegate.h"
-#import "IMImojiSession.h"
-#import "IMAttributeStringUtil.h"
 
 NSString *const MessageViewCellReuseId = @"MessageViewCellReuseId";
 CGSize const MessageViewPreferredImojiSize = {100.f, 100.f};

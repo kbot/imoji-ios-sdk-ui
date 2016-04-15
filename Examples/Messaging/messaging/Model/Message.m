@@ -4,7 +4,7 @@
 //
 
 #import "Message.h"
-#import "IMImojiObject.h"
+#import <ImojiSDK/ImojiSDK.h>
 
 
 @implementation Message {

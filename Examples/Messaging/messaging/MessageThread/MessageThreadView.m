@@ -3,13 +3,12 @@
 // Copyright (c) 2015 Imoji. All rights reserved.
 //
 
+#import <ImojiSDK/ImojiSDK.h>
 #import "MessageThreadView.h"
 #import "MessageViewCell.h"
 #import "Message.h"
 #import "EmptyMessageViewCell.h"
 #import "AppDelegate.h"
-#import "IMImojiSession.h"
-#import "IMImojiObject.h"
 
 @interface MessageThreadView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 

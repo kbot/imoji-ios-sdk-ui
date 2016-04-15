@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "IMImojiSession.h"
 #import <ImojiSDK/ImojiSDK.h>
 
 @interface AppDelegate ()

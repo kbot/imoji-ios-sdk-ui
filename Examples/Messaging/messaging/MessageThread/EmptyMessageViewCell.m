@@ -3,9 +3,9 @@
 // Copyright (c) 2015 Imoji. All rights reserved.
 //
 
+#import <Masonry/Masonry.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import "EmptyMessageViewCell.h"
-#import "View+MASAdditions.h"
-#import "IMAttributeStringUtil.h"
 
 NSString *const EmptyMessageViewCellReuseId = @"EmptyMessageViewCellReuseId";
 
