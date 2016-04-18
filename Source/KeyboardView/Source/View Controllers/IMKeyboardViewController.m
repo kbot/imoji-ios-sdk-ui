@@ -332,7 +332,7 @@
             }
             break;
         case IMToolbarButtonCollection: {
-            [self.keyboardView.collectionView loadFavoriteImojis:self.favoritedImojis];
+            [self.keyboardView.collectionView loadUserCollectionImojis];
             [self.keyboardView updateTitleWithText:@"COLLECTION" hideCloseButton:YES];
             break;
         }
@@ -371,45 +371,15 @@
 }
 
 - (void)saveToFavorites:(IMImojiObject *)imojiObject {
-    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-        [self.session addImojiToUserCollection:imojiObject
-                                      callback:^(BOOL successful, NSError *error) {
+    [self.session addImojiToUserCollection:imojiObject
+                                  callback:^(BOOL successful, NSError *error) {
 
-                                      }];
-    } else {
-        NSUInteger arrayCapacity = 20;
-        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-        NSArray *savedArrayOfFavorites = [shared objectForKey:@"favoriteImojis"];
-        NSMutableArray *arrayOfFavorites = [NSMutableArray arrayWithCapacity:arrayCapacity];
-
-        if (!savedArrayOfFavorites || savedArrayOfFavorites.count == 0) {
-            [arrayOfFavorites addObject:imojiObject.identifier];
-        } else {
-            [arrayOfFavorites addObjectsFromArray:savedArrayOfFavorites];
-
-            if ([arrayOfFavorites containsObject:imojiObject.identifier]) {
-                [arrayOfFavorites removeObject:imojiObject.identifier];
-            }
-            [arrayOfFavorites insertObject:imojiObject.identifier atIndex:0];
-
-            while (arrayOfFavorites.count > arrayCapacity) {
-                [arrayOfFavorites removeLastObject];
-            }
-        }
-
-        [shared setObject:arrayOfFavorites forKey:@"favoriteImojis"];
-        [shared synchronize];
-    }
+                                  }];
 }
 
 - (NSArray *)recentImojis {
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
     return [shared objectForKey:@"recentImojis"];
-}
-
-- (NSArray *)favoritedImojis {
-    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-    return [shared objectForKey:@"favoriteImojis"];
 }
 
 @end

@@ -151,18 +151,6 @@
     }
 }
 
-- (void)loadFavoriteImojis:(NSArray *)favoritedImojis {
-    if (self.session.sessionState == IMImojiSessionStateConnectedSynchronized) {
-        [self loadUserCollectionImojis];
-    } else {
-        if (!favoritedImojis || favoritedImojis.count == 0) {
-            [self displaySplashOfType:IMCollectionViewSplashCellCollection];
-        } else {
-            [self loadImojisFromIdentifiers:favoritedImojis];
-        }
-    }
-}
-
 - (void)processDoubleTap:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {
         CGPoint point = [sender locationInView:self];

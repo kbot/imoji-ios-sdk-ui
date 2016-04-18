@@ -46,7 +46,5 @@
 
 - (void)loadRecentImojis:(NSArray *__nonnull)recents;
 
-- (void)loadFavoriteImojis:(NSArray *__nonnull)favoritedImojis;
-
 @end
 
