@@ -25,6 +25,7 @@
 
 #import "IMToolbar.h"
 #import "IMResourceBundleUtil.h"
+#import "IMSearchView.h"
 
 NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
@@ -71,7 +72,8 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
             activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_artist_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonBack:
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
+//            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", self.imageBundle.bundlePath]];
             break;
         default:
             return nil;
@@ -118,6 +120,15 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 - (nonnull UIBarButtonItem *)addSearchBarItem {
     UISearchBar *searchBar = [UISearchBar new];
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+
+    [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
+
+    return barButtonItem;
+}
+
+- (nonnull UIBarButtonItem *)addSearchViewItem {
+    IMSearchView *searchView = [[IMSearchView alloc] init];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchView];
 
     [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
 

@@ -28,13 +28,15 @@
 #import "IMResourceBundleUtil.h"
 #import "IMCategoryCollectionViewCell.h"
 #import "IMCollectionViewCell.h"
+#import "IMAttributeStringUtil.h"
+#import "IMSearchView.h"
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
-UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
-UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
+UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 18, 0, 9};
+UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 15, 0, 10};
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
-@interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate>
+@interface IMCollectionViewController () <UISearchBarDelegate, IMSearchViewDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate>
 
 @property(nonatomic, strong) NSOperation *pendingSearchOperation;
 @end
@@ -90,10 +92,12 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
                                                object:nil];
 
     _backButton = (UIButton *) [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
-    _searchField = (UISearchBar *) [self.topToolbar addSearchBarItem].customView;
-    _searchField.delegate = self;
-    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
-    _searchField.enablesReturnKeyAutomatically = NO;
+//    _searchField = [self.topToolbar addSearchBarItem].customView;
+//    _searchField.delegate = self;
+//    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
+//    _searchField.enablesReturnKeyAutomatically = NO;
+    _searchView = [self.topToolbar addSearchViewItem].customView;
+    _searchView.delegate = self;
     _bottomToolbar.delegate = _topToolbar.delegate = self;
 
     self.backButton.hidden = YES;
@@ -120,11 +124,11 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 - (void)setupControllerComponentsLookAndFeel {
     self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
 
-    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    self.searchView.searchTextField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
 
-    self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
-    self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
+//    self.searchField.backgroundColor = [UIColor clearColor];
+//    self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+//    self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
 
     if ([self.collectionViewControllerDelegate respondsToSelector:@selector(backgroundColorForCollectionViewController:)]) {
         self.view.backgroundColor = [self.collectionViewControllerDelegate backgroundColorForCollectionViewController:self];
@@ -153,12 +157,24 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         make.left.right.and.bottom.equalTo(self.view);
     }];
 
-    [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
+//    [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(self.backButton);
+//        make.height.equalTo(@24.0f);
+//        make.right.equalTo(self.topToolbar).offset(-IMCollectionViewControllerSearchFieldInsets.right);
+//
+//        if (self.backButton.hidden) {
+//            make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
+//        } else {
+//            make.left.equalTo(self.backButton.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
+//        }
+//    }];
+
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.height.and.top.equalTo(self.backButton);
-        make.right.equalTo(self.view).offset(-IMCollectionViewControllerSearchFieldInsets.right);
+        make.right.equalTo(self.topToolbar).offset(-IMCollectionViewControllerSearchFieldInsets.right);
 
         if (self.backButton.hidden) {
-            make.left.equalTo(self.view).offset(IMCollectionViewControllerSearchFieldInsets.left);
+            make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
         } else {
             make.left.equalTo(self.backButton.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
         }
@@ -167,13 +183,16 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.topToolbar);
         make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
+        make.width.and.height.equalTo(@26.0f);
     }];
 
     self.bottomToolbar.hidden = !self.bottomToolbar.items || self.bottomToolbar.items.count == 0;
 
     // hide the top toolbar if both of the default components are hidden
+//    self.topToolbar.hidden = !self.topToolbar.items || self.topToolbar.items.count == 0 ||
+//            (self.backButton.hidden && self.searchField.hidden && self.topToolbar.items.count == 2);
     self.topToolbar.hidden = !self.topToolbar.items || self.topToolbar.items.count == 0 ||
-            (self.backButton.hidden && self.searchField.hidden && self.topToolbar.items.count == 2);
+            (self.backButton.hidden && self.searchView.searchTextField.hidden && self.topToolbar.items.count == 2);
 
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
             (!self.topToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
@@ -225,7 +244,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
 - (void)setSearchOnTextChanges:(BOOL)searchOnTextChanges {
     _searchOnTextChanges = searchOnTextChanges;
-    self.searchField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+//    self.searchField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+    self.searchView.searchTextField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
 }
 
 - (void)setCollectionViewControllerDelegate:(id)collectionViewControllerDelegate {
@@ -242,7 +262,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             break;
 
         case IMCollectionViewSplashCellNoResults:
-            [self.searchField becomeFirstResponder];
+//            [self.searchField becomeFirstResponder];
+            [self.searchView.searchTextField becomeFirstResponder];
             break;
 
         default:
@@ -251,6 +272,36 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 }
 
 #pragma mark Search field delegates
+
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchBar {
+    if (self.searchOnTextChanges) {
+        if (self.pendingSearchOperation && !self.pendingSearchOperation.isCancelled) {
+            [self.pendingSearchOperation cancel];
+        }
+
+        __block NSOperation *pendingSearchOperation = [NSOperation new];
+        self.pendingSearchOperation = pendingSearchOperation;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * self.autoSearchDelayTimeInMillis), dispatch_get_main_queue(), ^{
+            if (!pendingSearchOperation.isCancelled) {
+                [self performSearch];
+            }
+        });
+    }
+}
+
+//- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+//    self.searchField.showsCancelButton = YES;
+//}
+//
+//- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+//    [self.searchField setText:@""];
+//    [self.searchField endEditing:YES];
+//}
+//
+//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+//    self.searchField.showsCancelButton = NO;
+//}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (self.searchOnTextChanges) {
@@ -274,14 +325,15 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         [self performSearch];
     }
 
-    [self.searchField resignFirstResponder];
+//    [self.searchField resignFirstResponder];
+    [self.searchView.searchTextField resignFirstResponder];
 }
 
 - (void)performSearch {
     if (self.sentenceParseEnabled) {
-        [self.collectionView loadImojisFromSentence:self.searchField.text];
+        [self.collectionView loadImojisFromSentence:self.searchView.searchTextField.text];
     } else {
-        [self.collectionView loadImojisFromSearch:self.searchField.text];
+        [self.collectionView loadImojisFromSearch:self.searchView.searchTextField.text];
     }
 }
 
