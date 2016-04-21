@@ -30,6 +30,8 @@
 
 + (nonnull UIFont *)defaultFontWithSize:(CGFloat)size;
 
++ (nonnull UIFont *)montserratLightFontWithSize:(CGFloat)size;
+
 + (nonnull UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size;
 
 + (nonnull UIFont *)sfUIDisplayRegularFontWithSize:(CGFloat)size;

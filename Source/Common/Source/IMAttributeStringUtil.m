@@ -26,6 +26,7 @@
 #import "IMAttributeStringUtil.h"
 
 NSString *const IMAttributeStringUtilDefaultFont = @"HelveticaNeue-Medium";
+NSString *const IMAttributeStringUtilMontserratLight = @"Montserrat-Light";
 NSString *const IMAttributeStringUtilSFLightFont = @"SFUIDisplay-Light";
 NSString *const IMAttributeStringUtilSFRegularFont = @"SFUIDisplay-Regular";
 NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
@@ -41,6 +42,10 @@ NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 + (UIFont *)defaultFontWithSize:(CGFloat)size {
     return [UIFont fontWithName:IMAttributeStringUtilDefaultFont size:size];
+}
+
++ (UIFont *)montserratLightFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilMontserratLight andSize:size];
 }
 
 + (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size {
