@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.8
+
+* Updated to use ImojiSDK v2.2.0
+* Refreshed loading placeholder images
+
 ### Version 2.0.7
 
 * Adds the ability for developers to send contextual search phrases to category fetching in order to retrieve results relevant to the search phrase
