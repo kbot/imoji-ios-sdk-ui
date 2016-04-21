@@ -10,9 +10,6 @@
 #import <ImojiSDK/ImojiSDK.h>
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
-#import <ImojiSDKUI/IMCollectionView.h>
-#import <ImojiSDKUI/IMToolbar.h>
-#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "ViewController.h"
 
 @interface ViewController () <IMCollectionViewControllerDelegate>
