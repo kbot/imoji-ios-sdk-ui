@@ -32,6 +32,7 @@
 #import "IMSearchView.h"
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
+CGFloat const IMCollectionViewControllerTopBarDefaultHeight = 44.0f;
 UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 18, 0, 9};
 UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 15, 0, 10};
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
@@ -97,6 +98,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 //    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
 //    _searchField.enablesReturnKeyAutomatically = NO;
     _searchView = [self.topToolbar addSearchViewItem].customView;
+    _searchView.cancelButtonEnabled = YES;
     _searchView.delegate = self;
     _bottomToolbar.delegate = _topToolbar.delegate = self;
 
@@ -147,7 +149,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
     [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view);
-        make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
+        make.height.equalTo(@(IMCollectionViewControllerTopBarDefaultHeight));
         make.centerX.equalTo(self.view);
         make.top.equalTo(self.mas_topLayoutGuideBottom);
     }];
@@ -169,6 +171,12 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 //        }
 //    }];
 
+    [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.topToolbar);
+        make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
+        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+    }];
+
     [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.height.and.top.equalTo(self.backButton);
         make.right.equalTo(self.topToolbar).offset(-IMCollectionViewControllerSearchFieldInsets.right);
@@ -178,12 +186,6 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         } else {
             make.left.equalTo(self.backButton.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
         }
-    }];
-
-    [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.topToolbar);
-        make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
-        make.width.and.height.equalTo(@26.0f);
     }];
 
     self.bottomToolbar.hidden = !self.bottomToolbar.items || self.bottomToolbar.items.count == 0;
@@ -273,8 +275,11 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
 #pragma mark Search field delegates
 
-- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchBar {
-    if (self.searchOnTextChanges) {
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
+    if (searchView.searchTextField.text.length == 0 && self.collectionViewControllerDelegate &&
+        [self.collectionViewControllerDelegate respondsToSelector:@selector(userDidPerformEmptySearchFromCollectionViewController:)]) {
+        [self.collectionViewControllerDelegate userDidPerformEmptySearchFromCollectionViewController:self];
+    } else if (self.searchOnTextChanges) {
         if (self.pendingSearchOperation && !self.pendingSearchOperation.isCancelled) {
             [self.pendingSearchOperation cancel];
         }

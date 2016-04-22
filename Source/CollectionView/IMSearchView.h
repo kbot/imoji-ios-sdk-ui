@@ -25,19 +25,25 @@
 
 #import <UIKit/UIKit.h>
 
+extern const CGFloat IMSearchViewIconWidthHeight;
+
 @protocol IMSearchViewDelegate;
 
 @interface IMSearchView : UIView
 
 @property(nonatomic, strong, readonly) UITextField *searchTextField;
+@property(nonatomic, copy, readonly) NSString *previousSearchTerm;
+@property(nonatomic) BOOL cancelButtonEnabled;
 @property(nonatomic, weak) id <IMSearchViewDelegate> delegate;
+
++ (instancetype)imojiSearchView;
 
 @end
 
-@protocol IMSearchViewDelegate <NSObject>
+@protocol IMSearchViewDelegate <UITextFieldDelegate>
 
 @optional
 
-- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchBar;
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView;
 
 @end

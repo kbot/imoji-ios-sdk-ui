@@ -18,6 +18,7 @@
 @property(nonatomic, strong) UIButton *trendingButton;
 @property(nonatomic, strong) UIButton *artistButton;
 @property(nonatomic, strong) IMImojiSession *imojiSession;
+@property(nonatomic) IMToolbarButtonType previousSelectedButtonType;
 
 @end
 
@@ -158,7 +159,7 @@
 
 - (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
     if (splashType == IMCollectionViewSplashCellNoResults) {
-        [((IMCollectionViewController *) self.presentedViewController).searchField becomeFirstResponder];
+        [((IMCollectionViewController *) self.presentedViewController).searchView.searchTextField becomeFirstResponder];
     }
 }
 
@@ -183,10 +184,18 @@
         default:
             break;
     }
+
+    if (buttonType != IMToolbarButtonBack) {
+        self.previousSelectedButtonType = buttonType;
+    }
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
     [[UIApplication sharedApplication] openURL:attributionLink];
+}
+
+- (void)userDidPerformEmptySearchFromCollectionViewController:(nonnull UIViewController *)collectionViewController {
+    [self userDidSelectToolbarButton:self.previousSelectedButtonType];
 }
 
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
