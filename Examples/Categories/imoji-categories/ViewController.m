@@ -10,6 +10,7 @@
 #import <ImojiSDK/ImojiSDK.h>
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "ViewController.h"
 
 @interface ViewController () <IMCollectionViewControllerDelegate>
@@ -203,6 +204,7 @@
     viewController.collectionView.collectionViewDelegate = self;
     viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     viewController.backButton.hidden = NO;
+    [viewController.backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
 
     [viewController.bottomToolbar addFlexibleSpace];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];

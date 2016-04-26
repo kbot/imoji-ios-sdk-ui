@@ -72,8 +72,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
             activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_artist_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonBack:
-//            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
             break;
         default:
             return nil;

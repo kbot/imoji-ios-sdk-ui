@@ -98,7 +98,6 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 //    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
 //    _searchField.enablesReturnKeyAutomatically = NO;
     _searchView = [self.topToolbar addSearchViewItem].customView;
-    _searchView.cancelButtonEnabled = YES;
     _searchView.delegate = self;
     _bottomToolbar.delegate = _topToolbar.delegate = self;
 

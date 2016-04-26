@@ -14,7 +14,7 @@
 #import <ImojiSDKUI/IMSearchView.h>
 #import <Masonry/Masonry.h>
 
-CGFloat const SuggestionViewBarHeight = 101.f;
+CGFloat const SuggestionViewBarHeight = 91.f;
 CGFloat const InputBarHeight = 44.f;
 CGFloat const InputFieldLeftOffset = 15.f;
 CGFloat const InputFieldRightOffset = 9.f;
@@ -53,7 +53,6 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.inputFieldView.backgroundColor = [UIColor clearColor];
     self.inputFieldView.searchTextField.returnKeyType = UIReturnKeySend;
     self.inputFieldView.delegate = self;
-    self.inputFieldView.searchTextField.delegate = self;
 
     // this essentially sets the status bar color since the view takes up the full screen
     // and the subviews are positioned below the status bar
@@ -69,7 +68,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
-    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(80.f, 80.f);
+    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 86.f);
 
     [self.view addSubview:self.messageThreadView];
     [self.view addSubview:self.imojiSuggestionView];
@@ -116,9 +115,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
 #pragma mark Text View Delegates
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (void)userDidPressReturnKeySearchView:(IMSearchView *)searchView {
     [self sendText];
-    return YES;
 }
 
 - (void)sendText {

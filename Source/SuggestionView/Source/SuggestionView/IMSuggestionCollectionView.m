@@ -65,4 +65,25 @@
     return CGSizeZero;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UIEdgeInsets insets = [self collectionView:collectionView layout:collectionViewLayout insetForSectionAtIndex:indexPath.section];
+
+    switch (self.contentType) {
+        case IMCollectionViewContentTypeImojis:
+        case IMCollectionViewContentTypeImojiCategories:
+            return self.preferredImojiDisplaySize;
+
+        default:
+            return self.frame.size;
+    }
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 5.0f;
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(5.0f, 5.0f, 0.0f, 5.0f);
+}
+
 @end

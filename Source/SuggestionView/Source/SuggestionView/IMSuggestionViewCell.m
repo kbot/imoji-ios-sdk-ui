@@ -24,10 +24,23 @@
 //
 
 #import "IMSuggestionViewCell.h"
+#import <Masonry/Masonry.h>
 
 
 @implementation IMSuggestionViewCell {
 
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@74.0f);
+        }];
+    }
+
+    return self;
 }
 
 - (void)performGrowAnimation {

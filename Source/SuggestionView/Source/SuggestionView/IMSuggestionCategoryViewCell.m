@@ -36,37 +36,18 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.center.height.width.equalTo(self);
+            make.top.and.centerX.equalTo(self);
+            make.width.and.height.equalTo(@52.0f);
         }];
 
         self.titleView.adjustsFontSizeToFitWidth = YES;
-        self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:12.0f];
-        self.titleView.textColor = [UIColor colorWithRed:22.0f / 255.0f green:137.0f / 255.0f blue:251.0f / 255.0f alpha:1.0f];
-
-        UIImageView *trendingImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"SearchTrending"]];
-        UIView *titleContainer = [UIView new];
-        titleContainer.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
-        titleContainer.layer.borderWidth = 1.f;
-        titleContainer.layer.cornerRadius = 4.f;
-        titleContainer.backgroundColor = [UIColor colorWithWhite:1.f alpha:.8f];
-
-        [self insertSubview:titleContainer belowSubview:self.titleView];
-        [titleContainer addSubview:trendingImage];
-
-        [titleContainer mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.centerX.equalTo(self);
-            make.bottom.equalTo(self.imojiView);
-            make.height.equalTo(@(self.titleView.font.lineHeight * 2.f + 1.0f));
-        }];
-        [trendingImage mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(titleContainer);
-            make.left.equalTo(titleContainer).offset(2.f);
-        }];
+        self.titleView.font = [IMAttributeStringUtil montserratLightFontWithSize:10.5f];
+        self.titleView.textColor = [UIColor colorWithRed:57.0f / 255.0f green:61.0f / 255.0f blue:73.0f / 255.0f alpha:1.0f];
 
         [self.titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.right.equalTo(titleContainer).offset(-10.f);
-            make.top.height.equalTo(titleContainer);
-            make.left.equalTo(titleContainer).offset(trendingImage.image.size.width);
+            make.top.equalTo(self.imojiView.mas_bottom).offset(5.0f);
+            make.width.and.centerX.equalTo(self);
+            make.bottom.equalTo(self);
         }];
     }
 

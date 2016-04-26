@@ -40,10 +40,18 @@ extern const CGFloat IMSearchViewIconWidthHeight;
 
 @end
 
-@protocol IMSearchViewDelegate <UITextFieldDelegate>
+@protocol IMSearchViewDelegate <NSObject>
 
 @optional
 
+- (void)userDidBeginSearchFromSearchView:(IMSearchView *)searchView;
+
 - (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView;
+
+- (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView;
+
+- (void)userDidPressReturnKeySearchView:(IMSearchView *)searchView;
+
+- (void)userShouldBeginSearchFromSearchView:(IMSearchView *)searchView;
 
 @end

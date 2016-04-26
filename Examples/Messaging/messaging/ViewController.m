@@ -36,7 +36,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import <Masonry/ViewController+MASAdditions.h>
 
-CGFloat const SuggestionViewBarHeight = 101.f;
+CGFloat const SuggestionViewBarHeight = 91.f;
 CGFloat const InputBarHeight = 50.f;
 CGFloat const InputFieldPadding = 5.f;
 CGFloat const InitialImojiKeyboardViewHeight = 240.f;
@@ -89,7 +89,6 @@ CGFloat const InputFieldRightOffset = 9.f;
     self.inputFieldView.backgroundColor = [UIColor clearColor];
     self.inputFieldView.searchTextField.returnKeyType = UIReturnKeySend;
     self.inputFieldView.delegate = self;
-    self.inputFieldView.searchTextField.delegate = self;
 
     // Input Field Container Setup
     self.inputFieldContainer = [[UIView alloc] init];
@@ -131,7 +130,7 @@ CGFloat const InputFieldRightOffset = 9.f;
     self.imojiSuggestionView.clipsToBounds = NO;
 //    self.imojiSuggestionView.hidden = YES;
     self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
-    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(80.f, 80.f);
+    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 86.f);
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
 
     // Subviews
@@ -197,14 +196,21 @@ CGFloat const InputFieldRightOffset = 9.f;
 
 #pragma mark Text View Delegates
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (void)userDidPressReturnKeySearchView:(IMSearchView *)searchView {
     [self sendText];
-    return YES;
 }
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
+    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputFieldView.searchTextField.text];
+    BOOL hasText = self.inputFieldView.searchTextField.text.length > 0;
+
+    if (!hasText) {
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+    }
+}
+
+- (void)userShouldBeginSearchFromSearchView:(IMSearchView *)searchView {
     [self hideImojiKeyboardAnimated];
-    return YES;
 }
 
 - (void)sendText {
@@ -542,15 +548,6 @@ CGFloat const InputFieldRightOffset = 9.f;
 
         default:
             break;
-    }
-}
-
-- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
-    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputFieldView.searchTextField.text];
-    BOOL hasText = self.inputFieldView.searchTextField.text.length > 0;
-
-    if (!hasText) {
-        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
     }
 }
 

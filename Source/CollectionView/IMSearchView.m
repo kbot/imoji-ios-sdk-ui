@@ -73,16 +73,15 @@ const CGFloat IMSearchViewIconWidthHeight = 26.0f;
         self.searchTextField.rightView.hidden = YES;
         [self.searchTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 
-//        self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-//        [self.cancelButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Cancel"
-//                                                                             withFont:[IMAttributeStringUtil montserratLightFontWithSize:16.0f]
-//                                                                                color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]]
-//                                     forState:UIControlStateNormal];
-//        [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+        self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [self.cancelButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Cancel"
+                                                                             withFont:[IMAttributeStringUtil montserratLightFontWithSize:16.0f]
+                                                                                color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]]
+                                     forState:UIControlStateNormal];
+        [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 
         [self addSubview:self.searchIconImageView];
         [self addSubview:self.searchTextField];
-//        [self addSubview:self.cancelButton];
 
         [self.searchIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.and.bottom.and.left.equalTo(self);
@@ -92,17 +91,12 @@ const CGFloat IMSearchViewIconWidthHeight = 26.0f;
         [self.searchTextField mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.and.bottom.equalTo(self);
             make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
-//            make.right.equalTo(self.cancelButton.mas_left).offset(-14.0f);
             make.right.equalTo(self);
         }];
 
         [self.searchTextField.rightView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
         }];
-
-//        [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.top.and.bottom.and.right.equalTo(self);
-//        }];
     }
 
     return self;
@@ -130,7 +124,7 @@ const CGFloat IMSearchViewIconWidthHeight = 26.0f;
     [self.searchTextField becomeFirstResponder];
 }
 
-- (void)textFieldDidChange:(UITextField *)sender {
+- (void)textFieldDidChange:(UITextField *)textField {
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidChangeTextFieldFromSearchView:)]) {
@@ -147,27 +141,23 @@ const CGFloat IMSearchViewIconWidthHeight = 26.0f;
     self.searchTextField.textColor = [UIColor colorWithRed:38.0f / 255.0f green:40.0f / 255.0f blue:50.0f / 255.0f alpha:1.0f];
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
-    if(self.cancelButtonEnabled) {
-        if (![self.cancelButton isDescendantOfView:self]) {
-            [self addSubview:self.cancelButton];
-        }
+    if (![self.cancelButton isDescendantOfView:self]) {
+        [self addSubview:self.cancelButton];
+    }
 
-        [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.bottom.equalTo(self);
-            make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
-            make.right.equalTo(self.cancelButton.mas_left).offset(-14.0f);
-        }];
+    [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.and.bottom.equalTo(self);
+        make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
+        make.right.equalTo(self.cancelButton.mas_left).offset(-14.0f);
+    }];
 
-        [self.cancelButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.bottom.and.right.equalTo(self);
-            make.width.equalTo(@([self.cancelButton.currentAttributedTitle size].width));
-        }];
-    } else {
-        [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.bottom.equalTo(self);
-            make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
-            make.right.equalTo(self).offset(-5.0f);
-        }];
+    [self.cancelButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.and.bottom.and.right.equalTo(self);
+        make.width.equalTo(@([self.cancelButton.currentAttributedTitle size].width));
+    }];
+
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidBeginSearchFromSearchView:)]) {
+        [self.delegate userDidBeginSearchFromSearchView:self];
     }
 }
 
@@ -179,31 +169,33 @@ const CGFloat IMSearchViewIconWidthHeight = 26.0f;
     self.searchTextField.textColor = [UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f];
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
-    if (self.cancelButtonEnabled) {
-        [self.cancelButton removeFromSuperview];
-    }
+    [self.cancelButton removeFromSuperview];
 
     [self.searchTextField mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self).offset(self.searchTextField.text.length > 0 ? -5.0f : 0.0f);
     }];
+
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidEndSearchFromSearchView:)]) {
+        [self.delegate userDidEndSearchFromSearchView:self];
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self.searchTextField endEditing:YES];
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeySearchView:)]) {
+        [self.delegate userDidPressReturnKeySearchView:self];
+    } else {
+        [self.searchTextField endEditing:YES];
+    }
+
     return YES;
 }
 
-- (void)setCancelButtonEnabled:(BOOL)cancelButtonEnabled {
-    _cancelButtonEnabled = cancelButtonEnabled;
-
-    if (cancelButtonEnabled) {
-        self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.cancelButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"Cancel"
-                                                                             withFont:[IMAttributeStringUtil montserratLightFontWithSize:16.0f]
-                                                                                color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]]
-                                     forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userShouldBeginSearchFromSearchView:)]) {
+        [self.delegate userShouldBeginSearchFromSearchView:self];
     }
+
+    return YES;
 }
 
 + (instancetype)imojiSearchView {
