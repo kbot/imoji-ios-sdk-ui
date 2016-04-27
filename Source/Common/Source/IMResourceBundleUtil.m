@@ -61,6 +61,18 @@
     return bundle;
 }
 
++ (NSBundle *)fontsBundle {
+    static NSBundle *bundle = nil;
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        bundle = [NSBundle bundleWithPath:[[NSBundle bundleForClass:[self class]] pathForResource:@"ImojiUIFonts"
+                                                                                           ofType:@"bundle"]];
+    });
+
+    return bundle;
+}
+
 + (NSArray *)loadingPlaceholderColors {
     static NSArray *loadingPlaceholderColors = nil;
     static dispatch_once_t predicate;
