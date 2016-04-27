@@ -102,7 +102,16 @@
 
 + (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius {
     NSArray *placeholderColors = [[self class] loadingPlaceholderColors];
-    return [IMResourceBundleUtil loadingPlaceholderImageWithRadius:radius color:placeholderColors[arc4random() % placeholderColors.count]];
+
+    static NSUInteger loadingPlaceholderIndex = nil;
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        loadingPlaceholderIndex = arc4random() % placeholderColors.count;
+    });
+
+    loadingPlaceholderIndex = (loadingPlaceholderIndex + 1) % placeholderColors.count;
+    return [IMResourceBundleUtil loadingPlaceholderImageWithRadius:radius color:placeholderColors[loadingPlaceholderIndex]];
 }
 
 + (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(UIColor *)color {
