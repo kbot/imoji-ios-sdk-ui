@@ -25,6 +25,8 @@
     if (self) {
         self.title = @"Full Screen";
         self.collectionViewControllerDelegate = self;
+
+        self.collectionView.infiniteScroll = YES;
     }
 
     return self;

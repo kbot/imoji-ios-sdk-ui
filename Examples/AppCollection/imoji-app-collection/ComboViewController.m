@@ -20,13 +20,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import <Masonry/ViewController+MASAdditions.h>
 
-CGFloat const SuggestionViewBarHeight = 91.f;
-CGFloat const InputBarHeight = 50.f;
-CGFloat const InputFieldPadding = 5.f;
 CGFloat const InitialImojiKeyboardViewHeight = 240.f;
-CGFloat const SuggestionFieldBorderHeight = 1.f;
-CGFloat const InputFieldLeftOffset = 15.f;
-CGFloat const InputFieldRightOffset = 9.f;
 
 @interface ComboViewController () <IMSearchViewDelegate, IMKeyboardViewDelegate, IMKeyboardCollectionViewDelegate, IMToolbarDelegate>
 
@@ -77,6 +71,11 @@ CGFloat const InputFieldRightOffset = 9.f;
     self.topToolbar = [[IMToolbar alloc] init];
     UIButton *backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
     [backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
+    [backButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.topToolbar);
+        make.left.equalTo(self.topToolbar).offset(15.0f);
+        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+    }];
     self.topToolbar.delegate = self;
 
     // Message Thread View Setup
@@ -86,8 +85,6 @@ CGFloat const InputFieldRightOffset = 9.f;
 
     // Input Field Setup
     self.inputFieldView = [IMSearchView imojiSearchView];
-    self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
-    self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.inputFieldView.backgroundColor = [UIColor clearColor];
     self.inputFieldView.searchTextField.returnKeyType = UIReturnKeySend;
     self.inputFieldView.delegate = self;
@@ -98,22 +95,22 @@ CGFloat const InputFieldRightOffset = 9.f;
 
     // Imoji Keyboard View Setup
     self.imojiKeyboardView = [IMKeyboardView imojiKeyboardViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
-    self.imojiKeyboardView.backgroundColor = self.view.backgroundColor;
+    self.imojiKeyboardView.backgroundColor = [UIColor whiteColor];
     self.imojiKeyboardView.collectionView.backgroundColor = [UIColor clearColor];
     self.imojiKeyboardView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 86.f);
+    self.imojiKeyboardView.collectionView.infiniteScroll = YES;
     self.imojiKeyboardView.collectionView.collectionViewDelegate = self;
     self.imojiKeyboardView.delegate = self;
     self.imojiKeyboardView.keyboardToolbar.hidden = YES;
 
     // Imoji Suggestion View Setup
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
-    self.imojiSuggestionView.backgroundColor = self.view.backgroundColor;
     self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
     self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.imojiSuggestionView.clipsToBounds = NO;
 //    self.imojiSuggestionView.hidden = YES;
-    self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
     self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 86.f);
+    self.imojiSuggestionView.collectionView.infiniteScroll = YES;
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
 
     // Subviews
@@ -138,13 +135,13 @@ CGFloat const InputFieldRightOffset = 9.f;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 
     [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(InputBarHeight));
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
@@ -176,10 +173,10 @@ CGFloat const InputFieldRightOffset = 9.f;
     [self.inputFieldContainer addSubview:self.inputFieldView];
 
     [self.inputFieldView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@26.0f);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
         make.centerY.equalTo(self.inputFieldContainer);
-        make.left.equalTo(self.inputFieldContainer).offset(InputFieldLeftOffset);
-        make.right.equalTo(self.inputFieldContainer).offset(-InputFieldRightOffset);
+        make.left.equalTo(self.inputFieldContainer).offset(IMSearchViewDefaultLeftOffset);
+        make.right.equalTo(self.inputFieldContainer).offset(-IMSearchViewDefaultRightOffset);
     }];
 
     [self.imojiKeyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonTrending];
@@ -305,8 +302,8 @@ CGFloat const InputFieldRightOffset = 9.f;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -340,8 +337,8 @@ CGFloat const InputFieldRightOffset = 9.f;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -373,7 +370,7 @@ CGFloat const InputFieldRightOffset = 9.f;
 }
 
 - (BOOL)isSuggestionViewDisplayed {
-    return (self.imojiSuggestionView.frame.origin.y + SuggestionFieldBorderHeight) != self.inputFieldContainer.frame.origin.y;
+    return (self.imojiSuggestionView.frame.origin.y + SuggestionViewBorderHeight) != self.inputFieldContainer.frame.origin.y;
 }
 
 #pragma mark IMKeyboardViewDelegate

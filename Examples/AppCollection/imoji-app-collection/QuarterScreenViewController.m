@@ -16,12 +16,6 @@
 #import <ImojiSDKUI/IMToolbar.h>
 #import <Masonry/Masonry.h>
 
-CGFloat const SuggestionViewBarHeight = 91.f;
-CGFloat const InputBarHeight = 44.f;
-CGFloat const InputFieldLeftOffset = 15.f;
-CGFloat const InputFieldRightOffset = 9.f;
-CGFloat const SuggestionFieldBorderHeight = 1.f;
-
 @interface QuarterScreenViewController () <IMToolbarDelegate, IMSearchViewDelegate, IMCollectionViewDelegate>
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
@@ -62,10 +56,16 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.topToolbar = [[IMToolbar alloc] init];
     UIButton *backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
     [backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
+    [backButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.topToolbar);
+        make.left.equalTo(self.topToolbar).offset(15.0f);
+        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+    }];
     self.topToolbar.delegate = self;
 
     self.messageThreadView = [MessageThreadView new];
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
+    self.imojiSuggestionView.collectionView.infiniteScroll = YES;
     self.inputFieldContainer = [UIView new];
 
     self.inputFieldView = [IMSearchView imojiSearchView];
@@ -81,8 +81,6 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
     self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.messageThreadView.backgroundColor = [UIColor whiteColor];
-    self.imojiSuggestionView.backgroundColor = self.view.backgroundColor;
-    self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
 
     [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
@@ -121,22 +119,22 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     }];
 
     [self.inputFieldView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@26.0f);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
         make.centerY.equalTo(self.inputFieldContainer);
-        make.left.equalTo(self.inputFieldContainer).offset(InputFieldLeftOffset);
-        make.right.equalTo(self.inputFieldContainer).offset(-InputFieldRightOffset);
+        make.left.equalTo(self.inputFieldContainer).offset(IMSearchViewDefaultLeftOffset);
+        make.right.equalTo(self.inputFieldContainer).offset(-IMSearchViewDefaultRightOffset);
     }];
 
     [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(InputBarHeight));
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 }
 
@@ -164,8 +162,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -187,8 +185,8 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(SuggestionViewBarHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionFieldBorderHeight);
+        make.height.equalTo(@(SuggestionViewDefaultHeight));
+        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -205,7 +203,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 }
 
 - (BOOL)isSuggestionViewDisplayed {
-    return (self.imojiSuggestionView.frame.origin.y + SuggestionFieldBorderHeight) != self.inputFieldContainer.frame.origin.y;
+    return (self.imojiSuggestionView.frame.origin.y + SuggestionViewBorderHeight) != self.inputFieldContainer.frame.origin.y;
 }
 
 #pragma mark Imoji Collection View Delegate
@@ -244,7 +242,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(InputBarHeight));
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.view).offset(-endRect.size.height);
     }];
 
@@ -288,7 +286,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.height.equalTo(@(InputBarHeight));
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
     }];
     [self hideSuggestionsAnimated:NO];

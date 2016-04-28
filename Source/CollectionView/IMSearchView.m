@@ -30,6 +30,9 @@
 #import "NSString+Utils.h"
 
 const CGFloat IMSearchViewIconWidthHeight = 26.0f;
+const CGFloat IMSearchViewContainerDefaultHeight = 44.0f;
+const CGFloat IMSearchViewDefaultLeftOffset = 15.0f;
+const CGFloat IMSearchViewDefaultRightOffset = 9.0f;
 
 @interface IMSearchView () <UITextFieldDelegate>
 

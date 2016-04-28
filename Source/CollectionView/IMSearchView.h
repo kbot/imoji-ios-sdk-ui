@@ -26,6 +26,9 @@
 #import <UIKit/UIKit.h>
 
 extern const CGFloat IMSearchViewIconWidthHeight;
+extern const CGFloat IMSearchViewContainerDefaultHeight;
+extern const CGFloat IMSearchViewDefaultLeftOffset;
+extern const CGFloat IMSearchViewDefaultRightOffset;
 
 @protocol IMSearchViewDelegate;
 
