@@ -46,13 +46,14 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 @property(nonatomic, strong) NSMutableArray *images;
 @property(nonatomic, strong) NSMutableArray *content;
 @property(nonatomic, strong) NSMutableArray *pendingCollectionViewUpdates;
+@property(nonatomic, strong) NSArray *followUpRelatedCategories;
 @property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property(nonatomic, strong) NSObject *loadingIndicatorObject;
 @property(nonatomic, strong) NSOperation *imojiOperation;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 @property(nonatomic, copy) NSString *currentHeader;
-@property(nonatomic, copy) NSString *followUpSearchTerm;
+@property(nonatomic, copy) NSString *followUpSearchTerm DEPRECATED_ATTRIBUTE;
 @property(nonatomic, strong) IMCategoryAttribution *currentAttribution;
 @property(nonatomic, strong) UIImage *artistPicture;
 
@@ -75,7 +76,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
                                                                      borderStyle:IMImojiObjectBorderStyleSticker
                                                                      imageFormat:IMImojiObjectImageFormatWebP];
         _renderingOptions.renderAnimatedIfSupported = YES;
-        _preferredImojiDisplaySize = CGSizeMake(100.f, 100.f);
+        _preferredImojiDisplaySize = CGSizeMake(100.f, 114.f);
         _animateSelection = YES;
         _shouldShowAttribution = NO;
         _infiniteScroll = NO;
@@ -203,7 +204,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
 
         return cell;
-    } else if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
+    } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]]/*self.contentType == IMCollectionViewContentTypeImojiCategories*/) {
         IMImojiCategoryObject *categoryObject = cellContent;
         IMCategoryCollectionViewCell *cell =
                 (IMCategoryCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
@@ -387,7 +388,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 
             return CGSizeMake(
                     floorf(self.preferredImojiDisplaySize.width + paddedSpace),
-                    floorf(self.preferredImojiDisplaySize.height + paddedSpace)
+                    floorf(self.preferredImojiDisplaySize.height/* + paddedSpace*/)
             );
         }
     }
@@ -396,8 +397,10 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
                         layout:(UICollectionViewLayout *)collectionViewLayout
         insetForSectionAtIndex:(NSInteger)section {
-    if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
-        return UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+    if (self.contentType == IMCollectionViewContentTypeImojiCategories ||
+        self.contentType == IMCollectionViewContentTypeImojis) {
+//        return UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
+        return UIEdgeInsetsMake(0.0f, 0.0f, 7.0f, 0.0f);
     }
 
     return UIEdgeInsetsZero;
@@ -406,8 +409,9 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 - (CGFloat)          collectionView:(UICollectionView *)collectionView
                              layout:(UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    if (self.contentType == IMCollectionViewContentTypeImojiCategories) {
-        return 15.0f;
+    if (self.contentType == IMCollectionViewContentTypeImojiCategories ||
+        self.contentType == IMCollectionViewContentTypeImojis) {
+        return 7.0f;//15.0f;
     }
 
     return 0;
@@ -712,7 +716,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              if (self.infiniteScroll
                                      && infiniteScrollEnabled
                                      && resultCount.unsignedIntegerValue > 0) {
-                                 self.followUpSearchTerm = metadata.relatedSearchTerm;
+//                                 self.followUpSearchTerm = metadata.relatedSearchTerm;
+                                 self.followUpRelatedCategories = metadata.relatedCategories;
                              }
 
                              [self prepareViewForImojiResultSet:resultCount
@@ -727,19 +732,30 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                      && self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
                                  // Checks for when the followUpSearchTerm is the same as the searchTerm (current)
                                  // and the resultCount is 0. This means the search with the followUpSearchTerm returned no results.
-                                 if (self.followUpSearchTerm != searchTerm) {
-                                     self.currentSearchTerm = self.followUpSearchTerm;
-                                     self.shouldLoadNewSection = YES;
+//                                 if (self.followUpSearchTerm != searchTerm) {
+//                                     self.currentSearchTerm = self.followUpSearchTerm;
+//                                     self.shouldLoadNewSection = YES;
+//
+//                                     // Only append a loading indicator to the next section when resultCount is 0
+//                                     // Otherwise, proceed to next callback
+//                                     if (resultCount.unsignedIntegerValue == 0) {
+//                                         self.currentHeader = self.currentSearchTerm;
+//                                         self.shouldShowAttribution = NO;
+//                                         dispatch_async(dispatch_get_main_queue(), ^{
+//                                             [self prepareViewForNextSection];
+//                                         });
+//                                     }
+//                                 }
 
-                                     // Only append a loading indicator to the next section when resultCount is 0
-                                     // Otherwise, proceed to next callback
-                                     if (resultCount.unsignedIntegerValue == 0) {
-                                         self.currentHeader = self.currentSearchTerm;
-                                         self.shouldShowAttribution = NO;
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                             [self prepareViewForNextSection];
-                                         });
-                                     }
+                                 self.shouldLoadNewSection = YES;
+                                 // Only append a loading indicator to the next section when resultCount is 0
+                                 // Otherwise, proceed to next callback
+                                 if (resultCount.unsignedIntegerValue == 0) {
+                                     self.currentHeader = self.currentSearchTerm;
+                                     self.shouldShowAttribution = NO;
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         [self prepareViewForNextSection];
+                                     });
                                  }
                              }
                          }
@@ -761,7 +777,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                         [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
                                                             inSection:currentSection]
                                 ]];
-                            }              completion:nil];
+                            } completion:nil];
                         } else if (self.infiniteScroll && infiniteScrollEnabled && self.shouldLoadNewSection &&
                                 index + 1 == [self numberOfItemsInSection:currentSection] % self.numberOfImojisToLoad) {
                             // append the loading indicator to the next section if
@@ -793,8 +809,29 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
             } else {
                 [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self numberOfItemsInSection:self.numberOfSections - 1] inSection:(NSUInteger) self.numberOfSections - 1]]];
             }
-        }              completion:^(BOOL finished) {
-            [self loadImojisFromSearch:self.currentSearchTerm offset:@([self numberOfItemsInSection:self.numberOfSections - 1] + 1) infiniteScrollEnabled:YES];
+        } completion:^(BOOL finished) {
+            if (self.followUpRelatedCategories.count > 0 && self.shouldLoadNewSection) {
+                [self prepareViewForImojiResultSet:@([self.followUpRelatedCategories count])
+                                            offset:0
+                                             error:nil
+                           emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
+
+                for (IMImojiCategoryObject *category in self.followUpRelatedCategories) {
+                    if (self.imojiOperation.isCancelled) {
+                        break;
+                    }
+
+                    NSUInteger index = [self.followUpRelatedCategories indexOfObject:category];
+                    [self renderImojiResult:category.previewImojis ? category.previewImojis[arc4random() % category.previewImojis.count] : category.previewImoji
+                                    content:category
+                                  atSection:(NSUInteger) self.numberOfSections - 1
+                                    atIndex:index
+                                     offset:0
+                                  operation:self.imojiOperation];
+                }
+            } else {
+                [self loadImojisFromSearch:self.currentSearchTerm offset:@([self numberOfItemsInSection:self.numberOfSections - 1] + 1) infiniteScrollEnabled:YES];
+            }
         }];
     }
 }

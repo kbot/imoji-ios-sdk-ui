@@ -41,5 +41,6 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 - (void)performTranslucentAnimation;
 
 @property(nonatomic, strong, nullable) UIImageView *imojiView;
+@property(nonatomic, strong, nullable) UIImageView *placeholderView;
 
 @end

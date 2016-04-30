@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
 
     _imojiSession = ((AppDelegate *)[UIApplication sharedApplication].delegate).session;
 
-    self.sampleApps = [@[@(SampleAppsTypeFullScreen),/* @(SampleAppsTypeHalfScreen),*/ @(SampleAppsTypeQuarterScreen), @(SampleAppsTypeComboScreen)] mutableCopy];
+    self.sampleApps = [@[@(SampleAppsTypeFullScreen), @(SampleAppsTypeHalfScreen), @(SampleAppsTypeQuarterScreen), @(SampleAppsTypeComboScreen)] mutableCopy];
 
     self.sampleAppsTableView = [[UITableView alloc] init];
     self.sampleAppsTableView.dataSource = self;
@@ -64,8 +64,6 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SampleAppsCollectionTableViewCellReuseId];
-
-//    cell.textLabel.text = ((UIViewController *) self.sampleApps[(NSUInteger) indexPath.row]).title;
 
     SampleAppsType appsType = (SampleAppsType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
     switch(appsType) {
@@ -97,7 +95,7 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
             controller = [[FullScreenViewController alloc] initWithSession:self.imojiSession];
             break;
         case SampleAppsTypeHalfScreen:
-//            controller
+            controller = [[HalfScreenViewController alloc] init];
             break;
         case SampleAppsTypeQuarterScreen:
             controller = [[QuarterScreenViewController alloc] init];

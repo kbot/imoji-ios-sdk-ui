@@ -35,17 +35,16 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        [self.imojiImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.and.centerX.equalTo(self);
-            make.width.and.height.equalTo(@52.0f);
+            make.width.and.height.equalTo(@54.0f);
         }];
 
+        self.titleView.font = [IMAttributeStringUtil montserratLightFontWithSize:11.0f];
         self.titleView.adjustsFontSizeToFitWidth = YES;
-        self.titleView.font = [IMAttributeStringUtil montserratLightFontWithSize:10.5f];
-        self.titleView.textColor = [UIColor colorWithRed:57.0f / 255.0f green:61.0f / 255.0f blue:73.0f / 255.0f alpha:1.0f];
 
         [self.titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.imojiView.mas_bottom).offset(5.0f);
+            make.top.equalTo(self.imojiImageView.mas_bottom).offset(5.0f);
             make.width.and.centerX.equalTo(self);
             make.bottom.equalTo(self);
         }];

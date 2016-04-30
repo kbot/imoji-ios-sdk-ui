@@ -40,28 +40,45 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 
-        self.imojiView = [YYAnimatedImageView new];
+        self.placeholderView = [[UIImageView alloc] init];
+
+        self.imojiView = [[UIView alloc] init];
+
+        self.imojiImageView = [YYAnimatedImageView new];
 
         self.titleView = [UILabel new];
-        self.titleView.font = [IMAttributeStringUtil defaultFontWithSize:14.0f];
-        self.titleView.textColor = [UIColor colorWithWhite:.4f alpha:1.0f];
+        self.titleView.font = [IMAttributeStringUtil montserratLightFontWithSize:14.0f];
+        self.titleView.textColor = [UIColor colorWithRed:57.0f / 255.0f green:61.0f / 255.0f blue:73.0f / 255.0f alpha:1.0f];
         self.titleView.numberOfLines = 2;
         self.titleView.textAlignment = NSTextAlignmentCenter;
         self.titleView.lineBreakMode = NSLineBreakByWordWrapping;
 
+        [self addSubview:self.placeholderView];
         [self addSubview:self.imojiView];
-        [self addSubview:self.titleView];
+
+        [self.imojiView addSubview:self.imojiImageView];
+        [self.imojiView addSubview:self.titleView];
+
+        [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@100.0f);
+        }];
 
         [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self);
-            make.centerX.equalTo(self);
-            make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
+            make.edges.equalTo(self);
+        }];
+
+        [self.imojiImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.imojiView).offset(6.0f);
+            make.centerX.equalTo(self.imojiView);
+//            make.height.width.equalTo(self.mas_height).multipliedBy(.70f);
+            make.width.and.height.equalTo(@70.0f);
         }];
 
         [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.equalTo(self).multipliedBy(.75f);
-            make.centerX.equalTo(self);
-            make.top.equalTo(self.imojiView.mas_bottom);
+            make.width.equalTo(@100.0f);//.multipliedBy(.75f);
+            make.centerX.equalTo(self.imojiView);
+            make.top.equalTo(self.imojiImageView.mas_bottom).offset(6.0f);
             make.height.equalTo(@(self.titleView.font.lineHeight * 2.0f + 1.0f));
         }];
     }
@@ -77,52 +94,62 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
 
     if (imojiImage) {
-        self.imojiView.image = imojiImage;
-        self.imojiView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+        self.imojiImageView.image = imojiImage;
+        self.imojiImageView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
+        self.imojiImageView.contentMode = UIViewContentModeScaleAspectFit;
 
         _hasImojiImage = YES;
 
-        if (showAnimations) {
-            self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
+        BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
+
+        if (animateImmediately) {
+            [self performRetractAnimation];
+            [self performLoadedAnimation];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self performRetractAnimation];
+                [self performLoadedAnimation];
+            });
         }
     } else {
-        self.imojiView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:62.0f];
-        self.imojiView.highlightedImage = self.imojiView.image;
-        self.imojiView.contentMode = UIViewContentModeCenter;
+        self.placeholderView.image = [[IMResourceBundleUtil loadingPlaceholderImageWithRadius:80.0f] copy];
+        self.placeholderView.highlightedImage = self.placeholderView.image;
+        self.placeholderView.contentMode = UIViewContentModeCenter;
 
         _hasImojiImage = NO;
+
+        [self performLoadedAnimation];
     }
 
     self.titleView.text = categoryTitle;
-
-    if (showAnimations) {
-        [self performLoadedAnimation];
-    }
 }
 
 - (void)performLoadedAnimation {
-    // animate immediately in iOS 7,
-    BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
-    
-    self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
-    void (^animationBlock)() = ^ {
-        [UIView animateWithDuration:.5f
-                              delay:0
-             usingSpringWithDamping:1.0f
-              initialSpringVelocity:1.0f
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.imojiView.transform = CGAffineTransformIdentity;
-                         }
-                         completion:nil];
-    };
-    
-    if (animateImmediately) {
-        animationBlock();
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    animation.fromValue = @0.0f;
+    animation.toValue = @1.0f;
+    animation.duration = 0.7f;
+    animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.3f :0.14f :0.36f :1.36f];
+
+    if (self.hasImojiImage) {
+        [self.imojiView.layer addAnimation:animation forKey:@"layerAnimation"];
+        self.imojiView.layer.transform = CATransform3DIdentity;
     } else {
-        dispatch_async(dispatch_get_main_queue(), animationBlock);
+        [self.placeholderView.layer addAnimation:animation forKey:@"layerAnimation"];
+        self.placeholderView.layer.transform = CATransform3DIdentity;
     }
+}
+
+- (void)performRetractAnimation {
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    animation.fromValue = @1.0f;
+    animation.toValue = @0.0f;
+    animation.duration = 1.0f;
+
+    animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.25f :0.1f :0.25f :1.0f];
+
+    [self.placeholderView.layer addAnimation:animation forKey:@"retract"];
+    self.placeholderView.layer.transform = CATransform3DMakeScale(0.0f, 0.0f, 0.0f);
 }
 
 - (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {

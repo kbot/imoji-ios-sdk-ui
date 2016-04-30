@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "QuarterScreenViewController.h"
 #import "MessageThreadView.h"
+#import "IMImojiCategoryObject.h"
 #import <ImojiSDKUI/IMCollectionView.h>
 #import <ImojiSDKUI/IMSuggestionView.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
@@ -20,8 +21,8 @@
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
-@property(nonatomic, strong) IMSearchView *inputFieldView;
-@property(nonatomic, strong) UIView *inputFieldContainer;
+@property(nonatomic, strong) IMSearchView *searchView;
+@property(nonatomic, strong) UIView *searchViewContainer;
 @property(nonatomic, strong) IMSuggestionView *imojiSuggestionView;
 
 @end
@@ -66,18 +67,18 @@
     self.messageThreadView = [MessageThreadView new];
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
     self.imojiSuggestionView.collectionView.infiniteScroll = YES;
-    self.inputFieldContainer = [UIView new];
+    self.searchViewContainer = [UIView new];
 
-    self.inputFieldView = [IMSearchView imojiSearchView];
-    self.inputFieldView.backgroundColor = [UIColor clearColor];
-    self.inputFieldView.searchTextField.returnKeyType = UIReturnKeySend;
-    self.inputFieldView.delegate = self;
+    self.searchView = [IMSearchView imojiSearchView];
+    self.searchView.backgroundColor = [UIColor clearColor];
+    self.searchView.searchTextField.returnKeyType = UIReturnKeySend;
+    self.searchView.delegate = self;
 
     // this essentially sets the status bar color since the view takes up the full screen
     // and the subviews are positioned below the status bar
     self.view.backgroundColor =
             [UIColor colorWithRed:248.0f / 255.0f green:248.0f / 255.0f blue:248.0f / 255.0f alpha:1.0f];
-    self.inputFieldContainer.backgroundColor = [UIColor whiteColor];
+    self.searchViewContainer.backgroundColor = [UIColor whiteColor];
     self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
     self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.messageThreadView.backgroundColor = [UIColor whiteColor];
@@ -90,9 +91,9 @@
     [self.view addSubview:self.topToolbar];
     [self.view addSubview:self.messageThreadView];
     [self.view addSubview:self.imojiSuggestionView];
-    [self.view addSubview:self.inputFieldContainer];
+    [self.view addSubview:self.searchViewContainer];
 
-    [self.inputFieldContainer addSubview:self.inputFieldView];
+    [self.searchViewContainer addSubview:self.searchView];
 
     UIView *suggestionTopBorder = [UIView new];
     [self.imojiSuggestionView addSubview:suggestionTopBorder];
@@ -118,14 +119,14 @@
         make.bottom.equalTo(self.view);
     }];
 
-    [self.inputFieldView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(IMSearchViewIconWidthHeight));
-        make.centerY.equalTo(self.inputFieldContainer);
-        make.left.equalTo(self.inputFieldContainer).offset(IMSearchViewDefaultLeftOffset);
-        make.right.equalTo(self.inputFieldContainer).offset(-IMSearchViewDefaultRightOffset);
+        make.centerY.equalTo(self.searchViewContainer);
+        make.left.equalTo(self.searchViewContainer).offset(IMSearchViewDefaultLeftOffset);
+        make.right.equalTo(self.searchViewContainer).offset(-IMSearchViewDefaultRightOffset);
     }];
 
-    [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.searchViewContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
@@ -134,7 +135,7 @@
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(SuggestionViewDefaultHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
+        make.top.equalTo(self.searchViewContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 }
 
@@ -145,13 +146,13 @@
 }
 
 - (void)sendText {
-    if (self.inputFieldView.searchTextField.text.length > 0) {
-        [self.messageThreadView sendMessageWithText:self.inputFieldView.searchTextField.text];
+    if (self.searchView.searchTextField.text.length > 0) {
+        [self.messageThreadView sendMessageWithText:self.searchView.searchTextField.text];
     }
 
-    if(![self.inputFieldView.searchTextField.text isEqualToString:@""] &&
-            [self.inputFieldView canPerformAction:@selector(clearButtonTapped:) withSender:self.inputFieldView.searchTextField.rightView]) {
-        [self.inputFieldView performSelector:@selector(clearButtonTapped:) withObject:self.inputFieldView.searchTextField.rightView];
+    if(![self.searchView.searchTextField.text isEqualToString:@""] &&
+            [self.searchView canPerformAction:@selector(clearButtonTapped:) withSender:self.searchView.searchTextField.rightView]) {
+        [self.searchView performSelector:@selector(clearButtonTapped:) withObject:self.searchView.searchTextField.rightView];
     }
 }
 
@@ -163,7 +164,7 @@
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(SuggestionViewDefaultHeight));
-        make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionViewBorderHeight);
+        make.bottom.equalTo(self.searchViewContainer.mas_top).offset(SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -186,7 +187,7 @@
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(SuggestionViewDefaultHeight));
-        make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionViewBorderHeight);
+        make.top.equalTo(self.searchViewContainer.mas_top).offset(-SuggestionViewBorderHeight);
     }];
 
     if (animated) {
@@ -203,7 +204,7 @@
 }
 
 - (BOOL)isSuggestionViewDisplayed {
-    return (self.imojiSuggestionView.frame.origin.y + SuggestionViewBorderHeight) != self.inputFieldContainer.frame.origin.y;
+    return (self.imojiSuggestionView.frame.origin.y + SuggestionViewBorderHeight) != self.searchViewContainer.frame.origin.y;
 }
 
 #pragma mark Imoji Collection View Delegate
@@ -214,6 +215,8 @@
 
 - (void)userDidSelectCategory:(nonnull IMImojiCategoryObject *)category fromCollectionView:(nonnull IMCollectionView *)collectionView {
     [collectionView loadImojisFromCategory:category];
+    self.searchView.searchTextField.text = category.title;
+    self.searchView.searchTextField.rightView.hidden = NO;
 }
 
 - (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
@@ -230,7 +233,7 @@
 #pragma mark Keyboard Handling
 
 - (void)messageThreadViewTapped {
-    [self.inputFieldView.searchTextField resignFirstResponder];
+    [self.searchView.searchTextField resignFirstResponder];
 }
 
 - (void)inputFieldWillShow:(NSNotification *)notification {
@@ -240,13 +243,13 @@
     UIViewAnimationOptions animationCurve =
             (UIViewAnimationOptions) ([notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] intValue] << 16);
 
-    [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.searchViewContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.view).offset(-endRect.size.height);
     }];
 
-    if (self.inputFieldView.searchTextField.text.length > 0 && !self.isSuggestionViewDisplayed) {
+    if (self.searchView.searchTextField.text.length > 0 && !self.isSuggestionViewDisplayed) {
         [self showSuggestionsAnimated:NO];
     } else {
         [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
@@ -257,14 +260,14 @@
                           delay:0.0
                         options:animationCurve
                      animations:^{
-                         [self.inputFieldContainer layoutIfNeeded];
+                         [self.searchViewContainer layoutIfNeeded];
                          [self.imojiSuggestionView layoutIfNeeded];
                      } completion:^(BOOL finished) {
                 self.messageThreadView.scrollIndicatorInsets =
                         self.messageThreadView.contentInset =
                                 UIEdgeInsetsMake(0, 0,
                                         endRect.size.height +
-                                                self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                                                self.searchViewContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
                                         0
                                 );
 
@@ -284,7 +287,7 @@
     UIViewAnimationOptions animationCurve =
             (UIViewAnimationOptions) ([notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] intValue] << 16);
 
-    [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.searchViewContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
@@ -295,12 +298,12 @@
                           delay:0.0
                         options:animationCurve
                      animations:^{
-                         [self.inputFieldContainer layoutIfNeeded];
+                         [self.searchViewContainer layoutIfNeeded];
                          [self.imojiSuggestionView layoutIfNeeded];
                      } completion:^(BOOL finished) {
                 self.messageThreadView.scrollIndicatorInsets =
                         self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
-                                self.inputFieldContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                                self.searchViewContainer.frame.size.height + self.imojiSuggestionView.frame.size.height,
                                 0
                         );
 
@@ -313,11 +316,12 @@
 }
 
 - (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
-    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputFieldView.searchTextField.text];
-    BOOL hasText = self.inputFieldView.searchTextField.text.length > 0;
+    BOOL hasText = self.searchView.searchTextField.text.length > 0;
 
     if (!hasText) {
         [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+    } else {
+        [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.searchView.searchTextField.text];
     }
 }
 

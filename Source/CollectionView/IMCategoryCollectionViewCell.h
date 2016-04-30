@@ -36,7 +36,11 @@ extern NSString * __nonnull const IMCategoryCollectionViewCellReuseId;
 
 - (void)performLoadedAnimation;
 
-@property(nonatomic, strong, nullable) UIImageView *imojiView;
+@property(nonatomic, strong, nullable) UIView *imojiView;
+
+@property(nonatomic, strong, nullable) UIImageView *imojiImageView;
+
+@property(nonatomic, strong, nullable) UIImageView *placeholderView;
 
 @property(nonatomic, strong, nullable) UILabel *titleView;
 
