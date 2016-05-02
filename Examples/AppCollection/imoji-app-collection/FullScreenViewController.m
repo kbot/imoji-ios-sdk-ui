@@ -46,6 +46,8 @@
 }
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    [self.searchView.searchTextField resignFirstResponder];
+
     [collectionView loadImojisFromCategory:category];
 }
 

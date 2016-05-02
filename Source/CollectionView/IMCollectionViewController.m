@@ -272,6 +272,14 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     }
 }
 
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    [self.searchView.searchTextField resignFirstResponder];
+}
+
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView {
+    [self.searchView.searchTextField resignFirstResponder];
+}
+
 #pragma mark Search field delegates
 
 - (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
