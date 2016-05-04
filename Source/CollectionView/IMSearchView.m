@@ -29,10 +29,10 @@
 #import "View+MASAdditions.h"
 #import "NSString+Utils.h"
 
-const CGFloat IMSearchViewIconWidthHeight = 26.0f;
-const CGFloat IMSearchViewContainerDefaultHeight = 44.0f;
-const CGFloat IMSearchViewDefaultLeftOffset = 15.0f;
-const CGFloat IMSearchViewDefaultRightOffset = 9.0f;
+CGFloat const IMSearchViewIconWidthHeight = 26.0f;
+CGFloat const IMSearchViewContainerDefaultHeight = 44.0f;
+CGFloat const IMSearchViewDefaultLeftOffset = 15.0f;
+CGFloat const IMSearchViewDefaultRightOffset = 9.0f;
 
 @interface IMSearchView () <UITextFieldDelegate>
 
@@ -107,11 +107,12 @@ const CGFloat IMSearchViewDefaultRightOffset = 9.0f;
 
 - (void)cancelButtonTapped {
     self.searchTextField.text = self.previousSearchTerm;
-    [self.searchTextField endEditing:YES];
 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidChangeTextFieldFromSearchView:)]) {
-        [self.delegate userDidChangeTextFieldFromSearchView:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapCancelButtonFromSearchView:)]) {
+        [self.delegate userDidTapCancelButtonFromSearchView:self];
     }
+
+    [self.searchTextField endEditing:YES];
 }
 
 - (void)clearButtonTapped:(UIButton *)button {
@@ -184,8 +185,8 @@ const CGFloat IMSearchViewDefaultRightOffset = 9.0f;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeySearchView:)]) {
-        [self.delegate userDidPressReturnKeySearchView:self];
+    if(self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeyFromSearchView:)]) {
+        [self.delegate userDidPressReturnKeyFromSearchView:self];
     } else {
         [self.searchTextField endEditing:YES];
     }

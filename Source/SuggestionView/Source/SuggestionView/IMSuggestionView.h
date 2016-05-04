@@ -28,8 +28,8 @@
 @class IMCollectionView;
 @class IMImojiSession;
 
-extern CGFloat const SuggestionViewDefaultHeight;
-extern CGFloat const SuggestionViewBorderHeight;
+extern CGFloat const IMSuggestionViewDefaultHeight;
+extern CGFloat const IMSuggestionViewBorderHeight;
 
 @interface IMSuggestionView : UIView
 

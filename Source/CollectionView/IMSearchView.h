@@ -25,10 +25,10 @@
 
 #import <UIKit/UIKit.h>
 
-extern const CGFloat IMSearchViewIconWidthHeight;
-extern const CGFloat IMSearchViewContainerDefaultHeight;
-extern const CGFloat IMSearchViewDefaultLeftOffset;
-extern const CGFloat IMSearchViewDefaultRightOffset;
+extern CGFloat const IMSearchViewIconWidthHeight;
+extern CGFloat const IMSearchViewContainerDefaultHeight;
+extern CGFloat const IMSearchViewDefaultLeftOffset;
+extern CGFloat const IMSearchViewDefaultRightOffset;
 
 @protocol IMSearchViewDelegate;
 
@@ -53,7 +53,9 @@ extern const CGFloat IMSearchViewDefaultRightOffset;
 
 - (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView;
 
-- (void)userDidPressReturnKeySearchView:(IMSearchView *)searchView;
+- (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView;
+
+- (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView;
 
 - (void)userShouldBeginSearchFromSearchView:(IMSearchView *)searchView;
 

@@ -28,8 +28,8 @@
 #import "View+MASAdditions.h"
 #import "IMSuggestionCollectionView.h"
 
-CGFloat const SuggestionViewDefaultHeight = 91.f;
-CGFloat const SuggestionViewBorderHeight = 1.f;
+CGFloat const IMSuggestionViewDefaultHeight = 91.f;
+CGFloat const IMSuggestionViewBorderHeight = 1.f;
 
 @interface IMSuggestionView ()
 @end
