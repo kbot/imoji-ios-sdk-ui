@@ -48,6 +48,30 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
     return self;
 }
 
+- (void)setupWithSeparator {
+    if (!self.headerView) {
+        _headerView = [[UIView alloc] init];
+
+        _separatorView = [[UIView alloc] initWithFrame:CGRectZero];
+        self.separatorView.backgroundColor = [UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.18f];
+
+        [self addSubview:self.headerView];
+
+        [self.headerView addSubview:self.separatorView];
+
+        [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+
+        [self.separatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.headerView).offset(9.0f);
+            make.left.equalTo(self.headerView).offset(10.0f);
+            make.right.equalTo(self.headerView).offset(-10.0f);
+            make.height.equalTo(@2.0f);
+        }];
+    }
+}
+
 - (void)setupWithText:(NSString *)header multipleSections:(BOOL)multipleSections separator:(BOOL)separator {
     if (!self.headerView) {
         _headerView = [[UIView alloc] init];

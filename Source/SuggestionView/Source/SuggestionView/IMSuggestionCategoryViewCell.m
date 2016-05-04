@@ -24,6 +24,7 @@
 //
 
 #import "IMSuggestionCategoryViewCell.h"
+#import "IMResourceBundleUtil.h"
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 
@@ -35,8 +36,20 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+//        self.placeholderView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:62.0f];
+        self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
+
+        [self.placeholderView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@62.0f);
+        }];
+
+        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self).insets(UIEdgeInsetsMake(5.0f, 0.0f, 0.0f, 0.0f));
+        }];
+
         [self.imojiImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.top.and.centerX.equalTo(self);
+            make.top.and.centerX.equalTo(self.imojiView);
             make.width.and.height.equalTo(@54.0f);
         }];
 
@@ -45,12 +58,17 @@
 
         [self.titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.imojiImageView.mas_bottom).offset(5.0f);
-            make.width.and.centerX.equalTo(self);
-            make.bottom.equalTo(self);
+            make.width.and.centerX.equalTo(self.imojiView);
+            make.bottom.equalTo(self.imojiView);
         }];
     }
 
     return self;
+}
+
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
+    [super setupPlaceholderImageWithPosition:position];
+    self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 @end

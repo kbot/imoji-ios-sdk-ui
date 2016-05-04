@@ -34,6 +34,8 @@ extern NSString *__nonnull const IMCollectionReusableHeaderViewReuseId;
 @property(nonatomic, strong, readonly, nonnull) UILabel *title;
 @property(nonatomic, strong, readonly, nonnull) UILabel *contextLabel;
 
+- (void)setupWithSeparator;
+
 - (void)setupWithText:(nonnull NSString *)header multipleSections:(BOOL)multipleSections separator:(BOOL)separator;
 
 @end

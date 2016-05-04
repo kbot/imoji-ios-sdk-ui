@@ -24,6 +24,7 @@
 //
 
 #import "IMSuggestionViewCell.h"
+#import "IMResourceBundleUtil.h"
 #import <Masonry/Masonry.h>
 
 
@@ -34,6 +35,14 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+//        self.placeholderView.image = [IMResourceBundleUtil loadingPlaceholderImageWithRadius:62.0f];
+        self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
+
+        [self.placeholderView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@62.0f);
+        }];
+
         [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self);
             make.width.and.height.equalTo(@74.0f);
@@ -43,17 +52,9 @@
     return self;
 }
 
-- (void)performGrowAnimation {
-    self.imojiView.transform = CGAffineTransformMakeScale(.2f, .2f);
-
-    [UIView animateWithDuration:.4f
-                          delay:0.f
-         usingSpringWithDamping:.8f
-          initialSpringVelocity:.8f
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         self.imojiView.transform = CGAffineTransformIdentity;
-                     } completion:nil];
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
+    [super setupPlaceholderImageWithPosition:position];
+    self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 @end

@@ -26,8 +26,8 @@
 #import "IMCategoryCollectionViewCell.h"
 #import <Masonry/View+MASAdditions.h>
 #import <YYImage/YYAnimatedImageView.h>
-#import "IMResourceBundleUtil.h"
-#import "IMAttributeStringUtil.h"
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
 
 NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionViewCellReuseId";
 
@@ -86,18 +86,24 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     return self;
 }
 
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
+    NSArray *placeholderImages = [IMResourceBundleUtil loadingPlaceholderImages];
+    NSUInteger placeholderStartIndex = [IMResourceBundleUtil loadingPlaceholderStartIndex];
+
+    self.placeholderView.image = placeholderImages[(placeholderStartIndex + position) % placeholderImages.count];
+    self.placeholderView.highlightedImage = self.placeholderView.image;
+    self.placeholderView.contentMode = UIViewContentModeCenter;
+}
+
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage {
     [self loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:YES];
 }
 
 - (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    BOOL showAnimations = animated && imojiImage != nil && !_hasImojiImage;
 
     if (imojiImage) {
         self.imojiImageView.image = imojiImage;
-        self.imojiImageView.highlightedImage = [self tintImage:imojiImage withColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6f]];
         self.imojiImageView.contentMode = UIViewContentModeScaleAspectFit;
-
         _hasImojiImage = YES;
 
         BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
@@ -111,17 +117,17 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
                 [self performLoadedAnimation];
             });
         }
+
+        self.titleView.text = categoryTitle;
     } else {
-        self.placeholderView.image = [[IMResourceBundleUtil loadingPlaceholderImageWithRadius:80.0f] copy];
-        self.placeholderView.highlightedImage = self.placeholderView.image;
-        self.placeholderView.contentMode = UIViewContentModeCenter;
+        self.imojiImageView.image = imojiImage;
+        self.titleView.text = @"";
 
         _hasImojiImage = NO;
 
         [self performLoadedAnimation];
     }
 
-    self.titleView.text = categoryTitle;
 }
 
 - (void)performLoadedAnimation {
@@ -132,24 +138,60 @@ NSString *const IMCategoryCollectionViewCellReuseId = @"IMCategoryCollectionView
     animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.3f :0.14f :0.36f :1.36f];
 
     if (self.hasImojiImage) {
-        [self.imojiView.layer addAnimation:animation forKey:@"layerAnimation"];
+        [self.imojiView.layer addAnimation:animation forKey:@"loaded"];
         self.imojiView.layer.transform = CATransform3DIdentity;
     } else {
-        [self.placeholderView.layer addAnimation:animation forKey:@"layerAnimation"];
+        [self.placeholderView.layer addAnimation:animation forKey:@"loaded"];
         self.placeholderView.layer.transform = CATransform3DIdentity;
     }
 }
 
-- (void)performRetractAnimation {
+- (void)performPlaceholderRetractAnimation {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     animation.fromValue = @1.0f;
     animation.toValue = @0.0f;
     animation.duration = 1.0f;
-
     animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.25f :0.1f :0.25f :1.0f];
 
-    [self.placeholderView.layer addAnimation:animation forKey:@"retract"];
+    [self.placeholderView.layer addAnimation:animation forKey:@"placeholderRetract"];
     self.placeholderView.layer.transform = CATransform3DMakeScale(0.0f, 0.0f, 0.0f);
+}
+
+- (void)performGrowAnimation {
+    if (!self.hasImojiImage) {
+        return;
+    }
+
+    [CATransaction begin];
+    [self.imojiView.layer removeAllAnimations];
+    [CATransaction commit];
+
+    CABasicAnimation *growAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    growAnimation.fromValue = @0.8f;
+    growAnimation.toValue = @1.0f;
+    growAnimation.duration = 0.5f;
+    growAnimation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.23f :0.09f :0.37f :1.36f];
+
+    [self.imojiView.layer addAnimation:growAnimation forKey:@"grow"];
+    self.imojiView.layer.transform = CATransform3DIdentity;
+}
+
+- (void)performShrinkAnimation {
+    if (!self.hasImojiImage) {
+        return;
+    }
+
+    [CATransaction begin];
+    [self.imojiView.layer removeAllAnimations];
+    [CATransaction commit];
+
+    CABasicAnimation *contractAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    contractAnimation.fromValue = @1.0f;
+    contractAnimation.toValue = @0.8f;
+    contractAnimation.duration = 0.2f;
+
+    [self.imojiView.layer addAnimation:contractAnimation forKey:@"shrink"];
+    self.imojiView.layer.transform = CATransform3DMakeScale(0.8f, 0.8f, 0.8f);
 }
 
 - (UIImage *)tintImage:(UIImage *)image withColor:(UIColor *)tintColor {

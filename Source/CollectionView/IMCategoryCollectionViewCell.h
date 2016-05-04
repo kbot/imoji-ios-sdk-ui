@@ -34,7 +34,13 @@ extern NSString * __nonnull const IMCategoryCollectionViewCellReuseId;
 
 - (void)loadImojiCategory:(NSString *__nullable)categoryTitle imojiImojiImage:(UIImage *__nullable)imojiImage animated:(BOOL)animated;
 
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position;
+
 - (void)performLoadedAnimation;
+
+- (void)performGrowAnimation;
+
+- (void)performShrinkAnimation;
 
 @property(nonatomic, strong, nullable) UIView *imojiView;
 

@@ -1,8 +1,8 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Nima Khoshini
-//  Copyright (C) 2015 Imoji
+//  Created by Alex Hoang
+//  Copyright (C) 2016 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -23,32 +23,8 @@
 //  IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import <ImojiSDKUI/IMCollectionReusableHeaderView.h>
 
-@interface IMResourceBundleUtil : NSObject
-
-+ (nullable NSString *)localizedStringForKey:(nonnull NSString *)key;
-
-+ (nullable NSString *)localizedStringForKey:(nonnull NSString *)key comment:(nullable NSString *)comment;
-
-+ (nonnull NSBundle *)stringsBundle;
-
-+ (nonnull NSBundle *)assetsBundle;
-
-+ (nonnull NSBundle *)fontsBundle;
-
-+ (NSUInteger)loadingPlaceholderStartIndex;
-
-+ (nonnull NSArray *)loadingPlaceholderImages;
-
-+ (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius;
-
-+ (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(nonnull UIColor *)color;
-
-+ (nonnull UIImage *)rightArrowButtonImage:(CGFloat)radius
-                               circleColor:(nonnull UIColor *)circleColor
-                               borderColor:(nonnull UIColor *)borderColor
-                               strokeWidth:(CGFloat)borderWidth
-                                 iconImage:(nullable UIImage *)iconImage;
+@interface IMSuggestionCollectionReusableHeaderView : IMCollectionReusableHeaderView
 
 @end

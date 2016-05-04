@@ -1,8 +1,8 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Nima Khoshini
-//  Copyright (C) 2015 Imoji
+//  Created by Alex Hoang
+//  Copyright (C) 2016 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -23,32 +23,28 @@
 //  IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import "IMSuggestionCollectionReusableHeaderView.h"
+#import <ImojiSDKUI/IMSuggestionView.h>
+#import <Masonry/Masonry.h>
 
-@interface IMResourceBundleUtil : NSObject
+CGFloat const IMSuggestionCollectionReusableHeaderViewHeight = 62.f;
 
-+ (nullable NSString *)localizedStringForKey:(nonnull NSString *)key;
+@implementation IMSuggestionCollectionReusableHeaderView
 
-+ (nullable NSString *)localizedStringForKey:(nonnull NSString *)key comment:(nullable NSString *)comment;
+- (void)setupWithSeparator {
+    [super setupWithSeparator];
 
-+ (nonnull NSBundle *)stringsBundle;
+    [self.separatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.headerView);
+        if (self.headerView.frame.size.height > IMSuggestionViewDefaultHeight) {
+            make.height.equalTo(self.headerView).multipliedBy(0.9f);
+        } else {
+            make.height.equalTo(@(IMSuggestionCollectionReusableHeaderViewHeight));
+        }
+        make.width.equalTo(@2.0f);
+        make.right.equalTo(self.headerView).offset(-4.0f);
+    }];
+}
 
-+ (nonnull NSBundle *)assetsBundle;
-
-+ (nonnull NSBundle *)fontsBundle;
-
-+ (NSUInteger)loadingPlaceholderStartIndex;
-
-+ (nonnull NSArray *)loadingPlaceholderImages;
-
-+ (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius;
-
-+ (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(nonnull UIColor *)color;
-
-+ (nonnull UIImage *)rightArrowButtonImage:(CGFloat)radius
-                               circleColor:(nonnull UIColor *)circleColor
-                               borderColor:(nonnull UIColor *)borderColor
-                               strokeWidth:(CGFloat)borderWidth
-                                 iconImage:(nullable UIImage *)iconImage;
 
 @end

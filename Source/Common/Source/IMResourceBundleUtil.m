@@ -100,7 +100,7 @@
     return loadingPlaceholderColors;
 }
 
-+ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius {
++ (NSUInteger)loadingPlaceholderStartIndex {
     NSArray *placeholderColors = [[self class] loadingPlaceholderColors];
 
     static NSUInteger loadingPlaceholderIndex = nil;
@@ -110,7 +110,33 @@
         loadingPlaceholderIndex = arc4random() % placeholderColors.count;
     });
 
-    loadingPlaceholderIndex = (loadingPlaceholderIndex + 1) % placeholderColors.count;
+//    loadingPlaceholderIndex = (loadingPlaceholderIndex + 1) % placeholderColors.count;
+
+    return loadingPlaceholderIndex;
+}
+
++ (NSArray *)loadingPlaceholderImages {
+    static NSArray *loadingPlaceholderImages = nil;
+
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        NSArray *placeholderColors = [[self class] loadingPlaceholderColors];
+        NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+        for(UIColor *color in placeholderColors) {
+            [mutableArray addObject:[[self class] loadingPlaceholderImageWithRadius:80.0f color:color]];
+        }
+
+        loadingPlaceholderImages = [mutableArray copy];
+    });
+
+    return loadingPlaceholderImages;
+}
+
++ (UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius {
+    NSArray *placeholderColors = [[self class] loadingPlaceholderColors];
+    NSUInteger loadingPlaceholderIndex = [[self class] loadingPlaceholderStartIndex];
+
     return [IMResourceBundleUtil loadingPlaceholderImageWithRadius:radius color:placeholderColors[loadingPlaceholderIndex]];
 }
 
