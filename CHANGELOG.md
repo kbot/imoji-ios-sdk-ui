@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.10
+
+* Make CollectionView the default subspec for this project
+
 ### Version 2.0.9
 
 * Use new fetchCollectedImojisWithType method from v2.2.1 of ImojiSDK

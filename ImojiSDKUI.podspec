@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '2.0.9'
+  s.version  = '2.0.10'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration. Integrate Stickers and custom emojis into your applications easily!'
   s.homepage = 'http://imoji.io/sdk'
@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '7.0'
 
   s.requires_arc = true
+  s.default_subspec = 'CollectionView'
 
   s.subspec 'CollectionView' do |ss|
     ss.dependency "YYImage/WebP", "~> 1.0"
