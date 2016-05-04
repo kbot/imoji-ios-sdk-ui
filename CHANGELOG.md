@@ -1,5 +1,10 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.0.9
+
+* Use new fetchCollectedImojisWithType method from v2.2.1 of ImojiSDK
+* IMKeyboardCollectionView now exports 16x9 animated content
+
 ### Version 2.0.8
 
 * Updated to use ImojiSDK v2.2.0
