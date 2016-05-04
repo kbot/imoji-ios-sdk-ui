@@ -608,24 +608,25 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
     __block NSOperation *operation;
     self.imojiOperation = operation =
-            [self.session getImojisForAuthenticatedUserWithResultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
-                        if (!operation.isCancelled) {
-                            [self prepareViewForImojiResultSet:metadata.resultCount
-                                                        offset:0
-                                                         error:error
-                                       emptyResultsContentType:IMCollectionViewContentTypeCollectionSplash];
-                        }
-                    }
-                                                               imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
-                                                                   if (!operation.isCancelled && !error) {
-                                                                       [self renderImojiResult:imoji
-                                                                                       content:imoji
-                                                                                     atSection:(NSUInteger) self.numberOfSections - 1
-                                                                                       atIndex:index
-                                                                                        offset:0
-                                                                                     operation:operation];
-                                                                   }
-                                                               }];
+            [self.session fetchCollectedImojisWithType:IMImojiCollectionTypeAll
+                             resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
+                                 if (!operation.isCancelled) {
+                                     [self prepareViewForImojiResultSet:metadata.resultCount
+                                                                 offset:0
+                                                                  error:error
+                                                emptyResultsContentType:IMCollectionViewContentTypeCollectionSplash];
+                                 }
+                             }
+                                 imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                                     if (!operation.isCancelled && !error) {
+                                         [self renderImojiResult:imoji
+                                                         content:imoji
+                                                       atSection:(NSUInteger) self.numberOfSections - 1
+                                                         atIndex:index
+                                                          offset:0
+                                                       operation:operation];
+                                     }
+                                 }];
 }
 
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
