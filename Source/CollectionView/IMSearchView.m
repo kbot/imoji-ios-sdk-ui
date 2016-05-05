@@ -56,7 +56,7 @@ CGFloat const IMSearchViewDefaultRightOffset = 9.0f;
 
         self.searchTextField = [[UITextField alloc] init];
         self.searchTextField.font = [IMAttributeStringUtil montserratLightFontWithSize:20.f];
-        self.searchTextField.textColor = [UIColor colorWithRed:38.0f / 255.0f green:40.0f / 255.0f blue:50.0f / 255.0f alpha:1.0f];
+        self.searchTextField.textColor = [UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f];
         self.searchTextField.attributedPlaceholder = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"]
                                                                                     withFont:[IMAttributeStringUtil montserratLightFontWithSize:20.f]
                                                                                        color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]
@@ -106,11 +106,11 @@ CGFloat const IMSearchViewDefaultRightOffset = 9.0f;
 }
 
 - (void)cancelButtonTapped {
-    self.searchTextField.text = self.previousSearchTerm;
-
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapCancelButtonFromSearchView:)]) {
         [self.delegate userDidTapCancelButtonFromSearchView:self];
     }
+
+    self.searchTextField.text = self.previousSearchTerm;
 
     [self.searchTextField endEditing:YES];
 }

@@ -62,12 +62,6 @@
     [self.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }
 
-- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
-    [self.searchView.searchTextField resignFirstResponder];
-
-    [collectionView loadImojisFromCategory:category];
-}
-
 - (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {
     IMImojiObjectRenderingOptions *renderingOptions =
             [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];

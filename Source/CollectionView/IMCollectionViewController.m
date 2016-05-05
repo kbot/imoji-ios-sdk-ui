@@ -24,12 +24,9 @@
 //
 
 #import <Masonry/Masonry.h>
-#import "IMCollectionViewController.h"
-#import "IMResourceBundleUtil.h"
-#import "IMCategoryCollectionViewCell.h"
-#import "IMCollectionViewCell.h"
-#import "IMAttributeStringUtil.h"
-#import "IMSearchView.h"
+#import <ImojiSDKUI/IMCollectionViewController.h>
+#import <ImojiSDKUI/IMCategoryCollectionViewCell.h>
+#import <ImojiSDK/IMImojiCategoryObject.h>
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 CGFloat const IMCollectionViewControllerTopBarDefaultHeight = 44.0f;
@@ -125,7 +122,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 - (void)setupControllerComponentsLookAndFeel {
     self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
 
-    self.searchView.searchTextField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+//    self.searchView.searchTextField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
+    self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
 
 //    self.searchField.backgroundColor = [UIColor clearColor];
 //    self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
@@ -273,7 +271,11 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 }
 
 - (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    self.searchView.searchTextField.text = category.title;
+    self.searchView.searchTextField.rightView.hidden = NO;
     [self.searchView.searchTextField resignFirstResponder];
+
+    [collectionView loadImojisFromCategory:category];
 }
 
 - (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView {
@@ -281,6 +283,12 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 }
 
 #pragma mark Search field delegates
+
+- (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
+    if (![searchView.previousSearchTerm isEqualToString:searchView.searchTextField.text]) {
+        [self performSearch];
+    }
+}
 
 - (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
     if (searchView.searchTextField.text.length == 0 && self.collectionViewControllerDelegate &&
