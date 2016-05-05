@@ -32,7 +32,7 @@
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
 UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
-NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 150;
+NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
 @interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate>
 
