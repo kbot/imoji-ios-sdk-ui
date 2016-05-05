@@ -25,6 +25,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface QuarterScreenViewController : UIViewController
+@interface HalfAndQuarterScreenViewController : UIViewController
 
 @end

@@ -25,6 +25,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface QuarterScreenViewController : UIViewController
+typedef NS_ENUM(NSUInteger, SampleAppCollectionIconType) {
+    SampleAppCollectionIconTypeForward,
+    SampleAppCollectionIconTypeSettings
+};
+
+extern NSString *__nonnull const SampleAppCollectionTableViewCellReuseId;
+
+@interface SampleAppCollectionTableViewCell : UITableViewCell
+
+- (void)setupWithTitle:(NSString *__nonnull)title iconImage:(SampleAppCollectionIconType)iconType;
 
 @end

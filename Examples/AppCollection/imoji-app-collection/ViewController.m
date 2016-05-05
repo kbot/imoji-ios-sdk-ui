@@ -1,9 +1,26 @@
 //
-//  ViewController.m
-//  Collection
+//  ImojiSDKUI
 //
-//  Created by Alex Hoang on 4/26/16.
-//  Copyright © 2016 Imoji. All rights reserved.
+//  Created by Alex Hoang
+//  Copyright (C) 2016 Imoji
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
 //
 
 #import <Masonry/Masonry.h>
@@ -13,22 +30,23 @@
 #import "FullScreenViewController.h"
 #import "HalfScreenViewController.h"
 #import "QuarterScreenViewController.h"
-#import "ComboViewController.h"
+#import "HalfAndQuarterScreenViewController.h"
 #import "AppDelegate.h"
+#import "IMResourceBundleUtil.h"
+#import "SampleAppCollectionTableViewCell.h"
 
-NSString *const SampleAppsCollectionTableViewCellReuseId = @"SampleAppsCollectionTableViewCellReuseId";
-
-typedef NS_ENUM(NSUInteger, SampleAppsType) {
-    SampleAppsTypeFullScreen,
-    SampleAppsTypeHalfScreen,
-    SampleAppsTypeQuarterScreen,
-    SampleAppsTypeComboScreen
+typedef NS_ENUM(NSUInteger, SampleAppType) {
+    SampleAppTypeFullScreen,
+    SampleAppTypeHalfScreen,
+    SampleAppTypeQuarterScreen,
+    SampleAppTypeHalfAndQuarterScreen
 };
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, strong) IMImojiSession *imojiSession;
-@property(nonatomic, strong) UITableView *sampleAppsTableView;
+@property(nonatomic, strong) UITableView *sampleAppTableView;
+@property(nonatomic, strong) UIImageView *imojiLogoImageView;
 @property(nonatomic, strong) NSMutableArray *sampleApps;
 
 @end
@@ -41,21 +59,41 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
 
     _imojiSession = ((AppDelegate *)[UIApplication sharedApplication].delegate).session;
 
-    self.sampleApps = [@[@(SampleAppsTypeFullScreen), @(SampleAppsTypeHalfScreen), @(SampleAppsTypeQuarterScreen), @(SampleAppsTypeComboScreen)] mutableCopy];
+    self.sampleApps = [@[@(SampleAppTypeQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeFullScreen)] mutableCopy];
 
-    self.sampleAppsTableView = [[UITableView alloc] init];
-    self.sampleAppsTableView.dataSource = self;
-    self.sampleAppsTableView.delegate = self;
+    self.imojiLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_logo.png", [IMResourceBundleUtil assetsBundle].bundlePath]]];
 
-    [self.view addSubview:self.sampleAppsTableView];
+    UIView *separatorView = [[UIView alloc] init];
+    separatorView.backgroundColor = [UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.20f];
 
-    [self.sampleAppsTableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.mas_topLayoutGuideBottom);
+    self.sampleAppTableView = [[UITableView alloc] init];
+    self.sampleAppTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.sampleAppTableView.dataSource = self;
+    self.sampleAppTableView.delegate = self;
+
+    [self.view addSubview:self.imojiLogoImageView];
+    [self.view addSubview:separatorView];
+    [self.view addSubview:self.sampleAppTableView];
+
+    [self.imojiLogoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.mas_topLayoutGuideBottom).offset(42.0f);
+        make.centerX.equalTo(self.view);
+    }];
+
+    [separatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imojiLogoImageView.mas_bottom).offset(34.0f);
+        make.centerX.equalTo(self.view);
+        make.width.equalTo(@260.0f);
+        make.height.equalTo(@0.5f);
+    }];
+
+    [self.sampleAppTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(separatorView).offset(17.0f);
         make.left.and.right.equalTo(self.view);
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    [self.sampleAppsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:SampleAppsCollectionTableViewCellReuseId];
+    [self.sampleAppTableView registerClass:[SampleAppCollectionTableViewCell class] forCellReuseIdentifier:SampleAppCollectionTableViewCellReuseId];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -63,21 +101,21 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SampleAppsCollectionTableViewCellReuseId];
+    SampleAppCollectionTableViewCell *cell = [self.sampleAppTableView dequeueReusableCellWithIdentifier:SampleAppCollectionTableViewCellReuseId forIndexPath:indexPath];
 
-    SampleAppsType appsType = (SampleAppsType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
+    SampleAppType appsType = (SampleAppType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
     switch(appsType) {
-        case SampleAppsTypeFullScreen:
-            cell.textLabel.text = @"Full Screen";
+        case SampleAppTypeFullScreen:
+            [cell setupWithTitle:@"Full Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
-        case SampleAppsTypeHalfScreen:
-            cell.textLabel.text = @"Half Screen";
+        case SampleAppTypeHalfScreen:
+            [cell setupWithTitle:@"Half Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
-        case SampleAppsTypeQuarterScreen:
-            cell.textLabel.text = @"Quarter Screen";
+        case SampleAppTypeQuarterScreen:
+            [cell setupWithTitle:@"Quarter Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
-        case SampleAppsTypeComboScreen:
-            cell.textLabel.text = @"Combo Screen";
+        case SampleAppTypeHalfAndQuarterScreen:
+            [cell setupWithTitle:@"Half + Quarter Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
         default:
             break;
@@ -86,29 +124,34 @@ typedef NS_ENUM(NSUInteger, SampleAppsType) {
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 56.0f;
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UIViewController *controller = nil;
 
-    SampleAppsType appsType = (SampleAppsType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
+    SampleAppType appsType = (SampleAppType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
     switch(appsType) {
-        case SampleAppsTypeFullScreen:
+        case SampleAppTypeFullScreen:
             controller = [[FullScreenViewController alloc] initWithSession:self.imojiSession];
             break;
-        case SampleAppsTypeHalfScreen:
+        case SampleAppTypeHalfScreen:
             controller = [[HalfScreenViewController alloc] init];
             break;
-        case SampleAppsTypeQuarterScreen:
+        case SampleAppTypeQuarterScreen:
             controller = [[QuarterScreenViewController alloc] init];
             break;
-        case SampleAppsTypeComboScreen:
-            controller = [[ComboViewController alloc] init];
+        case SampleAppTypeHalfAndQuarterScreen:
+            controller = [[HalfAndQuarterScreenViewController alloc] init];
             break;
         default:
             break;
     }
 
     [self presentViewController:controller animated:YES completion:^{
-        [self.sampleAppsTableView deselectRowAtIndexPath:indexPath animated:NO];
+        [self.sampleAppTableView deselectRowAtIndexPath:indexPath animated:NO];
     }];
 }
 

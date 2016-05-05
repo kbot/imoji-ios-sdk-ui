@@ -24,7 +24,7 @@
 //
 
 #import "AppDelegate.h"
-#import "ComboViewController.h"
+#import "HalfAndQuarterScreenViewController.h"
 #import "MessageThreadView.h"
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionView.h>
@@ -37,7 +37,7 @@
 #import <Masonry/View+MASAdditions.h>
 #import <Masonry/ViewController+MASAdditions.h>
 
-@interface ComboViewController () <IMCollectionViewDelegate, IMSearchViewDelegate, IMToolbarDelegate>
+@interface HalfAndQuarterScreenViewController () <IMCollectionViewDelegate, IMSearchViewDelegate, IMToolbarDelegate>
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
@@ -50,7 +50,7 @@
 
 @end
 
-@implementation ComboViewController {
+@implementation HalfAndQuarterScreenViewController {
 
 }
 
