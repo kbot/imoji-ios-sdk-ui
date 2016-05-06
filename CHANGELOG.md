@@ -3,6 +3,7 @@
 ### Version 2.0.10
 
 * Make CollectionView the default subspec for this project
+* Fixed #53 (alex-hoang)
 
 ### Version 2.0.9
 
