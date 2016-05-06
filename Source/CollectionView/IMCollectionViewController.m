@@ -355,7 +355,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
     [super traitCollectionDidChange:previousTraitCollection];
 
-    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+    if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)] &&
+        self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
         [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
     }
 }
