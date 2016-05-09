@@ -291,6 +291,8 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         if ([self.collectionViewDelegate respondsToSelector:@selector(userDidSelectCategory:fromCollectionView:)]) {
             [self.collectionViewDelegate userDidSelectCategory:cellContent
                                             fromCollectionView:self];
+        } else {
+            [self loadImojisFromCategory:cellContent];
         }
     }
 
