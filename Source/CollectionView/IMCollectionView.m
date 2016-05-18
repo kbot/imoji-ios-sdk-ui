@@ -675,6 +675,37 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                  }];
 }
 
+- (void)loadRecents {
+    self.shouldShowAttribution = self.shouldLoadNewSection = NO;
+    if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
+        self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
+        return;
+    }
+
+    self.contentType = IMCollectionViewContentTypeImojis;
+    [self generateNewResultSetOperationWithSearchOffset:nil];
+
+    __block NSOperation *operation;
+    self.imojiOperation = operation =
+            [self.session fetchCollectedImojisWithType:IMImojiCollectionTypeRecents resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
+                if (!operation.isCancelled) {
+                    [self prepareViewForImojiResultSet:metadata.resultCount
+                                                offset:0
+                                                 error:error
+                               emptyResultsContentType:IMCollectionViewContentTypeRecentsSplash];
+                }
+            } imojiResponseCallback:^(IMImojiObject *imoji, NSUInteger index, NSError *error) {
+                if (!operation.isCancelled && !error) {
+                    [self renderImojiResult:imoji
+                                    content:imoji
+                                  atSection:(NSUInteger) self.numberOfSections - 1
+                                    atIndex:index
+                                     offset:0
+                                  operation:operation];
+                }
+            }];
+}
+
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category {
     self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     self.currentHeader = category.title;

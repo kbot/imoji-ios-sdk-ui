@@ -24,10 +24,11 @@
 //
 
 #import <Masonry/Masonry.h>
-#import <ImojiSDK/ImojiSDK.h>
+#import <ImojiSDK/IMImojiObject.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "FullScreenViewController.h"
+#import "AppDelegate.h"
 
 @interface FullScreenViewController () <IMCollectionViewControllerDelegate>
 
@@ -51,6 +52,9 @@
 - (void)loadView {
     [super loadView];
 
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
+    self.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
+
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 //    self.backButton.hidden = NO;
     [self.backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
@@ -61,9 +65,15 @@
 }
 
 - (void)userDidSelectImoji:(IMImojiObject *__nonnull)imoji fromCollectionView:(IMCollectionView *__nonnull)collectionView {
-    IMImojiObjectRenderingOptions *renderingOptions =
-            [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution];
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
+
+    IMImojiObjectRenderingOptions *renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeFullResolution
+                                                                                               borderStyle:(IMImojiObjectBorderStyle) [shared integerForKey:@"stickerBorders"]];
     renderingOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.session markImojiUsageWithIdentifier:imoji.identifier originIdentifier:@"imoji kit full screen: imoji selected"];
+    });
 
     [self.session renderImoji:imoji
                            options:renderingOptions
@@ -94,17 +104,6 @@
 - (void)userDidTapBackButtonFromSearchView:(IMSearchView *)searchView {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-//- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
-//    switch (buttonType) {
-//        case IMToolbarButtonBack:
-//            [self dismissViewControllerAnimated:YES completion:nil];
-//            break;
-//
-//        default:
-//            break;
-//    }
-//}
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
     [[UIApplication sharedApplication] openURL:attributionLink];

@@ -26,20 +26,22 @@
 #import "AppDelegate.h"
 #import "QuarterScreenViewController.h"
 #import "MessageThreadView.h"
-#import "IMImojiCategoryObject.h"
+#import <ImojiSDK/IMImojiCategoryObject.h>
+#import <ImojiSDK/IMImojiObject.h>
 #import <ImojiSDKUI/IMCollectionView.h>
+#import <ImojiSDKUI/IMCreateImojiViewController.h>
 #import <ImojiSDKUI/IMSuggestionView.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import <ImojiSDKUI/IMSearchView.h>
 #import <ImojiSDKUI/IMToolbar.h>
 #import <Masonry/Masonry.h>
 
-@interface QuarterScreenViewController () <IMCollectionViewDelegate, IMSearchViewDelegate, IMToolbarDelegate>
+@interface QuarterScreenViewController () <IMCollectionViewDelegate, IMSearchViewDelegate, IMToolbarDelegate,
+        IMCreateImojiViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
 @property(nonatomic, strong) IMSearchView *searchView;
-//@property(nonatomic, strong) UIView *searchViewContainer;
 @property(nonatomic, strong) IMSuggestionView *imojiSuggestionView;
 
 @end
@@ -89,22 +91,21 @@
     self.messageThreadView.backgroundColor = [UIColor whiteColor];
     [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
+
     self.searchView = [IMSearchView imojiSearchView];
-//    self.searchView.backgroundColor = [UIColor whiteColor];
-    self.searchView.createAndRecentsEnabled = YES;
+    self.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
     self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySend;
     self.searchView.delegate = self;
-
-//    self.searchViewContainer = [[UIView alloc] init];
-//    self.searchViewContainer.backgroundColor = [UIColor whiteColor];
 
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
 //    self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
 //    self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.imojiSuggestionView.clipsToBounds = NO;
     self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 91.f);
+    self.imojiSuggestionView.collectionView.renderingOptions.borderStyle = (IMImojiObjectBorderStyle) [shared integerForKey:@"stickerBorders"];
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
     self.imojiSuggestionView.collectionView.infiniteScroll = YES;
 
@@ -147,15 +148,10 @@
         make.left.right.equalTo(self.imojiSuggestionView);
         make.height.equalTo(@1);
     }];
+}
 
-//    [self.searchViewContainer addSubview:self.searchView];
-//
-//    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.height.equalTo(@(IMSearchViewIconWidthHeight));
-//        make.centerY.equalTo(self.searchViewContainer);
-//        make.left.equalTo(self.searchViewContainer).offset(IMSearchViewContainerDefaultLeftOffset);
-//        make.right.equalTo(self.searchViewContainer).offset(-IMSearchViewContainerDefaultRightOffset);
-//    }];
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark IMSearchView Delegate
@@ -180,6 +176,51 @@
 
 - (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
     [self hideSuggestionsAnimated:YES];
+
+    if (searchView.recentsButton.selected) {
+        [self.imojiSuggestionView.collectionView loadRecents];
+    } else if (![searchView.previousSearchTerm isEqualToString:searchView.searchTextField.text]) {
+        if([searchView.previousSearchTerm isEqualToString:@""]) {
+            [self userDidClearTextFieldFromSearchView:searchView];
+        } else {
+            [self.imojiSuggestionView.collectionView loadImojisFromSentence:searchView.previousSearchTerm];
+        }
+    }
+}
+
+- (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
+//    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+            imagePicker.delegate = self;
+            imagePicker.allowsEditing = NO;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+
+            [self presentViewController:imagePicker animated:YES completion:nil];
+        }
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+
+    [self presentViewController:alertController animated:YES completion:nil];
+//    } else {
+//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+//                                                                 delegate:self
+//                                                        cancelButtonTitle:@"Cancel"
+//                                                   destructiveButtonTitle:nil
+//                                                        otherButtonTitles:@"Photo Library", nil];
+//
+//        [actionSheet showInView:self.view];
+//    }
+}
+
+- (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
+    [self.imojiSuggestionView.collectionView loadRecents];
+    [self showSuggestionsAnimated:YES];
 }
 
 - (void)sendText {
@@ -257,6 +298,10 @@
 #pragma mark Imoji Collection View Delegate
 
 - (void)userDidSelectImoji:(nonnull IMImojiObject *)imoji fromCollectionView:(nonnull IMCollectionView *)collectionView {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [((AppDelegate *)[UIApplication sharedApplication].delegate).session markImojiUsageWithIdentifier:imoji.identifier originIdentifier:@"imoji kit quarter: imoji selected"];
+    });
+
     [self.messageThreadView sendMessageWithImoji:imoji];
 }
 
@@ -297,16 +342,12 @@
 
     [UIView animateWithDuration:animationDuration delay:0.0 options:animationCurve animations:^{
         [self.view layoutIfNeeded];
-//                         [self.imojiSuggestionView layoutIfNeeded];
     } completion:^(BOOL finished) {
-        self.messageThreadView.scrollIndicatorInsets =
-                self.messageThreadView.contentInset =
-                        UIEdgeInsetsMake(0, 0,
-                                endRect.size.height +
-                                        self.searchView.frame.size.height + self.imojiSuggestionView.frame.size.height,
-                                0
-                        );
-
+        self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0,
+                endRect.size.height + self.searchView.frame.size.height + self.imojiSuggestionView.frame.size.height,
+                0
+        );
+        self.messageThreadView.contentInset = self.messageThreadView.scrollIndicatorInsets;
 
         if (self.messageThreadView.empty) {
             [self.messageThreadView.collectionViewLayout invalidateLayout];
@@ -328,18 +369,12 @@
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
         make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
     }];
-//    [self hideSuggestionsAnimated:NO];
 
     [UIView animateWithDuration:animationDuration delay:0.0 options:animationCurve animations:^{
         [self.view layoutIfNeeded];
-//                         [self.imojiSuggestionView layoutIfNeeded];
     } completion:^(BOOL finished) {
-        self.messageThreadView.scrollIndicatorInsets =
-                self.messageThreadView.contentInset = UIEdgeInsetsMake(0, 0,
-                        self.searchView.frame.size.height + self.imojiSuggestionView.frame.size.height,
-                        0
-                );
-
+        self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, self.searchView.frame.size.height, 0);
+        self.messageThreadView.contentInset = self.messageThreadView.scrollIndicatorInsets;
 
         if (self.messageThreadView.empty) {
             [self.messageThreadView.collectionViewLayout invalidateLayout];
@@ -358,6 +393,36 @@
         default:
             break;
     }
+}
+
+#pragma mark UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
+    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: ((AppDelegate *)[UIApplication sharedApplication].delegate).session];
+    createImojiViewController.createDelegate = self;
+    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [picker presentViewController:createImojiViewController animated: true completion: nil];
+}
+
+#pragma mark IMCreateImojiViewControllerDelegate
+
+- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
+    [((AppDelegate *)[UIApplication sharedApplication].delegate).session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
+}
+
+- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
+               persistentImoji:(IMImojiObject *)persistentImoji
+                     withError:(NSError *)error
+            fromViewController:(IMCreateImojiViewController *)viewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+    [self.imojiSuggestionView.collectionView loadRecents];
+    [self showSuggestionsAnimated:YES];
+}
+
+- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
+    [viewController dismissViewControllerAnimated:NO completion:nil];
 }
 
 #pragma mark View controller overrides
