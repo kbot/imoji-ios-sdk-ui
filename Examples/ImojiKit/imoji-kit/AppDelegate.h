@@ -14,6 +14,7 @@
 
 @property (strong, nonatomic, nonnull) UIWindow *window;
 @property(nonatomic, strong, readonly, nonnull) IMImojiSession *session;
+@property(nonatomic, strong, readonly, nonnull) NSString *appGroup;
 
 @end
 

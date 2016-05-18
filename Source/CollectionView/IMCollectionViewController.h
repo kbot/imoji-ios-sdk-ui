@@ -41,8 +41,6 @@
  */
 - (nullable UIColor *)backgroundColorForCollectionViewController:(nonnull UIViewController *)collectionViewController;
 
-- (void)userDidPerformEmptySearchFromCollectionViewController:(nonnull UIViewController *)collectionViewController;
-
 @end
 
 

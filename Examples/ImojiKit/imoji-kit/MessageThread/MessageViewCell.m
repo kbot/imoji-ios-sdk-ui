@@ -36,6 +36,7 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
 }
 
 - (void)setMessage:(Message *)message {
+    self.label.attributedText = nil;
     if (message.text) {
         self.label.attributedText = [IMAttributeStringUtil attributedString:message.text
                                                                    withFont:[MessageViewCell MessageViewTextFont]
@@ -64,8 +65,10 @@ UIEdgeInsets const MessageViewCellInsets = {0.f, 10.f, 0, 10.f};
     }];
 
     if (message.imoji) {
+        NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
         IMImojiObjectRenderingOptions *options =
-                [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail];
+                [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
+                                                         borderStyle:(IMImojiObjectBorderStyle) [shared integerForKey:@"stickerBorders"]];
         options.targetSize = [NSValue valueWithCGSize:CGSizeMake(MessageViewPreferredImojiSize.width * [UIScreen mainScreen].scale, MessageViewPreferredImojiSize.height * [UIScreen mainScreen].scale)];
 
         [((AppDelegate *) [UIApplication sharedApplication].delegate).session renderImoji:message.imoji

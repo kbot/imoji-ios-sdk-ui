@@ -12,6 +12,7 @@
 		2DBA1A0A3C36F0A328199CCA /* EmptyMessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1D972BC6C4583D25E7BF /* EmptyMessageViewCell.m */; };
 		2DBA1E3646F91004906EAE0C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA18F5CB10BFA0C1021F2C /* Message.m */; };
 		53B1D7B12194A33C8997B980 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8960B82DF392F1FFC2F1F7F /* libPods.a */; };
+		FA03B4491CE563580040EBBD /* UISettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA03B4481CE563580040EBBD /* UISettingsViewController.m */; };
 		FA15C7EA1CD020750065008B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA15C7E91CD020750065008B /* main.m */; };
 		FA15C7ED1CD020750065008B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA15C7EC1CD020750065008B /* AppDelegate.m */; };
 		FA15C7F01CD020750065008B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA15C7EF1CD020750065008B /* ViewController.m */; };
@@ -38,6 +39,8 @@
 		740ECC3F9929E6324BE1CA7B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		94AC0331765C73F87C8C7718 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		E8960B82DF392F1FFC2F1F7F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA03B4471CE563580040EBBD /* UISettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISettingsViewController.h; sourceTree = "<group>"; };
+		FA03B4481CE563580040EBBD /* UISettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISettingsViewController.m; sourceTree = "<group>"; };
 		FA15C7E51CD020750065008B /* imoji-kit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "imoji-kit.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA15C7E91CD020750065008B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FA15C7EB1CD020750065008B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -155,6 +158,8 @@
 				FA61C5021CD049D9007D033F /* HalfAndQuarterScreenViewController.m */,
 				FA61C5281CDADCDD007D033F /* SampleAppCollectionTableViewCell.h */,
 				FA61C5291CDADCDD007D033F /* SampleAppCollectionTableViewCell.m */,
+				FA03B4471CE563580040EBBD /* UISettingsViewController.h */,
+				FA03B4481CE563580040EBBD /* UISettingsViewController.m */,
 			);
 			path = "imoji-kit";
 			sourceTree = "<group>";
@@ -294,6 +299,7 @@
 				FA61C4FD1CD049BE007D033F /* HalfScreenViewController.m in Sources */,
 				FA61C52A1CDADCDD007D033F /* SampleAppCollectionTableViewCell.m in Sources */,
 				FA15C7EA1CD020750065008B /* main.m in Sources */,
+				FA03B4491CE563580040EBBD /* UISettingsViewController.m in Sources */,
 				FA61C5031CD049D9007D033F /* HalfAndQuarterScreenViewController.m in Sources */,
 				2DBA10A6157BDAEF83EDBE72 /* MessageViewCell.m in Sources */,
 				2DBA116372CC95D246E57AAD /* MessageThreadView.m in Sources */,

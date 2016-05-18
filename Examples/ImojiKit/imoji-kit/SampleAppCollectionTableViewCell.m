@@ -67,23 +67,32 @@ NSString *const SampleAppCollectionTableViewCellReuseId = @"SampleAppCollectionT
     self.titleLabel.text = title;
 
     switch(iconType) {
-        case SampleAppCollectionIconTypeForward:
+        case SampleAppCollectionIconTypeForward: {
             self.iconImageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_forward.png", [IMResourceBundleUtil assetsBundle].bundlePath]];
+
+            [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.right.equalTo(self).offset(-60.0f);
+                make.width.equalTo(@8.0f);
+                make.height.equalTo(@12.0f);
+            }];
+
             break;
-        case SampleAppCollectionIconTypeSettings:
+        }
+        case SampleAppCollectionIconTypeSettings: {
             self.iconImageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_settings.png", [IMResourceBundleUtil assetsBundle].bundlePath]];
+
+            [self.iconImageView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.right.equalTo(self).offset(-52.0f);
+                make.width.and.height.equalTo(@22.0f);
+            }];
+
             break;
+        }
         default:
             break;
     }
 }
 
-
-//- (void)awakeFromNib {
-//    [super awakeFromNib];
-//    // Initialization code
-//}
-//
 //- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 //    [super setSelected:selected animated:animated];
 //

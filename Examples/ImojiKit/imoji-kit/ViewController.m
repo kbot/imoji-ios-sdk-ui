@@ -34,12 +34,14 @@
 #import "AppDelegate.h"
 #import "IMResourceBundleUtil.h"
 #import "SampleAppCollectionTableViewCell.h"
+#import "UISettingsViewController.h"
 
 typedef NS_ENUM(NSUInteger, SampleAppType) {
     SampleAppTypeFullScreen,
     SampleAppTypeHalfAndQuarterScreen,
     SampleAppTypeHalfScreen,
-    SampleAppTypeQuarterScreen
+    SampleAppTypeQuarterScreen,
+    SampleAppTypeUISettings
 };
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
@@ -56,7 +58,10 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
 - (void)loadView {
     [super loadView];
 
-    self.sampleApps = [@[@(SampleAppTypeFullScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen)] mutableCopy];
+    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
+    [shared registerDefaults:@{@"createAndRecents" : @YES, @"stickerBorders" : @(IMImojiObjectBorderStyleSticker)}];
+
+    self.sampleApps = [@[@(SampleAppTypeFullScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen), @(SampleAppTypeUISettings)] mutableCopy];
 
     self.imojiLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_logo.png", [IMResourceBundleUtil assetsBundle].bundlePath]]];
 
@@ -115,6 +120,9 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
         case SampleAppTypeHalfAndQuarterScreen:
             [cell setupWithTitle:@"Half + Quarter Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
+        case SampleAppTypeUISettings:
+            [cell setupWithTitle:@"UI Settings" iconImage:SampleAppCollectionIconTypeSettings];
+            break;
         default:
             break;
     }
@@ -125,7 +133,6 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 56.0f;
 }
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UIViewController *controller = nil;
@@ -143,6 +150,9 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
             break;
         case SampleAppTypeHalfAndQuarterScreen:
             controller = [[HalfAndQuarterScreenViewController alloc] init];
+            break;
+        case SampleAppTypeUISettings:
+            controller = [[UISettingsViewController alloc] init];
             break;
         default:
             break;

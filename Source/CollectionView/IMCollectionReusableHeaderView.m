@@ -70,6 +70,24 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
             make.height.equalTo(@2.0f);
         }];
     }
+
+    if (self.title) {
+        [self.title removeFromSuperview];
+        [self.separatorView removeFromSuperview];
+        for(UIView *subview in self.separatorView.subviews) {
+            [subview removeFromSuperview];
+        }
+
+        [self.headerView addSubview:self.separatorView];
+
+        self.separatorView.backgroundColor = [UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.18f];
+        [self.separatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.headerView).offset(9.0f);
+            make.left.equalTo(self.headerView).offset(10.0f);
+            make.right.equalTo(self.headerView).offset(-10.0f);
+            make.height.equalTo(@2.0f);
+        }];
+    }
 }
 
 - (void)setupWithText:(NSString *)header multipleSections:(BOOL)multipleSections separator:(BOOL)separator {
@@ -130,8 +148,15 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
         }];
     }
 
+    [self.title removeFromSuperview];
     [self.separatorView removeFromSuperview];
     [self.contextLabel removeFromSuperview];
+
+    if(!self.title) {
+        _title = [[UILabel alloc] init];
+    }
+
+    [self.headerView addSubview:self.title];
 
     if(separator) {
         [self.headerView addSubview:self.separatorView];
@@ -170,8 +195,8 @@ NSString *const IMCollectionReusableHeaderViewReuseId = @"IMCollectionReusableHe
     }
 
     self.title.attributedText = [IMAttributeStringUtil attributedString:[header uppercaseString]
-                                                               withFont:[IMAttributeStringUtil sfUIDisplayMediumFontWithSize:22.0f]
-                                                                  color:[UIColor colorWithRed:92.0f / 255.0f green:97.0f / 255.0f blue:102.0f / 255.0f alpha:1.0f]
+                                                               withFont:[IMAttributeStringUtil montserratRegularFontWithSize:17.0f]
+                                                                  color:[UIColor colorWithRed:75.0f / 255.0f green:81.0f / 255.0f blue:96.0f / 255.0f alpha:1.0f]
                                                            andAlignment:NSTextAlignmentCenter];
 }
 
