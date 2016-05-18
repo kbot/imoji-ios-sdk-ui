@@ -37,20 +37,25 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.splashGraphic = [UIImageView new];
-        self.splashText = [UILabel new];
+        self.splashContainer = [[UIView alloc] init];
+        self.splashGraphic = [[UIImageView alloc] init];
+        self.splashText = [[UILabel alloc] init];
 
         self.splashText.lineBreakMode = NSLineBreakByWordWrapping;
         self.splashText.numberOfLines = 2;
 
-        [self addSubview:self.splashGraphic];
-        [self addSubview:self.splashText];
+        [self addSubview:self.splashContainer];
+
+        [self.splashContainer addSubview:self.splashGraphic];
+        [self.splashContainer addSubview:self.splashText];
     }
 
     return self;
 }
 
 - (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle *)imageBundle {
+    self.splashType = splashCellType;
+
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
     switch (splashCellType) {
         case IMCollectionViewSplashCellNoConnection:
@@ -59,7 +64,7 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
-            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_noconnection" andImageBundle:imageBundle];
+            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_noconnection" imageBundle:imageBundle];
             break;
         case IMCollectionViewSplashCellEnableFullAccess:
             [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashEnableFullAccess"]
@@ -67,20 +72,20 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
-            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_enableaccess" andImageBundle:imageBundle];
+            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_enableaccess" imageBundle:imageBundle];
             break;
         case IMCollectionViewSplashCellNoResults: {
-            NSArray *textArray = [[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoResults"] componentsSeparatedByString:@"|"];
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[0]
-                                                                                    withFont:[IMAttributeStringUtil sfUIDisplayLightFontWithSize:19.0f]
-                                                                                       color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
-                                                                                andAlignment:NSTextAlignmentCenter]];
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[1]
-                                                                                    withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:16.0f]
-                                                                                       color:[UIColor colorWithRed:56.0f / 255.0f green:124.0f / 255.0f blue:169.0f / 255.0f alpha:1]
-                                                                                andAlignment:NSTextAlignmentCenter]];
+//            NSArray *textArray = [[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoResults"] componentsSeparatedByString:@"|"];
+//            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[0]
+//                                                                                    withFont:[IMAttributeStringUtil montserratLightFontWithSize:20.0f]
+//                                                                                       color:[UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.3f]
+//                                                                                andAlignment:NSTextAlignmentCenter]];
+//            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:textArray[1]
+//                                                                                    withFont:[IMAttributeStringUtil montserratLightFontWithSize:20.0f]
+//                                                                                       color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1]
+//                                                                                andAlignment:NSTextAlignmentCenter]];
 
-            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_noresults" andImageBundle:imageBundle];
+            [self setupSplashCellWithText:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoResults"]];
             break;
         }
         case IMCollectionViewSplashCellCollection:{
@@ -94,36 +99,58 @@ NSString *const IMCollectionViewSplashCellReuseId = @"IMCollectionViewSplashCell
                                                                                        color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
                                                                                 andAlignment:NSTextAlignmentCenter]];
 
-            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_collection" andImageBundle:imageBundle];
+            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_collection" imageBundle:imageBundle];
             break;
         }
         case IMCollectionViewSplashCellRecents:
-            [attributedString appendAttributedString:[IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashRecents"]
-                                                                                    withFont:[IMAttributeStringUtil sfUIDisplayRegularFontWithSize:15.0f]
-                                                                                       color:[UIColor colorWithRed:167.0f / 255.0f green:169.0f / 255.0f blue:172.0f / 255.0f alpha:1]
-                                                                                andAlignment:NSTextAlignmentCenter]];
-
-            [self loadSplashCellWithText:attributedString imageName:@"collection_view_splash_recents" andImageBundle:imageBundle];
+            [self setupSplashCellWithText:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashRecents"]];
             break;
         default:
             break;
     }
 }
 
+- (void)setupSplashCellWithText:(NSString *)text {
+    self.splashGraphic.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_noresults_graphic_large.png", [IMResourceBundleUtil assetsBundle].bundlePath]];
+    self.splashText.attributedText = [IMAttributeStringUtil attributedString:text
+                                                                    withFont:[IMAttributeStringUtil montserratLightFontWithSize:20.0f]
+                                                                       color:[UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.3f]
+                                                                andAlignment:NSTextAlignmentCenter];
+
+    [self.splashContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.equalTo(@345.0f);
+        make.height.equalTo(@239.0f);
+        make.center.equalTo(self);
+    }];
+
+    [self.splashGraphic mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.splashContainer);
+    }];
+
+    [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.splashContainer);
+        make.width.and.centerX.equalTo(self);
+    }];
+}
+
 - (void)loadSplashCellWithText:(NSAttributedString *)text
                      imageName:(NSString *)imageName
-                andImageBundle:(NSBundle *)imageBundle {
+                   imageBundle:(NSBundle *)imageBundle {
     self.splashGraphic.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", imageBundle.bundlePath, imageName]];
     self.splashText.attributedText = text;
 
+    [self.splashContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self);
+    }];
+
     [self.splashGraphic mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self);
-        make.centerY.equalTo(self).offset(-(self.splashGraphic.image.size.height / 2.0f));
+        make.centerX.equalTo(self.splashContainer);
+        make.centerY.equalTo(self.splashContainer).offset(-(self.splashGraphic.image.size.height / 2.0f));
     }];
 
     [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.splashGraphic.mas_bottom).offset(13.0f);
-        make.width.and.centerX.equalTo(self);
+        make.width.and.centerX.equalTo(self.splashContainer);
     }];
 }
 

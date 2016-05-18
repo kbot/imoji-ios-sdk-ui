@@ -149,7 +149,11 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 //        else {
 //            [headerView setupWithText:self.content[(NSUInteger) indexPath.section][@"title"] multipleSections:YES separator:![self.content[(NSUInteger) indexPath.section - 1][@"showAttribution"] boolValue]];
 //        }
-        [headerView setupWithSeparator];
+        if (![self.content[(NSUInteger) indexPath.section - 1][@"showAttribution"] boolValue]) {
+            [headerView setupWithSeparator];
+        } else {
+            [headerView.separatorView removeFromSuperview];
+        }
 
         return headerView;
     } else if (kind == UICollectionElementKindSectionFooter) {
@@ -566,7 +570,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 - (void)loadImojisFromSearch:(NSString *)searchTerm {
     self.shouldShowAttribution = self.shouldLoadNewSection = NO;
     self.currentHeader = searchTerm;
-    [self loadImojisFromSearch:searchTerm offset:nil infiniteScrollEnabled:NO];
+    [self loadImojisFromSearch:searchTerm offset:nil];
 }
 
 - (void)loadImojisFromSentence:(NSString *)sentence {
@@ -689,7 +693,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         self.currentAttribution = category.attribution;
     }
 
-    [self loadImojisFromSearch:category.identifier offset:nil infiniteScrollEnabled:YES];
+    [self loadImojisFromSearch:category.identifier offset:nil];
 }
 
 - (void)displaySplashOfType:(IMCollectionViewSplashCellType)splashType {
@@ -722,7 +726,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 #pragma mark Private Imoji Loading Methods
 
-- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset infiniteScrollEnabled:(BOOL)infiniteScrollEnabled {
+- (void)loadImojisFromSearch:(NSString *)searchTerm offset:(NSNumber *)offset {
     if (![IMConnectivityUtil sharedInstance].hasConnectivity) {
         self.contentType = IMCollectionViewContentTypeNoConnectionSplash;
         return;
@@ -749,9 +753,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              NSNumber *resultCount = metadata.resultCount;
                              // if the resultCount is 0 then followUpSearchTerm returns nil
                              // avoid that case by setting the followUpSearchTerm whenever resultCount is above 0
-                             if (self.infiniteScroll
-                                     && infiniteScrollEnabled
-                                     && resultCount.unsignedIntegerValue > 0) {
+                             if (self.infiniteScroll && resultCount.unsignedIntegerValue > 0) {
 //                                 self.followUpSearchTerm = metadata.relatedSearchTerm;
                                  self.followUpRelatedCategories = metadata.relatedCategories;
                              }
@@ -762,10 +764,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                         emptyResultsContentType:IMCollectionViewContentTypeNoResultsSplash];
 
                              // Prepare to load new section
-                             if (self.infiniteScroll
-                                     && infiniteScrollEnabled
-                                     && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad
-                                     && self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
+                             if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad &&
+                                 self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
                                  // Checks for when the followUpSearchTerm is the same as the searchTerm (current)
                                  // and the resultCount is 0. This means the search with the followUpSearchTerm returned no results.
 //                                 if (self.followUpSearchTerm != searchTerm) {
@@ -814,7 +814,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                                             inSection:currentSection]
                                 ]];
                             } completion:nil];
-                        } else if (self.infiniteScroll && infiniteScrollEnabled && self.shouldLoadNewSection &&
+                        } else if (self.infiniteScroll && self.shouldLoadNewSection &&
                                 index + 1 == [self numberOfItemsInSection:currentSection] % self.numberOfImojisToLoad) {
                             // append the loading indicator to the next section if
                             // a new section should be loaded.
@@ -866,7 +866,7 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                                   operation:self.imojiOperation];
                 }
             } else {
-                [self loadImojisFromSearch:self.currentSearchTerm offset:@([self numberOfItemsInSection:self.numberOfSections - 1] + 1) infiniteScrollEnabled:YES];
+                [self loadImojisFromSearch:self.currentSearchTerm offset:@([self numberOfItemsInSection:self.numberOfSections - 1] + 1)];
             }
         }];
     }
@@ -965,7 +965,11 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
         if (insertedPaths.count > 0 || loadingOffset != NSNotFound) {
             // TODO: address assertion issue with insert/removal that occurs when a user quickly switches from categories to imojis
             if (offset == 0) {
-                [self reloadData];
+                if(self.shouldLoadNewSection) {
+                    [self reloadSections:[[NSIndexSet alloc] initWithIndex:(NSUInteger)self.numberOfSections - 1]];
+                } else {
+                    [self reloadData];
+                }
             } else {
                 [self performBatchUpdates:^{
                     if (loadingOffset != NSNotFound) {
