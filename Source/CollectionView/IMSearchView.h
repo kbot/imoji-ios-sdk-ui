@@ -56,6 +56,8 @@ extern CGFloat const IMSearchViewContainerDefaultRightOffset;
 @property(nonatomic, copy, readonly) NSString *previousSearchTerm;
 @property(nonatomic, weak) id <IMSearchViewDelegate> delegate;
 
+- (void)resetSearchView;
+
 - (void)showBackButton;
 
 - (void)hideBackButton;
