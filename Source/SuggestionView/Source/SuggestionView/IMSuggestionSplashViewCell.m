@@ -25,20 +25,60 @@
 
 #import "IMSuggestionSplashViewCell.h"
 #import "View+MASAdditions.h"
+#import "IMSuggestionView.h"
+#import "IMAttributeStringUtil.h"
+#import "IMResourceBundleUtil.h"
 
 @implementation IMSuggestionSplashViewCell {
 
 }
 
-- (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle *__nonnull)imageBundle {
-    [super showSplashCellType:splashCellType withImageBundle:imageBundle];
+- (void)layoutSubviews {
+    [super layoutSubviews];
 
-    self.splashGraphic.hidden = YES;
-    self.splashText.numberOfLines = 1;
+    if(self.splashType == IMCollectionViewSplashCellNoResults) {
+        [self setupSplashCellWithText:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashNoResults"]];
+    } else if(self.splashType == IMCollectionViewSplashCellRecents) {
+        [self setupSplashCellWithText:[IMResourceBundleUtil localizedStringForKey:@"collectionViewSplashRecents"]];
+    }
+}
 
-    [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(self);
-    }];
+- (void)setupSplashCellWithText:(NSString *)text {
+    self.splashGraphic.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_noresults_graphic_small.png", [IMResourceBundleUtil assetsBundle].bundlePath]];
+    self.splashText.attributedText = [IMAttributeStringUtil attributedString:text
+                                                                    withFont:[IMAttributeStringUtil montserratLightFontWithSize:16.0f]
+                                                                       color:[UIColor colorWithRed:0.0f / 255.0f green:0.0f / 255.0f blue:0.0f / 255.0f alpha:0.24f]
+                                                                andAlignment:NSTextAlignmentCenter];
+
+    if (self.frame.size.height > IMSuggestionViewDefaultHeight) {
+        self.splashGraphic.hidden = NO;
+
+        [self.splashContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(self);
+            make.height.equalTo(@119.0f);
+            make.center.equalTo(self);
+        }];
+
+        [self.splashGraphic mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.and.centerX.equalTo(self.splashContainer);
+        }];
+
+        [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.splashGraphic.mas_bottom).offset(12.0f);
+            make.width.and.centerX.equalTo(self.splashContainer);
+        }];
+    } else {
+        self.splashGraphic.hidden = YES;
+
+        [self.splashContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self);
+        }];
+
+        [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.centerX.equalTo(self.splashContainer).offset(-10.f);
+            make.centerY.equalTo(self.splashContainer);
+        }];
+    }
 }
 
 @end

@@ -87,13 +87,22 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UIEdgeInsets insets = [self collectionView:collectionView
+                                        layout:collectionViewLayout
+                        insetForSectionAtIndex:indexPath.section];
+
+    CGSize availableSize = CGSizeMake(
+            self.frame.size.width - insets.left * 2.0f,
+            self.frame.size.height
+    );
+
     switch (self.contentType) {
         case IMCollectionViewContentTypeImojis:
         case IMCollectionViewContentTypeImojiCategories:
             return self.preferredImojiDisplaySize;
 
         default:
-            return self.frame.size;
+            return availableSize;
     }
 }
 
@@ -111,7 +120,6 @@
     }
 
     return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 10.0f);
-//    }
 }
 
 @end

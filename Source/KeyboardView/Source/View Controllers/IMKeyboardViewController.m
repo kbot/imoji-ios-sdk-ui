@@ -207,6 +207,10 @@
     renderOptions.aspectRatio = [NSValue valueWithCGSize:CGSizeMake(16.0f, 9.0f)];
     renderOptions.renderAnimatedIfSupported = YES;
 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.session markImojiUsageWithIdentifier:imoji.identifier originIdentifier:@"imoji keyboard: imoji selected"];
+    });
+
     [self.session renderImojiForExport:imoji
                                options:renderOptions
                               callback:^(UIImage *image, NSData *data, NSString *typeIdentifier, NSError *error) {
@@ -222,8 +226,8 @@
 
                               }];
 
-    // save to recents
-    [self saveToRecents:imoji];
+//    // save to recents
+//    [self saveToRecents:imoji];
 }
 
 
@@ -294,7 +298,7 @@
             [self.keyboardView updateProgressBarWithValue:0.f];
             break;
         case IMToolbarButtonRecents:
-            [self.keyboardView.collectionView loadRecentImojis:self.recentImojis];
+            [self.keyboardView.collectionView loadRecents/*Imojis:self.recentImojis*/];
             [self.keyboardView updateTitleWithText:@"RECENTS" hideCloseButton:YES];
             break;
         case IMToolbarButtonReactions:
@@ -344,30 +348,30 @@
 
 #pragma mark Recents/Favorites Logic
 
-- (void)saveToRecents:(IMImojiObject *)imojiObject {
-    NSUInteger arrayCapacity = 20;
-    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
-    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
-    NSMutableArray *arrayOfRecents = [NSMutableArray arrayWithCapacity:arrayCapacity];
-
-    if (!savedArrayOfRecents || savedArrayOfRecents.count == 0) {
-        [arrayOfRecents addObject:imojiObject.identifier];
-    } else {
-        [arrayOfRecents addObjectsFromArray:savedArrayOfRecents];
-
-        if ([arrayOfRecents containsObject:imojiObject.identifier]) {
-            [arrayOfRecents removeObject:imojiObject.identifier];
-        }
-        [arrayOfRecents insertObject:imojiObject.identifier atIndex:0];
-
-        while (arrayOfRecents.count > arrayCapacity) {
-            [arrayOfRecents removeLastObject];
-        }
-    }
-
-    [shared setObject:arrayOfRecents forKey:@"recentImojis"];
-    [shared synchronize];
-}
+//- (void)saveToRecents:(IMImojiObject *)imojiObject {
+//    NSUInteger arrayCapacity = 20;
+//    NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+//    NSArray *savedArrayOfRecents = [shared objectForKey:@"recentImojis"];
+//    NSMutableArray *arrayOfRecents = [NSMutableArray arrayWithCapacity:arrayCapacity];
+//
+//    if (!savedArrayOfRecents || savedArrayOfRecents.count == 0) {
+//        [arrayOfRecents addObject:imojiObject.identifier];
+//    } else {
+//        [arrayOfRecents addObjectsFromArray:savedArrayOfRecents];
+//
+//        if ([arrayOfRecents containsObject:imojiObject.identifier]) {
+//            [arrayOfRecents removeObject:imojiObject.identifier];
+//        }
+//        [arrayOfRecents insertObject:imojiObject.identifier atIndex:0];
+//
+//        while (arrayOfRecents.count > arrayCapacity) {
+//            [arrayOfRecents removeLastObject];
+//        }
+//    }
+//
+//    [shared setObject:arrayOfRecents forKey:@"recentImojis"];
+//    [shared synchronize];
+//}
 
 - (void)saveToFavorites:(IMImojiObject *)imojiObject {
     [self.session addImojiToUserCollection:imojiObject

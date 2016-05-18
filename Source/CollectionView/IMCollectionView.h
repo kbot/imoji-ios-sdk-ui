@@ -158,6 +158,12 @@ extern NSUInteger const IMCollectionViewNumberOfItemsToLoad;
 - (void)loadUserCollectionImojis;
 
 /**
+ * @abstract Loads Imoji stickers for an authenticated user into the recents view using
+ * getImojisForAuthenticatedUserWithResultSetResponseCallback from IMImojiSession
+ */
+- (void)loadRecents;
+
+/**
  * @abstract Loads Imoji stickers from a category
  */
 - (void)loadImojisFromCategory:(nonnull IMImojiCategoryObject *)category;
