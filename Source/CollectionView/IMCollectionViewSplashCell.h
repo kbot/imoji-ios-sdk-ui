@@ -38,8 +38,10 @@ extern NSString * __nonnull const IMCollectionViewSplashCellReuseId;
 
 @interface IMCollectionViewSplashCell : UICollectionViewCell
 
+@property(nonatomic, strong, nullable) UIView *splashContainer;
 @property(nonatomic, strong, nullable) UIImageView *splashGraphic;
 @property(nonatomic, strong, nullable) UILabel *splashText;
+@property(nonatomic) IMCollectionViewSplashCellType splashType;
 
 - (void)showSplashCellType:(IMCollectionViewSplashCellType)splashCellType withImageBundle:(NSBundle * __nonnull)imageBundle;
 

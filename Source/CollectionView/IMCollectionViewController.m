@@ -24,17 +24,18 @@
 //
 
 #import <Masonry/Masonry.h>
-#import "IMCollectionViewController.h"
-#import "IMResourceBundleUtil.h"
-#import "IMCategoryCollectionViewCell.h"
-#import "IMCollectionViewCell.h"
+#import <ImojiSDKUI/IMCollectionViewController.h>
+//#import <ImojiSDKUI/IMCreateImojiViewController.h>
+#import <ImojiSDKUI/IMCategoryCollectionViewCell.h>
+#import <ImojiSDK/IMImojiCategoryObject.h>
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
-UIEdgeInsets const IMCollectionViewControllerSearchFieldInsets = {0, 10, 0, 10};
-UIEdgeInsets const IMCollectionViewControllerBackButtonInsets = {0, 10, 0, 10};
+CGFloat const IMCollectionViewControllerTopBarDefaultHeight = 44.0f;
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
-@interface IMCollectionViewController () <UISearchBarDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate>
+@interface IMCollectionViewController () <UISearchBarDelegate, IMSearchViewDelegate, IMToolbarDelegate,
+        IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate, UIActionSheetDelegate,
+        /*IMCreateImojiViewControllerDelegate,*/ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property(nonatomic, strong) NSOperation *pendingSearchOperation;
 @end
@@ -89,14 +90,11 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 
-    _backButton = (UIButton *) [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
-    _searchField = (UISearchBar *) [self.topToolbar addSearchBarItem].customView;
-    _searchField.delegate = self;
-    _searchField.spellCheckingType = UITextSpellCheckingTypeNo;
-    _searchField.enablesReturnKeyAutomatically = NO;
-    _bottomToolbar.delegate = _topToolbar.delegate = self;
+    _searchView = [self.topToolbar addSearchViewItem].customView;
+    _searchView.delegate = self;
+    _backButton = self.searchView.backButton;
 
-    self.backButton.hidden = YES;
+    _bottomToolbar.delegate = _topToolbar.delegate = self;
 
     self.collectionViewControllerDelegate = self;
 }
@@ -118,13 +116,12 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 }
 
 - (void)setupControllerComponentsLookAndFeel {
-    self.collectionView.backgroundColor = [UIColor colorWithWhite:248 / 255.0f alpha:1.0f];
+    self.collectionView.backgroundColor = [UIColor colorWithWhite:255.0f / 255.0f alpha:1.0f];
 
-    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-
-    self.searchField.returnKeyType = self.searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
-    self.searchField.placeholder = [IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"];
+    self.searchView.backgroundColor = [UIColor clearColor];
+    self.searchView.searchViewScreenType = IMSearchViewScreenTypeFull;
+    self.searchView.backButtonType = IMSearchViewBackButtonTypeDismiss;
+    self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
 
     if ([self.collectionViewControllerDelegate respondsToSelector:@selector(backgroundColorForCollectionViewController:)]) {
         self.view.backgroundColor = [self.collectionViewControllerDelegate backgroundColorForCollectionViewController:self];
@@ -143,7 +140,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
     [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view);
-        make.height.equalTo(@(IMCollectionViewControllerBottomBarDefaultHeight));
+        make.height.equalTo(@(IMCollectionViewControllerTopBarDefaultHeight));
         make.centerX.equalTo(self.view);
         make.top.equalTo(self.mas_topLayoutGuideBottom);
     }];
@@ -153,30 +150,18 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         make.left.right.and.bottom.equalTo(self.view);
     }];
 
-    [self.searchField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.height.and.top.equalTo(self.backButton);
-        make.right.equalTo(self.view).offset(-IMCollectionViewControllerSearchFieldInsets.right);
-
-        if (self.backButton.hidden) {
-            make.left.equalTo(self.view).offset(IMCollectionViewControllerSearchFieldInsets.left);
-        } else {
-            make.left.equalTo(self.backButton.mas_right).offset(IMCollectionViewControllerSearchFieldInsets.left);
-        }
-    }];
-
-    [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.topToolbar);
-        make.left.equalTo(self.topToolbar).offset(IMCollectionViewControllerBackButtonInsets.left);
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.height.and.top.and.right.and.left.equalTo(self.topToolbar);
     }];
 
     self.bottomToolbar.hidden = !self.bottomToolbar.items || self.bottomToolbar.items.count == 0;
 
     // hide the top toolbar if both of the default components are hidden
     self.topToolbar.hidden = !self.topToolbar.items || self.topToolbar.items.count == 0 ||
-            (self.backButton.hidden && self.searchField.hidden && self.topToolbar.items.count == 2);
+            (self.backButton.hidden && self.searchView.searchTextField.hidden && self.topToolbar.items.count == 2);
 
     self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset = UIEdgeInsetsMake(
-            (!self.topToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
+            (!self.topToolbar.hidden ? IMCollectionViewControllerTopBarDefaultHeight : 0),
             0,
             (!self.bottomToolbar.hidden ? IMCollectionViewControllerBottomBarDefaultHeight : 0),
             0
@@ -206,6 +191,9 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             endRect.size.height,
             self.collectionView.contentInset.right
     );
+
+    [self.collectionView.collectionViewLayout invalidateLayout];
+//    [self.collectionView layoutIfNeeded];
 }
 
 - (void)keyboardWillHideForSearchField:(NSNotification *)notification {
@@ -215,17 +203,19 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             self.bottomToolbar.hidden ? 0 : self.bottomToolbar.frame.size.height,
             self.collectionView.contentInset.right
     );
+
+    [self.collectionView.collectionViewLayout invalidateLayout];
+//    [self.collectionView layoutIfNeeded];
 }
 
 #pragma mark Overrides
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
+    return UIStatusBarStyleDefault;
 }
 
 - (void)setSearchOnTextChanges:(BOOL)searchOnTextChanges {
     _searchOnTextChanges = searchOnTextChanges;
-    self.searchField.returnKeyType = searchOnTextChanges ? UIReturnKeyDone : UIReturnKeySearch;
 }
 
 - (void)setCollectionViewControllerDelegate:(id)collectionViewControllerDelegate {
@@ -242,7 +232,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             break;
 
         case IMCollectionViewSplashCellNoResults:
-            [self.searchField becomeFirstResponder];
+//            [self.searchField becomeFirstResponder];
+            [self.searchView.searchTextField becomeFirstResponder];
             break;
 
         default:
@@ -250,10 +241,77 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     }
 }
 
-#pragma mark Search field delegates
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    self.searchView.searchTextField.text = category.title;
+    self.searchView.searchTextField.rightView.hidden = NO;
+    self.searchView.createButton.hidden = YES;
+    self.searchView.recentsButton.hidden = YES;
+    [self.searchView.searchTextField resignFirstResponder];
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if (self.searchOnTextChanges) {
+    [collectionView loadImojisFromCategory:category];
+}
+
+- (void)imojiCollectionViewDidScroll:(IMCollectionView *)collectionView {
+    [self.searchView.searchTextField resignFirstResponder];
+}
+
+#pragma mark IMSearchView delegates
+
+- (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
+    if (searchView.recentsButton.selected) {
+        [self.collectionView loadRecents];
+    } else if (![searchView.previousSearchTerm isEqualToString:searchView.searchTextField.text]) {
+        if([searchView.previousSearchTerm isEqualToString:@""]) {
+            [self userDidClearTextFieldFromSearchView:searchView];
+        } else {
+            searchView.searchTextField.text = searchView.previousSearchTerm;
+            [self performSearch];
+        }
+    }
+}
+
+- (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
+//    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+                UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+                imagePicker.delegate = self;
+                imagePicker.allowsEditing = NO;
+                imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+
+                [self presentViewController:imagePicker animated:YES completion:nil];
+            }
+        }]];
+
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+
+        [self presentViewController:alertController animated:YES completion:nil];
+//    } else {
+//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+//                                                                 delegate:self
+//                                                        cancelButtonTitle:@"Cancel"
+//                                                   destructiveButtonTitle:nil
+//                                                        otherButtonTitles:@"Photo Library", nil];
+//
+//        [actionSheet showInView:self.view];
+//    }
+}
+
+- (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
+    [self.collectionView loadRecents];
+}
+
+- (void)userDidClearTextFieldFromSearchView:(IMSearchView *)searchView {
+    [self.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+}
+
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
+    if (searchView.searchTextField.text.length == 0) {
+        [self userDidClearTextFieldFromSearchView:searchView];
+    } else if (self.searchOnTextChanges) {
         if (self.pendingSearchOperation && !self.pendingSearchOperation.isCancelled) {
             [self.pendingSearchOperation cancel];
         }
@@ -262,26 +320,18 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         self.pendingSearchOperation = pendingSearchOperation;
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * self.autoSearchDelayTimeInMillis), dispatch_get_main_queue(), ^{
-            if (!pendingSearchOperation.isCancelled) {
+            if (!pendingSearchOperation.isCancelled && searchView.searchTextField.text.length != 0) {
                 [self performSearch];
             }
         });
     }
 }
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    if (!self.searchOnTextChanges) {
-        [self performSearch];
-    }
-
-    [self.searchField resignFirstResponder];
-}
-
 - (void)performSearch {
     if (self.sentenceParseEnabled) {
-        [self.collectionView loadImojisFromSentence:self.searchField.text];
+        [self.collectionView loadImojisFromSentence:self.searchView.searchTextField.text];
     } else {
-        [self.collectionView loadImojisFromSearch:self.searchField.text];
+        [self.collectionView loadImojisFromSearch:self.searchView.searchTextField.text];
     }
 }
 
@@ -303,6 +353,35 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             self.bottomToolbar == bar ? UIBarPositionBottom : UIBarPositionAny;
 }
 
+#pragma mark UIImagePickerControllerDelegate
+
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
+//    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: self.session];
+//    createImojiViewController.createDelegate = self;
+//    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+//    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//    [picker presentViewController:createImojiViewController animated: true completion: nil];
+//}
+
+#pragma mark IMCreateImojiViewControllerDelegate
+
+//- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
+//    [self.session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
+//}
+//
+//- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
+//               persistentImoji:(IMImojiObject *)persistentImoji
+//                     withError:(NSError *)error
+//            fromViewController:(IMCreateImojiViewController *)viewController {
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//
+//    [self.collectionView loadRecents];
+//}
+//
+//- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
+//    [viewController dismissViewControllerAnimated:NO completion:nil];
+//}
+
 #pragma mark Previewing Delegate (3D/Force Touch)
 
 - (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
@@ -317,10 +396,23 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
         CGFloat cellRelativeOriginY = [self.collectionView convertRect:cell.frame toView:self.view].origin.y;
         // Check if part of the cell is under the bottom toolbar
-        if(cellRelativeOriginY + cell.frame.size.height > self.bottomToolbar.frame.origin.y) {
+        if(!self.bottomToolbar.hidden && cellRelativeOriginY + cell.frame.size.height > self.bottomToolbar.frame.origin.y) {
             // Only focus the part of the cell above the bottom toolbar.
             // Subtract the cell's height with the height of the part of the cell under the toolbar.
-            previewingContext.sourceRect = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, cell.frame.size.width, cell.frame.size.height - (cellRelativeOriginY + cell.frame.size.height - self.bottomToolbar.frame.origin.y));
+            previewingContext.sourceRect = CGRectMake(
+                    cell.frame.origin.x,
+                    cell.frame.origin.y,
+                    cell.frame.size.width,
+                    cell.frame.size.height - (cellRelativeOriginY + cell.frame.size.height - self.bottomToolbar.frame.origin.y)
+            );
+        } else if(!self.topToolbar.hidden && cellRelativeOriginY < self.topToolbar.frame.origin.y + self.topToolbar.frame.size.height) {
+            // The same concept as the bottom bar happens for the top toolbar
+            previewingContext.sourceRect = CGRectMake(
+                    cell.frame.origin.x,
+                    cell.frame.origin.y + (self.topToolbar.frame.origin.y + self.topToolbar.frame.size.height - cellRelativeOriginY),
+                    cell.frame.size.width,
+                    cell.frame.size.height - (self.topToolbar.frame.origin.y + self.topToolbar.frame.size.height - cellRelativeOriginY)
+            );
         } else {
             previewingContext.sourceRect = cell.frame;
         }
@@ -342,6 +434,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     if ([cell isKindOfClass:[IMCategoryCollectionViewCell class]]) {
         IMImojiCategoryObject *imojiCategory = [self.collectionView contentForIndexPath:indexPath];
 
+        self.searchView.searchTextField.text = imojiCategory.title;
+        self.searchView.searchTextField.rightView.hidden = NO;
         [self.collectionView loadImojisFromCategory:imojiCategory];
     }
 }

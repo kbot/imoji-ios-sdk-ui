@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @class MessageThreadView;
-@class ImojiSuggestionView;
 
 @interface ViewController : UIViewController
 

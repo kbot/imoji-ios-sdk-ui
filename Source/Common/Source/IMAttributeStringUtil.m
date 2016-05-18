@@ -23,9 +23,13 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMAttributeStringUtil.h"
+#import <CoreText/CoreText.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 
 NSString *const IMAttributeStringUtilDefaultFont = @"HelveticaNeue-Medium";
+NSString *const IMAttributeStringUtilMontserratLight = @"Montserrat-Light";
+NSString *const IMAttributeStringUtilMontserratRegular = @"Montserrat-Regular";
 NSString *const IMAttributeStringUtilSFLightFont = @"SFUIDisplay-Light";
 NSString *const IMAttributeStringUtilSFRegularFont = @"SFUIDisplay-Regular";
 NSString *const IMAttributeStringUtilSFMediumFont = @"SFUIDisplay-Medium";
@@ -41,6 +45,14 @@ NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 + (UIFont *)defaultFontWithSize:(CGFloat)size {
     return [UIFont fontWithName:IMAttributeStringUtilDefaultFont size:size];
+}
+
++ (UIFont *)montserratLightFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilMontserratLight andSize:size];
+}
+
++ (UIFont *)montserratRegularFontWithSize:(CGFloat)size {
+    return [IMAttributeStringUtil checkedStyledFontWithName:IMAttributeStringUtilMontserratRegular andSize:size];
 }
 
 + (UIFont *)sfUIDisplayLightFontWithSize:(CGFloat)size {
@@ -83,11 +95,34 @@ NSString *const IMAttributeStringUtilImojiRegularFont = @"Imoji-Regular";
 
 + (UIFont *)checkedStyledFontWithName:(NSString *)name andSize:(CGFloat)size {
     UIFont *font = [UIFont fontWithName:name size:size];
-    if (font) {
-        return font;
+    if (!font) {
+        [IMAttributeStringUtil dynamicallyLoadFontNamed:name];
+        font = [UIFont fontWithName:name size:size];
+
+        if(!font) {
+            return [IMAttributeStringUtil defaultFontWithSize:size];
+        }
     }
 
-    return [IMAttributeStringUtil defaultFontWithSize:size];
+    return font;
+}
+
++ (void)dynamicallyLoadFontNamed:(NSString *)name
+{
+    NSURL *url = [[IMResourceBundleUtil fontsBundle] URLForResource:name withExtension:@"otf"];
+    NSData *fontData = [NSData dataWithContentsOfURL:url];
+    if (fontData) {
+        CFErrorRef error;
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)fontData);
+        CGFontRef font = CGFontCreateWithDataProvider(provider);
+        if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
+            CFStringRef errorDescription = CFErrorCopyDescription(error);
+            NSLog(@"Failed to load font: %@", errorDescription);
+            CFRelease(errorDescription);
+        }
+        CFRelease(font);
+        CFRelease(provider);
+    }
 }
 
 + (NSAttributedString *)attributedString:(NSString *)text

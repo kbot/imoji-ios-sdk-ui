@@ -30,24 +30,27 @@
 #import <ImojiSDKUI/IMCollectionView.h>
 #import <ImojiSDKUI/IMKeyboardView.h>
 #import <ImojiSDKUI/IMKeyboardCollectionView.h>
+#import <ImojiSDKUI/IMSearchView.h>
 #import <ImojiSDKUI/IMSuggestionView.h>
 #import <ImojiSDKUI/IMToolbar.h>
 #import <Masonry/View+MASAdditions.h>
 #import <Masonry/ViewController+MASAdditions.h>
 
-CGFloat const SuggestionViewBarHeight = 101.f;
+CGFloat const SuggestionViewBarHeight = 91.f;
 CGFloat const InputBarHeight = 50.f;
 CGFloat const InputFieldPadding = 5.f;
 CGFloat const InitialImojiKeyboardViewHeight = 240.f;
 CGFloat const SuggestionFieldBorderHeight = 1.f;
-
-@interface ViewController () <UITextFieldDelegate, IMKeyboardViewDelegate, IMKeyboardCollectionViewDelegate, IMToolbarDelegate>
+CGFloat const InputFieldLeftOffset = 15.f;
+CGFloat const InputFieldRightOffset = 9.f;
+@interface ViewController () </*UITextFieldDelegate*/IMSearchViewDelegate, IMKeyboardViewDelegate, IMKeyboardCollectionViewDelegate, IMToolbarDelegate>
 
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
-@property(nonatomic, strong) UITextField *inputField;
+//@property(nonatomic, strong) UITextField *inputField;
+@property(nonatomic, strong) IMSearchView *inputFieldView;
 @property(nonatomic, strong) UIView *inputFieldContainer;
-@property(nonatomic, strong) UIButton *actionButton;
-@property(nonatomic, strong) UIButton *sendButton;
+//@property(nonatomic, strong) UIButton *actionButton;
+//@property(nonatomic, strong) UIButton *sendButton;
 @property(nonatomic, strong) IMKeyboardView *imojiKeyboardView;
 @property(nonatomic, strong) IMSuggestionView *imojiSuggestionView;
 
@@ -70,11 +73,6 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textFieldDidChange:)
-                                                 name:UITextFieldTextDidChangeNotification
-                                               object:nil];
-
     // this essentially sets the status bar color since the view takes up the full screen
     // and the subviews are positioned below the status bar
     self.view.backgroundColor = [UIColor colorWithRed:248.0f / 255.0f green:248.0f / 255.0f blue:248.0f / 255.0f alpha:1.0f];
@@ -85,46 +83,16 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
     // Input Field Setup
-    self.inputField = [[UITextField alloc] init];
-    self.inputField.layer.cornerRadius = 4.f;
-    self.inputField.layer.borderColor = self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
-    self.inputField.layer.borderWidth = self.imojiSuggestionView.layer.borderWidth = 1.f;
-    self.inputField.backgroundColor = [UIColor colorWithWhite:1.f alpha:.9f];
-    self.inputField.returnKeyType = UIReturnKeySend;
-    self.inputField.rightViewMode = UITextFieldViewModeAlways;
-    self.inputField.defaultTextAttributes = @{
-            NSFontAttributeName : [IMAttributeStringUtil defaultFontWithSize:16.f],
-            NSForegroundColorAttributeName : [UIColor colorWithWhite:.2f alpha:1.f]
-    };
-
-    // Input field right view
-    UIView *rightView = [[UIView alloc] init];
-    UIImage *image = [UIImage imageNamed:@"SearchBarOn"];
-    CGFloat buttonWidthHeight = image.size.width * 1.15f;
-    rightView.frame = CGRectMake(0, 0, buttonWidthHeight + 10.f, buttonWidthHeight + 10.f);
-    self.actionButton = [[UIButton alloc] init];
-    self.actionButton.backgroundColor = [UIColor colorWithRed:22.0f / 255.0f green:137.0f / 255.0f blue:251.0f / 255.0f alpha:1.0f];
-    self.actionButton.layer.cornerRadius = buttonWidthHeight / 2.0f;
-    [self.actionButton setImage:image forState:UIControlStateNormal];
-    [self.actionButton addTarget:self action:@selector(toggleImojiMessagingDisplay) forControlEvents:UIControlEventTouchUpInside];
-    [rightView addSubview:self.actionButton];
-
-    [self.actionButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(rightView);
-        make.width.height.equalTo(@(buttonWidthHeight));
-    }];
-
-    self.inputField.rightView = rightView;
-
-    // text indent
-    self.inputField.leftView = [[UIView alloc] init];
-    self.inputField.leftView.frame = CGRectMake(0, 0, 5.f, 5.f);
-    self.inputField.leftViewMode = UITextFieldViewModeAlways;
-    self.inputField.delegate = self;
+    self.inputFieldView = [IMSearchView imojiSearchView];
+    self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
+    self.imojiSuggestionView.layer.borderWidth = 1.f;
+    self.inputFieldView.backgroundColor = [UIColor clearColor];
+    self.inputFieldView.searchTextField.returnKeyType = UIReturnKeySend;
+    self.inputFieldView.delegate = self;
 
     // Input Field Container Setup
     self.inputFieldContainer = [[UIView alloc] init];
-    self.inputFieldContainer.backgroundColor = self.view.backgroundColor;
+    self.inputFieldContainer.backgroundColor = [UIColor whiteColor];
 
     // Imoji Keyboard View Setup
     self.imojiKeyboardView = [IMKeyboardView imojiKeyboardViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
@@ -157,27 +125,13 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     // Imoji Suggestion View Setup
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
     self.imojiSuggestionView.backgroundColor = self.view.backgroundColor;
+    self.imojiSuggestionView.layer.borderColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f].CGColor;
+    self.imojiSuggestionView.layer.borderWidth = 1.f;
     self.imojiSuggestionView.clipsToBounds = NO;
-    self.imojiSuggestionView.hidden = YES;
+//    self.imojiSuggestionView.hidden = YES;
     self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
-    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(80.f, 80.f);
+    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 86.f);
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
-
-    // Send Button Setup
-    self.sendButton = [[UIButton alloc] init];
-    self.sendButton.enabled = NO;
-    self.sendButton.hidden = YES;
-    [self.sendButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"SEND"
-                                                                       withFont:[IMAttributeStringUtil defaultFontWithSize:16.f]
-                                                                          color:[UIColor colorWithRed:22.0f / 255.0f green:137.0f / 255.0f blue:251.0f / 255.0f alpha:1.0f]
-                                                                   andAlignment:NSTextAlignmentCenter]
-                               forState:UIControlStateNormal];
-    [self.sendButton setAttributedTitle:[IMAttributeStringUtil attributedString:@"SEND"
-                                                                       withFont:[IMAttributeStringUtil defaultFontWithSize:16.f]
-                                                                          color:[UIColor colorWithWhite:.8f alpha:1.f]
-                                                                   andAlignment:NSTextAlignmentCenter]
-                               forState:UIControlStateDisabled];
-    [self.sendButton addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
 
     // Subviews
     [self.view addSubview:self.messageThreadView];
@@ -228,16 +182,13 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     }];
 
     // Input field container subviews
-    [self.inputFieldContainer addSubview:self.inputField];
-    [self.inputFieldContainer addSubview:self.sendButton];
+    [self.inputFieldContainer addSubview:self.inputFieldView];
 
-    [self.inputField mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.inputFieldContainer).insets(UIEdgeInsetsMake(InputFieldPadding, InputFieldPadding, InputFieldPadding, InputFieldPadding));
-    }];
-
-    [self.sendButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.right.height.equalTo(self.inputFieldContainer).offset(-InputFieldPadding * 2.f);
+    [self.inputFieldView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@26.0f);
         make.centerY.equalTo(self.inputFieldContainer);
+        make.left.equalTo(self.inputFieldContainer).offset(InputFieldLeftOffset);
+        make.right.equalTo(self.inputFieldContainer).offset(-InputFieldRightOffset);
     }];
 
     [self.imojiKeyboardView.keyboardToolbar selectButtonOfType:IMToolbarButtonTrending];
@@ -245,76 +196,31 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
 #pragma mark Text View Delegates
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (void)userDidPressReturnKeySearchView:(IMSearchView *)searchView {
     [self sendText];
-    return YES;
 }
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    [self hideImojiKeyboardAnimated];
-    return YES;
-}
-
-- (void)textFieldDidChange:(NSNotification *)notification {
-    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputField.text];
-    BOOL hasText = self.inputField.text.length > 0;
-    BOOL shouldUpdateSendButtonDisplay = (self.sendButton.enabled != hasText);
-
-    self.sendButton.enabled = hasText;
-
-    if (shouldUpdateSendButtonDisplay) {
-        [self.inputField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            if (self.sendButton.enabled) {
-                make.top.left.bottom.equalTo(self.inputFieldContainer).insets(UIEdgeInsetsMake(InputFieldPadding, InputFieldPadding, InputFieldPadding, InputFieldPadding));
-                make.right.equalTo(self.sendButton.mas_left).offset(-InputFieldPadding * 2.f);
-            } else {
-                make.edges.equalTo(self.inputFieldContainer).insets(UIEdgeInsetsMake(InputFieldPadding, InputFieldPadding, InputFieldPadding, InputFieldPadding));
-            }
-        }];
-
-        self.sendButton.hidden = !hasText;
-    }
-
-    [self showSuggestionsAnimated:YES];
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
+    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputFieldView.searchTextField.text];
+    BOOL hasText = self.inputFieldView.searchTextField.text.length > 0;
 
     if (!hasText) {
         [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
     }
 }
 
-- (void)sendText {
-    if (self.inputField.text.length > 0) {
-        [self.messageThreadView sendMessageWithText:self.inputField.text];
-    }
-
-    self.inputField.text = @"";
+- (void)userShouldBeginSearchFromSearchView:(IMSearchView *)searchView {
+    [self hideImojiKeyboardAnimated];
 }
 
-- (void)toggleImojiMessagingDisplay {
-    if (self.inputField.text.length > 0 && !self.isSuggestionViewDisplayed) {
-        [self showSuggestionsAnimated:NO];
-        [self.inputField becomeFirstResponder];
-    } else if (self.isSuggestionViewDisplayed) {
-        if(self.inputField.text.length > 0) {
-            self.inputField.text = @"";
-            [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
-        } else {
-            [self hideSuggestionsAnimated:YES];
-        }
-    } else {
-        if (self.isImojiKeyboardViewDisplayed) {
-            self.actionButton.selected = NO;
-            [self hideImojiKeyboardAnimated];
-        } else {
-            self.actionButton.selected = YES;
-            [self hideSuggestionsAnimated:YES];
-            [self showImojiKeyboardAnimated];
+- (void)sendText {
+    if (self.inputFieldView.searchTextField.text.length > 0) {
+        [self.messageThreadView sendMessageWithText:self.inputFieldView.searchTextField.text];
+    }
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.imojiKeyboardView updateTitleWithText:@"TRENDING" hideCloseButton:YES];
-                [self.imojiKeyboardView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
-            });
-        }
+    if(![self.inputFieldView.searchTextField.text isEqualToString:@""] &&
+       [self.inputFieldView canPerformAction:@selector(clearButtonTapped:) withSender:self.inputFieldView.searchTextField.rightView]) {
+        [self.inputFieldView performSelector:@selector(clearButtonTapped:) withObject:self.inputFieldView.searchTextField.rightView];
     }
 }
 
@@ -340,8 +246,6 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    [self.actionButton setImage:[UIImage imageNamed:@"SearchBarOff"] forState:UIControlStateNormal];
-
     if (shouldMoveInputField) {
         [UIView animateWithDuration:.7f
                               delay:0
@@ -364,7 +268,7 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
     } else {
         [self.view layoutIfNeeded];
         [UIView animateWithDuration:0.0 animations:^{
-            [self.inputField resignFirstResponder];
+            [self.inputFieldView.searchTextField resignFirstResponder];
         }];
     }
 }
@@ -381,13 +285,11 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         make.top.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    [self.actionButton setImage:[UIImage imageNamed:@"SearchBarOn"] forState:UIControlStateNormal];
-
     [self.imojiKeyboardView.collectionView.collectionViewLayout invalidateLayout];
     [self.view layoutIfNeeded];
 
     [UIView animateWithDuration:0.0 animations:^{
-        [self.inputField becomeFirstResponder];
+        [self.inputFieldView.searchTextField becomeFirstResponder];
     }];
 }
 
@@ -408,15 +310,13 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 
     [self.view layoutIfNeeded];
 
-    self.imojiSuggestionView.hidden = NO;
+//    self.imojiSuggestionView.hidden = NO;
 
     [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(SuggestionViewBarHeight));
         make.bottom.equalTo(self.inputFieldContainer.mas_top).offset(SuggestionFieldBorderHeight);
     }];
-
-    [self.actionButton setImage:[UIImage imageNamed:@"SearchBarOff"] forState:UIControlStateNormal];
 
     if (animated) {
         [UIView animateWithDuration:.7f
@@ -453,8 +353,6 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         make.top.equalTo(self.inputFieldContainer.mas_top).offset(-SuggestionFieldBorderHeight);
     }];
 
-    [self.actionButton setImage:[UIImage imageNamed:@"SearchBarOn"] forState:UIControlStateNormal];
-
     if (animated) {
         [UIView animateWithDuration:.7f
                               delay:0
@@ -472,12 +370,12 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
                                      self.messageThreadView.contentInset.bottom - self.imojiSuggestionView.frame.size.height,
                                      0
                              );
-                             self.imojiSuggestionView.hidden = YES;
+//                             self.imojiSuggestionView.hidden = YES;
                          }
         ];
 
     } else {
-        self.imojiSuggestionView.hidden = YES;
+//        self.imojiSuggestionView.hidden = YES;
     }
 
     [self.imojiSuggestionView.collectionView.collectionViewLayout invalidateLayout];
@@ -500,11 +398,14 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 }
 
 - (void)userDidSelectCategory:(nonnull IMImojiCategoryObject *)category fromCollectionView:(nonnull IMCollectionView *)collectionView {
-    if (self.isImojiKeyboardViewDisplayed) {
+//    if (self.isImojiKeyboardViewDisplayed) {
         [self.imojiKeyboardView updateTitleWithText:category.title hideCloseButton:NO];
-    }
+    [self.imojiKeyboardView.collectionView loadImojisFromCategory:category];
+    [self showImojiKeyboardAnimated];
+    [self hideSuggestionsAnimated:YES];
+//    }
 
-    [collectionView loadImojisFromCategory:category];
+//    [collectionView loadImojisFromCategory:category];
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
@@ -519,7 +420,9 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
 #pragma mark Keyboard Handling
 
 - (void)messageThreadViewTapped {
-    [self.inputField resignFirstResponder];
+    [self hideImojiKeyboardAnimated];
+    [self hideSuggestionsAnimated:NO];
+    [self.inputFieldView.searchTextField resignFirstResponder];
 }
 
 - (void)inputFieldWillShow:(NSNotification *)notification {
@@ -543,8 +446,11 @@ CGFloat const SuggestionFieldBorderHeight = 1.f;
         [self hideImojiKeyboardAnimated];
     }
 
-    if (self.inputField.text.length > 0 && !self.isSuggestionViewDisplayed) {
+    if (self.inputFieldView.searchTextField.text.length > 0 && !self.isSuggestionViewDisplayed) {
         [self showSuggestionsAnimated:NO];
+    } else {
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+        [self showSuggestionsAnimated:YES];
     }
 
     [UIView animateWithDuration:animationDuration

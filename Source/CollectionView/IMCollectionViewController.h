@@ -27,6 +27,7 @@
 #import <UIKit/UIKit.h>
 #import "IMToolbar.h"
 #import "IMCollectionView.h"
+#import <ImojiSDKUI/IMSearchView.h>
 
 @class IMImojiSession;
 
@@ -88,6 +89,8 @@
  * updateViewConstraints in your own representation.
  */
 @property(nonatomic, strong, readonly, nonnull) UISearchBar *searchField;
+
+@property(nonatomic, strong, readonly, nonnull) IMSearchView *searchView;
 
 /**
  * @abstract The collection view associated to the view controller. To change the dimensions of this field, override

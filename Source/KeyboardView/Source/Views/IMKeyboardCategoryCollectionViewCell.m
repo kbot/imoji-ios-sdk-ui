@@ -32,40 +32,41 @@
 
 }
 
-- (void)loadImojiCategory:(NSString *)categoryTitle imojiImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    float imageHeightRatio = 0.75f;
-    float textHeightRatio = 0.18f;
-    int inBetweenPadding = 3;
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 
-    if (!self.imojiView) {
-        self.imojiView = [YYAnimatedImageView new];
-
-        [self addSubview:self.imojiView];
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self);
-            make.height.width.equalTo(self.mas_height).multipliedBy(imageHeightRatio);
-            make.top.equalTo(self.mas_top);
+        [self.placeholderView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@62.0f);
         }];
-    }
 
-    if (!self.titleView) {
-        self.titleView = [UILabel new];
+        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self).insets(UIEdgeInsetsMake(5.0f, 0.0f, 0.0f, 0.0f));
+        }];
+
+        [self.imojiImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.and.centerX.equalTo(self.imojiView);
+            make.width.and.height.equalTo(@54.0f);
+        }];
+
+        self.titleView.font = [IMAttributeStringUtil montserratLightFontWithSize:11.0f];
         self.titleView.adjustsFontSizeToFitWidth = YES;
 
-        [self addSubview:self.titleView];
-        [self.titleView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.centerX.equalTo(self);
-            make.height.equalTo(self.mas_height).multipliedBy(textHeightRatio);
-            make.top.equalTo(self.imojiView.mas_bottom).offset(inBetweenPadding);
+        [self.titleView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.imojiImageView.mas_bottom).offset(5.0f);
+            make.width.and.centerX.equalTo(self.imojiView);
+            make.bottom.equalTo(self.imojiView);
         }];
     }
 
-    [super loadImojiCategory:categoryTitle imojiImojiImage:imojiImage animated:animated];
+    return self;
+}
 
-    self.titleView.attributedText = [IMAttributeStringUtil attributedString:categoryTitle
-                                                                   withFont:[IMAttributeStringUtil defaultFontWithSize:12.0f]
-                                                                      color:[UIColor colorWithRed:60 / 255.f green:60 / 255.f blue:60 / 255.f alpha:1.f]
-                                                               andAlignment:NSTextAlignmentCenter];
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
+    [super setupPlaceholderImageWithPosition:position];
+    self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 @end

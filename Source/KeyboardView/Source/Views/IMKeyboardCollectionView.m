@@ -65,6 +65,14 @@
     return self;
 }
 
+- (void)processCellAnimations:(nonnull NSIndexPath *)currentIndexPath {
+    // only animate the current selection
+    UICollectionViewCell *viewCell = [self cellForItemAtIndexPath:currentIndexPath];
+    if (viewCell) {
+        [(IMKeyboardCollectionViewCell *) viewCell performTappedAnimation];
+    }
+}
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     return CGSizeZero;
 }
@@ -126,10 +134,10 @@
                     return CGSizeMake(100.f, self.frame.size.height);
                 }
             } else if (isLandscape) {
-                return CGSizeMake(100.f, self.frame.size.height / 1.3f);
+                return CGSizeMake(74.f, 91.f/*self.frame.size.height / 1.3f*/);
 
             } else {
-                return CGSizeMake(100.f, self.frame.size.height / 2.f);
+                return CGSizeMake(74.f, 91.f/*self.frame.size.height / 2.f*/);
             }
 
         default:
@@ -137,19 +145,34 @@
     }
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView
-                        layout:(UICollectionViewLayout *)collectionViewLayout
-        insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsZero;
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    if (self.contentType == IMCollectionViewContentTypeImojis) {
+        return 6.0f;
+    }
+
+    return 10.0f;
 }
 
-- (void)loadRecentImojis:(NSArray *)recents {
-    if (!recents || recents.count == 0) {
-        [self displaySplashOfType:IMCollectionViewSplashCellRecents];
-    } else {
-        [self loadImojisFromIdentifiers:recents];
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    if(section == 0) {
+        return UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 0.0f);
     }
+
+    return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 10.0f);
 }
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    return 6.0f;
+}
+
+
+//- (void)loadRecentImojis:(NSArray *)recents {
+//    if (!recents || recents.count == 0) {
+//        [self displaySplashOfType:IMCollectionViewSplashCellRecents];
+//    } else {
+//        [self loadImojisFromIdentifiers:recents];
+//    }
+//}
 
 - (void)processDoubleTap:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded) {

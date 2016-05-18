@@ -28,6 +28,8 @@
 #import "View+MASAdditions.h"
 #import "IMSuggestionCollectionView.h"
 
+CGFloat const IMSuggestionViewDefaultHeight = 91.f;
+CGFloat const IMSuggestionViewBorderHeight = 1.f;
 
 @interface IMSuggestionView ()
 @end
@@ -39,7 +41,10 @@
 - (instancetype)initWithSession:(IMImojiSession *)session {
     self = [super initWithFrame:CGRectZero];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
+
         _collectionView = [[IMSuggestionCollectionView alloc] initWithSession:session];
+        self.collectionView.backgroundColor = [UIColor clearColor];
 
         [self addSubview:self.collectionView];
 

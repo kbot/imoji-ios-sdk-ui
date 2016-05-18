@@ -31,19 +31,42 @@
 
 }
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 
-- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    if (!self.imojiView) {
-        self.imojiView = [YYAnimatedImageView new];
-
-        [self addSubview:self.imojiView];
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.placeholderView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self);
-            make.width.and.height.equalTo(self).multipliedBy(.85f);
+            make.width.and.height.equalTo(@62.0f);
+        }];
+
+        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self);
+            make.width.and.height.equalTo(@74.0f);
         }];
     }
 
-    [super loadImojiImage:imojiImage animated:animated];
+    return self;
+}
+
+//- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
+//    if (!self.imojiView) {
+//        self.imojiView = [YYAnimatedImageView new];
+//
+//        [self addSubview:self.imojiView];
+//        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.center.equalTo(self);
+//            make.width.and.height.equalTo(self).multipliedBy(.85f);
+//        }];
+//    }
+//
+//    [super loadImojiImage:imojiImage animated:animated];
+//}
+
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
+    [super setupPlaceholderImageWithPosition:position];
+    self.placeholderView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 @end

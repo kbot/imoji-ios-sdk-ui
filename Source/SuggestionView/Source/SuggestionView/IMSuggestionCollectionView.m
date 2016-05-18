@@ -29,6 +29,7 @@
 #import "IMCollectionViewCell.h"
 #import "IMSuggestionViewCell.h"
 #import "IMSuggestionCategoryViewCell.h"
+#import "IMSuggestionCollectionReusableHeaderView.h"
 
 
 @implementation IMSuggestionCollectionView {
@@ -42,8 +43,10 @@
         [self registerClass:[IMSuggestionSplashViewCell class] forCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId];
         [self registerClass:[IMSuggestionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMSuggestionCategoryViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
+        [self registerClass:[IMSuggestionCollectionReusableHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:IMCollectionReusableHeaderViewReuseId];
 
         self.scrollsToTop = NO;
+        self.showsHorizontalScrollIndicator = NO;
     }
 
     return self;
@@ -53,16 +56,70 @@
     // only animate the current selection
     UICollectionViewCell *viewCell = [self cellForItemAtIndexPath:currentIndexPath];
     if (viewCell) {
-        [(IMCollectionViewCell *) viewCell performGrowAnimation];
+        [(IMCollectionViewCell *) viewCell performTappedAnimation];
     }
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeZero;
+    if(section == 0) {
+        return CGSizeZero;
+    }
+
+    return CGSizeMake(15.0f, self.frame.size.height);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     return CGSizeZero;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if (kind == UICollectionElementKindSectionHeader) {
+        IMSuggestionCollectionReusableHeaderView *headerView = [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                        withReuseIdentifier:IMCollectionReusableHeaderViewReuseId
+                                                                                               forIndexPath:indexPath];
+
+        [headerView setupWithSeparator];
+
+        return headerView;
+    }
+
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UIEdgeInsets insets = [self collectionView:collectionView
+                                        layout:collectionViewLayout
+                        insetForSectionAtIndex:indexPath.section];
+
+    CGSize availableSize = CGSizeMake(
+            self.frame.size.width - insets.left * 2.0f,
+            self.frame.size.height
+    );
+
+    switch (self.contentType) {
+        case IMCollectionViewContentTypeImojis:
+        case IMCollectionViewContentTypeImojiCategories:
+            return self.preferredImojiDisplaySize;
+
+        default:
+            return availableSize;
+    }
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 10.0f;
+}
+
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+//    return 5.0f;
+//}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    if(section == 0) {
+        return UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 0.0f);
+    }
+
+    return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 10.0f);
 }
 
 @end

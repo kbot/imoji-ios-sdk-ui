@@ -35,6 +35,12 @@
 
 + (nonnull NSBundle *)assetsBundle;
 
++ (nonnull NSBundle *)fontsBundle;
+
++ (NSUInteger)loadingPlaceholderStartIndex;
+
++ (nonnull NSArray *)loadingPlaceholderImages;
+
 + (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius;
 
 + (nonnull UIImage *)loadingPlaceholderImageWithRadius:(CGFloat)radius color:(nonnull UIColor *)color;

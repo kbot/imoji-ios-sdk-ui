@@ -10,6 +10,7 @@
 #import <ImojiSDK/ImojiSDK.h>
 #import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "ViewController.h"
 
 @interface ViewController () <IMCollectionViewControllerDelegate>
@@ -18,6 +19,7 @@
 @property(nonatomic, strong) UIButton *trendingButton;
 @property(nonatomic, strong) UIButton *artistButton;
 @property(nonatomic, strong) IMImojiSession *imojiSession;
+@property(nonatomic) IMToolbarButtonType previousSelectedButtonType;
 
 @end
 
@@ -158,7 +160,7 @@
 
 - (void)userDidSelectSplash:(IMCollectionViewSplashCellType)splashType fromCollectionView:(IMCollectionView *)collectionView {
     if (splashType == IMCollectionViewSplashCellNoResults) {
-        [((IMCollectionViewController *) self.presentedViewController).searchField becomeFirstResponder];
+        [((IMCollectionViewController *) self.presentedViewController).searchView.searchTextField becomeFirstResponder];
     }
 }
 
@@ -183,10 +185,18 @@
         default:
             break;
     }
+
+    if (buttonType != IMToolbarButtonBack) {
+        self.previousSelectedButtonType = buttonType;
+    }
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {
     [[UIApplication sharedApplication] openURL:attributionLink];
+}
+
+- (void)userDidPerformEmptySearchFromCollectionViewController:(nonnull UIViewController *)collectionViewController {
+    [self userDidSelectToolbarButton:self.previousSelectedButtonType];
 }
 
 - (void)displayCollectionViewControllerWithCategory:(IMImojiSessionCategoryClassification)categoryClassification {
@@ -194,6 +204,7 @@
     viewController.collectionView.collectionViewDelegate = self;
     viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     viewController.backButton.hidden = NO;
+    [viewController.backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
 
     [viewController.bottomToolbar addFlexibleSpace];
     [viewController.bottomToolbar addToolbarButtonWithType:IMToolbarButtonReactions];
@@ -203,7 +214,7 @@
 
     viewController.topToolbar.barTintColor =
             viewController.bottomToolbar.barTintColor =
-                    [UIColor colorWithRed:55.0f / 255.0f green:123.0f / 255.0f blue:167.0f / 255.0f alpha:1.0f];
+                    [UIColor colorWithRed:250.0f / 255.0f green:250.0f / 255.0f blue:250.0f / 255.0f alpha:1.0f];
 
     viewController.collectionViewControllerDelegate = self;
 

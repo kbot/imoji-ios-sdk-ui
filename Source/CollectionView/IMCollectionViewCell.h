@@ -34,12 +34,19 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 - (void)loadImojiImage:(UIImage * __nullable)imojiImage animated:(BOOL)animated;
 
+- (void)setupPlaceholderImageWithPosition:(NSUInteger)position;
+
 - (void)performLoadedAnimation;
+
+- (void)performTappedAnimation;
 
 - (void)performGrowAnimation;
 
-- (void)performTranslucentAnimation;
+- (void)performShrinkAnimation;
+
+//- (void)performTranslucentAnimation;
 
 @property(nonatomic, strong, nullable) UIImageView *imojiView;
+@property(nonatomic, strong, nullable) UIImageView *placeholderView;
 
 @end

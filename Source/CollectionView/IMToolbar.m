@@ -25,6 +25,7 @@
 
 #import "IMToolbar.h"
 #import "IMResourceBundleUtil.h"
+#import "IMSearchView.h"
 
 NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 
@@ -55,20 +56,20 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
             activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_recents_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonReactions:
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_reactions.png", self.imageBundle.bundlePath]];
-            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_reactions_on.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_reactions_off.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_reactions_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonTrending:
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_trending.png", self.imageBundle.bundlePath]];
-            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_trending_on.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_trending_off.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_trending_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonCollection:
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection.png", self.imageBundle.bundlePath]];
-            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_collection_on.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_favorites_off.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_favorites_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonArtist:
-            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_artist.png", self.imageBundle.bundlePath]];
-            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_artist_on.png", self.imageBundle.bundlePath]];
+            image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_artist_off.png", self.imageBundle.bundlePath]];
+            activeImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/nav_artist_on.png", self.imageBundle.bundlePath]];
             break;
         case IMToolbarButtonBack:
             image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/toolbar_back.png", self.imageBundle.bundlePath]];
@@ -118,6 +119,15 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 - (nonnull UIBarButtonItem *)addSearchBarItem {
     UISearchBar *searchBar = [UISearchBar new];
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
+
+    [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
+
+    return barButtonItem;
+}
+
+- (nonnull UIBarButtonItem *)addSearchViewItem {
+    IMSearchView *searchView = [IMSearchView imojiSearchView];
+    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchView];
 
     [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
 
