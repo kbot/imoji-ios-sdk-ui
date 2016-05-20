@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
 
   s.name     = 'ImojiSDKUI'
-  s.version  = '2.0.10'
+  s.version  = '2.1.0'
   s.license  = 'MIT'
   s.summary  = 'iOS UI Widgets for Imoji Integration. Integrate Stickers and custom emojis into your applications easily!'
   s.homepage = 'http://imoji.io/sdk'
-  s.authors = {'Nima Khoshini'=>'nima@imojiapp.com', 'Jeff Wang'=>'jeffkwang@gmail.com', 'Alex Hoang'=>'alex@imojiapp.com'}
+  s.authors = {'Alex Hoang'=>'alex@imojiapp.com', 'Nima Khoshini'=>'nima@imojiapp.com', 'Jeff Wang'=>'jeffkwang@gmail.com'}
 
   s.source   = { :git => 'https://github.com/imojiengineering/imoji-ios-sdk-ui.git', :tag => s.version.to_s }
   s.ios.deployment_target = '7.0'
@@ -47,13 +47,6 @@ Pod::Spec.new do |s|
     ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/*.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
     ss.ios.resource_bundles = {'ImojiKeyboardAssets' => ['Source/KeyboardView/Resources/Icons/*.png']}
 
-  end
-
-  s.subspec 'SuggestionView' do |ss|
-    ss.dependency "ImojiSDKUI/CollectionView"
-
-    ss.ios.source_files = 'Source/SuggestionView/**/*.{h,m}'
-    ss.ios.public_header_files = 'Source/SuggestionView/**/*.h'
   end
 
   s.subspec 'Common' do |ss|

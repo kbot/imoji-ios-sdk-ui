@@ -97,7 +97,7 @@ extern NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight;
                                           activeImage:(nullable UIImage *)activeImage
                                                 width:(CGFloat)width;
 
-- (nonnull UIBarButtonItem *)addSearchBarItem;
+- (nonnull UIBarButtonItem *)addSearchBarItem DEPRECATED_ATTRIBUTE;
 - (nonnull UIBarButtonItem *)addSearchViewItem;
 
 /**

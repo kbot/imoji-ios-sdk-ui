@@ -119,7 +119,7 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         make.right.equalTo(self).offset(-IMSearchViewContainerDefaultRightOffset);
     }];
 
-    [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.searchIconImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.searchViewContainer);
         make.centerY.equalTo(self.searchViewContainer);
         make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
@@ -526,7 +526,9 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
                          forState:UIControlStateNormal];
         self.backButton.hidden = NO;
 
-        [self.searchViewContainer addSubview:self.backButton];
+        if (![self.backButton isDescendantOfView:self.searchViewContainer]) {
+            [self.searchViewContainer addSubview:self.backButton];
+        }
 
         [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.left.and.centerY.equalTo(self.searchViewContainer);
@@ -543,7 +545,9 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
                          forState:UIControlStateNormal];
 //        self.backButton.hidden = YES;
 
-        [self.searchViewContainer addSubview:self.backButton];
+        if (![self.backButton isDescendantOfView:self.searchViewContainer]) {
+            [self.searchViewContainer addSubview:self.backButton];
+        }
 
         [self.backButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.left.and.centerY.equalTo(self.searchViewContainer);
@@ -570,24 +574,29 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     _createAndRecentsEnabled = createAndRecentsEnabled;
 
     if (createAndRecentsEnabled) {
-        self.recentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                            forState:UIControlStateNormal];
-        [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                            forState:UIControlStateHighlighted];
-        [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                            forState:UIControlStateSelected];
-        [self.recentsButton addTarget:self action:@selector(recentsButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+        if (![self.recentsButton isDescendantOfView:self.searchViewContainer]) {
+            self.recentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                                forState:UIControlStateNormal];
+            [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                                forState:UIControlStateHighlighted];
+            [self.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                                forState:UIControlStateSelected];
+            [self.recentsButton addTarget:self action:@selector(recentsButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 
-        self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.createButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_create.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                           forState:UIControlStateNormal];
-        [self.createButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_create_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                           forState:UIControlStateHighlighted];
-        [self.createButton addTarget:self action:@selector(createButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+            [self.searchViewContainer addSubview:self.recentsButton];
+        }
 
-        [self.searchViewContainer addSubview:self.recentsButton];
-        [self.searchViewContainer addSubview:self.createButton];
+        if (![self.createButton isDescendantOfView:self.searchViewContainer]) {
+            self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [self.createButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_create.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                               forState:UIControlStateNormal];
+            [self.createButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_create_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                               forState:UIControlStateHighlighted];
+            [self.createButton addTarget:self action:@selector(createButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+
+            [self.searchViewContainer addSubview:self.createButton];
+        }
 
         [self.createButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));

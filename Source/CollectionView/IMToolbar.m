@@ -117,12 +117,7 @@ NSUInteger const IMToolbarDefaultButtonItemWidthAndHeight = 40;
 }
 
 - (nonnull UIBarButtonItem *)addSearchBarItem {
-    UISearchBar *searchBar = [UISearchBar new];
-    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
-
-    [self appendBarButtonItem:barButtonItem withPrependedFlexibleSpace:NO];
-
-    return barButtonItem;
+    return [self addSearchViewItem];
 }
 
 - (nonnull UIBarButtonItem *)addSearchViewItem {

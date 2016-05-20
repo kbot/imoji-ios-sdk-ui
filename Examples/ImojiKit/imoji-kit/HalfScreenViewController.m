@@ -25,33 +25,27 @@
 
 #import "HalfScreenViewController.h"
 #import "MessageThreadView.h"
-#import <ImojiSDK/IMImojiCategoryObject.h>
 #import <ImojiSDK/IMImojiObject.h>
+#import <ImojiSDKUI/IMAttributeStringUtil.h>
 #import <ImojiSDKUI/IMCollectionView.h>
 #import <ImojiSDKUI/IMCreateImojiViewController.h>
-#import <ImojiSDKUI/IMAttributeStringUtil.h>
+#import <ImojiSDKUI/IMHalfScreenView.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
-#import <ImojiSDKUI/IMSearchView.h>
-#import <ImojiSDKUI/IMSuggestionView.h>
 #import <ImojiSDKUI/IMToolbar.h>
 #import <Masonry/Masonry.h>
 #import "AppDelegate.h"
 
-CGFloat const InitialSuggestionViewHeight = 226.f;
-
 @interface HalfScreenViewController () <IMToolbarDelegate, IMSearchViewDelegate, UITextFieldDelegate, IMCollectionViewDelegate,
-        IMCreateImojiViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+        IMCreateImojiViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, IMStickerSearchContainerViewDelegate>
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
 @property(nonatomic, strong) UITextField *inputField;
-@property(nonatomic, strong) IMSearchView *searchView;
 @property(nonatomic, strong) UIView *inputFieldContainer;
 @property(nonatomic, strong) UIButton *actionButton;
 @property(nonatomic, strong) UIButton *leftPlaceholderButton;
 @property(nonatomic, strong) UIButton *sendButton;
-@property(nonatomic, strong) IMSuggestionView *imojiSuggestionView;
-@property(nonatomic, strong) UIView *suggestionContainerView;
+@property(nonatomic, strong) IMHalfScreenView *halfScreenView;
 @property(nonatomic) BOOL imojiSearchViewFocused;
 @property(nonatomic) BOOL imojiSearchViewActionTapped;
 
@@ -107,27 +101,12 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
     self.messageThreadView.backgroundColor = [UIColor whiteColor];
     [self.messageThreadView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageThreadViewTapped)]];
 
-    // Suggestion container view setup
-    self.suggestionContainerView = [[UIView alloc] init];
-
+    // Sticker search container view setup
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
-
-    // Imoji search view setup
-    self.searchView = [IMSearchView imojiSearchView];
-    self.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeHalf;
-    self.searchView.backButtonType = IMSearchViewBackButtonTypeBack;
-    self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
-    self.searchView.delegate = self;
-
-    // Imoji suggestion view setup
-    self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
-    self.imojiSuggestionView.backgroundColor = [UIColor whiteColor];
-    self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
-    self.imojiSuggestionView.collectionView.infiniteScroll = YES;
-    self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 91.f);
-    self.imojiSuggestionView.collectionView.renderingOptions.borderStyle = (IMImojiObjectBorderStyle) [shared integerForKey:@"stickerBorders"];
-    self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
+    self.halfScreenView = [IMHalfScreenView imojiStickerSearchContainerViewWithSession:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
+    self.halfScreenView.delegate = self;
+    self.halfScreenView.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
+    self.halfScreenView.imojiSuggestionView.collectionView.renderingOptions.borderStyle = (IMImojiObjectBorderStyle) [shared integerForKey:@"stickerBorders"];
 
     // Input field container setup
     self.inputFieldContainer = [UIView new];
@@ -190,22 +169,14 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
                                forState:UIControlStateDisabled];
     [self.sendButton addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
 
-    // Button to the left of the input field
-    self.leftPlaceholderButton = [[UIButton alloc] init];
-    [self.leftPlaceholderButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/placeholdericon_left.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
-                                forState:UIControlStateNormal];
-
     [self.view addSubview:self.topToolbar];
     [self.view addSubview:self.messageThreadView];
     [self.view addSubview:self.inputFieldContainer];
-    [self.view addSubview:self.suggestionContainerView];
+    [self.view addSubview:self.halfScreenView];
 
     [self.inputFieldContainer addSubview:self.leftPlaceholderButton];
     [self.inputFieldContainer addSubview:self.inputField];
     [self.inputFieldContainer addSubview:self.sendButton];
-
-    [self.suggestionContainerView addSubview:self.searchView];
-    [self.suggestionContainerView addSubview:self.imojiSuggestionView];
 
     [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(self.view);
@@ -226,40 +197,22 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    [self.suggestionContainerView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.halfScreenView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.top.equalTo(self.inputFieldContainer.mas_bottom);
-        make.height.equalTo(@(InitialSuggestionViewHeight));
-    }];
-
-    [self.leftPlaceholderButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.inputFieldContainer).offset(5.0f * 2.f);
-        make.width.and.height.equalTo(@26.0f);
-        make.centerY.equalTo(self.inputFieldContainer);
+        make.height.equalTo(@(IMHalfScreenViewDefaultHeight));
     }];
 
     [self.inputField mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.inputFieldContainer).offset(5.0f);
         make.bottom.equalTo(self.inputFieldContainer).offset(-5.0f);
-        make.left.equalTo(self.leftPlaceholderButton.mas_right).offset(5.0f * 2.f);
+        make.left.equalTo(self.inputFieldContainer).offset(5.0f * 2.f);
         make.right.equalTo(self.sendButton.mas_left).offset(-5.0f * 2.f);
     }];
 
     [self.sendButton mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.height.equalTo(self.inputFieldContainer).offset(-5.0f * 2.f);
         make.centerY.equalTo(self.inputFieldContainer);
-    }];
-
-    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.suggestionContainerView);
-        make.left.right.equalTo(self.suggestionContainerView);
-        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
-    }];
-
-    [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.suggestionContainerView);
-        make.top.equalTo(self.searchView.mas_bottom);
-        make.height.equalTo(@(IMSuggestionViewDefaultHeight * 2.0f));
     }];
 }
 
@@ -271,28 +224,13 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self sendText];
+
     return YES;
 }
 
 - (void)textFieldDidChange:(NSNotification *)notification {
-//    [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.inputField.text];
     BOOL hasText = self.inputField.text.length > 0;
-//    BOOL shouldUpdateSendButtonDisplay = (self.sendButton.enabled != hasText);
-//
     self.sendButton.enabled = hasText;
-//
-//    if (shouldUpdateSendButtonDisplay) {
-//        [self.inputField mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            if (self.sendButton.enabled) {
-//                make.top.left.bottom.equalTo(self.inputFieldContainer).insets(UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f));
-//                make.right.equalTo(self.sendButton.mas_left).offset(-5.0f * 2.f);
-//            } else {
-//                make.edges.equalTo(self.inputFieldContainer).insets(UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f));
-//            }
-//        }];
-//
-//        self.sendButton.hidden = !hasText;
-//    }
 }
 
 - (void)sendText {
@@ -306,11 +244,12 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
 - (void)toggleSuggestions {
     self.actionButton.selected = !self.actionButton.selected;
     if(self.actionButton.selected) {
-        [self showSuggestionsAnimated];
-
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+            [self.halfScreenView.searchView resetSearchView];
+            [self.halfScreenView.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
         });
+
+        [self showSuggestionsAnimated];
     } else {
         [self hideSuggestionsAnimated:NO];
         [self.inputField becomeFirstResponder];
@@ -327,20 +266,20 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
     [self.inputFieldContainer mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@50);
-        make.bottom.equalTo(self.view).offset(-InitialSuggestionViewHeight);
+        make.bottom.equalTo(self.view).offset(-IMHalfScreenViewDefaultHeight);
     }];
 
-    [self.suggestionContainerView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.halfScreenView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.top.equalTo(self.inputFieldContainer.mas_bottom);
-        make.height.equalTo(@(InitialSuggestionViewHeight));
+        make.height.equalTo(@(IMHalfScreenViewDefaultHeight));
     }];
 
     [UIView animateWithDuration:.7f delay:0 usingSpringWithDamping:1.f initialSpringVelocity:1.2f options:UIViewAnimationOptionCurveEaseOut animations:^{
         [self.view layoutIfNeeded];
         [self.inputField resignFirstResponder];
     } completion:^(BOOL finished) {
-        self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, InitialSuggestionViewHeight + self.inputFieldContainer.frame.size.height, 0);
+        self.messageThreadView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, IMHalfScreenViewDefaultHeight + self.inputFieldContainer.frame.size.height, 0);
         self.messageThreadView.contentInset = self.messageThreadView.scrollIndicatorInsets;
     }];
 }
@@ -358,10 +297,10 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
         make.bottom.equalTo(self.mas_bottomLayoutGuideTop);
     }];
 
-    [self.suggestionContainerView mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.halfScreenView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.top.equalTo(self.mas_bottomLayoutGuideBottom);
-        make.height.equalTo(@(InitialSuggestionViewHeight));
+        make.height.equalTo(@(IMHalfScreenViewDefaultHeight));
     }];
 
     if (animated) {
@@ -379,15 +318,15 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
         }];
     }
 
-    [self.imojiSuggestionView.collectionView.collectionViewLayout invalidateLayout];
+    [self.halfScreenView.imojiSuggestionView.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (BOOL)isSuggestionViewDisplayed {
-    return self.suggestionContainerView.frame.origin.y + self.suggestionContainerView.frame.size.height == self.view.frame.size.height;
+    return self.halfScreenView.frame.origin.y + self.halfScreenView.frame.size.height == self.view.frame.size.height;
 }
 
 - (BOOL)isSuggestionViewUsingInitialHeight {
-    return self.suggestionContainerView.frame.size.height == InitialSuggestionViewHeight;
+    return self.halfScreenView.frame.size.height == IMHalfScreenViewDefaultHeight;
 }
 
 #pragma mark Search View Delegate
@@ -396,66 +335,37 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
     self.imojiSearchViewFocused = YES;
 }
 
-- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
-    BOOL hasText = self.searchView.searchTextField.text.length > 0;
-
-    if (!hasText) {
-        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
-    } else {
-        [self.imojiSuggestionView.collectionView loadImojisFromSentence:self.searchView.searchTextField.text];
-    }
-}
-
 - (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView {
     self.imojiSearchViewFocused = NO;
 }
 
 - (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView {
     self.imojiSearchViewActionTapped = YES;
-    [self.searchView.searchTextField resignFirstResponder];
-}
-
-- (void)userDidClearTextFieldFromSearchView:(IMSearchView *)searchView {
-    [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
-}
-
-- (void)userDidTapBackButtonFromSearchView:(IMSearchView *)searchView {
-    [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }
 
 - (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
     self.imojiSearchViewActionTapped = YES;
-
-    if (searchView.recentsButton.selected) {
-        [self.imojiSuggestionView.collectionView loadRecents];
-    } else if (![searchView.previousSearchTerm isEqualToString:searchView.searchTextField.text]) {
-        if([searchView.previousSearchTerm isEqualToString:@""]) {
-            [self userDidClearTextFieldFromSearchView:searchView];
-        } else {
-            [self.imojiSuggestionView.collectionView loadImojisFromSentence:searchView.previousSearchTerm];
-        }
-    }
 }
 
-- (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
-//    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-            imagePicker.delegate = self;
-            imagePicker.allowsEditing = NO;
-            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
-
-            [self presentViewController:imagePicker animated:YES completion:nil];
-        }
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-
-    [self presentViewController:alertController animated:YES completion:nil];
+//- (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
+////    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+//
+//    [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+//            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+//            imagePicker.delegate = self;
+//            imagePicker.allowsEditing = NO;
+//            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+//            imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+//
+//            [self presentViewController:imagePicker animated:YES completion:nil];
+//        }
+//    }]];
+//
+//    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+//
+//    [self presentViewController:alertController animated:YES completion:nil];
 //    } else {
 //        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
 //                                                                 delegate:self
@@ -465,11 +375,7 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
 //
 //        [actionSheet showInView:self.view];
 //    }
-}
-
-- (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
-    [self.imojiSuggestionView.collectionView loadRecents];
-}
+//}
 
 #pragma mark Imoji Collection View Delegate
 
@@ -481,23 +387,13 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
     [self.messageThreadView sendMessageWithImoji:imoji];
 }
 
-- (void)userDidSelectCategory:(nonnull IMImojiCategoryObject *)category fromCollectionView:(nonnull IMCollectionView *)collectionView {
-    self.searchView.searchTextField.text = category.title;
-    self.searchView.searchTextField.rightView.hidden = NO;
-    self.searchView.createButton.hidden = YES;
-    self.searchView.recentsButton.hidden = YES;
-    [self.searchView showBackButton];
-
-    [collectionView loadImojisFromCategory:category];
-}
-
 #pragma mark Keyboard Handling
 
 - (void)messageThreadViewTapped {
     self.actionButton.selected = NO;
     [self hideSuggestionsAnimated:YES];
     [self.inputField resignFirstResponder];
-    [self.searchView.searchTextField resignFirstResponder];
+    [self.halfScreenView.searchView.searchTextField resignFirstResponder];
 }
 
 - (void)inputFieldWillShow:(NSNotification *)notification {
@@ -552,7 +448,7 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
         make.height.equalTo(@50);
 
         if(self.imojiSearchViewActionTapped) {
-            make.bottom.equalTo(self.view).offset(-InitialSuggestionViewHeight);
+            make.bottom.equalTo(self.view).offset(-IMHalfScreenViewDefaultHeight);
         } else {
             make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
         }
@@ -587,32 +483,32 @@ CGFloat const InitialSuggestionViewHeight = 226.f;
 
 #pragma mark UIImagePickerControllerDelegate
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
-    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: ((AppDelegate *)[UIApplication sharedApplication].delegate).session];
-    createImojiViewController.createDelegate = self;
-    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [picker presentViewController:createImojiViewController animated: true completion: nil];
-}
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
+//    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: ((AppDelegate *)[UIApplication sharedApplication].delegate).session];
+//    createImojiViewController.createDelegate = self;
+//    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+//    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//    [picker presentViewController:createImojiViewController animated: true completion: nil];
+//}
 
 #pragma mark IMCreateImojiViewControllerDelegate
 
-- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
-    [((AppDelegate *)[UIApplication sharedApplication].delegate).session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
-}
-
-- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
-               persistentImoji:(IMImojiObject *)persistentImoji
-                     withError:(NSError *)error
-            fromViewController:(IMCreateImojiViewController *)viewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
-
-    [self.imojiSuggestionView.collectionView loadRecents];
-}
-
-- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
-    [viewController dismissViewControllerAnimated:NO completion:nil];
-}
+//- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
+//    [((AppDelegate *)[UIApplication sharedApplication].delegate).session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
+//}
+//
+//- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
+//               persistentImoji:(IMImojiObject *)persistentImoji
+//                     withError:(NSError *)error
+//            fromViewController:(IMCreateImojiViewController *)viewController {
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//
+//    [self.halfScreenView.imojiSuggestionView.collectionView loadRecents];
+//}
+//
+//- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
+//    [viewController dismissViewControllerAnimated:NO completion:nil];
+//}
 
 #pragma mark View controller overrides
 

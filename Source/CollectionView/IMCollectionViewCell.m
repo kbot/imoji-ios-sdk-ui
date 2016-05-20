@@ -90,11 +90,11 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
         BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
 
         if (animateImmediately) {
-                [self performPlaceholderRetractAnimation];
+            [self performPlaceholderRetractAnimation];
             [self performLoadedAnimation];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                    [self performPlaceholderRetractAnimation];
+                [self performPlaceholderRetractAnimation];
                 [self performLoadedAnimation];
             });
         }
@@ -103,7 +103,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
         _hasImojiImage = NO;
 
-            [self performLoadedAnimation];
+        [self performLoadedAnimation];
     }
 }
 
