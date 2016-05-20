@@ -28,7 +28,7 @@
 #import <ImojiSDK/IMImojiObject.h>
 #import <Masonry/Masonry.h>
 
-#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>)
+#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>) && !defined(IMOJI_APP_EXTENSION)
 #define IMOJI_EDITOR_ENABLED 1
 #import <ImojiSDKUI/IMCreateImojiViewController.h>
 
@@ -144,6 +144,7 @@
 }
 
 - (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
+#if IMOJI_EDITOR_ENABLED
     if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
@@ -187,7 +188,9 @@
 
         [actionSheet showInView:self];
     }
+#endif
 }
+
 
 - (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapRecentsButtonFromSearchView:)]) {

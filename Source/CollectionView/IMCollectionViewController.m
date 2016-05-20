@@ -33,7 +33,7 @@ CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 CGFloat const IMCollectionViewControllerTopBarDefaultHeight = 44.0f;
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
-#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>)
+#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>) && !defined(IMOJI_APP_EXTENSION)
 #define IMOJI_EDITOR_ENABLED 1
 #import <ImojiSDKUI/IMCreateImojiViewController.h>
 
