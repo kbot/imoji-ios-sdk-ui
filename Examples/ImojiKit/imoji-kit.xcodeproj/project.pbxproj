@@ -12,6 +12,7 @@
 		2DBA1A0A3C36F0A328199CCA /* EmptyMessageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA1D972BC6C4583D25E7BF /* EmptyMessageViewCell.m */; };
 		2DBA1E3646F91004906EAE0C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBA18F5CB10BFA0C1021F2C /* Message.m */; };
 		53B1D7B12194A33C8997B980 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8960B82DF392F1FFC2F1F7F /* libPods.a */; };
+		6E63DA2EAF4BC517C27FC5BB /* libPods-imoji-kit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D3CBA9B524E36C288328E3C /* libPods-imoji-kit.a */; };
 		FA03B4491CE563580040EBBD /* UISettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA03B4481CE563580040EBBD /* UISettingsViewController.m */; };
 		FA15C7EA1CD020750065008B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA15C7E91CD020750065008B /* main.m */; };
 		FA15C7ED1CD020750065008B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA15C7EC1CD020750065008B /* AppDelegate.m */; };
@@ -36,8 +37,11 @@
 		2DBA1C709F056BD0580C8462 /* MessageThreadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageThreadView.m; sourceTree = "<group>"; };
 		2DBA1D972BC6C4583D25E7BF /* EmptyMessageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmptyMessageViewCell.m; sourceTree = "<group>"; };
 		2DBA1E21739ADACB9E01062F /* MessageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageViewCell.h; sourceTree = "<group>"; };
+		5D3CBA9B524E36C288328E3C /* libPods-imoji-kit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-imoji-kit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		740ECC3F9929E6324BE1CA7B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		7FCC1B95CA0D27675E99F59F /* Pods-imoji-kit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-kit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-kit/Pods-imoji-kit.debug.xcconfig"; sourceTree = "<group>"; };
 		94AC0331765C73F87C8C7718 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9ED84789F80F0A49E467545B /* Pods-imoji-kit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-imoji-kit.release.xcconfig"; path = "Pods/Target Support Files/Pods-imoji-kit/Pods-imoji-kit.release.xcconfig"; sourceTree = "<group>"; };
 		E8960B82DF392F1FFC2F1F7F /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA03B4471CE563580040EBBD /* UISettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISettingsViewController.h; sourceTree = "<group>"; };
 		FA03B4481CE563580040EBBD /* UISettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISettingsViewController.m; sourceTree = "<group>"; };
@@ -70,6 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53B1D7B12194A33C8997B980 /* libPods.a in Frameworks */,
+				6E63DA2EAF4BC517C27FC5BB /* libPods-imoji-kit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +108,8 @@
 			children = (
 				740ECC3F9929E6324BE1CA7B /* Pods.debug.xcconfig */,
 				94AC0331765C73F87C8C7718 /* Pods.release.xcconfig */,
+				7FCC1B95CA0D27675E99F59F /* Pods-imoji-kit.debug.xcconfig */,
+				9ED84789F80F0A49E467545B /* Pods-imoji-kit.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -111,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				E8960B82DF392F1FFC2F1F7F /* libPods.a */,
+				5D3CBA9B524E36C288328E3C /* libPods-imoji-kit.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -179,12 +187,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA15C7FC1CD020750065008B /* Build configuration list for PBXNativeTarget "imoji-kit" */;
 			buildPhases = (
-				2386026B7186E2A5879C7B1C /* Check Pods Manifest.lock */,
+				2386026B7186E2A5879C7B1C /* 📦 Check Pods Manifest.lock */,
 				FA15C7E11CD020750065008B /* Sources */,
 				FA15C7E21CD020750065008B /* Frameworks */,
 				FA15C7E31CD020750065008B /* Resources */,
-				BDAADD153DAF8656A6A4FD89 /* Embed Pods Frameworks */,
-				943CB2A51FBD7DD85D40F1B7 /* Copy Pods Resources */,
+				BDAADD153DAF8656A6A4FD89 /* 📦 Embed Pods Frameworks */,
+				943CB2A51FBD7DD85D40F1B7 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -242,14 +250,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2386026B7186E2A5879C7B1C /* Check Pods Manifest.lock */ = {
+		2386026B7186E2A5879C7B1C /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,34 +265,34 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		943CB2A51FBD7DD85D40F1B7 /* Copy Pods Resources */ = {
+		943CB2A51FBD7DD85D40F1B7 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-kit/Pods-imoji-kit-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BDAADD153DAF8656A6A4FD89 /* Embed Pods Frameworks */ = {
+		BDAADD153DAF8656A6A4FD89 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-imoji-kit/Pods-imoji-kit-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -418,7 +426,7 @@
 		};
 		FA15C7FD1CD020750065008B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 740ECC3F9929E6324BE1CA7B /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 7FCC1B95CA0D27675E99F59F /* Pods-imoji-kit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/imoji-kit/Info.plist";
@@ -431,7 +439,7 @@
 		};
 		FA15C7FE1CD020750065008B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 94AC0331765C73F87C8C7718 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 9ED84789F80F0A49E467545B /* Pods-imoji-kit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/imoji-kit/Info.plist";
