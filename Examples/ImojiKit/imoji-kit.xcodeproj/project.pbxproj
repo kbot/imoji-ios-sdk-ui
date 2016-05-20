@@ -20,11 +20,12 @@
 		FA15C7F31CD020750065008B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA15C7F11CD020750065008B /* Main.storyboard */; };
 		FA15C7F51CD020750065008B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA15C7F41CD020750065008B /* Assets.xcassets */; };
 		FA15C7F81CD020750065008B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA15C7F61CD020750065008B /* LaunchScreen.storyboard */; };
+		FA4AF4461CEF8CA100F5F403 /* StickerCreatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4AF4451CEF8CA100F5F403 /* StickerCreatorViewController.m */; };
+		FA4AF44A1CEF901A00F5F403 /* frosty-dog.png in Resources */ = {isa = PBXBuildFile; fileRef = FA4AF4491CEF901A00F5F403 /* frosty-dog.png */; };
 		FA61C4FA1CD049AB007D033F /* FullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA61C4F91CD049AB007D033F /* FullScreenViewController.m */; };
 		FA61C4FD1CD049BE007D033F /* HalfScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA61C4FC1CD049BE007D033F /* HalfScreenViewController.m */; };
 		FA61C5001CD049CD007D033F /* QuarterScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA61C4FF1CD049CD007D033F /* QuarterScreenViewController.m */; };
 		FA61C5031CD049D9007D033F /* HalfAndQuarterScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA61C5021CD049D9007D033F /* HalfAndQuarterScreenViewController.m */; };
-		FA61C50B1CD064D3007D033F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA61C50A1CD064D3007D033F /* Default-568h@2x.png */; };
 		FA61C52A1CDADCDD007D033F /* SampleAppCollectionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA61C5291CDADCDD007D033F /* SampleAppCollectionTableViewCell.m */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,9 @@
 		FA15C7F41CD020750065008B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA15C7F71CD020750065008B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA15C7F91CD020750065008B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA4AF4441CEF8CA100F5F403 /* StickerCreatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StickerCreatorViewController.h; sourceTree = "<group>"; };
+		FA4AF4451CEF8CA100F5F403 /* StickerCreatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StickerCreatorViewController.m; sourceTree = "<group>"; };
+		FA4AF4491CEF901A00F5F403 /* frosty-dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "frosty-dog.png"; sourceTree = "<group>"; };
 		FA61C4F81CD049AB007D033F /* FullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullScreenViewController.h; sourceTree = "<group>"; };
 		FA61C4F91CD049AB007D033F /* FullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullScreenViewController.m; sourceTree = "<group>"; };
 		FA61C4FB1CD049BE007D033F /* HalfScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HalfScreenViewController.h; sourceTree = "<group>"; };
@@ -63,7 +67,6 @@
 		FA61C4FF1CD049CD007D033F /* QuarterScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuarterScreenViewController.m; sourceTree = "<group>"; };
 		FA61C5011CD049D9007D033F /* HalfAndQuarterScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HalfAndQuarterScreenViewController.h; sourceTree = "<group>"; };
 		FA61C5021CD049D9007D033F /* HalfAndQuarterScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HalfAndQuarterScreenViewController.m; sourceTree = "<group>"; };
-		FA61C50A1CD064D3007D033F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FA61C5281CDADCDD007D033F /* SampleAppCollectionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleAppCollectionTableViewCell.h; sourceTree = "<group>"; };
 		FA61C5291CDADCDD007D033F /* SampleAppCollectionTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleAppCollectionTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -126,7 +129,6 @@
 		FA15C7DC1CD020750065008B = {
 			isa = PBXGroup;
 			children = (
-				FA61C50A1CD064D3007D033F /* Default-568h@2x.png */,
 				FA15C7E71CD020750065008B /* imoji-kit */,
 				FA15C7E61CD020750065008B /* Products */,
 				34E2EF6F169928D7BEBAF2DF /* Pods */,
@@ -145,6 +147,7 @@
 		FA15C7E71CD020750065008B /* imoji-kit */ = {
 			isa = PBXGroup;
 			children = (
+				FA4AF4491CEF901A00F5F403 /* frosty-dog.png */,
 				FA15C7EB1CD020750065008B /* AppDelegate.h */,
 				FA15C7EC1CD020750065008B /* AppDelegate.m */,
 				FA15C7EE1CD020750065008B /* ViewController.h */,
@@ -156,6 +159,22 @@
 				FA15C7E81CD020750065008B /* Supporting Files */,
 				2DBA1BACAADF883606761074 /* MessageThread */,
 				2DBA1089ABB154FA4E062425 /* Model */,
+				FA4AF44B1CEF902E00F5F403 /* ViewControllers */,
+			);
+			path = "imoji-kit";
+			sourceTree = "<group>";
+		};
+		FA15C7E81CD020750065008B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA15C7E91CD020750065008B /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA4AF44B1CEF902E00F5F403 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
 				FA61C4F81CD049AB007D033F /* FullScreenViewController.h */,
 				FA61C4F91CD049AB007D033F /* FullScreenViewController.m */,
 				FA61C4FB1CD049BE007D033F /* HalfScreenViewController.h */,
@@ -168,16 +187,10 @@
 				FA61C5291CDADCDD007D033F /* SampleAppCollectionTableViewCell.m */,
 				FA03B4471CE563580040EBBD /* UISettingsViewController.h */,
 				FA03B4481CE563580040EBBD /* UISettingsViewController.m */,
+				FA4AF4441CEF8CA100F5F403 /* StickerCreatorViewController.h */,
+				FA4AF4451CEF8CA100F5F403 /* StickerCreatorViewController.m */,
 			);
-			path = "imoji-kit";
-			sourceTree = "<group>";
-		};
-		FA15C7E81CD020750065008B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				FA15C7E91CD020750065008B /* main.m */,
-			);
-			name = "Supporting Files";
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,9 +254,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA15C7F81CD020750065008B /* LaunchScreen.storyboard in Resources */,
-				FA61C50B1CD064D3007D033F /* Default-568h@2x.png in Resources */,
 				FA15C7F51CD020750065008B /* Assets.xcassets in Resources */,
 				FA15C7F31CD020750065008B /* Main.storyboard in Resources */,
+				FA4AF44A1CEF901A00F5F403 /* frosty-dog.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +318,7 @@
 				FA15C7F01CD020750065008B /* ViewController.m in Sources */,
 				FA15C7ED1CD020750065008B /* AppDelegate.m in Sources */,
 				FA61C4FD1CD049BE007D033F /* HalfScreenViewController.m in Sources */,
+				FA4AF4461CEF8CA100F5F403 /* StickerCreatorViewController.m in Sources */,
 				FA61C52A1CDADCDD007D033F /* SampleAppCollectionTableViewCell.m in Sources */,
 				FA15C7EA1CD020750065008B /* main.m in Sources */,
 				FA03B4491CE563580040EBBD /* UISettingsViewController.m in Sources */,
