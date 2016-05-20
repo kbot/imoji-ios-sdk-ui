@@ -26,13 +26,14 @@
 #import <Masonry/Masonry.h>
 #import <ImojiSDK/ImojiSDK.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import "ViewController.h"
 #import "FullScreenViewController.h"
 #import "HalfScreenViewController.h"
 #import "QuarterScreenViewController.h"
 #import "HalfAndQuarterScreenViewController.h"
+#import "StickerCreatorViewController.h"
 #import "AppDelegate.h"
-#import "IMResourceBundleUtil.h"
 #import "SampleAppCollectionTableViewCell.h"
 #import "UISettingsViewController.h"
 
@@ -41,6 +42,7 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     SampleAppTypeHalfAndQuarterScreen,
     SampleAppTypeHalfScreen,
     SampleAppTypeQuarterScreen,
+    SampleAppTypeStickerCreator,
     SampleAppTypeUISettings
 };
 
@@ -61,7 +63,7 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
     [shared registerDefaults:@{@"createAndRecents" : @YES, @"stickerBorders" : @(IMImojiObjectBorderStyleSticker)}];
 
-    self.sampleApps = [@[@(SampleAppTypeFullScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen), @(SampleAppTypeUISettings)] mutableCopy];
+    self.sampleApps = [@[@(SampleAppTypeFullScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen), @(SampleAppTypeStickerCreator), @(SampleAppTypeUISettings)] mutableCopy];
 
     self.imojiLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_logo.png", [IMResourceBundleUtil assetsBundle].bundlePath]]];
 
@@ -120,6 +122,9 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
         case SampleAppTypeHalfAndQuarterScreen:
             [cell setupWithTitle:@"Half + Quarter Screen" iconImage:SampleAppCollectionIconTypeForward];
             break;
+        case SampleAppTypeStickerCreator:
+            [cell setupWithTitle:@"Sticker Creator" iconImage:SampleAppCollectionIconTypeForward];
+            break;
         case SampleAppTypeUISettings:
             [cell setupWithTitle:@"UI Settings" iconImage:SampleAppCollectionIconTypeSettings];
             break;
@@ -150,6 +155,10 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
             break;
         case SampleAppTypeHalfAndQuarterScreen:
             controller = [[HalfAndQuarterScreenViewController alloc] init];
+            break;
+        case SampleAppTypeStickerCreator:
+            controller = [[StickerCreatorViewController alloc] initWithSourceImage:[UIImage imageNamed:@"frosty-dog"]
+                                                                           session:((AppDelegate *)[UIApplication sharedApplication].delegate).session];
             break;
         case SampleAppTypeUISettings:
             controller = [[UISettingsViewController alloc] init];
