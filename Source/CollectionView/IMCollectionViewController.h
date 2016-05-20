@@ -87,8 +87,9 @@
  * @abstract The search field component for the collection view. If you hiding this field, make sure to call
  * updateViewConstraints if the view controller has been presented. To change the dimensions of this field, override
  * updateViewConstraints in your own representation.
+ * DEPRECATED: Use searchView instead.
  */
-@property(nonatomic, strong, readonly, nonnull) UISearchBar *searchField;
+@property(nonatomic, strong, readonly, nonnull) UISearchBar *searchField DEPRECATED_ATTRIBUTE;
 
 @property(nonatomic, strong, readonly, nonnull) IMSearchView *searchView;
 

@@ -25,19 +25,31 @@
 
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMCollectionViewController.h>
-//#import <ImojiSDKUI/IMCreateImojiViewController.h>
 #import <ImojiSDKUI/IMCategoryCollectionViewCell.h>
 #import <ImojiSDK/IMImojiCategoryObject.h>
+#import <ImojiSDK/IMImojiObject.h>
 
 CGFloat const IMCollectionViewControllerBottomBarDefaultHeight = 60.0f;
 CGFloat const IMCollectionViewControllerTopBarDefaultHeight = 44.0f;
 NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
-@interface IMCollectionViewController () <UISearchBarDelegate, IMSearchViewDelegate, IMToolbarDelegate,
-        IMCollectionViewControllerDelegate, UIViewControllerPreviewingDelegate, UIActionSheetDelegate,
-        /*IMCreateImojiViewControllerDelegate,*/ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>)
+#define IMOJI_EDITOR_ENABLED 1
+#import <ImojiSDKUI/IMCreateImojiViewController.h>
 
+@interface IMCollectionViewController () <IMSearchViewDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate,
+        UIViewControllerPreviewingDelegate, UIActionSheetDelegate, IMCreateImojiViewControllerDelegate,
+        UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+
+#else
+#define IMOJI_EDITOR_ENABLED 0
+
+@interface IMCollectionViewController () <IMSearchViewDelegate, IMToolbarDelegate, IMCollectionViewControllerDelegate,
+        UIViewControllerPreviewingDelegate, UIActionSheetDelegate>
+
+#endif
 @property(nonatomic, strong) NSOperation *pendingSearchOperation;
+
 @end
 
 @implementation IMCollectionViewController {
@@ -353,34 +365,38 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             self.bottomToolbar == bar ? UIBarPositionBottom : UIBarPositionAny;
 }
 
+#if IMOJI_EDITOR_ENABLED
+
 #pragma mark UIImagePickerControllerDelegate
 
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
-//    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: self.session];
-//    createImojiViewController.createDelegate = self;
-//    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-//    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//    [picker presentViewController:createImojiViewController animated: true completion: nil];
-//}
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
+    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: self.session];
+    createImojiViewController.createDelegate = self;
+    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [picker presentViewController:createImojiViewController animated: true completion: nil];
+}
 
 #pragma mark IMCreateImojiViewControllerDelegate
 
-//- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
-//    [self.session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
-//}
-//
-//- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
-//               persistentImoji:(IMImojiObject *)persistentImoji
-//                     withError:(NSError *)error
-//            fromViewController:(IMCreateImojiViewController *)viewController {
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//
-//    [self.collectionView loadRecents];
-//}
-//
-//- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
-//    [viewController dismissViewControllerAnimated:NO completion:nil];
-//}
+- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
+    [self.session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
+}
+
+- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
+               persistentImoji:(IMImojiObject *)persistentImoji
+                     withError:(NSError *)error
+            fromViewController:(IMCreateImojiViewController *)viewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+    [self.collectionView loadRecents];
+}
+
+- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
+    [viewController dismissViewControllerAnimated:NO completion:nil];
+}
+
+#endif
 
 #pragma mark Previewing Delegate (3D/Force Touch)
 
