@@ -282,6 +282,8 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     }
 }
 
+#if IMOJI_EDITOR_ENABLED
+
 - (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
 //    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -311,6 +313,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 //        [actionSheet showInView:self.view];
 //    }
 }
+#endif
 
 - (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
     [self.collectionView loadRecents];

@@ -103,7 +103,7 @@
 + (NSUInteger)loadingPlaceholderStartIndex {
     NSArray *placeholderColors = [[self class] loadingPlaceholderColors];
 
-    static NSUInteger loadingPlaceholderIndex = nil;
+    static NSUInteger loadingPlaceholderIndex = 0;
     static dispatch_once_t predicate;
 
     dispatch_once(&predicate, ^{
