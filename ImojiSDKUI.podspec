@@ -38,17 +38,6 @@ Pod::Spec.new do |s|
     ss.libraries = 'c++'
   end
 
-  s.subspec 'KeyboardView' do |ss|
-    ss.dependency "ImojiSDKUI/CollectionView"
-    
-    ss.ios.prefix_header_file = 'Source/KeyboardView/Source/IMKeyboard.pch'
-    ss.ios.source_files = 'Source/KeyboardView/Source/**/*.{h,m}'
-    ss.ios.public_header_files = 'Source/KeyboardView/Source/**/*.h'
-    ss.ios.resources = ["Source/KeyboardView/Resources/Fonts/*.otf", "Source/KeyboardView/Resources/StoryBoards/IMQwerty.storyboard", "Source/KeyboardView/Resources/KeyArt.xcassets"]
-    ss.ios.resource_bundles = {'ImojiKeyboardAssets' => ['Source/KeyboardView/Resources/Icons/*.png']}
-
-  end
-
   s.subspec 'Common' do |ss|
     ss.ios.source_files = 'Source/Common/Source/**/*.{h,m}'
     ss.ios.resource_bundles = {'ImojiUIStrings' => ['Source/Common/Resources/Localization/*.lproj'], 'ImojiUIAssets' => ['Source/Common/Resources/Images/*.*'], 'ImojiUIFonts' => ["Source/Common/Resources/Fonts/*.otf"]}
