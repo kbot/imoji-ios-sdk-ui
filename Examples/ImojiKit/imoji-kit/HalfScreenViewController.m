@@ -35,8 +35,8 @@
 #import <Masonry/Masonry.h>
 #import "AppDelegate.h"
 
-@interface HalfScreenViewController () <IMToolbarDelegate, IMSearchViewDelegate, UITextFieldDelegate, IMCollectionViewDelegate,
-        IMCreateImojiViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, IMStickerSearchContainerViewDelegate>
+@interface HalfScreenViewController () <IMToolbarDelegate, IMSearchViewDelegate, UITextFieldDelegate,
+        IMCollectionViewDelegate, IMStickerSearchContainerViewDelegate>
 
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
@@ -347,36 +347,6 @@
     self.imojiSearchViewActionTapped = YES;
 }
 
-//- (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
-////    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-//            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-//            imagePicker.delegate = self;
-//            imagePicker.allowsEditing = NO;
-//            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//            imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
-//
-//            [self presentViewController:imagePicker animated:YES completion:nil];
-//        }
-//    }]];
-//
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-//
-//    [self presentViewController:alertController animated:YES completion:nil];
-//    } else {
-//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-//                                                                 delegate:self
-//                                                        cancelButtonTitle:@"Cancel"
-//                                                   destructiveButtonTitle:nil
-//                                                        otherButtonTitles:@"Photo Library", nil];
-//
-//        [actionSheet showInView:self.view];
-//    }
-//}
-
 #pragma mark Imoji Collection View Delegate
 
 - (void)userDidSelectImoji:(nonnull IMImojiObject *)imoji fromCollectionView:(nonnull IMCollectionView *)collectionView {
@@ -480,35 +450,6 @@
             break;
     }
 }
-
-#pragma mark UIImagePickerControllerDelegate
-
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
-//    IMCreateImojiViewController *createImojiViewController = [[IMCreateImojiViewController alloc] initWithSourceImage:image session: ((AppDelegate *)[UIApplication sharedApplication].delegate).session];
-//    createImojiViewController.createDelegate = self;
-//    createImojiViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-//    createImojiViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//    [picker presentViewController:createImojiViewController animated: true completion: nil];
-//}
-
-#pragma mark IMCreateImojiViewControllerDelegate
-
-//- (void)imojiUploadDidBegin:(IMImojiObject *)localImoji fromViewController:(IMCreateImojiViewController *)viewController {
-//    [((AppDelegate *)[UIApplication sharedApplication].delegate).session markImojiUsageWithIdentifier:localImoji.identifier originIdentifier:@"imoji created"];
-//}
-//
-//- (void)imojiUploadDidComplete:(IMImojiObject *)localImoji
-//               persistentImoji:(IMImojiObject *)persistentImoji
-//                     withError:(NSError *)error
-//            fromViewController:(IMCreateImojiViewController *)viewController {
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//
-//    [self.halfScreenView.imojiSuggestionView.collectionView loadRecents];
-//}
-//
-//- (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
-//    [viewController dismissViewControllerAnimated:NO completion:nil];
-//}
 
 #pragma mark View controller overrides
 

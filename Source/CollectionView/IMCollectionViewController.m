@@ -131,7 +131,6 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     self.collectionView.backgroundColor = [UIColor colorWithWhite:255.0f / 255.0f alpha:1.0f];
 
     self.searchView.backgroundColor = [UIColor clearColor];
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeFull;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDismiss;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
 
@@ -269,6 +268,24 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 
 #pragma mark IMSearchView delegates
 
+- (void)userDidBeginSearchFromSearchView:(IMSearchView *)searchView {
+    if(!searchView.recentsButton.selected) {
+        [searchView.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(searchView).offset(IMSearchViewContainerDefaultLeftOffset);
+        }];
+
+        if (![searchView.searchIconImageView isDescendantOfView:searchView.searchViewContainer]) {
+            [searchView.searchViewContainer addSubview:searchView.searchIconImageView];
+        }
+    }
+
+    [searchView.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView.backButton.mas_right).offset(IMSearchViewBackButtonSearchIconOffset);
+        make.centerY.equalTo(searchView.searchViewContainer);
+        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+    }];
+}
+
 - (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
     if (searchView.recentsButton.selected) {
         [self.collectionView loadRecents];
@@ -285,7 +302,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
 #if IMOJI_EDITOR_ENABLED
 
 - (void)userDidTapCreateButtonFromSearchView:(IMSearchView *)searchView {
-//    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+    if(NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
         [alertController addAction:[UIAlertAction actionWithTitle:@"Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -303,19 +320,35 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
         [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
 
         [self presentViewController:alertController animated:YES completion:nil];
-//    } else {
-//        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-//                                                                 delegate:self
-//                                                        cancelButtonTitle:@"Cancel"
-//                                                   destructiveButtonTitle:nil
-//                                                        otherButtonTitles:@"Photo Library", nil];
-//
-//        [actionSheet showInView:self.view];
-//    }
+    } else {
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Cancel"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Photo Library", nil];
+
+        [actionSheet showInView:self.view];
+    }
 }
 #endif
 
 - (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
+    searchView.createButton.hidden = YES;
+    searchView.searchIconImageView.hidden = YES;
+
+    [searchView.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+        make.centerY.equalTo(searchView.searchViewContainer);
+        make.left.equalTo(searchView.backButton.mas_right).offset(13.0f);
+    }];
+
+    [searchView.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView.recentsButton.mas_right).offset(2.0f);
+        make.right.equalTo(searchView.searchViewContainer).offset(-6.0f);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
+        make.centerY.equalTo(searchView.searchViewContainer);
+    }];
+
     [self.collectionView loadRecents];
 }
 

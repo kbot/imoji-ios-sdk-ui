@@ -25,12 +25,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, IMSearchViewScreenType) {
-    IMSearchViewScreenTypeFull,
-    IMSearchViewScreenTypeHalf,
-    IMSearchViewScreenTypeQuarter
-};
-
 typedef NS_ENUM(NSUInteger, IMSearchViewBackButtonType) {
     IMSearchViewBackButtonTypeDismiss,
     IMSearchViewBackButtonTypeBack,
@@ -38,6 +32,8 @@ typedef NS_ENUM(NSUInteger, IMSearchViewBackButtonType) {
 };
 
 extern CGFloat const IMSearchViewIconWidthHeight;
+extern CGFloat const IMSearchViewBackButtonSearchIconOffset;
+extern CGFloat const IMSearchViewCreateRecentsIconWidthHeight;
 extern CGFloat const IMSearchViewContainerDefaultHeight;
 extern CGFloat const IMSearchViewContainerDefaultLeftOffset;
 extern CGFloat const IMSearchViewContainerDefaultRightOffset;
@@ -46,13 +42,17 @@ extern CGFloat const IMSearchViewContainerDefaultRightOffset;
 
 @interface IMSearchView : UIView
 
-@property(nonatomic) IMSearchViewScreenType searchViewScreenType;
 @property(nonatomic) IMSearchViewBackButtonType backButtonType;
 @property(nonatomic) BOOL createAndRecentsEnabled;
+
+@property(nonatomic, strong, readonly) UIView *searchViewContainer;
+@property(nonatomic, strong, readonly) UIImageView *searchIconImageView;
 @property(nonatomic, strong, readonly) UITextField *searchTextField;
+@property(nonatomic, strong, readonly) UIButton *cancelButton;
 @property(nonatomic, strong, readonly) UIButton *createButton;
 @property(nonatomic, strong, readonly) UIButton *recentsButton;
 @property(nonatomic, strong, readonly) UIButton *backButton;
+
 @property(nonatomic, copy, readonly) NSString *previousSearchTerm;
 @property(nonatomic, weak) id <IMSearchViewDelegate> delegate;
 

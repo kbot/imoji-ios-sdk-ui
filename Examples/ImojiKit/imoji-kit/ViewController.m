@@ -63,7 +63,7 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
     [shared registerDefaults:@{@"createAndRecents" : @YES, @"stickerBorders" : @(IMImojiObjectBorderStyleSticker)}];
 
-    self.sampleApps = [@[@(SampleAppTypeFullScreen), @(SampleAppTypeHalfAndQuarterScreen), @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen), @(SampleAppTypeStickerCreator), @(SampleAppTypeUISettings)] mutableCopy];
+    self.sampleApps = [@[@(SampleAppTypeFullScreen), /*@(SampleAppTypeHalfAndQuarterScreen),*/ @(SampleAppTypeHalfScreen), @(SampleAppTypeQuarterScreen), @(SampleAppTypeStickerCreator), @(SampleAppTypeUISettings)] mutableCopy];
 
     self.imojiLogoImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_menu_logo.png", [IMResourceBundleUtil assetsBundle].bundlePath]]];
 

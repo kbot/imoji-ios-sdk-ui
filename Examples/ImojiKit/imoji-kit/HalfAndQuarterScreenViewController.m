@@ -103,7 +103,7 @@
     // SearchView Setup
     self.searchView = [IMSearchView imojiSearchView];
     self.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
+//    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
     self.searchView.delegate = self;
@@ -194,7 +194,6 @@
 }
 
 - (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView {
-//    [self sendText];
     self.imojiSearchViewActionTapped = YES;
     [self.searchView.searchTextField resignFirstResponder];
 
@@ -278,7 +277,7 @@
     self.quarterScreenSuggestionViewDisplayed = YES;
     self.halfScreenSuggestionViewDisplayed = NO;
     self.searchViewTopBorder.hidden = YES;
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
+//    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
 //    self.imojiSuggestionView.hidden = NO;
 
@@ -305,7 +304,7 @@
     [self.view layoutIfNeeded];
 
     self.searchViewTopBorder.hidden = NO;
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeHalf;
+//    self.searchView.searchViewScreenType = IMSearchViewScreenTypeHalf;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeBack;
 
     [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -345,7 +344,7 @@
 
     [self.view layoutIfNeeded];
 
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
+//    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
 
     if (self.halfScreenSuggestionViewDisplayed) {

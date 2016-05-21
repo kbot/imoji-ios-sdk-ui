@@ -25,6 +25,7 @@
 
 #import "IMQuarterScreenView.h"
 #import <ImojiSDK/IMImojiCategoryObject.h>
+#import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import <Masonry/Masonry.h>
 
 @interface IMQuarterScreenView () <IMSearchViewDelegate, IMCollectionViewDelegate>
@@ -35,7 +36,6 @@
 - (void)setupStickerSearchContainerViewWithSession:(IMImojiSession *)session {
     self.searchView = [IMSearchView imojiSearchView];
     self.searchView.createAndRecentsEnabled = YES;
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeQuarter;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySend;
     self.searchView.delegate = self;
@@ -75,6 +75,98 @@
 
 #pragma mark IMSearchView Delegate
 
+- (void)userDidBeginSearchFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidBeginSearchFromSearchView:)]) {
+        [self.delegate userDidBeginSearchFromSearchView:searchView];
+    }
+
+    if (searchView.recentsButton.selected) {
+        [searchView.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                                  forState:UIControlStateSelected];
+
+        [searchView.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(searchView.searchViewContainer);
+            make.centerY.equalTo(searchView.searchViewContainer);
+            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+        }];
+
+        [searchView.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+            make.right.equalTo(searchView.createButton.mas_left).offset(-4.0f);
+            make.centerY.equalTo(searchView.searchViewContainer);
+        }];
+    }
+
+    if(searchView.searchTextField.text.length == 0) {
+        searchView.cancelButton.hidden = YES;
+        searchView.recentsButton.hidden = NO;
+        searchView.createButton.hidden = NO;
+    }
+}
+
+- (void)userDidChangeTextFieldFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidChangeTextFieldFromSearchView:)]) {
+        [self.delegate userDidChangeTextFieldFromSearchView:searchView];
+    }
+
+    BOOL hasText = searchView.searchTextField.text.length > 0;
+
+    searchView.cancelButton.hidden = !hasText;
+    searchView.createButton.hidden = hasText;
+    searchView.recentsButton.hidden = hasText;
+
+    if (!hasText) {
+        [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+    } else {
+        [self.imojiSuggestionView.collectionView loadImojisFromSentence:searchView.searchTextField.text];
+    }
+}
+
+- (void)userDidClearTextFieldFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidClearTextFieldFromSearchView:)]) {
+        [self.delegate userDidClearTextFieldFromSearchView:searchView];
+    }
+
+    [searchView.searchTextField sendActionsForControlEvents:UIControlEventEditingChanged];
+//    [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+}
+
+- (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidEndSearchFromSearchView:)]) {
+        [self.delegate userDidEndSearchFromSearchView:searchView];
+    }
+
+    [searchView.recentsButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_recents_active.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                              forState:UIControlStateSelected];
+}
+
+- (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapRecentsButtonFromSearchView:)]) {
+        [self.delegate userDidTapRecentsButtonFromSearchView:searchView];
+    }
+
+    searchView.createButton.hidden = NO;
+    searchView.recentsButton.hidden = NO;
+    searchView.searchTextField.rightView = searchView.searchIconImageView;
+
+    [searchView.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView).offset(10.0f);
+    }];
+
+    [searchView.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+        make.left.and.centerY.equalTo(searchView.searchViewContainer);
+    }];
+
+    [searchView.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView.recentsButton.mas_right).offset(2.0f);
+        make.right.equalTo(searchView.createButton.mas_left).offset(-9.0f);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
+        make.centerY.equalTo(searchView.searchViewContainer);
+    }];
+
+    [self.imojiSuggestionView.collectionView loadRecents];
+}
 
 #pragma mark IMCollectionView Delegate
 
@@ -85,6 +177,9 @@
 
     self.searchView.searchTextField.text = category.title;
     self.searchView.searchTextField.rightView.hidden = NO;
+    self.searchView.cancelButton.hidden = NO;
+    self.searchView.createButton.hidden = YES;
+    self.searchView.recentsButton.hidden = YES;
     [collectionView loadImojisFromCategory:category];
 }
 
