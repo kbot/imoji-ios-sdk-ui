@@ -158,10 +158,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         }
     }];
 
-    if (self.backButtonType == IMSearchViewBackButtonTypeBack && ![self.searchTextField isFirstResponder]) {
-        [self hideBackButton];
-    }
-
     if (self.createAndRecentsEnabled) {
         self.recentsButton.selected = NO;
         self.recentsButton.hidden = [self.searchTextField isFirstResponder];
@@ -179,31 +175,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapBackButtonFromSearchView:)]) {
         [self.delegate userDidTapBackButtonFromSearchView:self];
     }
-
-    if (self.backButtonType == IMSearchViewBackButtonTypeBack) {
-        [self resetSearchView];
-//        self.searchTextField.text = @"";
-//        self.searchTextField.rightView = self.clearButton;
-//        self.searchTextField.rightView.hidden = YES;
-//
-//        if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
-//            [self.searchViewContainer addSubview:self.searchIconImageView];
-//        }
-//
-//        [self hideBackButton];
-//
-//        if (self.createAndRecentsEnabled) {
-//            self.createButton.hidden = NO;
-//            self.recentsButton.hidden = NO;
-//            self.recentsButton.selected = NO;
-//
-//            [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-//                make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
-//                make.right.equalTo(self.createButton.mas_left).offset(-4.0f);
-//                make.centerY.equalTo(self.searchViewContainer);
-//            }];
-//        }
-    }
 }
 
 - (void)cancelButtonTapped {
@@ -218,41 +189,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
 
 - (void)clearButtonTapped {
     [self resetSearchView];
-//    self.searchTextField.text = @"";
-//    self.searchTextField.rightView.hidden = YES;
-//    self.searchIconImageView.hidden = NO;
-//
-//    if (self.createAndRecentsEnabled) {
-//        self.recentsButton.selected = NO;
-//        self.recentsButton.hidden = [self.searchTextField isFirstResponder];
-//        self.createButton.hidden = [self.searchTextField isFirstResponder];
-//
-//        [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
-//            make.right.equalTo(self.createButton.mas_left).offset(-4.0f);
-//            make.centerY.equalTo(self.searchViewContainer);
-//        }];
-//    }
-//
-//    [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.height.equalTo(@(IMSearchViewIconWidthHeight));
-//        make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
-//        make.centerY.equalTo(self.searchViewContainer);
-//
-//        if([self.searchTextField isFirstResponder]) {
-//            make.right.equalTo(self.cancelButton.mas_left).offset(-14.0f);
-//        } else {
-//            make.right.equalTo(self.searchViewContainer);
-//        }
-//    }];
-//
-//    if (self.backButtonType == IMSearchViewBackButtonTypeBack) {
-//        self.backButton.hidden = YES;
-//
-//        [self.searchIconImageView mas_updateConstraints:^(MASConstraintMaker *make) {
-//            make.left.equalTo(self.searchViewContainer);
-//        }];
-//    }
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidClearTextFieldFromSearchView:)]) {
         [self.delegate userDidClearTextFieldFromSearchView:self];
@@ -271,50 +207,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     [self.searchTextField resignFirstResponder];
 
     self.recentsButton.selected = YES;
-
-    if(self.searchViewScreenType == IMSearchViewScreenTypeQuarter) {
-        self.createButton.hidden = NO;
-        self.searchTextField.rightView = self.searchIconImageView;
-
-        [self.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self).offset(10.0f);
-        }];
-
-        [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
-            make.left.and.centerY.equalTo(self.searchViewContainer);
-        }];
-
-        [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.recentsButton.mas_right).offset(2.0f);
-            make.right.equalTo(self.createButton.mas_left).offset(-9.0f);
-            make.height.equalTo(@(IMSearchViewIconWidthHeight));
-            make.centerY.equalTo(self.searchViewContainer);
-        }];
-    } else {
-        self.createButton.hidden = YES;
-
-        if(self.searchViewScreenType == IMSearchViewScreenTypeFull) {
-            self.searchIconImageView.hidden = YES;
-        } else {
-            self.searchTextField.rightView = self.searchIconImageView;
-
-            self.backButton.hidden = NO;
-        }
-
-        [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
-            make.centerY.equalTo(self.searchViewContainer);
-            make.left.equalTo(self.backButton.mas_right).offset(13.0f);
-        }];
-
-        [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self.recentsButton.mas_right).offset(2.0f);
-            make.right.equalTo(self.searchViewContainer).offset(-6.0f);
-            make.height.equalTo(@(IMSearchViewIconWidthHeight));
-            make.centerY.equalTo(self.searchViewContainer);
-        }];
-    }
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapRecentsButtonFromSearchView:)]) {
         [self.delegate userDidTapRecentsButtonFromSearchView:self];
@@ -340,59 +232,20 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         self.searchTextField.text = @"";
         self.searchIconImageView.hidden = NO;
 
-//        if (self.searchViewScreenType != IMSearchViewScreenTypeFull) {
-            self.searchTextField.rightView = self.clearButton;
+        self.searchTextField.rightView = self.clearButton;
 
-            self.backButton.hidden = self.backButtonType != IMSearchViewBackButtonTypeDismiss;
 
-            [self.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.left.equalTo(self).offset(IMSearchViewContainerDefaultLeftOffset);
-            }];
+        [self.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self).offset(IMSearchViewContainerDefaultLeftOffset);
+        }];
 
-            if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
-                [self.searchViewContainer addSubview:self.searchIconImageView];
-            }
-
-            [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//                if (self.searchViewScreenType != IMSearchViewScreenTypeFull) {
-                if (self.backButtonType != IMSearchViewBackButtonTypeDismiss) {
-                    make.left.equalTo(self.searchViewContainer);
-                } else {
-                    make.left.equalTo(self.backButton.mas_right).offset(IMSearchViewBackButtonSearchIconOffset);
-                }
-                make.centerY.equalTo(self.searchViewContainer);
-                make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
-            }];
-//        } else {
-//            self.searchIconImageView.hidden = NO;
-//        }
+        if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
+            [self.searchViewContainer addSubview:self.searchIconImageView];
+        }
     } else {
         self.previousSearchTerm = self.searchTextField.text;
-
-        if(self.backButtonType != IMSearchViewBackButtonTypeDisabled) {
-            self.backButton.hidden = self.backButtonType != IMSearchViewBackButtonTypeDismiss;
-
-            [self.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.left.equalTo(self).offset(IMSearchViewContainerDefaultLeftOffset);
-            }];
-
-            if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
-                [self.searchViewContainer addSubview:self.searchIconImageView];
-            }
-
-            [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-                if (self.backButtonType != IMSearchViewBackButtonTypeDismiss) {
-                    make.left.equalTo(self.searchViewContainer);
-                } else {
-                    make.left.equalTo(self.backButton.mas_right).offset(IMSearchViewBackButtonSearchIconOffset);
-                }
-                make.centerY.equalTo(self.searchViewContainer);
-                make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
-            }];
-        }
     }
 
-//    self.previousSearchTerm = self.searchTextField.text;
     self.searchTextField.attributedPlaceholder = [IMAttributeStringUtil attributedString:[IMResourceBundleUtil localizedStringForKey:@"collectionViewControllerSearchStickers"]
                                                                                 withFont:[IMAttributeStringUtil montserratLightFontWithSize:20.f]
                                                                                    color:[UIColor colorWithRed:204.0f / 255.0f green:204.0f / 255.0f blue:204.0f / 255.0f alpha:1.0f]
@@ -435,17 +288,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
     [self.cancelButton removeFromSuperview];
-
-    if (self.backButtonType == IMSearchViewBackButtonTypeBack && self.searchTextField.text.length > 0 && !self.recentsButton.selected) {
-        [self showBackButton];
-//        self.backButton.hidden = NO;
-//
-//        [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.left.equalTo(self.backButton.mas_right).offset(IMSearchViewBackButtonSearchIconOffset);
-//            make.centerY.equalTo(self.searchViewContainer);
-//            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
-//        }];
-    }
 
     [self.searchTextField mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.searchViewContainer).offset(self.searchTextField.text.length > 0 ? -6.0f : 0.0f);
@@ -543,7 +385,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     } else if(backButtonType == IMSearchViewBackButtonTypeBack) {
         [self.backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
                          forState:UIControlStateNormal];
-//        self.backButton.hidden = YES;
 
         if (![self.backButton isDescendantOfView:self.searchViewContainer]) {
             [self.searchViewContainer addSubview:self.backButton];
@@ -553,11 +394,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
             make.left.and.centerY.equalTo(self.searchViewContainer);
             make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
         }];
-
-//        [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//            make.left.and.centerY.equalTo(self.searchViewContainer);
-//            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
-//        }];
 
         if (self.searchTextField.text.length > 0) {
             [self showBackButton];
@@ -613,10 +449,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         [self.recentsButton removeFromSuperview];
         [self.createButton removeFromSuperview];
     }
-}
-
-- (void)setSearchViewScreenType:(IMSearchViewScreenType)searchViewScreenType {
-    _searchViewScreenType = searchViewScreenType;
 }
 
 + (instancetype)imojiSearchView {

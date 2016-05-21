@@ -36,7 +36,6 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
 - (void)setupStickerSearchContainerViewWithSession:(IMImojiSession *)session {
     self.searchView = [IMSearchView imojiSearchView];
     self.searchView.createAndRecentsEnabled = YES;
-    self.searchView.searchViewScreenType = IMSearchViewScreenTypeHalf;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeBack;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
     self.searchView.delegate = self;
@@ -67,12 +66,77 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
 
 #pragma mark IMSearchView Delegate
 
+- (void)userDidBeginSearchFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidBeginSearchFromSearchView:)]) {
+        [self.delegate userDidBeginSearchFromSearchView:searchView];
+    }
+
+    searchView.backButton.hidden = YES;
+
+    if (!searchView.recentsButton.selected) {
+        [searchView.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self).offset(IMSearchViewContainerDefaultLeftOffset);
+        }];
+
+        if (![searchView.searchIconImageView isDescendantOfView:searchView.searchViewContainer]) {
+            [searchView.searchViewContainer addSubview:searchView.searchIconImageView];
+        }
+    }
+
+    [searchView.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView.searchViewContainer);
+        make.centerY.equalTo(searchView.searchViewContainer);
+        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+    }];
+}
+
+- (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidEndSearchFromSearchView:)]) {
+        [self.delegate userDidEndSearchFromSearchView:searchView];
+    }
+
+    if(searchView.searchTextField.text.length > 0 && !searchView.recentsButton.selected) {
+        [searchView showBackButton];
+    }
+}
+
 - (void)userDidTapBackButtonFromSearchView:(IMSearchView *)searchView {
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapBackButtonFromSearchView:)]) {
         [self.delegate userDidTapBackButtonFromSearchView:searchView];
     }
 
+    [searchView resetSearchView];
+
+    if(![searchView.searchTextField isFirstResponder]) {
+        [searchView hideBackButton];
+    }
+
     [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+}
+
+- (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapRecentsButtonFromSearchView:)]) {
+        [self.delegate userDidTapRecentsButtonFromSearchView:searchView];
+    }
+
+    searchView.backButton.hidden = NO;
+    searchView.createButton.hidden = YES;
+    searchView.searchTextField.rightView = searchView.searchIconImageView;
+
+    [searchView.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+        make.centerY.equalTo(searchView.searchViewContainer);
+        make.left.equalTo(searchView.backButton.mas_right).offset(13.0f);
+    }];
+
+    [searchView.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(searchView.recentsButton.mas_right).offset(2.0f);
+        make.right.equalTo(searchView.searchViewContainer).offset(-6.0f);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
+        make.centerY.equalTo(searchView.searchViewContainer);
+    }];
+
+    [self.imojiSuggestionView.collectionView loadRecents];
 }
 
 - (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView {
@@ -80,7 +144,7 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
         [self.delegate userDidPressReturnKeyFromSearchView:searchView];
     }
 
-    [self.searchView.searchTextField resignFirstResponder];
+    [searchView.searchTextField resignFirstResponder];
 }
 
 + (instancetype)imojiStickerSearchContainerViewWithSession:(IMImojiSession *)session {
