@@ -1,5 +1,14 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.1.0
+
+* New widgets!
+  * We've added IMHalfScreenView and IMQuarterScreenView as 2 new CollectionView's. 
+  * IMQuarterScreenView replaces IMSuggestionView. Use this view in places where Imoji content is displayed aboved the input field.
+  * IMHalfScreenView replaces IMKeyboardView. Use this view in places where Imoji content replaces the keyboard.
+* Made CollectionView the default subspec. The Editor subspec is not pulled by default anymore
+* Added ImojiKit sample project. All other former samples with the exception of Artmoji (Categories, Search, Prompts, etc.) are now rolled into this app.
+
 ### Version 2.0.10
 
 * Make CollectionView the default subspec for this project
