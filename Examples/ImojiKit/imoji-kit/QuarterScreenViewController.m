@@ -38,6 +38,7 @@
 @property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
 @property(nonatomic, strong) IMQuarterScreenView *quarterScreenView;
+@property(nonatomic) BOOL suggestionViewDisplayed;
 
 @end
 
@@ -116,6 +117,12 @@
     }];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [self.quarterScreenView.searchView.searchTextField becomeFirstResponder];
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -145,7 +152,7 @@
 #pragma mark IMSuggestionView
 
 - (void)showSuggestionsAnimated:(BOOL)animated {
-    if (self.isSuggestionViewDisplayed) {
+    if (self.suggestionViewDisplayed) {
         return;
     }
 
@@ -169,10 +176,12 @@
                              [self.view layoutIfNeeded];
                          } completion:nil];
     }
+
+    self.suggestionViewDisplayed = YES;
 }
 
 - (void)hideSuggestionsAnimated:(BOOL)animated {
-    if (!self.isSuggestionViewDisplayed) {
+    if (!self.suggestionViewDisplayed) {
         return;
     }
 
@@ -197,10 +206,8 @@
     }
 
     [self.quarterScreenView.imojiSuggestionView.collectionView.collectionViewLayout invalidateLayout];
-}
 
-- (BOOL)isSuggestionViewDisplayed {
-    return (self.quarterScreenView.imojiSuggestionView.frame.origin.y + IMSuggestionViewBorderHeight) != self.quarterScreenView.searchView.frame.origin.y;
+    self.suggestionViewDisplayed = NO;
 }
 
 #pragma mark Imoji Collection View Delegate
@@ -233,7 +240,7 @@
         make.bottom.equalTo(self.view).offset(-endRect.size.height);
     }];
 
-    if (!self.isSuggestionViewDisplayed) {
+    if (!self.suggestionViewDisplayed) {
         if (self.quarterScreenView.searchView.searchTextField.text.length > 0) {
             [self showSuggestionsAnimated:YES];
         } else {
@@ -281,7 +288,6 @@
         if (self.messageThreadView.empty) {
             [self.messageThreadView.collectionViewLayout invalidateLayout];
         }
-
     }];
 }
 
