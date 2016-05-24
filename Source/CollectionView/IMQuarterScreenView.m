@@ -128,7 +128,6 @@
     }
 
     [searchView.searchTextField sendActionsForControlEvents:UIControlEventEditingChanged];
-//    [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }
 
 - (void)userDidEndSearchFromSearchView:(IMSearchView *)searchView {

@@ -402,6 +402,12 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         }
     } else if (backButtonType == IMSearchViewBackButtonTypeDisabled) {
         [self.backButton removeFromSuperview];
+
+        [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.searchViewContainer);
+            make.centerY.equalTo(self.searchViewContainer);
+            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+        }];
     }
 }
 
