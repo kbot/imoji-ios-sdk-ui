@@ -27,7 +27,13 @@
 #import "IMResourceBundleUtil.h"
 #import "IMAttributeStringUtil.h"
 #import "View+MASAdditions.h"
-#import "NSString+Utils.h"
+
+#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>) && !defined(IMOJI_APP_EXTENSION)
+#define IMOJI_EDITOR_ENABLED 1
+#else
+#define IMOJI_EDITOR_ENABLED 0
+#endif
+
 
 CGFloat const IMSearchViewIconWidthHeight = 26.0f;
 CGFloat const IMSearchViewBackButtonSearchIconOffset = 18.0f;
@@ -165,7 +171,11 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
 
         [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+#if IMOJI_EDITOR_ENABLED
             make.right.equalTo(self.createButton.mas_left).offset(-4.0f);
+#else
+            make.right.equalTo(self.searchViewContainer).offset(-1.0f);
+#endif
             make.centerY.equalTo(self.searchViewContainer);
         }];
     }
@@ -302,7 +312,11 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         } else {
             [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+#if IMOJI_EDITOR_ENABLED
                 make.right.equalTo(self.createButton.mas_left).offset(-4.0f);
+#else
+                make.right.equalTo(self.searchViewContainer).offset(-1.0f);
+#endif
                 make.centerY.equalTo(self.searchViewContainer);
             }];
         }
@@ -429,6 +443,7 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
             [self.searchViewContainer addSubview:self.recentsButton];
         }
 
+#if IMOJI_EDITOR_ENABLED
         if (![self.createButton isDescendantOfView:self.searchViewContainer]) {
             self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
             [self.createButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_create.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
@@ -445,10 +460,15 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
             make.right.equalTo(self.searchViewContainer).offset(-1.0f);
             make.centerY.equalTo(self.searchViewContainer);
         }];
+#endif
 
         [self.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+#if IMOJI_EDITOR_ENABLED
             make.right.equalTo(self.createButton.mas_left).offset(-4.0f);
+#else
+            make.right.equalTo(self.searchViewContainer).offset(-1.0f);
+#endif
             make.centerY.equalTo(self.searchViewContainer);
         }];
     } else {

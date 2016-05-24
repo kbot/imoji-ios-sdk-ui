@@ -4,6 +4,5 @@ platform :ios, "7.0"
 
 target "imoji-kit" do
 	pod 'ImojiSDKUI/CollectionView', :path => '../../../imoji-ios-sdk-ui'
-	pod 'ImojiSDKUI/KeyboardView', :path => '../../../imoji-ios-sdk-ui'
 	pod 'ImojiSDKUI/Editor', :path => '../../../imoji-ios-sdk-ui'
 end

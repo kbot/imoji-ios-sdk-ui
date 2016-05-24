@@ -28,6 +28,12 @@
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import <Masonry/Masonry.h>
 
+#if __has_include(<ImojiGraphics/ImojiGraphics.h>) && __has_include(<ImojiSDKUI/IMCreateImojiViewController.h>) && !defined(IMOJI_APP_EXTENSION)
+#define IMOJI_EDITOR_ENABLED 1
+#else
+#define IMOJI_EDITOR_ENABLED 0
+#endif
+
 @interface IMQuarterScreenView () <IMSearchViewDelegate, IMCollectionViewDelegate>
 @end
 
@@ -92,7 +98,11 @@
 
         [searchView.recentsButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.equalTo(@(IMSearchViewCreateRecentsIconWidthHeight));
+#if IMOJI_EDITOR_ENABLED
             make.right.equalTo(searchView.createButton.mas_left).offset(-4.0f);
+#else
+            make.right.equalTo(searchView.searchViewContainer).offset(-1.0f);
+#endif
             make.centerY.equalTo(searchView.searchViewContainer);
         }];
     }
@@ -159,7 +169,11 @@
 
     [searchView.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(searchView.recentsButton.mas_right).offset(2.0f);
+#if IMOJI_EDITOR_ENABLED
         make.right.equalTo(searchView.createButton.mas_left).offset(-9.0f);
+#else
+        make.right.equalTo(searchView.searchViewContainer).offset(-6.0f);
+#endif
         make.height.equalTo(@(IMSearchViewIconWidthHeight));
         make.centerY.equalTo(searchView.searchViewContainer);
     }];
