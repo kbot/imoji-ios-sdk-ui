@@ -246,6 +246,7 @@
     if(self.actionButton.selected) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.halfScreenView.searchView resetSearchView];
+            [self.halfScreenView.searchView hideBackButton];
             [self.halfScreenView.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
         });
 
@@ -364,6 +365,8 @@
     [self hideSuggestionsAnimated:YES];
     [self.inputField resignFirstResponder];
     [self.halfScreenView.searchView.searchTextField resignFirstResponder];
+    [self.halfScreenView.searchView resetSearchView];
+    [self.halfScreenView.searchView hideBackButton];
 }
 
 - (void)inputFieldWillShow:(NSNotification *)notification {

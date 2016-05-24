@@ -23,45 +23,111 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMHalfScreenView.h"
+#import "IMHalfAndQuarterScreenView.h"
 #import <Masonry/Masonry.h>
 
-CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
-
-@interface IMHalfScreenView () <IMSearchViewDelegate, IMCollectionViewDelegate>
+@interface IMHalfAndQuarterScreenView () <IMSearchViewDelegate, IMCollectionViewDelegate>
 @end
 
-@implementation IMHalfScreenView
+@implementation IMHalfAndQuarterScreenView
 
 - (void)setupStickerSearchContainerViewWithSession:(IMImojiSession *)session {
     self.searchView = [IMSearchView imojiSearchView];
     self.searchView.createAndRecentsEnabled = YES;
-    self.searchView.backButtonType = IMSearchViewBackButtonTypeBack;
+    self.searchView.backButtonType = IMSearchViewBackButtonTypeDisabled;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
     self.searchView.delegate = self;
 
     self.imojiSuggestionView = [IMSuggestionView imojiSuggestionViewWithSession:session];
-    self.imojiSuggestionView.backgroundColor = [UIColor whiteColor];
     self.imojiSuggestionView.clipsToBounds = NO;
-    self.imojiSuggestionView.collectionView.backgroundColor = [UIColor clearColor];
+    self.imojiSuggestionView.collectionView.hidden = YES;
     self.imojiSuggestionView.collectionView.infiniteScroll = YES;
     self.imojiSuggestionView.collectionView.preferredImojiDisplaySize = CGSizeMake(74.f, 91.f);
     self.imojiSuggestionView.collectionView.collectionViewDelegate = self;
 
-    [self addSubview:self.searchView];
+    UIView *suggestionTopBorder = [[UIView alloc] init];
+    suggestionTopBorder.backgroundColor = [UIColor colorWithWhite:207.f / 255.f alpha:1.f];
+
     [self addSubview:self.imojiSuggestionView];
+    [self addSubview:self.searchView];
+
+    [self.imojiSuggestionView addSubview:suggestionTopBorder];
+
+    [self.imojiSuggestionView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSuggestionViewDefaultHeight));
+        make.top.equalTo(self.searchView.mas_top).offset(-IMSuggestionViewBorderHeight);
+    }];
 
     [self.searchView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
+        make.bottom.equalTo(self);
+    }];
+
+    [suggestionTopBorder mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.imojiSuggestionView).offset(-1);
+        make.left.right.equalTo(self.imojiSuggestionView);
+        make.height.equalTo(@1);
+    }];
+}
+
+- (void)setupViewAsHalfScreen {
+    self.imojiSuggestionView.collectionView.hidden = NO;
+
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
         make.left.right.equalTo(self);
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
     }];
 
-    [self.imojiSuggestionView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self);
         make.top.equalTo(self.searchView.mas_bottom);
         make.height.equalTo(@(IMSuggestionViewDefaultHeight * 2.0f));
     }];
+}
+
+- (void)setupViewAsQuarterScreen {
+    self.imojiSuggestionView.collectionView.hidden = NO;
+
+    [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSuggestionViewDefaultHeight));
+        make.bottom.equalTo(self.searchView.mas_top).offset(IMSuggestionViewBorderHeight);
+    }];
+
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
+        make.bottom.equalTo(self);
+    }];
+}
+
+- (void)resetView {
+    self.imojiSuggestionView.collectionView.hidden = YES;
+
+    [self.imojiSuggestionView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSuggestionViewDefaultHeight));
+        make.top.equalTo(self.searchView.mas_top).offset(-IMSuggestionViewBorderHeight);
+    }];
+
+    [self.searchView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self);
+        make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
+        make.bottom.equalTo(self);
+    }];
+
+    if (self.searchView.recentsButton.selected) {
+        [self.searchView.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.searchView).offset(10.0f);
+        }];
+
+        [self.searchView.recentsButton mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.searchView.searchViewContainer);
+        }];
+    }
 }
 
 #pragma mark IMSearchView Delegate
@@ -69,18 +135,6 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
 - (void)userDidBeginSearchFromSearchView:(IMSearchView *)searchView {
     if (self.delegate && [self.delegate respondsToSelector:@selector(userDidBeginSearchFromSearchView:)]) {
         [self.delegate userDidBeginSearchFromSearchView:searchView];
-    }
-
-    searchView.backButton.hidden = YES;
-
-    if (!searchView.recentsButton.selected) {
-        [searchView.searchViewContainer mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(self).offset(IMSearchViewContainerDefaultLeftOffset);
-        }];
-
-        if (![searchView.searchIconImageView isDescendantOfView:searchView.searchViewContainer]) {
-            [searchView.searchViewContainer addSubview:searchView.searchIconImageView];
-        }
     }
 
     [searchView.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -96,7 +150,10 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
     }
 
     [searchView resetSearchView];
-    [searchView hideBackButton];
+
+    if (searchView.backButtonType == IMSearchViewBackButtonTypeBack) {
+        [searchView hideBackButton];
+    }
 
     [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }
@@ -106,9 +163,17 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
         [self.delegate userDidEndSearchFromSearchView:searchView];
     }
 
-    if(searchView.searchTextField.text.length > 0 && !searchView.recentsButton.selected) {
+    if(searchView.backButtonType == IMSearchViewBackButtonTypeBack && searchView.searchTextField.text.length > 0 && !searchView.recentsButton.selected) {
         [searchView showBackButton];
     }
+}
+
+- (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeyFromSearchView:)]) {
+        [self.delegate userDidPressReturnKeyFromSearchView:searchView];
+    }
+
+    [searchView.searchTextField resignFirstResponder];
 }
 
 - (void)userDidTapBackButtonFromSearchView:(IMSearchView *)searchView {
@@ -123,6 +188,22 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
     }
 
     [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
+}
+
+- (void)userDidTapCancelButtonFromSearchView:(IMSearchView *)searchView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidTapCancelButtonFromSearchView:)]) {
+        [self.delegate userDidTapCancelButtonFromSearchView:searchView];
+    }
+
+    if (searchView.recentsButton.selected) {
+        [self.imojiSuggestionView.collectionView loadRecents];
+    } else if (![searchView.previousSearchTerm isEqualToString:searchView.searchTextField.text]) {
+        if([searchView.previousSearchTerm isEqualToString:@""]) {
+            [self userDidClearTextFieldFromSearchView:searchView];
+        } else {
+            [self.imojiSuggestionView.collectionView loadImojisFromSentence:searchView.previousSearchTerm];
+        }
+    }
 }
 
 - (void)userDidTapRecentsButtonFromSearchView:(IMSearchView *)searchView {
@@ -150,16 +231,8 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
     [self.imojiSuggestionView.collectionView loadRecents];
 }
 
-- (void)userDidPressReturnKeyFromSearchView:(IMSearchView *)searchView {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeyFromSearchView:)]) {
-        [self.delegate userDidPressReturnKeyFromSearchView:searchView];
-    }
-
-    [searchView.searchTextField resignFirstResponder];
-}
-
 + (instancetype)imojiStickerSearchContainerViewWithSession:(IMImojiSession *)session {
-    return [[IMHalfScreenView alloc] initWithSession:session];
+    return [[IMHalfAndQuarterScreenView alloc] initWithSession:session];
 }
 
 @end
