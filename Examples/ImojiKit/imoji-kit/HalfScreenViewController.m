@@ -423,7 +423,7 @@
         if(self.imojiSearchViewActionTapped) {
             make.bottom.equalTo(self.view).offset(-IMHalfScreenViewDefaultHeight);
         } else {
-            make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
+            make.bottom.equalTo(self.view);
         }
     }];
 

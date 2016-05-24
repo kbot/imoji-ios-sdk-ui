@@ -276,7 +276,7 @@
     [self.quarterScreenView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
         make.height.equalTo(@(IMSearchViewContainerDefaultHeight));
-        make.bottom.equalTo(self.view).offset((self.view.frame.size.height - endRect.origin.y) * -1);
+        make.bottom.equalTo(self.view);
     }];
 
     [UIView animateWithDuration:animationDuration delay:0.0 options:animationCurve animations:^{
