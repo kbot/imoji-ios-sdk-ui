@@ -75,8 +75,7 @@
         }];
 
         [self.splashText mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self.splashContainer).offset(-10.f);
-            make.centerY.equalTo(self.splashContainer);
+            make.centerX.and.centerY.equalTo(self.splashContainer);
         }];
     }
 }

@@ -56,10 +56,9 @@
     self.searchView.createAndRecentsEnabled = [shared boolForKey:@"createAndRecents"];
 
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-//    self.backButton.hidden = NO;
     [self.backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
 
-    self.topToolbar.barTintColor = [UIColor colorWithRed:250.0f / 255.0f green:250.0f / 255.0f blue:250.0f / 255.0f alpha:1.0f];
+    self.topToolbar.translucent = NO;
 
     [self.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }

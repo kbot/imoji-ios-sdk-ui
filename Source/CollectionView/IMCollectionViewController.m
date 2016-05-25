@@ -134,6 +134,9 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
     self.searchView.backButtonType = IMSearchViewBackButtonTypeDismiss;
     self.searchView.searchTextField.returnKeyType = UIReturnKeySearch;
 
+    self.topToolbar.barTintColor = [UIColor colorWithRed:250.0f / 255.0f green:250.0f / 255.0f blue:250.0f / 255.0f alpha:1.0f];
+    self.bottomToolbar.barTintColor = [UIColor colorWithRed:250.0f / 255.0f green:250.0f / 255.0f blue:250.0f / 255.0f alpha:1.0f];
+
     if ([self.collectionViewControllerDelegate respondsToSelector:@selector(backgroundColorForCollectionViewController:)]) {
         self.view.backgroundColor = [self.collectionViewControllerDelegate backgroundColorForCollectionViewController:self];
     }
