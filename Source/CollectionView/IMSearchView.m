@@ -157,6 +157,12 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
 
     if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
         [self.searchViewContainer addSubview:self.searchIconImageView];
+
+        [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.searchViewContainer);
+            make.centerY.equalTo(self.searchViewContainer);
+            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+        }];
     }
 
     [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
