@@ -111,12 +111,14 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
                                                                          withFont:[IMAttributeStringUtil montserratLightFontWithSize:16.0f]
                                                                             color:[UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f]]
                                  forState:UIControlStateNormal];
+    self.cancelButton.hidden = YES;
     [self.cancelButton addTarget:self action:@selector(cancelButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 
     [self addSubview:self.searchViewContainer];
 
     [self.searchViewContainer addSubview:self.searchIconImageView];
     [self.searchViewContainer addSubview:self.searchTextField];
+    [self.searchViewContainer addSubview:self.cancelButton];
 
     [self.searchViewContainer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self);
@@ -140,6 +142,11 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     [self.searchTextField.rightView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
     }];
+
+    [self.cancelButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.and.right.equalTo(self.searchViewContainer);
+        make.width.equalTo(@([self.cancelButton.currentAttributedTitle size].width));
+    }];
 }
 
 - (void)resetSearchView {
@@ -150,6 +157,12 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
 
     if (![self.searchIconImageView isDescendantOfView:self.searchViewContainer]) {
         [self.searchViewContainer addSubview:self.searchIconImageView];
+
+        [self.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.searchViewContainer);
+            make.centerY.equalTo(self.searchViewContainer);
+            make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+        }];
     }
 
     [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -263,13 +276,11 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     self.searchTextField.textColor = [UIColor colorWithRed:38.0f / 255.0f green:40.0f / 255.0f blue:50.0f / 255.0f alpha:1.0f];
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
+    self.cancelButton.hidden = NO;
+
     if (self.createAndRecentsEnabled) {
         self.recentsButton.hidden = YES;
         self.createButton.hidden = YES;
-    }
-
-    if (![self.cancelButton isDescendantOfView:self.searchViewContainer]) {
-        [self.searchViewContainer addSubview:self.cancelButton];
     }
 
     [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -277,11 +288,6 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         make.height.equalTo(@(IMSearchViewIconWidthHeight));
         make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
         make.right.equalTo(self.cancelButton.mas_left).offset(-14.0f);
-    }];
-
-    [self.cancelButton mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.and.right.equalTo(self.searchViewContainer);
-        make.width.equalTo(@([self.cancelButton.currentAttributedTitle size].width));
     }];
 
     if(self.delegate && [self.delegate respondsToSelector:@selector(userDidBeginSearchFromSearchView:)]) {
@@ -297,9 +303,12 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
     self.searchTextField.textColor = [UIColor colorWithRed:10.0f / 255.0f green:140.0f / 255.0f blue:255.0f / 255.0f alpha:1.0f];
     self.searchTextField.rightView.hidden = [self.searchTextField.text isEqualToString:@""];
 
-    [self.cancelButton removeFromSuperview];
+    self.cancelButton.hidden = YES;
 
-    [self.searchTextField mas_updateConstraints:^(MASConstraintMaker *make) {
+    [self.searchTextField mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.searchViewContainer);
+        make.height.equalTo(@(IMSearchViewIconWidthHeight));
+        make.left.equalTo(self.searchIconImageView.mas_right).offset(7.0f);
         make.right.equalTo(self.searchViewContainer).offset(self.searchTextField.text.length > 0 ? -6.0f : 0.0f);
     }];
 

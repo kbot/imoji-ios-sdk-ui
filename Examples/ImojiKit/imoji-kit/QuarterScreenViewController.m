@@ -145,6 +145,7 @@
     if (self.quarterScreenView.searchView.searchTextField.text.length > 0) {
         [self.messageThreadView sendMessageWithText:self.quarterScreenView.searchView.searchTextField.text];
         [self.quarterScreenView.searchView resetSearchView];
+        [self.quarterScreenView.searchView.searchTextField sendActionsForControlEvents:UIControlEventEditingChanged];
         [self.quarterScreenView.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
     }
 }
@@ -223,8 +224,8 @@
 #pragma mark Keyboard Handling
 
 - (void)messageThreadViewTapped {
-    [self hideSuggestionsAnimated:YES];
     [self.quarterScreenView.searchView.searchTextField resignFirstResponder];
+    [self hideSuggestionsAnimated:YES];
 }
 
 - (void)inputFieldWillShow:(NSNotification *)notification {
