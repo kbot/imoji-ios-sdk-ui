@@ -1,8 +1,8 @@
 //
 //  ImojiSDKUI
 //
-//  Created by Nima Khoshini
-//  Copyright (C) 2015 Imoji
+//  Created by Alex Hoang
+//  Copyright (C) 2016 Imoji
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to
@@ -23,34 +23,8 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMSuggestionLoadingViewCell.h"
-#import "View+MASAdditions.h"
+#import <ImojiSDKUI/IMCollectionReusableAttributionView.h>
 
-@implementation IMSuggestionLoadingViewCell {
-
-}
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-
-        [self.activityIndicatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self);
-        }];
-    }
-
-    return self;
-}
-
-- (void)showLoading {
-    [super showLoading];
-    self.title.hidden = YES;
-}
-
-- (void)showNoResults {
-    [super showNoResults];
-    self.title.hidden = NO;
-}
+@interface IMSuggestionCollectionReusableAttributionView : IMCollectionReusableAttributionView
 
 @end

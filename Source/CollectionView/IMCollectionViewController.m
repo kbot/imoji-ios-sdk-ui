@@ -428,7 +428,7 @@ NSUInteger const IMCollectionViewControllerDefaultSearchDelayInMillis = 500;
             fromViewController:(IMCreateImojiViewController *)viewController {
     [self dismissViewControllerAnimated:YES completion:nil];
 
-    [self.collectionView loadRecents];
+    [self.searchView.recentsButton sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {

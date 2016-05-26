@@ -36,7 +36,7 @@ CGFloat const IMSuggestionCollectionReusableHeaderViewHeight = 62.f;
 
     [self.separatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.headerView);
-        if (self.headerView.frame.size.height > IMSuggestionViewDefaultHeight) {
+        if (self.frame.size.height > IMSuggestionViewDefaultHeight) {
             make.height.equalTo(self.headerView).multipliedBy(0.9f);
         } else {
             make.height.equalTo(@(IMSuggestionCollectionReusableHeaderViewHeight));
