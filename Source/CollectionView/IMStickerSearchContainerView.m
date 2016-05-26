@@ -269,7 +269,7 @@
 
     [rootViewController dismissViewControllerAnimated:YES completion:nil];
 
-    [self.imojiSuggestionView.collectionView loadRecents];
+    [self.searchView.recentsButton sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {

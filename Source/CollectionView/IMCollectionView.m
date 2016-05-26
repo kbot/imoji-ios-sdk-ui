@@ -213,7 +213,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
 
         return cell;
-    } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]]/*self.contentType == IMCollectionViewContentTypeImojiCategories*/) {
+    } else if ([cellContent isKindOfClass:[IMImojiCategoryObject class]] || self.contentType == IMCollectionViewContentTypeImojiCategories) {
         IMImojiCategoryObject *categoryObject = cellContent;
         IMCategoryCollectionViewCell *cell =
                 (IMCategoryCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId forIndexPath:indexPath];
@@ -223,7 +223,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
             [cell setupPlaceholderImageWithPosition:(NSUInteger) indexPath.row];
             [cell loadImojiCategory:@"" imojiImojiImage:nil];
         } else {
-//            [cell loadImojiCategory:categoryObject.title imojiImojiImage:nil];
             [cell setupPlaceholderImageWithPosition:(NSUInteger) indexPath.row];
 
             id image = self.images[(NSUInteger) indexPath.section][(NSUInteger) indexPath.item];
@@ -270,7 +269,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
     } else {
         IMCollectionViewCell *cell =
                 (IMCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
-//        [cell loadImojiImage:nil];
         [cell setupPlaceholderImageWithPosition:(NSUInteger) indexPath.row];
 
         id imojiImage = self.images[(NSUInteger) indexPath.section][(NSUInteger) indexPath.row];
@@ -439,7 +437,6 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         insetForSectionAtIndex:(NSInteger)section {
     if (self.contentType == IMCollectionViewContentTypeImojiCategories ||
         self.contentType == IMCollectionViewContentTypeImojis) {
-//        return UIEdgeInsetsMake(5.0f, 5.0f, 5.0f, 5.0f);
         return UIEdgeInsetsMake(0.0f, 0.0f, 7.0f, 0.0f);
     }
 
@@ -451,7 +448,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     if (self.contentType == IMCollectionViewContentTypeImojiCategories ||
         self.contentType == IMCollectionViewContentTypeImojis) {
-        return 7.0f;//15.0f;
+        return 7.0f;
     }
 
     return 0;
@@ -782,10 +779,9 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                      resultSetResponseCallback:^(IMImojiResultSetMetadata *metadata, NSError *error) {
                          if (!operation.isCancelled) {
                              NSNumber *resultCount = metadata.resultCount;
-                             // if the resultCount is 0 then followUpSearchTerm returns nil
-                             // avoid that case by setting the followUpSearchTerm whenever resultCount is above 0
+                             // if the resultCount is 0 then followUpRelatedCategories returns nil
+                             // avoid that case by setting the followUpRelatedCategories whenever resultCount is above 0
                              if (self.infiniteScroll && resultCount.unsignedIntegerValue > 0) {
-//                                 self.followUpSearchTerm = metadata.relatedSearchTerm;
                                  self.followUpRelatedCategories = metadata.relatedCategories;
                              }
 
@@ -797,24 +793,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
                              // Prepare to load new section
                              if (self.infiniteScroll && resultCount.unsignedIntegerValue < self.numberOfImojisToLoad &&
                                  self.contentType != IMCollectionViewContentTypeNoResultsSplash) {
-                                 // Checks for when the followUpSearchTerm is the same as the searchTerm (current)
-                                 // and the resultCount is 0. This means the search with the followUpSearchTerm returned no results.
-//                                 if (self.followUpSearchTerm != searchTerm) {
-//                                     self.currentSearchTerm = self.followUpSearchTerm;
-//                                     self.shouldLoadNewSection = YES;
-//
-//                                     // Only append a loading indicator to the next section when resultCount is 0
-//                                     // Otherwise, proceed to next callback
-//                                     if (resultCount.unsignedIntegerValue == 0) {
-//                                         self.currentHeader = self.currentSearchTerm;
-//                                         self.shouldShowAttribution = NO;
-//                                         dispatch_async(dispatch_get_main_queue(), ^{
-//                                             [self prepareViewForNextSection];
-//                                         });
-//                                     }
-//                                 }
-
                                  self.shouldLoadNewSection = YES;
+
                                  // Only append a loading indicator to the next section when resultCount is 0
                                  // Otherwise, proceed to next callback
                                  if (resultCount.unsignedIntegerValue == 0) {
@@ -1099,19 +1079,6 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     if (viewCell) {
         [(IMCollectionViewCell *) viewCell performTappedAnimation];
     }
-
-//    for (UICollectionViewCell *cell in self.visibleCells) {
-//        NSIndexPath *indexPath = [self indexPathForCell:cell];
-//
-//        if ([cell respondsToSelector:@selector(performGrowAnimation)] &&
-//                [cell respondsToSelector:@selector(performTranslucentAnimation)]) {
-//            if (currentIndexPath.row == indexPath.row) {
-//                [(IMCollectionViewCell *) cell performGrowAnimation];
-//            } else {
-//                [(IMCollectionViewCell *) cell performTranslucentAnimation];
-//            }
-//        }
-//    }
 }
 
 - (id)contentForIndexPath:(NSIndexPath *)path {

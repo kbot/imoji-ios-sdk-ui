@@ -23,14 +23,17 @@
 //  IN THE SOFTWARE.
 //
 
-#import "IMSuggestionCollectionView.h"
-#import "IMSuggestionLoadingViewCell.h"
-#import "IMSuggestionSplashViewCell.h"
-#import "IMCollectionViewCell.h"
-#import "IMSuggestionViewCell.h"
-#import "IMSuggestionCategoryViewCell.h"
-#import "IMSuggestionCollectionReusableHeaderView.h"
-
+#import <ImojiSDKUI/IMCollectionLoadingView.h>
+#import <ImojiSDKUI/IMCollectionViewCell.h>
+#import <ImojiSDKUI/IMSuggestionView.h>
+#import <ImojiSDKUI/IMSuggestionCategoryViewCell.h>
+#import <ImojiSDKUI/IMSuggestionCollectionView.h>
+#import <ImojiSDKUI/IMSuggestionCollectionReusableAttributionView.h>
+#import <ImojiSDKUI/IMSuggestionCollectionReusableHeaderView.h>
+#import <ImojiSDKUI/IMSuggestionLoadingViewCell.h>
+#import <ImojiSDKUI/IMSuggestionSplashViewCell.h>
+#import <ImojiSDKUI/IMSuggestionViewCell.h>
+#import <Masonry/Masonry.h>
 
 @implementation IMSuggestionCollectionView {
 
@@ -44,9 +47,23 @@
         [self registerClass:[IMSuggestionViewCell class] forCellWithReuseIdentifier:IMCollectionViewCellReuseId];
         [self registerClass:[IMSuggestionCategoryViewCell class] forCellWithReuseIdentifier:IMCategoryCollectionViewCellReuseId];
         [self registerClass:[IMSuggestionCollectionReusableHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:IMCollectionReusableHeaderViewReuseId];
+        [self registerClass:[IMSuggestionCollectionReusableAttributionView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:IMCollectionReusableAttributionViewReuseId];
 
         self.scrollsToTop = NO;
         self.showsHorizontalScrollIndicator = NO;
+
+        if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0) {
+            self.loadingView.title.hidden = YES;
+
+            [self.loadingView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.edges.equalTo(self);
+                make.width.and.height.equalTo(self);
+            }];
+
+            [self.loadingView.activityIndicatorView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.center.equalTo(self);
+            }];
+        }
     }
 
     return self;
@@ -60,6 +77,22 @@
     }
 }
 
+#pragma mark UICollectionViewDataSource
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+
+    if ([cell isKindOfClass:[IMSuggestionLoadingViewCell class]]) {
+        if ([self isPathShowingLoadingIndicator:indexPath] && [self numberOfItemsInSection:indexPath.section] != 1) {
+            ((IMSuggestionLoadingViewCell *) cell).activityIndicatorView.hidden = YES;
+        }
+    }
+
+    return cell;
+}
+
+#pragma mark UICollectionViewDelegateFlowLayout
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if(section == 0) {
         return CGSizeZero;
@@ -69,21 +102,18 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
-    return CGSizeZero;
-}
+    if(self.frame.size.height > IMSuggestionViewDefaultHeight) {
+        CGSize footerSize = [super collectionView:collectionView layout:collectionViewLayout referenceSizeForFooterInSection:section];
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    if (kind == UICollectionElementKindSectionHeader) {
-        IMSuggestionCollectionReusableHeaderView *headerView = [self dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                        withReuseIdentifier:IMCollectionReusableHeaderViewReuseId
-                                                                                               forIndexPath:indexPath];
-
-        [headerView setupWithSeparator];
-
-        return headerView;
+        // Check if shouldShowAttribution by checking footerSize is equal to CGSizeZero
+        if(footerSize.width == CGSizeZero.width && footerSize.height == CGSizeZero.height) {
+            return CGSizeZero;
+        } else {
+            return self.frame.size;
+        }
     }
 
-    return nil;
+    return CGSizeZero;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -99,6 +129,10 @@
     switch (self.contentType) {
         case IMCollectionViewContentTypeImojis:
         case IMCollectionViewContentTypeImojiCategories:
+            if ([self isPathShowingLoadingIndicator:indexPath] && [self numberOfItemsInSection:indexPath.section] == 1) {
+                return CGSizeMake(self.preferredImojiDisplaySize.width, availableSize.height);
+            }
+
             return self.preferredImojiDisplaySize;
 
         default:
@@ -110,13 +144,16 @@
     return 10.0f;
 }
 
-//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-//    return 5.0f;
-//}
-
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     if(section == 0) {
-        return UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 0.0f);
+        CGSize footerSize = [super collectionView:collectionView layout:collectionViewLayout referenceSizeForFooterInSection:section];
+
+        // Check if shouldShowAttribution by checking footerSize is equal to CGSizeZero
+        if(footerSize.width == CGSizeZero.width && footerSize.height == CGSizeZero.height) {
+            return UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 0.0f);
+        }
+
+        return UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 10.0f);
     }
 
     return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 10.0f);

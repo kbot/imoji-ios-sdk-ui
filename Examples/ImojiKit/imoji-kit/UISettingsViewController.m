@@ -46,7 +46,7 @@
 
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
 
-    self.view.backgroundColor = [UIColor colorWithRed:248.0f / 255.0f green:248.0f / 255.0f blue:248.0f / 255.0f alpha:1.0f];
+    self.view.backgroundColor = [UIColor whiteColor];
 
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 
@@ -56,7 +56,7 @@
     [backButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.topToolbar);
         make.left.equalTo(self.topToolbar).offset(15.0f);
-        make.width.and.height.equalTo(@(44.0f));
+        make.width.and.height.equalTo(@(26.0f));
     }];
     self.topToolbar.delegate = self;
 
