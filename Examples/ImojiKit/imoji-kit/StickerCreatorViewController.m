@@ -77,7 +77,7 @@
 }
 
 - (void)userDidCancelImageEdit:(IMCreateImojiViewController *)viewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
