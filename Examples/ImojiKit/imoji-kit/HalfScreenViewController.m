@@ -35,10 +35,9 @@
 #import <Masonry/Masonry.h>
 #import "AppDelegate.h"
 
-@interface HalfScreenViewController () <IMToolbarDelegate, IMSearchViewDelegate, UITextFieldDelegate,
+@interface HalfScreenViewController () <IMSearchViewDelegate, UITextFieldDelegate,
         IMCollectionViewDelegate, IMStickerSearchContainerViewDelegate>
 
-@property(nonatomic, strong) IMToolbar *topToolbar;
 @property(nonatomic, strong) MessageThreadView *messageThreadView;
 @property(nonatomic, strong) UITextField *inputField;
 @property(nonatomic, strong) UIView *inputFieldContainer;
@@ -83,18 +82,12 @@
     // this essentially sets the status bar color since the view takes up the full screen
     // and the subviews are positioned below the status bar
     self.view.backgroundColor = [UIColor colorWithRed:248.0f / 255.0f green:248.0f / 255.0f blue:248.0f / 255.0f alpha:1.0f];
-
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-
-    self.topToolbar = [[IMToolbar alloc] init];
-    UIButton *backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
-    [backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
-    [backButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.topToolbar);
-        make.left.equalTo(self.topToolbar).offset(15.0f);
-        make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
-    }];
-    self.topToolbar.delegate = self;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", [IMResourceBundleUtil assetsBundle].bundlePath]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(backButtonTapped)];
+    [self.navigationController setTitle:self.title];
 
     // Message thread view setup
     self.messageThreadView = [[MessageThreadView alloc] init];
@@ -169,7 +162,6 @@
                                forState:UIControlStateDisabled];
     [self.sendButton addTarget:self action:@selector(sendText) forControlEvents:UIControlEventTouchUpInside];
 
-    [self.view addSubview:self.topToolbar];
     [self.view addSubview:self.messageThreadView];
     [self.view addSubview:self.inputFieldContainer];
     [self.view addSubview:self.halfScreenView];
@@ -178,16 +170,9 @@
     [self.inputFieldContainer addSubview:self.inputField];
     [self.inputFieldContainer addSubview:self.sendButton];
 
-    [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(self.view);
-        make.height.equalTo(@44.0f);
-        make.centerX.equalTo(self.view);
-        make.top.equalTo(self.mas_topLayoutGuideBottom);
-    }];
-
     [self.messageThreadView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.view);
-        make.top.equalTo(self.topToolbar.mas_bottom);
+        make.top.equalTo(self.mas_topLayoutGuideBottom);
         make.bottom.equalTo(self.view);
     }];
 
@@ -441,17 +426,10 @@
     }];
 }
 
-#pragma mark IMToolBarDelegate
+#pragma mark Navigation Bar Button Actions
 
-- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
-    switch (buttonType) {
-        case IMToolbarButtonBack:
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-
-        default:
-            break;
-    }
+- (void)backButtonTapped {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark View controller overrides
@@ -462,10 +440,6 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;
-}
-
-- (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
-    return self.topToolbar == bar ? UIBarPositionTopAttached : UIBarPositionAny;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {

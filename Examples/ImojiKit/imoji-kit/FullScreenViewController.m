@@ -101,7 +101,7 @@
 }
 
 - (void)userDidTapBackButtonFromSearchView:(IMSearchView *)searchView {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)userDidSelectAttributionLink:(NSURL *)attributionLink fromCollectionView:(IMCollectionView *)collectionView {

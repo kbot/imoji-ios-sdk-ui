@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     SampleAppTypeUISettings
 };
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
 
 @property(nonatomic, strong) UITableView *sampleAppTableView;
 @property(nonatomic, strong) UIImageView *imojiLogoImageView;
@@ -56,9 +56,12 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
 
 @implementation ViewController
 
+#pragma mark View lifecycle
 
 - (void)loadView {
     [super loadView];
+
+    self.view.backgroundColor = [UIColor whiteColor];
 
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
     [shared registerDefaults:@{@"createAndRecents" : @YES, @"stickerBorders" : @(IMImojiObjectBorderStyleSticker)}];
@@ -101,6 +104,26 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     [self.sampleAppTableView registerClass:[SampleAppCollectionTableViewCell class] forCellReuseIdentifier:SampleAppCollectionTableViewCellReuseId];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:250.0f / 255.0f green:250.0f / 255.0f blue:250.0f / 255.0f alpha:1.0f];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        self.navigationController.interactivePopGestureRecognizer.delegate = self;
+    }
+}
+
+#pragma mark UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
+}
+
+#pragma mark UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.sampleApps.count;
 }
@@ -135,6 +158,8 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     return cell;
 }
 
+#pragma mark UITableViewDelegate
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 56.0f;
 }
@@ -167,9 +192,8 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
             break;
     }
 
-    [self presentViewController:controller animated:YES completion:^{
-        [self.sampleAppTableView deselectRowAtIndexPath:indexPath animated:NO];
-    }];
+    [self.navigationController pushViewController:controller animated:YES];
+    [self.sampleAppTableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 @end

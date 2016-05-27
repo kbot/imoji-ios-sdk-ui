@@ -31,8 +31,7 @@
 #import <Masonry/Masonry.h>
 #import <ImojiSDK/IMImojiObjectRenderingOptions.h>
 
-@interface UISettingsViewController () <IMToolbarDelegate>
-@property(nonatomic, strong) IMToolbar *topToolbar;
+@interface UISettingsViewController ()
 @property(nonatomic, strong) UILabel *stickerBorderLabel;
 @property(nonatomic, strong) UILabel *createAndRecentsLabel;
 @property(nonatomic, strong) UISwitch *stickerBorderSwitch;
@@ -41,24 +40,27 @@
 
 @implementation UISettingsViewController
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.title = @"UI Settings";
+    }
+
+    return self;
+}
+
 - (void)loadView {
     [super loadView];
 
     NSUserDefaults *shared = [[NSUserDefaults alloc] initWithSuiteName:((AppDelegate *)[UIApplication sharedApplication].delegate).appGroup];
 
     self.view.backgroundColor = [UIColor whiteColor];
-
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-
-    self.topToolbar = [[IMToolbar alloc] init];
-    UIButton *backButton = [self.topToolbar addToolbarButtonWithType:IMToolbarButtonBack].customView;
-    [backButton setImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_close.png", [IMResourceBundleUtil assetsBundle].bundlePath]] forState:UIControlStateNormal];
-    [backButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(self.topToolbar);
-        make.left.equalTo(self.topToolbar).offset(15.0f);
-        make.width.and.height.equalTo(@(26.0f));
-    }];
-    self.topToolbar.delegate = self;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(backButtonTapped)];
+    [self.navigationController setTitle:self.title];
 
     UIView *createAndRecentsContainer = [[UIView alloc] init];
 
@@ -84,7 +86,6 @@
     self.stickerBorderSwitch.on = [shared integerForKey:@"stickerBorders"] == IMImojiObjectBorderStyleSticker;
     [self.stickerBorderSwitch addTarget:self action:@selector(stickerBorderSwitchTapped) forControlEvents:UIControlEventTouchUpInside];
 
-    [self.view addSubview:self.topToolbar];
     [self.view addSubview:createAndRecentsContainer];
     [self.view addSubview:stickerBorderContainer];
 
@@ -94,15 +95,8 @@
     [stickerBorderContainer addSubview:self.stickerBorderLabel];
     [stickerBorderContainer addSubview:self.stickerBorderSwitch];
 
-    [self.topToolbar mas_remakeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(self.view);
-        make.height.equalTo(@44.0f);
-        make.centerX.equalTo(self.view);
-        make.top.equalTo(self.mas_topLayoutGuideBottom);
-    }];
-
     [createAndRecentsContainer mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.topToolbar.mas_bottom).offset(30.0f);
+        make.top.equalTo(self.mas_topLayoutGuideBottom).offset(17.0f);
         make.width.equalTo(self.view);
         make.height.equalTo(@56.0f);
     }];
@@ -149,27 +143,16 @@
     [shared synchronize];
 }
 
-#pragma mark IMToolBarDelegate
+#pragma mark Navigation Bar Button Actions
 
-- (void)userDidSelectToolbarButton:(IMToolbarButtonType)buttonType {
-    switch (buttonType) {
-        case IMToolbarButtonBack:
-            [self dismissViewControllerAnimated:YES completion:nil];
-            break;
-
-        default:
-            break;
-    }
+- (void)backButtonTapped {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark View controller overrides
 
 - (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
     return UIStatusBarAnimationFade;
-}
-
-- (UIBarPosition)positionForBar:(id <UIBarPositioning>)bar {
-    return self.topToolbar == bar ? UIBarPositionTopAttached : UIBarPositionAny;
 }
 
 @end
