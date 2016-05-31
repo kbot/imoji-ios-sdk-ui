@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
     SampleAppTypeUISettings
 };
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UIViewControllerPreviewingDelegate>
 
 @property(nonatomic, strong) UITableView *sampleAppTableView;
 @property(nonatomic, strong) UIImageView *imojiLogoImageView;
@@ -165,6 +165,41 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UIViewController *controller = [self controllerForIndexPath:indexPath];
+
+    [self.navigationController pushViewController:controller animated:YES];
+    [self.sampleAppTableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+- (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    NSIndexPath *indexPath = [self.sampleAppTableView indexPathForRowAtPoint:location];
+    UITableViewCell *cell = [self.sampleAppTableView cellForRowAtIndexPath:indexPath];
+
+    if([cell isKindOfClass:[SampleAppCollectionTableViewCell class]]) {
+        previewingContext.sourceRect = cell.frame;
+
+        UIViewController *previewController = [self controllerForIndexPath:indexPath];
+
+        if ([previewController isKindOfClass:[QuarterScreenViewController class]]) {
+            ((QuarterScreenViewController *) previewController).previewingContext = previewingContext;
+        }
+
+        previewController.preferredContentSize = CGSizeMake(0.0, 0.0);
+
+        return previewController;
+    }
+
+    return nil;
+}
+
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    if (!([viewControllerToCommit isKindOfClass:[StickerCreatorViewController class]] || [viewControllerToCommit isKindOfClass:[FullScreenViewController class]])) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+    [self.navigationController showViewController:viewControllerToCommit sender:self.navigationController];
+}
+
+- (UIViewController *)controllerForIndexPath:(NSIndexPath *)indexPath {
     UIViewController *controller = nil;
 
     SampleAppType appsType = (SampleAppType) [self.sampleApps[(NSUInteger) indexPath.row] unsignedIntValue];
@@ -192,8 +227,17 @@ typedef NS_ENUM(NSUInteger, SampleAppType) {
             break;
     }
 
-    [self.navigationController pushViewController:controller animated:YES];
-    [self.sampleAppTableView deselectRowAtIndexPath:indexPath animated:NO];
+    return controller;
 }
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+
+    if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)] &&
+        self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+        [self registerForPreviewingWithDelegate:self sourceView:self.sampleAppTableView];
+    }
+}
+
 
 @end

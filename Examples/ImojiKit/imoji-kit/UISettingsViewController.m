@@ -56,7 +56,7 @@
 
     self.view.backgroundColor = [UIColor whiteColor];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", [IMResourceBundleUtil assetsBundle].bundlePath]]
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/imoji_back.png", [IMResourceBundleUtil assetsBundle].bundlePath]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self
                                                                             action:@selector(backButtonTapped)];
@@ -97,7 +97,7 @@
 
     [createAndRecentsContainer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.mas_topLayoutGuideBottom).offset(17.0f);
-        make.width.equalTo(self.view);
+        make.left.and.right.equalTo(self.view);
         make.height.equalTo(@56.0f);
     }];
 
@@ -113,7 +113,7 @@
 
     [stickerBorderContainer mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(createAndRecentsContainer.mas_bottom);
-        make.width.equalTo(self.view);
+        make.left.and.right.equalTo(self.view);
         make.height.equalTo(@56.0f);
     }];
 

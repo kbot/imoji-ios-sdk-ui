@@ -105,6 +105,12 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
+    if (self.previewingContext &&
+        (self.previewingContext.previewingGestureRecognizerForFailureRelationship.state == UIGestureRecognizerStateBegan ||
+         self.previewingContext.previewingGestureRecognizerForFailureRelationship.state == UIGestureRecognizerStateChanged)) {
+        return;
+    }
+
     [self.quarterScreenView.searchView.searchTextField becomeFirstResponder];
 }
 
