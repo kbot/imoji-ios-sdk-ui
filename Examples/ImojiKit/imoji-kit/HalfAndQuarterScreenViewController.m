@@ -311,8 +311,6 @@
 }
 
 - (void)inputFieldWillHide:(NSNotification *)notification {
-    NSDictionary *keyboardInfo = [notification userInfo];
-    CGRect endRect = [[keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     NSTimeInterval animationDuration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationOptions animationCurve =
             (UIViewAnimationOptions) ([notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] intValue] << 16);
