@@ -234,38 +234,40 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
 
         return cell;
-    } else if (self.contentType == IMCollectionViewContentTypeCollectionSplash) {
+    } else if (self.contentType >= IMCollectionViewContentTypeCollectionSplash && self.contentType <= IMCollectionViewContentTypeNoResultsSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
         self.tapGesture.enabled = YES;
         [self.loadingView fadeOutWithDuration:0.1 delay:0];
-        [splashCell showSplashCellType:IMCollectionViewSplashCellCollection withImageBundle:self.imagesBundle];
+        IMCollectionViewSplashCellType splashCellType;
+        
+        switch (self.contentType) {
+            case IMCollectionViewContentTypeRecentsSplash:
+                splashCellType = IMCollectionViewSplashCellRecents;
+                break;
+                
+            case IMCollectionViewContentTypeCollectionSplash:
+                splashCellType = IMCollectionViewSplashCellCollection;
+                break;
+                
+            case IMCollectionViewContentTypeNoConnectionSplash:
+                splashCellType = IMCollectionViewSplashCellNoConnection;
+                break;
+                
+            case IMCollectionViewContentTypeEnableFullAccessSplash:
+                splashCellType = IMCollectionViewSplashCellEnableFullAccess;
+                break;
+                
+            case IMCollectionViewContentTypeNoResultsSplash:
+            default:
+                splashCellType = IMCollectionViewSplashCellNoResults;
+                break;
+        }
+        
+        [splashCell showSplashCellType:splashCellType withImageBundle:self.imagesBundle];
         return splashCell;
-    } else if (self.contentType == IMCollectionViewContentTypeRecentsSplash) {
-        IMCollectionViewSplashCell *splashCell =
-                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        self.tapGesture.enabled = YES;
-        [self.loadingView fadeOutWithDuration:0.1 delay:0];
-        [splashCell showSplashCellType:IMCollectionViewSplashCellRecents withImageBundle:self.imagesBundle];
-        return splashCell;
-    } else if (self.contentType == IMCollectionViewContentTypeNoConnectionSplash) {
-        IMCollectionViewSplashCell *splashCell =
-                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        self.tapGesture.enabled = YES;
-        [self.loadingView fadeOutWithDuration:0.1 delay:0];
-        [splashCell showSplashCellType:IMCollectionViewSplashCellNoConnection withImageBundle:self.imagesBundle];
-        return splashCell;
-    } else if (self.contentType == IMCollectionViewContentTypeNoResultsSplash) {
-        IMCollectionViewSplashCell *splashCell =
-                (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
-
-        self.tapGesture.enabled = YES;
-        [self.loadingView fadeOutWithDuration:0.1 delay:0];
-        [splashCell showSplashCellType:IMCollectionViewSplashCellNoResults withImageBundle:self.imagesBundle];
-        return splashCell;
+        
     } else {
         IMCollectionViewCell *cell =
                 (IMCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
