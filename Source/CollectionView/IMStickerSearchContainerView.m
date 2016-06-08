@@ -223,6 +223,7 @@
     self.searchView.searchTextField.rightView.hidden = NO;
     self.searchView.createButton.hidden = YES;
     self.searchView.recentsButton.hidden = YES;
+    self.searchView.recentsButton.selected = NO;
     [self.searchView showBackButton];
 
     [collectionView loadImojisFromCategory:category];
