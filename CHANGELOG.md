@@ -1,5 +1,13 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.1.1
+
+* Fix constraint with back button in half screen view when clearing text field
+* Create Imoji Button doesn't show up if the developer doesn't have the editor pod spec enabled
+* Cosmetic changes to IMSearchView
+* Attribution views moved to IMSuggestionCollectionView
+* Fix clear button appearing on top of cancel button for various screen experiences
+
 ### Version 2.1.0
 
 * New widgets!
