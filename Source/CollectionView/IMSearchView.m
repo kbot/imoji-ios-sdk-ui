@@ -341,6 +341,8 @@ CGFloat const IMSearchViewContainerDefaultRightOffset = 9.0f;
         self.recentsButton.selected = NO;
     }
 
+    self.previousSearchTerm = textField.text;
+
     if(self.delegate && [self.delegate respondsToSelector:@selector(userDidPressReturnKeyFromSearchView:)]) {
         [self.delegate userDidPressReturnKeyFromSearchView:self];
     } else {

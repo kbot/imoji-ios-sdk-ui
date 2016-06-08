@@ -96,7 +96,10 @@ CGFloat const IMHalfScreenViewDefaultHeight = 226.0f;
     }
 
     [searchView resetSearchView];
-    [searchView hideBackButton];
+
+    if(![searchView.searchTextField isFirstResponder]) {
+        [searchView hideBackButton];
+    }
 
     [self.imojiSuggestionView.collectionView loadImojiCategoriesWithOptions:[IMCategoryFetchOptions optionsWithClassification:IMImojiSessionCategoryClassificationTrending]];
 }

@@ -49,6 +49,7 @@ extern CGFloat const IMSearchViewContainerDefaultRightOffset;
 @property(nonatomic, strong, readonly) UIImageView *searchIconImageView;
 @property(nonatomic, strong, readonly) UITextField *searchTextField;
 @property(nonatomic, strong, readonly) UIButton *cancelButton;
+@property(nonatomic, strong, readonly) UIButton *clearButton;
 @property(nonatomic, strong, readonly) UIButton *createButton;
 @property(nonatomic, strong, readonly) UIButton *recentsButton;
 @property(nonatomic, strong, readonly) UIButton *backButton;

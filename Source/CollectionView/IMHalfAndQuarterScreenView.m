@@ -24,6 +24,7 @@
 //
 
 #import "IMHalfAndQuarterScreenView.h"
+#import <ImojiSDK/IMImojiCategoryObject.h>
 #import <Masonry/Masonry.h>
 
 @interface IMHalfAndQuarterScreenView () <IMSearchViewDelegate, IMCollectionViewDelegate>
@@ -163,8 +164,10 @@
         [self.delegate userDidEndSearchFromSearchView:searchView];
     }
 
-    if(searchView.backButtonType == IMSearchViewBackButtonTypeBack && searchView.searchTextField.text.length > 0 && !searchView.recentsButton.selected) {
-        [searchView showBackButton];
+    if(searchView.backButtonType == IMSearchViewBackButtonTypeBack && !searchView.recentsButton.selected) {
+        if (searchView.searchTextField.text.length > 0 || (searchView.searchTextField.text.length == 0 && searchView.previousSearchTerm.length > 0)) {
+            [searchView showBackButton];
+        }
     }
 }
 
@@ -229,6 +232,38 @@
     }];
 
     [self.imojiSuggestionView.collectionView loadRecents];
+}
+
+#pragma mark IMCollectionView Delegate
+
+- (void)userDidSelectCategory:(IMImojiCategoryObject *)category fromCollectionView:(IMCollectionView *)collectionView {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(userDidSelectCategory:fromCollectionView:)]) {
+        [self.delegate userDidSelectCategory:category fromCollectionView:collectionView];
+    }
+
+    self.searchView.searchTextField.text = category.title;
+    self.searchView.searchTextField.rightView.hidden = NO;
+    self.searchView.createButton.hidden = YES;
+    self.searchView.recentsButton.hidden = YES;
+    
+    if (self.searchView.createAndRecentsEnabled && self.searchView.recentsButton.selected) {
+        self.searchView.recentsButton.selected = NO;
+        self.searchView.searchTextField.rightView = self.searchView.clearButton;
+
+        if (![self.searchView.searchIconImageView isDescendantOfView:self.searchView.searchViewContainer]) {
+            [self.searchView.searchViewContainer addSubview:self.searchView.searchIconImageView];
+            
+            [self.searchView.searchIconImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.left.equalTo(self.searchView.searchViewContainer);
+                make.centerY.equalTo(self.searchView.searchViewContainer);
+                make.width.and.height.equalTo(@(IMSearchViewIconWidthHeight));
+            }];
+        }
+    }
+    
+    [self.searchView showBackButton];
+
+    [collectionView loadImojisFromCategory:category];
 }
 
 + (instancetype)imojiStickerSearchContainerViewWithSession:(IMImojiSession *)session {
