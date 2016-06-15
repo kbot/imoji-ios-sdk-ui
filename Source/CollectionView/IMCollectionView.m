@@ -234,7 +234,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         }
 
         return cell;
-    } else if (self.contentType >= IMCollectionViewContentTypeCollectionSplash && self.contentType <= IMCollectionViewContentTypeNoResultsSplash) {
+    } else if (self.contentType >= IMCollectionViewContentTypeRecentsSplash && self.contentType <= IMCollectionViewContentTypeNoResultsSplash) {
         IMCollectionViewSplashCell *splashCell =
                 (IMCollectionViewSplashCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewSplashCellReuseId forIndexPath:indexPath];
 
