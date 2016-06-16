@@ -1,5 +1,9 @@
 # Imoji iOS UI Widgets Changes
 
+### Version 2.1.2
+
+* Fixes a crash with the no recents splash
+
 ### Version 2.1.1
 
 * Fix constraint with back button in half screen view when clearing text field
