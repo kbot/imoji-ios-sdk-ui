@@ -269,15 +269,16 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         return splashCell;
         
     } else {
-        IMCollectionViewCell *cell =
-                (IMCollectionViewCell *) [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
+        IMCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:IMCollectionViewCellReuseId forIndexPath:indexPath];
         [cell setupPlaceholderImageWithPosition:(NSUInteger) indexPath.row];
 
         id imojiImage = self.images[(NSUInteger) indexPath.section][(NSUInteger) indexPath.row];
         if ([imojiImage isKindOfClass:[UIImage class]]) {
-            [cell loadImojiImage:((UIImage *) imojiImage)];
+            [cell loadImojiImage:((UIImage *) imojiImage) animated:YES];
+        } else if (self.loadUsingStickerViews) {
+            [cell loadImojiSticker:imojiImage animated:YES];
         } else {
-            [cell loadImojiImage:nil];
+            [cell loadImojiImage:nil animated:YES];
         }
 
         return cell;
@@ -820,13 +821,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                         // append the loading indicator to the content to fetch the next set of results
                         if (index + 1 == self.numberOfImojisToLoad) {
-                            [self performBatchUpdates:^{
-                                [self.content[currentSection][@"imojis"] addObject:self.loadingIndicatorObject];
-                                [self insertItemsAtIndexPaths:@[
-                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
-                                                            inSection:currentSection]
-                                ]];
-                            } completion:nil];
+//                            [self performBatchUpdates:^{
+//                                [self.content[currentSection][@"imojis"] addObject:self.loadingIndicatorObject];
+//                                [self insertItemsAtIndexPaths:@[
+//                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
+//                                                            inSection:currentSection]
+//                                ]];
+//                            } completion:nil];
                         } else if (self.infiniteScroll && self.shouldLoadNewSection &&
                                 index + 1 == [self numberOfItemsInSection:currentSection] % self.numberOfImojisToLoad) {
                             // append the loading indicator to the next section if
@@ -1005,29 +1006,55 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 }
 
 - (void)renderImojiResult:(IMImojiObject *)imoji
-                  content:(id)content
+                  content:(NSObject *)content
                 atSection:(NSUInteger)section
                   atIndex:(NSUInteger)index
                    offset:(NSUInteger)offset
                 operation:(NSOperation *)operation {
     self.content[section][@"imojis"][index + offset] = content;
-    [self.session renderImoji:imoji
-                      options:self.renderingOptions
-                     callback:^(UIImage *image, NSError *renderError) {
-                         if (!operation.isCancelled) {
-                             self.images[section][index + offset] = image ? image : [NSNull null];
-                             NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:section];
 
-                             BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
-                             [self.pendingCollectionViewUpdates addObject:newPath];
-
-                             // if the pending collection view list was empty, go ahead and call the reload method, otherwise, allow
-                             // the method to perform the reload after the last batch update completes
-                             if (doReload) {
-                                 [self reloadPendingUpdatesWithOperation:operation];
+    if (self.loadUsingStickerViews && [content isKindOfClass:[IMImojiObject class]]) {
+        [self.session renderImojiAsMSSticker:imoji
+                                     options:self.renderingOptions
+                                    callback:^(NSObject *msStickerObject, NSError *error) {
+                                        if (!operation.isCancelled) {
+                                            [self setImageContents:msStickerObject
+                                                         atSection:section
+                                                           atIndex:index
+                                                            offset:offset
+                                                         operation:operation];                                        }
+                                    }];
+    } else {
+        [self.session renderImoji:imoji
+                          options:self.renderingOptions
+                         callback:^(UIImage *image, NSError *renderError) {
+                             if (!operation.isCancelled) {
+                                 [self setImageContents:image
+                                              atSection:section
+                                                atIndex:index
+                                                 offset:offset
+                                              operation:operation];
                              }
-                         }
-                     }];
+                         }];
+    }
+}
+
+- (void)setImageContents:(id)content
+               atSection:(NSUInteger)section
+                 atIndex:(NSUInteger)index
+                  offset:(NSUInteger)offset
+               operation:(NSOperation *)operation {
+    self.images[section][index + offset] = content ? content : [NSNull null];
+    NSIndexPath *newPath = [NSIndexPath indexPathForItem:(index + offset) inSection:section];
+
+    BOOL doReload = self.pendingCollectionViewUpdates.count == 0;
+    [self.pendingCollectionViewUpdates addObject:newPath];
+
+    // if the pending collection view list was empty, go ahead and call the reload method, otherwise, allow
+    // the method to perform the reload after the last batch update completes
+    if (doReload) {
+        [self reloadPendingUpdatesWithOperation:operation];
+    }
 }
 
 - (void)reloadPendingUpdatesWithOperation:(NSOperation *)operation {
@@ -1112,6 +1139,16 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 - (void)setImagesBundle:(NSBundle *)imagesBundle {
     _imagesBundle = imagesBundle;
     [self reloadData];
+}
+
+- (void)setLoadUsingStickerViews:(BOOL)loadUsingStickerViews {
+#if IMMessagesFrameworkSupported
+    _loadUsingStickerViews = loadUsingStickerViews && NSClassFromString(@"MSSticker");
+#else
+    [[NSException exceptionWithName:@"imoji runtime exception"
+                            reason:@"sticker views are only supported with iOS 10 builds and higher"
+                          userInfo:nil] raise];
+#endif
 }
 
 - (void)setContentType:(IMCollectionViewContentType)contentType {

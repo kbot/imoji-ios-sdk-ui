@@ -25,8 +25,16 @@
 
 #import <Masonry/Masonry.h>
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
-#import <YYImage/YYAnimatedImageView.h>
+#import <YYImage/YYImage.h>
 #import "IMCollectionViewCell.h"
+#import <ImojiSDK/ImojiSDK.h>
+
+#if IMMessagesFrameworkSupported
+
+#import <Messages/Messages.h>
+
+#endif
+
 
 NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
@@ -45,22 +53,13 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 
-        self.placeholderView = [[UIImageView alloc] init];
+        _placeholderView = [[UIImageView alloc] init];
         self.placeholderView.contentMode = UIViewContentModeCenter;
 
-        self.imojiView = [YYAnimatedImageView new];
-
         [self addSubview:self.placeholderView];
-        [self addSubview:self.imojiView];
 
         [self.placeholderView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.center.equalTo(self);
-            make.width.and.height.equalTo(@100.0f);
-        }];
-
-        [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self);
-//            make.width.and.height.equalTo(self).multipliedBy(.8f);
             make.width.and.height.equalTo(@100.0f);
         }];
     }
@@ -71,22 +70,72 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 - (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
     NSArray *placeholderImages = [IMResourceBundleUtil loadingPlaceholderImages];
     NSUInteger placeholderStartIndex = [IMResourceBundleUtil loadingPlaceholderStartIndex];
+    UIImage *placeHolderImage = placeholderImages[(placeholderStartIndex + position) % placeholderImages.count];
 
-    self.placeholderView.image = placeholderImages[(placeholderStartIndex + position) % placeholderImages.count];
-    self.placeholderView.highlightedImage = self.placeholderView.image;
+    UIImageView *placeHolderImageView = (UIImageView *) self.placeholderView;
+    placeHolderImageView.highlightedImage =
+            placeHolderImageView.image = placeHolderImage;
+
     self.placeholderView.contentMode = UIViewContentModeCenter;
 }
 
-- (void)loadImojiImage:(UIImage *)imojiImage {
-    [self loadImojiImage:imojiImage animated:YES];
+- (void)setupImojiView:(BOOL)useStickerViews {
+    if (_imojiView) {
+        return;
+    }
+
+#if IMMessagesFrameworkSupported
+    if (useStickerViews) {
+        _imojiView = [[MSStickerView alloc] initWithFrame:self.frame sticker:nil];
+    } else {
+        _imojiView = [YYAnimatedImageView new];
+    }
+#else
+    _imojiView = [YYAnimatedImageView new];
+#endif
+
+    [self addSubview:self.imojiView];
+    [self.imojiView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self);
+        make.width.and.height.equalTo(@100.0f);
+    }];
 }
 
-- (void)loadImojiImage:(UIImage *)imojiImage animated:(BOOL)animated {
-    if (imojiImage) {
-        self.imojiView.image = imojiImage;
-        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
-        _hasImojiImage = YES;
+- (void)loadImojiImage:(nullable UIImage *)imojiImage animated:(BOOL)animated {
+    [self setupImojiView:NO];
 
+    [(UIImageView *) self.imojiView setImage:imojiImage];
+    _hasImojiImage = imojiImage != nil;
+    if (_hasImojiImage) {
+        self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+
+    if (animated) {
+        [self animateImojiLoading];
+    }
+}
+
+- (void)loadImojiSticker:(nullable NSObject *)msStickerObject animated:(BOOL)animated {
+    [self setupImojiView:YES];
+
+#if IMMessagesFrameworkSupported
+    if (msStickerObject == nil) {
+        [(MSStickerView *) self.imojiView setSticker:[self placeholderSticker]];
+    } else {
+        [(MSStickerView *) self.imojiView setSticker:(MSSticker *) msStickerObject];
+    }
+#endif
+
+    _hasImojiImage = msStickerObject != nil;
+    self.imojiView.contentMode = UIViewContentModeScaleAspectFit;
+
+    if (animated) {
+        [self animateImojiLoading];
+    }
+}
+
+- (void)animateImojiLoading {
+    if (_hasImojiImage) {
         BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];
 
         if (animateImmediately) {
@@ -99,10 +148,6 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
             });
         }
     } else {
-        self.imojiView.image = imojiImage;
-
-        _hasImojiImage = NO;
-
         [self performLoadedAnimation];
     }
 }
@@ -115,7 +160,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 
     animation.timingFunction = [CAMediaTimingFunction functionWithControlPoints:0.3f :0.14f :0.36f :1.36f];
 
-    if(self.hasImojiImage) {
+    if (self.hasImojiImage) {
         [self.imojiView.layer addAnimation:animation forKey:@"loaded"];
         self.imojiView.layer.transform = CATransform3DIdentity;
     } else {
@@ -212,47 +257,30 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     return tintedImage;
 }
 
-//- (void)performGrowAnimation {
-//    if (!self.hasImojiImage) {
-//        return;
-//    }
-//
-//    [CATransaction begin];
-//    [self.imojiView.layer removeAllAnimations];
-//    [CATransaction commit];
-//    self.imojiView.alpha = 1.0;
-//
-//    // grow image
-//    [UIView animateWithDuration:0.1 animations:^{
-//                self.imojiView.transform = CGAffineTransformMakeScale(1.2, 1.2);
-//            }
-//                     completion:^(BOOL finished) {
-//                         [UIView animateWithDuration:0.1f
-//                                               delay:1.2f
-//                                             options:UIViewAnimationOptionCurveLinear
-//                                          animations:^{
-//                                              self.imojiView.transform = CGAffineTransformMakeScale(1, 1);
-//                                          } completion:nil];
-//                     }];
-//}
-//
-//- (void)performTranslucentAnimation {
-//    if (!self.hasImojiImage) {
-//        return;
-//    }
-//
-//    [UIView animateWithDuration:0.1 animations:^{
-//                self.imojiView.alpha = 0.5;
-//            }
-//                     completion:^(BOOL finished) {
-//                         [UIView animateWithDuration:0.1f
-//                                               delay:1.2f
-//                                             options:UIViewAnimationOptionCurveLinear
-//                                          animations:^{
-//                                              self.imojiView.alpha = 1;
-//                                          } completion:nil];
-//                     }];
-//}
+#if IMMessagesFrameworkSupported
+
+- (nullable MSSticker *)placeholderSticker {
+    static MSSticker *instance;
+    static dispatch_once_t predicate;
+
+    dispatch_once(&predicate, ^{
+        UIImage *placeHolderImage = [IMResourceBundleUtil loadingPlaceholderImages].firstObject;
+        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@placeHolderImage.png",
+                                                                       NSTemporaryDirectory()
+        ]];
+        [UIImagePNGRepresentation(placeHolderImage) writeToURL:url atomically:YES];
+        NSError *error;
+
+        instance = [[MSSticker alloc] initWithContentsOfFileURL:url
+                                           localizedDescription:@"placeholder"
+                                                          error:&error];
+
+    });
+
+    return instance;
+}
+
+#endif
 
 @end
 

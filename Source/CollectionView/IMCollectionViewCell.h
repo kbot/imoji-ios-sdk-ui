@@ -26,13 +26,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@class IMImojiObject;
+
 extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 @interface IMCollectionViewCell : UICollectionViewCell
 
-- (void)loadImojiImage:(UIImage * __nullable)imojiImage;
+- (void)loadImojiImage:(nullable UIImage *)imojiImage animated:(BOOL)animated;
 
-- (void)loadImojiImage:(UIImage * __nullable)imojiImage animated:(BOOL)animated;
+- (void)loadImojiSticker:(nullable NSObject *)msStickerObject animated:(BOOL)animated;
 
 - (void)setupPlaceholderImageWithPosition:(NSUInteger)position;
 
@@ -46,7 +48,13 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 //- (void)performTranslucentAnimation;
 
-@property(nonatomic, strong, nullable) UIImageView *imojiView;
-@property(nonatomic, strong, nullable) UIImageView *placeholderView;
+@property(nonatomic, strong, nullable, readonly) UIView *imojiView;
+@property(nonatomic, strong, nullable, readonly) UIView *placeholderView;
+
+@end
+
+@interface IMCollectionViewCell(Override)
+
+- (void)setupImojiView:(BOOL)useStickerViews;
 
 @end

@@ -42,14 +42,17 @@
             make.center.equalTo(self);
             make.width.and.height.equalTo(@62.0f);
         }];
-
-        [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self);
-            make.width.and.height.equalTo(@74.0f);
-        }];
     }
 
     return self;
+}
+
+- (void)setupImojiView:(BOOL)useStickerViews {
+    [super setupImojiView:useStickerViews];
+    [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self);
+        make.width.and.height.equalTo(@74.0f);
+    }];
 }
 
 - (void)setupPlaceholderImageWithPosition:(NSUInteger)position {
