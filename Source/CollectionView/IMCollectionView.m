@@ -37,6 +37,10 @@
 #import "IMCategoryAttribution.h"
 #import "IMCollectionLoadingView.h"
 
+#if IMMessagesFrameworkSupported
+#import <Messages/Messages.h>
+#endif
+
 NSUInteger const IMCollectionViewNumberOfItemsToLoad = 60;
 CGFloat const IMCollectionReusableHeaderViewDefaultHeight = 49.0f;
 CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
@@ -276,7 +280,15 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         if ([imojiImage isKindOfClass:[UIImage class]]) {
             [cell loadImojiImage:((UIImage *) imojiImage) animated:YES];
         } else if (self.loadUsingStickerViews) {
-            [cell loadImojiSticker:imojiImage animated:YES];
+#if IMMessagesFrameworkSupported
+            if ([imojiImage isKindOfClass:[MSSticker class]]) {
+                [cell loadImojiSticker:imojiImage animated:YES];
+            } else {
+                [cell loadImojiSticker:nil animated:YES];
+            }
+#else
+            [cell loadImojiImage:nil animated:YES];
+#endif
         } else {
             [cell loadImojiImage:nil animated:YES];
         }

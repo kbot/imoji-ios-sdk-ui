@@ -79,13 +79,13 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     self.placeholderView.contentMode = UIViewContentModeCenter;
 }
 
-- (void)setupImojiView:(BOOL)useStickerViews {
+- (void)setupImojiViewWithStickerViewSupport:(BOOL)stickerViewSupport {
     if (_imojiView) {
         return;
     }
 
 #if IMMessagesFrameworkSupported
-    if (useStickerViews) {
+    if (stickerViewSupport) {
         _imojiView = [[MSStickerView alloc] initWithFrame:self.frame sticker:nil];
     } else {
         _imojiView = [YYAnimatedImageView new];
@@ -102,7 +102,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 }
 
 - (void)loadImojiImage:(nullable UIImage *)imojiImage animated:(BOOL)animated {
-    [self setupImojiView:NO];
+    [self setupImojiViewWithStickerViewSupport:NO];
 
     [(UIImageView *) self.imojiView setImage:imojiImage];
     _hasImojiImage = imojiImage != nil;
@@ -116,7 +116,7 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 }
 
 - (void)loadImojiSticker:(nullable NSObject *)msStickerObject animated:(BOOL)animated {
-    [self setupImojiView:YES];
+    [self setupImojiViewWithStickerViewSupport:YES];
 
 #if IMMessagesFrameworkSupported
     if (msStickerObject == nil) {

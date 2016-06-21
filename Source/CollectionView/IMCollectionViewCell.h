@@ -55,6 +55,6 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 @interface IMCollectionViewCell(Override)
 
-- (void)setupImojiView:(BOOL)useStickerViews;
+- (void)setupImojiViewWithStickerViewSupport:(BOOL)stickerViewSupport;
 
 @end

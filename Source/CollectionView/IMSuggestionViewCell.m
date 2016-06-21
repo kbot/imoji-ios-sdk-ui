@@ -47,8 +47,8 @@
     return self;
 }
 
-- (void)setupImojiView:(BOOL)useStickerViews {
-    [super setupImojiView:useStickerViews];
+- (void)setupImojiViewWithStickerViewSupport:(BOOL)stickerViewSupport {
+    [super setupImojiViewWithStickerViewSupport:stickerViewSupport];
     [self.imojiView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self);
         make.width.and.height.equalTo(@74.0f);
