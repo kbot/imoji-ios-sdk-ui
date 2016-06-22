@@ -122,7 +122,14 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     if (msStickerObject == nil) {
         [(MSStickerView *) self.imojiView setSticker:[self placeholderSticker]];
     } else {
-        [(MSStickerView *) self.imojiView setSticker:(MSSticker *) msStickerObject];
+        MSSticker * sticker = (MSSticker *) msStickerObject;
+        MSStickerView * stickerView = (MSStickerView *) self.imojiView;
+        [stickerView setSticker:sticker];
+        if ([sticker.imageFileURL.pathExtension isEqualToString:@"gif"]) {
+            [stickerView startAnimating];
+        } else if (stickerView.isAnimating) {
+            [stickerView stopAnimating];
+        }
     }
 #endif
 
@@ -260,24 +267,22 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
 #if IMMessagesFrameworkSupported
 
 - (nullable MSSticker *)placeholderSticker {
-    static MSSticker *instance;
-    static dispatch_once_t predicate;
-
-    dispatch_once(&predicate, ^{
-        UIImage *placeHolderImage = [IMResourceBundleUtil loadingPlaceholderImages].firstObject;
-        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@placeHolderImage.png",
-                                                                       NSTemporaryDirectory()
-        ]];
+    static int position = 0;
+    
+    NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@placeHolderImage-%@.png",
+                                         NSTemporaryDirectory(), @(position)
+                                         ]];
+    NSArray *placeholderImages = [IMResourceBundleUtil loadingPlaceholderImages];
+    UIImage *placeHolderImage = placeholderImages[(position++) % placeholderImages.count];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
         [UIImagePNGRepresentation(placeHolderImage) writeToURL:url atomically:YES];
-        NSError *error;
-
-        instance = [[MSSticker alloc] initWithContentsOfFileURL:url
-                                           localizedDescription:@"placeholder"
-                                                          error:&error];
-
-    });
-
-    return instance;
+    }
+    
+    NSError *error;
+    return [[MSSticker alloc] initWithContentsOfFileURL:url
+                                   localizedDescription:@"placeholder"
+                                                  error:&error];
 }
 
 #endif
