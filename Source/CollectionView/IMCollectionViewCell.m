@@ -279,7 +279,8 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
                                          NSTemporaryDirectory(), @(position)
                                          ]];
     NSArray *placeholderImages = [IMResourceBundleUtil loadingPlaceholderImages];
-    UIImage *placeHolderImage = placeholderImages[(position++) % placeholderImages.count];
+    UIImage *placeHolderImage = placeholderImages[position % placeholderImages.count];
+    position = (position + 1) % placeholderImages.count;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
         [UIImagePNGRepresentation(placeHolderImage) writeToURL:url atomically:YES];
