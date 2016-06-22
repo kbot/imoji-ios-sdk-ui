@@ -54,6 +54,7 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 @property(nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property(nonatomic, strong) NSObject *loadingIndicatorObject;
 @property(nonatomic, strong) NSOperation *imojiOperation;
+@property(nonatomic, strong, nonnull) IMImojiObjectRenderingOptions *animatedGifRenderingOptions;
 
 @property(nonatomic, copy) NSString *currentSearchTerm;
 @property(nonatomic, copy) NSString *currentHeader;
@@ -79,6 +80,8 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
         _renderingOptions = [IMImojiObjectRenderingOptions optionsWithRenderSize:IMImojiObjectRenderSizeThumbnail
                                                                      borderStyle:IMImojiObjectBorderStyleSticker
                                                                      imageFormat:IMImojiObjectImageFormatWebP];
+        _animatedGifRenderingOptions = [IMImojiObjectRenderingOptions optionsWithAnimationAndRenderSize:IMImojiObjectRenderSizeThumbnail];
+        
         _renderingOptions.renderAnimatedIfSupported = YES;
         _preferredImojiDisplaySize = CGSizeMake(100.f, 114.f);
         _animateSelection = YES;
@@ -1042,15 +1045,25 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
     self.content[section][@"imojis"][index + offset] = content;
 
     if (self.loadUsingStickerViews && [content isKindOfClass:[IMImojiObject class]]) {
+        IMImojiObjectRenderingOptions *options;
+
+        // use the gif rendering options to avoid converting webp data to NSData for MSSticker's, avoids unnecessary conversion
+        if (imoji.supportsAnimation) {
+            options = self.animatedGifRenderingOptions;
+        } else {
+            options = self.renderingOptions;
+        }
+
         [self.session renderImojiAsMSSticker:imoji
-                                     options:self.renderingOptions
+                                     options:options
                                     callback:^(NSObject *msStickerObject, NSError *error) {
                                         if (!operation.isCancelled) {
                                             [self setImageContents:msStickerObject
                                                          atSection:section
                                                            atIndex:index
                                                             offset:offset
-                                                         operation:operation];                                        }
+                                                         operation:operation];
+                                        }
                                     }];
     } else {
         [self.session renderImoji:imoji
@@ -1161,6 +1174,8 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
 - (void)setRenderingOptions:(IMImojiObjectRenderingOptions *)renderingOptions {
     _renderingOptions = renderingOptions;
+    _animatedGifRenderingOptions =
+            [IMImojiObjectRenderingOptions optionsWithAnimationAndRenderSize:renderingOptions.renderSize];
     [self reloadData];
 }
 
