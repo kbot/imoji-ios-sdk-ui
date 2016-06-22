@@ -359,6 +359,13 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
             [self loadNextPageOfImojisFromSearch];
         });
     }
+
+#if IMMessagesFrameworkSupported
+    if (self.loadUsingStickerViews && [cell isKindOfClass:[IMCollectionViewCell class]]) {
+        IMCollectionViewCell *viewCell = (IMCollectionViewCell *) cell;
+        [viewCell animateCellContents:YES];
+    }
+#endif
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

@@ -141,6 +141,19 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     }
 }
 
+- (void)animateCellContents:(BOOL)animate {
+#if IMMessagesFrameworkSupported
+    MSStickerView *stickerView = (MSStickerView *) self.imojiView;
+    if (stickerView.sticker && [stickerView.sticker.imageFileURL.pathExtension isEqualToString:@"gif"]) {
+        if (animate) {
+            [stickerView startAnimating];
+        } else if (stickerView.isAnimating) {
+            [stickerView stopAnimating];
+        }
+    }
+#endif
+}
+
 - (void)animateImojiLoading {
     if (_hasImojiImage) {
         BOOL animateImmediately = ![self respondsToSelector:@selector(preferredLayoutAttributesFittingAttributes:)];

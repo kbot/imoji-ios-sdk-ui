@@ -46,6 +46,8 @@ extern NSString * __nonnull const IMCollectionViewCellReuseId;
 
 - (void)performShrinkAnimation;
 
+- (void)animateCellContents:(BOOL)animate;
+
 //- (void)performTranslucentAnimation;
 
 @property(nonatomic, strong, nullable, readonly) UIView *imojiView;
