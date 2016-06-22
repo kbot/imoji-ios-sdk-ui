@@ -833,13 +833,13 @@ minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
 
                         // append the loading indicator to the content to fetch the next set of results
                         if (index + 1 == self.numberOfImojisToLoad) {
-//                            [self performBatchUpdates:^{
-//                                [self.content[currentSection][@"imojis"] addObject:self.loadingIndicatorObject];
-//                                [self insertItemsAtIndexPaths:@[
-//                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
-//                                                            inSection:currentSection]
-//                                ]];
-//                            } completion:nil];
+                            [self performBatchUpdates:^{
+                                [self.content[currentSection][@"imojis"] addObject:self.loadingIndicatorObject];
+                                [self insertItemsAtIndexPaths:@[
+                                        [NSIndexPath indexPathForItem:[self numberOfItemsInSection:currentSection] - 1
+                                                            inSection:currentSection]
+                                ]];
+                            } completion:nil];
                         } else if (self.infiniteScroll && self.shouldLoadNewSection &&
                                 index + 1 == [self numberOfItemsInSection:currentSection] % self.numberOfImojisToLoad) {
                             // append the loading indicator to the next section if
