@@ -27,7 +27,6 @@
 #import <ImojiSDKUI/IMResourceBundleUtil.h>
 #import <YYImage/YYImage.h>
 #import "IMCollectionViewCell.h"
-#import <ImojiSDK/ImojiSDK.h>
 
 #if IMMessagesFrameworkSupported
 
@@ -122,14 +121,8 @@ NSString *const IMCollectionViewCellReuseId = @"ImojiCollectionViewCellReuseId";
     if (msStickerObject == nil) {
         [(MSStickerView *) self.imojiView setSticker:[self placeholderSticker]];
     } else {
-        MSSticker * sticker = (MSSticker *) msStickerObject;
-        MSStickerView * stickerView = (MSStickerView *) self.imojiView;
-        [stickerView setSticker:sticker];
-        if ([sticker.imageFileURL.pathExtension isEqualToString:@"gif"]) {
-            [stickerView startAnimating];
-        } else if (stickerView.isAnimating) {
-            [stickerView stopAnimating];
-        }
+        [self animateCellContents:NO];
+        [(MSStickerView *) self.imojiView setSticker:(MSSticker *) msStickerObject];
     }
 #endif
 
