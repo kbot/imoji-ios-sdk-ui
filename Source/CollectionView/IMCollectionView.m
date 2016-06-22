@@ -368,6 +368,15 @@ CGFloat const IMCollectionReusableAttributionViewDefaultHeight = 187.0f;
 #endif
 }
 
+#if IMMessagesFrameworkSupported
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.loadUsingStickerViews && [cell isKindOfClass:[IMCollectionViewCell class]]) {
+        IMCollectionViewCell *viewCell = (IMCollectionViewCell *) cell;
+        [viewCell animateCellContents:NO];
+    }
+}
+#endif
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // check to see if the user is at the end of the scrollview
     // this is a iOS 7 safe approach since collectionView:willDisplayCell:forItemAtIndexPath:indexPath
