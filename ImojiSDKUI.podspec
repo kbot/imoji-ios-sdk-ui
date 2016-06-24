@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
     ss.dependency "YYImage/WebP", "~> 1.0"
     ss.dependency "ImojiSDK/Core"
     ss.dependency "ImojiSDKUI/Common"
-    ss.dependency "Masonry"
+    ss.dependency "Masonry", "1.0.0"
 
     ss.ios.source_files = 'Source/CollectionView/**/*.{h,m}'
     ss.ios.public_header_files = 'Source/CollectionView/*.h'
@@ -26,7 +26,7 @@ Pod::Spec.new do |s|
   s.subspec 'Editor' do |ss|
     ss.dependency "ImojiSDK/Core"
     ss.dependency "ImojiSDKUI/Common"
-    ss.dependency "Masonry"
+    ss.dependency "Masonry", "1.0.0"
 
     ss.vendored_frameworks = 'Frameworks/ImojiGraphics.framework'
 
